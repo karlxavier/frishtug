@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+<h1>Units</h1>
+<table class="table">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Name</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @units.each do |unit| %>
+      <tr data-id="<%= unit.id %>">
+        <td><%= unit.id %></td>
+        <td><%= unit.name %></td>
+        <td><%= link_to 'Show', admin_unit_path(unit) %></td>
+        <td><%= link_to 'Edit', edit_admin_unit_path(unit) %></td>
+        <td><%= link_to 'Destroy', admin_unit_path(unit), method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<br>
+<%= link_to 'New Unit', new_admin_unit_path %>
