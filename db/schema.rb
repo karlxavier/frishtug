@@ -10,10 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171005063805) do
+ActiveRecord::Schema.define(version: 20171005072009) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "add_ons", force: :cascade do |t|
+    t.string "name"
+    t.bigint "menu_category_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["menu_category_id"], name: "index_add_ons_on_menu_category_id"
+  end
 
   create_table "admins", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -65,6 +73,7 @@ ActiveRecord::Schema.define(version: 20171005063805) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "add_ons", "menu_categories"
   add_foreign_key "menus", "diet_categories"
   add_foreign_key "menus", "menu_categories"
   add_foreign_key "menus", "units"
