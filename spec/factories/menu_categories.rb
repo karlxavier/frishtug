@@ -1,5 +1,5 @@
 FactoryGirl.define do
   factory :menu_category do
-    name FFaker::Lorem.word
+    name Faker::Food.dish
   end
 end

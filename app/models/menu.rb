@@ -4,6 +4,11 @@ class Menu < ApplicationRecord
   belongs_to :diet_category
   validates :name, :unit_id, :menu_category_id, :price, presence: true
   validates :name, uniqueness: true
+  validate :sanitize_price
 
   mount_uploader :image, ImageUploader
+
+  def sanitize_price
+    errors.add(:price, 'should be atleast 0.01') if price.nil? || price < 0.01
+  end
 end

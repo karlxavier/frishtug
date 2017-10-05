@@ -51,7 +51,7 @@ group :development, :test do
   gem 'database_cleaner'
   gem 'rspec-rails'
   gem 'factory_girl_rails'
-  gem 'ffaker'
+  gem 'faker'
 end
 
 group :test do
@@ -72,6 +72,7 @@ group :development do
   gem 'bullet'
   gem 'better_errors'
   gem 'binding_of_caller'
+  gem 'brakeman', :require => false
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
