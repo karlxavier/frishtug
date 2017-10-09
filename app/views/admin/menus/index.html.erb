@@ -1,4 +1,3 @@
-<p id="notice"><%= notice %></p>
 <h1 id="title">Your Menus</h1>
 <%= link_to "+ Add Category",
   '#', class:
@@ -13,6 +12,7 @@
   <thead>
     <tr>
       <th>#</th>
+      <th>Image</th>
       <th>Name</th>
       <th>Category</th>
       <th colspan="3">Actions</th>
@@ -22,11 +22,12 @@
     <% @menus.each do |menu| %>
       <tr>
         <td><%= menu.id %></td>
+        <td><%= image_tag(menu.image_url(:thumb)) if menu.image?%></td>
         <td><%= menu.name %></td>
         <td><%= menu.menu_category_id %></td>
-        <td><%= link_to 'Show', admin_menu(menu) %></td>
+        <td><%= link_to 'Show', admin_menu_url(menu) %></td>
         <td><%= link_to 'Edit', edit_admin_menu_path(menu) %></td>
-        <td><%= link_to 'Destroy', admin_menu(menu), method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Destroy', admin_menu_url(menu), method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>

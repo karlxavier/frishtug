@@ -4,5 +4,6 @@ FactoryGirl.define do
     price Faker::Number.decimal(2)
     image Faker::Avatar.image
     menu_category_id nil
+    diet_category_id nil
   end
 end

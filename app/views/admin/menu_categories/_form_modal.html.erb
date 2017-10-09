@@ -12,10 +12,11 @@
       <%= form.label :name %>
       <input type="text" id="menu_category_name" name="menu_category[name]" v-model="menu_category.name" class="form-control">
     </div>
+    <h5>Add-ons</h5>
     <div v-for="(addons, index) in menu_category.add_ons_attributes">
       <div :class="addons._delete !== 1 ? 'form-group' : 'd-none'" >
-        <%= form.label :add_ons %>
-        <input type="text" name="menu_category[add_ons_attributes][name]" v-model="addons.name" class="form-control">
+        <label for="menu_category_addons_name">Name</label>
+        <input type="text" name="menu_category[add_ons_attributes][name]" v-model="addons.name" class="form-control" id="menu_category_addons_name">
         <input type="hidden" name="menu_category[add_ons_attributes][id]" v-model="addons.id" class="form-control">
         <input type="hidden" name="menu_category[add_ons_attributes][_delete]" v-model="addons._delete" class="form-control">
         <a href="javascript:void(0)" @click="hideAddons(index)">- Delete</a>
@@ -23,6 +24,6 @@
     </div>
     <a href="javascript:void(0)" @click="addAddons">+ Add</a>
     <%= form.submit 'Save', class: 'btn btn-primary float-right' %>
+    <%= link_to "Back", nil, class: 'btn btn-secondary float-right mr-2', data: { dismiss: 'modal' } %>
   <% end %>
-  <%= link_to "Back", nil, class: 'btn btn-secondary float-right mr-2', data: { dismiss: 'modal' } %>
 <% end %>

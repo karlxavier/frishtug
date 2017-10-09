@@ -1,7 +1,7 @@
 class Menu < ApplicationRecord
   belongs_to :unit
   belongs_to :menu_category
-  belongs_to :diet_category
+  belongs_to :diet_category, optional: true
   validates :name, :unit_id, :menu_category_id, :price, presence: true
   validates :name, uniqueness: true
   validate :sanitize_price

@@ -16,4 +16,19 @@ RSpec.describe Menu, type: :model do
     menu.valid?
     expect(menu.errors.full_messages).to include('Price should be atleast 0.01')
   end
+
+  it 'should save with diet_category_id' do
+    menu_category = create(:menu_category)
+    unit = create(:unit)
+    diet_category = create(:diet_category)
+    menu = build(:menu, menu_category_id: menu_category.id, unit_id: unit.id, diet_category_id: diet_category.id)
+    expect(menu).to be_valid
+  end
+
+  it 'should save without diet_category_id' do
+    menu_category = create(:menu_category)
+    unit = create(:unit)
+    menu = build(:menu, menu_category_id: menu_category.id, unit_id: unit.id)
+    expect(menu).to be_valid
+  end
 end

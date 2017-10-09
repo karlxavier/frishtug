@@ -18,18 +18,22 @@
     <%= form.text_field :price %>
   </div>
   <div>
+    <%= form.label :unit %>
+    <%= form.select :unit_id, Unit.all.map { |u| [u.name, u.id] } %>
+  </div>
+  <div>
     <%= form.label :menu_category %>
     <%= form.select :menu_category_id, MenuCategory.all.map { |c| [c.name, c.id]} %>
   </div>
   <div>
     <%= form.label :diet_category %>
-    <%= form.select :diet_category_id, DietCategory.all.map { |c| [c.name, c.id]} %>
+    <%= form.select :diet_category_id, DietCategory.all.map { |c| [c.name, c.id]}, include_blank: '' %>
   </div>
   <div>
     <%= form.label :image %>
     <%= form.file_field :image %>
   </div>
   <div class="actions">
-    <%= form.submit %>
+    <%= form.submit 'Publish', class: 'btn btn-primary' %>
   </div>
 <% end %>
