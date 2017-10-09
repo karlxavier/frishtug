@@ -1,0 +1,15 @@
+<div class="col-12 col-md-3 col-xl-2 sidebar">
+  <div class="flex-column navbar-collapse">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item <%= active?(admin_dashboard_index_path) %>">
+        <%= nav_link 'Dashboard', admin_dashboard_index_path %>
+      </li>
+      <li class="nav-item <%= active?(admin_menus_path) %>">
+        <%= nav_link 'Your Menu', admin_menus_path %>
+      </li>
+      <li class="nav-item <%= active?(admin_units_path) %>">
+        <%= nav_link 'Your Units', admin_units_path %>
+      </li>
+    </ul>
+  </div>
+</div>

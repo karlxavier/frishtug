@@ -1,0 +1,28 @@
+<%= modal_for 'add-category-modal', 'Add Category' do %>
+  <%= form_for [:admin, menu_category],
+  html: { id: 'new-menu-category' },
+  remote: true,
+  format: :js,
+  data: {
+    menu_category: menu_category.to_json(except: [:created_at, :updated_at]),
+    add_ons_attributes: menu_category.add_ons.to_json(except: [:menu_category_id, :created_at, :updated_at])
+    } do |form| %>
+    <div id="form-flash-messages"></div>
+    <div class="form-group">
+      <%= form.label :name %>
+      <input type="text" id="menu_category_name" name="menu_category[name]" v-model="menu_category.name" class="form-control">
+    </div>
+    <div v-for="(addons, index) in menu_category.add_ons_attributes">
+      <div :class="addons._delete !== 1 ? 'form-group' : 'd-none'" >
+        <%= form.label :add_ons %>
+        <input type="text" name="menu_category[add_ons_attributes][name]" v-model="addons.name" class="form-control">
+        <input type="hidden" name="menu_category[add_ons_attributes][id]" v-model="addons.id" class="form-control">
+        <input type="hidden" name="menu_category[add_ons_attributes][_delete]" v-model="addons._delete" class="form-control">
+        <a href="javascript:void(0)" @click="hideAddons(index)">- Delete</a>
+      </div>
+    </div>
+    <a href="javascript:void(0)" @click="addAddons">+ Add</a>
+    <%= form.submit 'Save', class: 'btn btn-primary float-right' %>
+  <% end %>
+  <%= link_to "Back", nil, class: 'btn btn-secondary float-right mr-2', data: { dismiss: 'modal' } %>
+<% end %>

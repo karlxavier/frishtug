@@ -1,0 +1,17 @@
+<%= form_with(model: menu_category, local: true) do |form| %>
+  <% if menu_category.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(menu_category.errors.count, "error") %> prohibited this menu_category from being saved:</h2>
+
+      <ul>
+      <% menu_category.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

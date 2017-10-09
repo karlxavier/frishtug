@@ -4,5 +4,7 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :units
     resources :menus
+    resources :dashboard, only: :index
+    resources :menu_categories, except: %i[index show]
   end
 end

@@ -1,5 +1,14 @@
 <p id="notice"><%= notice %></p>
-<h1>Menus</h1>
+<h1 id="title">Your Menus</h1>
+<%= link_to "+ Add Category",
+  '#', class:
+  'add-category-btn',
+  data: {
+    toggle: 'modal',
+    target: '#add-category-modal'
+  }
+%>
+<%= render 'admin/menu_categories/form_modal', menu_category: @menu_category %>
 <table class="table">
   <thead>
     <tr>
@@ -24,3 +33,6 @@
 </table>
 <br>
 <%= link_to 'New Menu', new_admin_menu_path %>
+<%= content_for :header_js do %>
+  <%= javascript_pack_tag 'admin/vue_category' %>
+<% end %>

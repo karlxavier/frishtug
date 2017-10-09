@@ -7,10 +7,18 @@
     <%= stylesheet_pack_tag 'application' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
     <%= javascript_pack_tag 'application' %>
+    <%= yield :header_js %>
   </head>
   <body>
     <%= render 'layouts/admin_navbar' %>
-    <%= render 'shared/notifications' %>
-    <%= yield %>
+    <div class="container-fluid">
+      <div class="row">
+        <%= render 'layouts/admin_sidebar' %>
+        <div class="col-12 col-md-9 col-xl-10">
+          <%= render 'shared/notifications' %>
+          <%= yield %>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
