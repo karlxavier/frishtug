@@ -1,10 +1,10 @@
 FactoryGirl.define do
   factory :order do
-    user nil
-    placed_on ""
-    eta ""
-    delivered_at ""
+    association :user, factory: :user
+    placed_on Faker::Time.between(DateTime.now - 1, DateTime.now)
+    eta Faker::Time.between(DateTime.now - 1, DateTime.now)
+    delivered_at Faker::Time.between(DateTime.now - 1, DateTime.now)
     status 1
-    remarks "MyString"
+    remarks "Test"
   end
 end
