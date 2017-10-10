@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171009082054) do
+ActiveRecord::Schema.define(version: 20171010074906) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -59,6 +59,33 @@ ActiveRecord::Schema.define(version: 20171009082054) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "inventories", force: :cascade do |t|
+    t.bigint "menu_id"
+    t.integer "quantity"
+    t.string "location"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["menu_id"], name: "index_inventories_on_menu_id"
+  end
+
+  create_table "inventory_transactions", force: :cascade do |t|
+    t.bigint "inventory_id"
+    t.integer "quantity_sold"
+    t.datetime "transaction_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["inventory_id"], name: "index_inventory_transactions_on_inventory_id"
+  end
+
+  create_table "menu_add_ons", force: :cascade do |t|
+    t.bigint "menu_id"
+    t.bigint "add_on_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["add_on_id"], name: "index_menu_add_ons_on_add_on_id"
+    t.index ["menu_id"], name: "index_menu_add_ons_on_menu_id"
+  end
+
   create_table "menu_categories", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -79,6 +106,18 @@ ActiveRecord::Schema.define(version: 20171009082054) do
     t.index ["diet_category_id"], name: "index_menus_on_diet_category_id"
     t.index ["menu_category_id"], name: "index_menus_on_menu_category_id"
     t.index ["unit_id"], name: "index_menus_on_unit_id"
+  end
+
+  create_table "orders", force: :cascade do |t|
+    t.bigint "user_id"
+    t.datetime "placed_on"
+    t.datetime "eta"
+    t.datetime "delivered_at"
+    t.integer "status"
+    t.string "remarks"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
   create_table "plans", force: :cascade do |t|
@@ -121,8 +160,13 @@ ActiveRecord::Schema.define(version: 20171009082054) do
   end
 
   add_foreign_key "add_ons", "menu_categories"
+  add_foreign_key "inventories", "menus"
+  add_foreign_key "inventory_transactions", "inventories"
+  add_foreign_key "menu_add_ons", "add_ons"
+  add_foreign_key "menu_add_ons", "menus"
   add_foreign_key "menus", "diet_categories"
   add_foreign_key "menus", "menu_categories"
   add_foreign_key "menus", "units"
+  add_foreign_key "orders", "users"
   add_foreign_key "users", "plans"
 end

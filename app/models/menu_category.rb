@@ -1,3 +1,5 @@
+# Column names
+# id name
 class MenuCategory < ApplicationRecord
   validates :name, presence: true
   validates :name, uniqueness: true

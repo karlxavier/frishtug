@@ -1,3 +1,5 @@
+# Column Names
+# id name price unit_id menu_category_id diet_category_id published published_at image
 class Menu < ApplicationRecord
   belongs_to :unit
   belongs_to :menu_category
