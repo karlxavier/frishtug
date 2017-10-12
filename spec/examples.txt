@@ -1,17 +1,7 @@
 example_id                                                 | status  | run_time        |
 ---------------------------------------------------------- | ------- | --------------- |
-./spec/controllers/admin/menus_controller_spec.rb[1:1:1]   | pending | 0.00206 seconds |
-./spec/controllers/admin/menus_controller_spec.rb[1:2:1]   | pending | 0.00208 seconds |
-./spec/controllers/admin/menus_controller_spec.rb[1:3:1]   | passed  | 0.00748 seconds |
-./spec/controllers/admin/menus_controller_spec.rb[1:4:1]   | pending | 0.00247 seconds |
-./spec/controllers/admin/menus_controller_spec.rb[1:5:1:1] | pending | 0.00642 seconds |
-./spec/controllers/admin/menus_controller_spec.rb[1:5:1:2] | pending | 0.00192 seconds |
-./spec/controllers/admin/menus_controller_spec.rb[1:5:2:1] | pending | 0.00227 seconds |
-./spec/controllers/admin/menus_controller_spec.rb[1:6:1:1] | pending | 0.00281 seconds |
-./spec/controllers/admin/menus_controller_spec.rb[1:6:1:2] | pending | 0.0028 seconds  |
-./spec/controllers/admin/menus_controller_spec.rb[1:6:2:1] | pending | 0.00247 seconds |
-./spec/controllers/admin/menus_controller_spec.rb[1:7:1]   | pending | 0.00219 seconds |
-./spec/controllers/admin/menus_controller_spec.rb[1:7:2]   | pending | 0.00202 seconds |
+./spec/controllers/admin/menus_controller_spec.rb[1:1:1]   | passed  | 0.07665 seconds |
+./spec/controllers/admin/menus_controller_spec.rb[1:1:2]   | passed  | 0.06519 seconds |
 ./spec/controllers/admin/units_controller_spec.rb[1:1:1]   | pending | 0.00294 seconds |
 ./spec/controllers/admin/units_controller_spec.rb[1:2:1]   | pending | 0.00343 seconds |
 ./spec/controllers/admin/units_controller_spec.rb[1:3:1]   | passed  | 0.0089 seconds  |
@@ -24,9 +14,11 @@ example_id                                                 | status  | run_time 
 ./spec/controllers/admin/units_controller_spec.rb[1:6:2:1] | pending | 0.00274 seconds |
 ./spec/controllers/admin/units_controller_spec.rb[1:7:1]   | pending | 0.00276 seconds |
 ./spec/controllers/admin/units_controller_spec.rb[1:7:2]   | pending | 0.0027 seconds  |
-./spec/features/admin/admin_menu_spec.rb[1:1]              | failed  | 1.37 seconds    |
-./spec/features/admin/admin_sign_in_spec.rb[1:1]           | passed  | 0.01356 seconds |
-./spec/features/admin/admin_sign_in_spec.rb[1:2]           | passed  | 1.1 seconds     |
+./spec/features/admin/menu_page_spec.rb[1:1]               | passed  | 0.03152 seconds |
+./spec/features/admin/menu_page_spec.rb[1:2]               | passed  | 1.29 seconds    |
+./spec/features/admin/menu_page_spec.rb[1:3]               | failed  | 4.67 seconds    |
+./spec/features/admin/menu_page_spec.rb[1:4]               | passed  | 0.09937 seconds |
+./spec/features/admin/menu_page_spec.rb[1:5]               | passed  | 4.48 seconds    |
 ./spec/helpers/admin/menus_helper_spec.rb[1:1]             | pending | 0.00001 seconds |
 ./spec/helpers/admin/units_helper_spec.rb[1:1]             | pending | 0.00001 seconds |
 ./spec/models/add_on_spec.rb[1:1]                          | passed  | 0.00405 seconds |
@@ -72,11 +64,11 @@ example_id                                                 | status  | run_time 
 ./spec/models/menu_spec.rb[1:3:3]                          | passed  | 0.00312 seconds |
 ./spec/models/menu_spec.rb[1:4]                            | passed  | 0.01486 seconds |
 ./spec/models/menu_spec.rb[1:5]                            | passed  | 0.0118 seconds  |
-./spec/models/order_spec.rb[1:1]                           | passed  | 0.05492 seconds |
-./spec/models/order_spec.rb[1:2:1]                         | passed  | 0.00454 seconds |
-./spec/models/order_spec.rb[1:2:2]                         | passed  | 0.00538 seconds |
-./spec/models/order_spec.rb[1:3:1]                         | passed  | 0.00301 seconds |
-./spec/models/order_spec.rb[1:4:1]                         | passed  | 0.00215 seconds |
+./spec/models/order_spec.rb[1:1]                           | passed  | 0.06044 seconds |
+./spec/models/order_spec.rb[1:2:1]                         | passed  | 0.00365 seconds |
+./spec/models/order_spec.rb[1:2:2]                         | passed  | 0.00579 seconds |
+./spec/models/order_spec.rb[1:3:1]                         | passed  | 0.00292 seconds |
+./spec/models/order_spec.rb[1:4:1]                         | passed  | 0.0025 seconds  |
 ./spec/models/plan_spec.rb[1:1]                            | passed  | 0.01594 seconds |
 ./spec/models/plan_spec.rb[1:2:1]                          | passed  | 0.00427 seconds |
 ./spec/models/plan_spec.rb[1:2:2]                          | passed  | 0.00344 seconds |

@@ -1,0 +1,12 @@
+<ul id="categories-nav" class="nav">
+  <% menu_category.each.with_index do |c, index| %>
+    <li class="nav-item">
+      <%
+        klass = "active" if index == 0
+      %>
+      <a href="#category_<%= c.id %>" class="nav-link nav-category-item <%= klass %>" data-toggle="tab" aria-expanded="<%= index == 0 %>">
+        <%= c.name %>(<%= c.menus.size %>)
+      </a>
+    </li>
+  <% end %>
+</ul>

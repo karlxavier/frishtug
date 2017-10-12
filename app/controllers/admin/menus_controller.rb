@@ -1,10 +1,11 @@
 class Admin::MenusController < Admin::BaseController
+  before_action :authenticate_admin!
   before_action :set_menu, only: %i[show edit update destroy]
 
   # GET /menus
   # GET /menus.json
   def index
-    @menus = Menu.all
+    @menus = MenuCategory.all.includes(:menus)
     @menu_category = MenuCategory.new
     @menu_category.add_ons.build
   end
@@ -24,6 +25,7 @@ class Admin::MenusController < Admin::BaseController
   # POST /menus
   # POST /menus.json
   def create
+    raise menu_params[:image].present?.to_s
     @menu = Menu.new(menu_params)
 
     respond_to do |format|

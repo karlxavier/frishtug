@@ -21,13 +21,14 @@
   color: #ffffff!important;
 }
 
-a, .active-link {
-  color: #DFB676;
+a, .active-link, .card-link {
+  color: #DFB676!important;
+  cursor: pointer;
 }
 
-a:hover, a:focus,
+a:hover, a:focus, .card-link:hover, .card-link:focus,
 .active-link:hover, .active-link:focus {
-  color: rgba(223, 181, 118, 0.788);
+  color: rgba(223, 181, 118, 0.788)!important;
   text-decoration: none;
 }
 
@@ -41,4 +42,27 @@ a:hover, a:focus,
 
 body {
   color: #191919;
+}
+
+.dropzone {
+  display: flex;
+  width: 100%;
+  height: 180px;
+  border: 1px dashed darkgoldenrod;
+  border-width: 2px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  font-size: 14px;
+}
+
+.is_dragging {
+  border-color: darkgrey;
+  color: darkgray;
+  background: rgba(204, 204, 204, 0.13);
+}
+
+.has_an_error {
+  border-color: red;
+  color: red;
 }

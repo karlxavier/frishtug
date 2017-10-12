@@ -1,41 +1,40 @@
-<h1 id="title">Your Menus</h1>
-<%= link_to "+ Add Category",
-  '#', class:
-  'add-category-btn',
-  data: {
-    toggle: 'modal',
-    target: '#add-category-modal'
-  }
-%>
+<div class="row">
+  <div class="col">
+    <h1 id="title">Your Menus</h1>
+  </div>
+  <div class="col">
+    <%= link_to "+ Add Category", '#', class: 'add-category-btn float-right',
+      data: {
+        toggle: 'modal',
+        target: '#add-category-modal'
+      }
+    %>
+  </div>
+</div>
+
 <%= render 'admin/menu_categories/form_modal', menu_category: @menu_category %>
-<table class="table">
-  <thead>
-    <tr>
-      <th>#</th>
-      <th>Image</th>
-      <th>Name</th>
-      <th>Price</th>
-      <th>Category</th>
-      <th colspan="3">Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @menus.each do |menu| %>
-      <tr>
-        <td><%= menu.id %></td>
-        <td><%= image_tag(menu.image_url(:thumb)) if menu.image?%></td>
-        <td><%= menu.name %></td>
-        <td><%= menu.price %></td>
-        <td><%= menu.menu_category.name %></td>
-        <td><%= link_to 'Show', admin_menu_url(menu) %></td>
-        <td><%= link_to 'Edit', edit_admin_menu_path(menu) %></td>
-        <td><%= link_to 'Destroy', admin_menu_url(menu), method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-<br>
-<%= link_to 'New Menu', new_admin_menu_path %>
+<%= render 'admin/menu_categories/navs', menu_category: @menus %>
+
+<div class="tab-content" id="myTabContent">
+  <% @menus.each.with_index do |category, index| %>
+    <div class="tab-pane fade <%= 'show active' if index == 0 %>" id="category_<%= category.id %>" aria-expanded="<%= index == 0 %>">
+      <div class="row">
+        <%= link_to '+ Add Menu Item', '#', class: 'add-menu-item btn btn-brown-outline',
+          data: {
+            toggle: 'modal',
+            target: '#add-menu-item-modal'
+          }
+         %>
+        <% category.menus.sort.each do |menu| %>
+          <%= render 'menu_card', menu: menu %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
+<%= render 'form_modal', menu: Menu.new %>
+
 <%= content_for :header_js do %>
+  <%= javascript_pack_tag 'admin/vue_dropzone' %>
   <%= javascript_pack_tag 'admin/vue_category' %>
 <% end %>

@@ -1,5 +1,20 @@
-# Column Names
-# id name price unit_id menu_category_id diet_category_id published published_at image
+# == Schema Information
+#
+# Table name: menus
+#
+#  id               :integer          not null, primary key
+#  name             :string
+#  price            :decimal(8, 2)
+#  unit_id          :integer
+#  menu_category_id :integer
+#  diet_category_id :integer
+#  published_at     :datetime
+#  published        :boolean
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  image            :string
+#
+
 class Menu < ApplicationRecord
   belongs_to :unit
   belongs_to :menu_category

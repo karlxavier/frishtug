@@ -1,0 +1,11 @@
+<div class="col-12 col-sm-4 col-md-4 col-xl-3">
+  <div class="card border-0">
+    <img class="card-img-top rounded" src="<%= menu.image_url if menu.image? %>" alt="Card image cap">
+    <div class="card-body px-0 py-0 pt-3">
+      <h4 class="card-title"><%= menu.name %></h4>
+      <a class="card-text card-link">
+        <%= number_to_currency(menu.price, unit: '$') %>/<%= menu.unit.name %>
+      </a>
+    </div>
+  </div>
+</div>

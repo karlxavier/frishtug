@@ -34,43 +34,45 @@ gem 'jbuilder', '~> 2.5'
 # gem 'capistrano-rails', group: :development
 
 # profiling
-gem 'rack-mini-profiler'
-gem 'devise'
-gem 'carrierwave'
-gem 'mini_magick'
-gem 'bootstrap', '~> 4.0.0.beta'
-gem 'jquery-rails'
-gem 'popper_js', '~> 1.11.1'
-gem 'high_voltage', '~> 3.0.0'
 gem 'bootsnap', '~> 1.1', '>= 1.1.3'
+gem 'bootstrap', '~> 4.0.0.beta'
+gem 'carrierwave'
+gem 'devise'
+gem 'high_voltage', '~> 3.0.0'
+gem 'jquery-rails'
+gem 'mini_magick'
+gem 'popper_js', '~> 1.11.1'
+gem 'rack-mini-profiler'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'database_cleaner'
-  gem 'rspec-rails'
   gem 'factory_girl_rails'
   gem 'faker'
+  gem 'fuubar'
+  gem 'rspec-rails'
 end
 
 group :test do
   gem 'capybara'
+  gem 'chromedriver-helper'
+  gem 'rails-controller-testing'
   gem 'selenium-webdriver'
   gem 'shoulda-matchers'
-  gem 'rails-controller-testing'
 end
 
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
-  gem 'web-console', '>= 3.3.0'
   gem 'listen', '>= 3.0.5', '< 3.2'
+  gem 'web-console', '>= 3.3.0'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-  gem 'spring'
-  gem 'spring-watcher-listen', '~> 2.0.0'
-  gem 'pry'
-  gem 'bullet'
   gem 'better_errors'
   gem 'brakeman', require: false
+  gem 'bullet'
+  gem 'pry-rails'
+  gem 'spring'
+  gem 'spring-watcher-listen', '~> 2.0.0'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

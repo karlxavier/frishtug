@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: add_ons
+#
+#  id               :integer          not null, primary key
+#  name             :string
+#  menu_category_id :integer
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#
+
 require 'rails_helper'
 
 RSpec.describe AddOn, type: :model do

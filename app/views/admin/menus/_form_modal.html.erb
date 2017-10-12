@@ -1,0 +1,34 @@
+<%= modal_for 'add-menu-item-modal', 'Add Menu Item' do %>
+  <%= form_for [:admin, menu], html: { id: 'new-menu-item'} do |f| %>
+    <div id="form-flash-messages"></div>
+    <div class="form-group">
+      <%= f.label :name %>
+      <%= f.text_field :name, class: 'form-control' %>
+    </div>
+    <div class="row">
+      <div class="col">
+        <%= f.label :price %>
+        <%= f.number_field :price, class: 'form-control' %>
+      </div>
+      <div class="col">
+        <%= f.label :unit %>
+        <%= f.select :unit_id, Unit.all.collect { |u| [u.name, u.id]}, {}, { class: 'form-control', id: 'menu_unit_selection' } %>
+      </div>
+    </div>
+    <br>
+    <%= f.label :categories %>
+    <div class="row">
+    </div>
+    <br>
+    <%= f.label :photo %>
+    <div class="form-group">
+      <div class="dropzone">
+        <span>Drag your image here</span>
+        <span>or</span>
+        <%= f.label :image, 'Browse', class: 'btn btn-default' %>
+      </div>
+      <%= f.file_field :image, class: 'd-noe dropzone_file single_file only_image' %>
+    </div>
+    <%= f.submit 'Publish', class: 'btn btn-brown float-right' %>
+  <% end %>
+<% end %>

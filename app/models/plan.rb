@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: plans
+#
+#  id           :integer          not null, primary key
+#  name         :string
+#  description  :text
+#  price        :decimal(8, 2)
+#  shipping     :integer
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  shipping_fee :decimal(8, 2)
+#
+
 # Column names
 # id name description price shipping shipping_fee
 class Plan < ApplicationRecord

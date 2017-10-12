@@ -1,5 +1,15 @@
+# == Schema Information
+#
+# Table name: menu_categories
+#
+#  id         :integer          not null, primary key
+#  name       :string
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
 FactoryGirl.define do
   factory :menu_category do
-    name Faker::Food.dish
+    name { Faker::Food.unique.dish }
   end
 end
