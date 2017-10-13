@@ -1,6 +1,7 @@
-<%= modal_for 'add-menu-item-modal', 'Add Menu Item' do %>
-  <%= form_for [:admin, menu], html: { id: 'new-menu-item'} do |f| %>
+<%= modal_for "add-menu-item-modal-#{category_id}", "New #{MenuCategory.find(category_id).name} Menu Item" do %>
+  <%= form_for [:admin, menu], html: { id: 'new-menu-item'}, remote: true do |f| %>
     <div id="form-flash-messages"></div>
+    <%= f.hidden_field :menu_category_id, value: category_id %>
     <div class="form-group">
       <%= f.label :name %>
       <%= f.text_field :name, class: 'form-control' %>
@@ -27,7 +28,7 @@
         <span>or</span>
         <%= f.label :image, 'Browse', class: 'btn btn-default' %>
       </div>
-      <%= f.file_field :image, class: 'd-noe dropzone_file single_file only_image' %>
+      <%= f.file_field :image, class: 'd-none dropzone_file single_file only_image' %>
     </div>
     <%= f.submit 'Publish', class: 'btn btn-brown float-right' %>
   <% end %>

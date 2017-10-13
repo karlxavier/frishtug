@@ -1,6 +1,7 @@
 class Admin::MenusController < Admin::BaseController
   before_action :authenticate_admin!
   before_action :set_menu, only: %i[show edit update destroy]
+  respond_to :js, only: :create
 
   # GET /menus
   # GET /menus.json
@@ -25,18 +26,13 @@ class Admin::MenusController < Admin::BaseController
   # POST /menus
   # POST /menus.json
   def create
-    raise menu_params[:image].present?.to_s
     @menu = Menu.new(menu_params)
-
-    respond_to do |format|
-      if @menu.save
-        format.html { redirect_to [:admin, @menu], notice: 'Menu was successfully created.' }
-        format.json { render :show, status: :created, location: [:admin, @menu] }
-      else
-        format.html { render :new }
-        format.json { render json: @menu.errors, status: :unprocessable_entity }
-      end
+    if @menu.save
+      flash[:success] = 'Menu successfully publish.'
+    else
+      flash[:error] = @menu.errors.full_messages
     end
+    respond_with(@menu)
   end
 
   # PATCH/PUT /menus/1

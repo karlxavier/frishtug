@@ -14,11 +14,11 @@ example_id                                                 | status  | run_time 
 ./spec/controllers/admin/units_controller_spec.rb[1:6:2:1] | pending | 0.00274 seconds |
 ./spec/controllers/admin/units_controller_spec.rb[1:7:1]   | pending | 0.00276 seconds |
 ./spec/controllers/admin/units_controller_spec.rb[1:7:2]   | pending | 0.0027 seconds  |
-./spec/features/admin/menu_page_spec.rb[1:1]               | passed  | 0.03152 seconds |
-./spec/features/admin/menu_page_spec.rb[1:2]               | passed  | 1.29 seconds    |
-./spec/features/admin/menu_page_spec.rb[1:3]               | failed  | 4.67 seconds    |
-./spec/features/admin/menu_page_spec.rb[1:4]               | passed  | 0.09937 seconds |
-./spec/features/admin/menu_page_spec.rb[1:5]               | passed  | 4.48 seconds    |
+./spec/features/admin/menu_page_spec.rb[1:1]               | passed  | 0.03426 seconds |
+./spec/features/admin/menu_page_spec.rb[1:2]               | passed  | 0.09169 seconds |
+./spec/features/admin/menu_page_spec.rb[1:3]               | passed  | 2.71 seconds    |
+./spec/features/admin/menu_page_spec.rb[1:4]               | passed  | 0.10535 seconds |
+./spec/features/admin/menu_page_spec.rb[1:5]               | passed  | 5.68 seconds    |
 ./spec/helpers/admin/menus_helper_spec.rb[1:1]             | pending | 0.00001 seconds |
 ./spec/helpers/admin/units_helper_spec.rb[1:1]             | pending | 0.00001 seconds |
 ./spec/models/add_on_spec.rb[1:1]                          | passed  | 0.00405 seconds |

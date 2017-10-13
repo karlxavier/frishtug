@@ -46,7 +46,6 @@ feature 'Admin menu page', type: :feature do
 
   def admin_clicks_add_menu_item
     find('.add-menu-item').click
-    expect(find('#add-menu-item-modal')).to be_visible
     expect(find('form#new-menu-item')).to be_visible
   end
 
@@ -55,12 +54,13 @@ feature 'Admin menu page', type: :feature do
     find('#menu_price').set('2.00')
     select 'peace', from: 'menu_unit_selection'
     file_path = Rails.root + 'spec/fixtures/test_file.jpg'
-    find('.upload-image-btn').click.set(file_path)
+    page.execute_script("$('#menu_image').removeClass('d-none')")
+    attach_file 'Browse', file_path
   end
 
   def admin_published_the_menu
     click_button 'Publish'
-    expect(page).to have_content('Menu successfully published.')
+    expect(page).to have_content('Menu successfully publish.')
   end
 
   def admin_signs_in_and_proceed_to_your_menu

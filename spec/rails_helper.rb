@@ -19,4 +19,8 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
   config.include LoginHelper, type: :feature
   config.include DropzoneHelper, type: :feature
+  config.before :suite do
+    # compile js files before testing
+    Webpacker.compile
+  end
 end

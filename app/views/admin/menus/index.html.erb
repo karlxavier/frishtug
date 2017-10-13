@@ -22,7 +22,7 @@
         <%= link_to '+ Add Menu Item', '#', class: 'add-menu-item btn btn-brown-outline',
           data: {
             toggle: 'modal',
-            target: '#add-menu-item-modal'
+            target: "#add-menu-item-modal-#{category.id}"
           }
          %>
         <% category.menus.sort.each do |menu| %>
@@ -30,11 +30,11 @@
         <% end %>
       </div>
     </div>
+    <%= render 'form_modal', menu: Menu.new, category_id: category.id %>
   <% end %>
 </div>
-<%= render 'form_modal', menu: Menu.new %>
 
 <%= content_for :header_js do %>
-  <%= javascript_pack_tag 'admin/vue_dropzone' %>
+  <%= javascript_pack_tag 'admin/simple_dropzone' %>
   <%= javascript_pack_tag 'admin/vue_category' %>
 <% end %>
