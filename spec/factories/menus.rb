@@ -17,11 +17,21 @@
 
 FactoryGirl.define do
   factory :menu do
-    name Faker::Food.dish
+    name { Faker::Food.unique.dish }
     price Faker::Number.decimal(2)
     image Faker::Avatar.image
     association :menu_category, factory: :menu_category
-    association :diet_category, factory: :diet_category
     association :unit, factory: :unit
+
+    trait :with_diet_category do
+      association :diet_category, factory: :diet_category
+    end
+
+    trait :without_diet_category do
+      diet_category_id = nil
+    end
+
+    factory :menu_with_diet_category, traits: [:with_diet_category]
+    factory :menu_without_diet_category, traits: [:without_diet_category]
   end
 end

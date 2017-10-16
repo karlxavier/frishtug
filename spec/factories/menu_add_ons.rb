@@ -11,7 +11,7 @@
 
 FactoryGirl.define do
   factory :menu_add_on do
-    menu nil
-    add_on nil
+    association :menu, factory: :menu
+    association :add_on, factory: :add_on
   end
 end

@@ -10,6 +10,12 @@
 
 FactoryGirl.define do
   factory :unit do
-    name { Faker::Food.unique.metric_measurement }
+    name { Faker::Food.metric_measurement }
+
+    trait :unique do
+      name { Faker::Food.unique.metric_measurement }
+    end
+
+    factory :unit_unique, traits: [:unique]
   end
 end

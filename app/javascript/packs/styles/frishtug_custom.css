@@ -47,7 +47,7 @@ body {
 .dropzone {
   display: flex;
   width: 100%;
-  height: 180px;
+  min-height: 180px;
   border: 1px dashed darkgoldenrod;
   border-width: 2px;
   align-items: center;
@@ -67,8 +67,14 @@ body {
   color: red;
 }
 
-.shadow {
-  -webkit-box-shadow: -1px 7px 16px -6px rgba(0,0,0,0.75);
-  -moz-box-shadow: -1px 7px 16px -6px rgba(0,0,0,0.75);
-  box-shadow: -1px 7px 16px -6px rgba(0,0,0,0.75);
+.add-menu-item {
+  background: transparent;
+  border-color: #dfb676;
+  color: #dfb676 !important;
+  height: 150px;
+  border: 1px dashed;
+  border-width: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

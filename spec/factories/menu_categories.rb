@@ -10,6 +10,12 @@
 
 FactoryGirl.define do
   factory :menu_category do
-    name { Faker::Food.unique.dish }
+    name { Faker::Food.dish }
+
+    trait :unique do
+      name { Faker::Food.unique.dish }
+    end
+
+    factory :menu_category_unique, traits: [:unique]
   end
 end

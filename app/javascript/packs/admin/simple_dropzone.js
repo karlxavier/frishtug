@@ -1,6 +1,32 @@
 document.addEventListener('turbolinks:load', ()=>{
-  var dropzone = document.querySelector('.dropzone')
-  var dropzoneFile = document.querySelector('.dropzone_file')
+  let dropzone = document.querySelector('.dropzone')
+  let dropzoneFile = document.querySelector('.dropzone_file')
+
+  const forEachPromise = (items, fn, context) => {
+    return Array.from(items).reduce( (promise, item) => {
+      return promise.then( () => {
+        return fn(item)
+      })
+    }, Promise.resolve())
+  }
+
+  const spinnerShow = () => {
+    dropzone.innerHTML = `<div class="sk-cube-grid">
+      <div class="sk-cube sk-cube1"></div>
+      <div class="sk-cube sk-cube2"></div>
+      <div class="sk-cube sk-cube3"></div>
+      <div class="sk-cube sk-cube4"></div>
+      <div class="sk-cube sk-cube5"></div>
+      <div class="sk-cube sk-cube6"></div>
+      <div class="sk-cube sk-cube7"></div>
+      <div class="sk-cube sk-cube8"></div>
+      <div class="sk-cube sk-cube9"></div>
+    </div>`
+  }
+
+  const spinnerHide = () => {
+    dropzone.innerHTML = ''
+  }
 
   const dragover = (e) => {
     e.stopPropagation();
@@ -41,13 +67,23 @@ document.addEventListener('turbolinks:load', ()=>{
     const readAndPreview = (file) => {
       if( /\.(jpe?g|png|gif)$/i.test(file.name) ) {
         const reader = new FileReader()
+
+        reader.addEventListener('loadstart', function() {
+          spinnerShow()
+        })
+
         reader.addEventListener('load', function() {
           const img = new Image()
           img.src = this.result
           img.height = 100
           img.title = file.name
-          img.className = 'rounded shadow'
+          img.className = 'rounded raised-1'
           div.appendChild(img)
+        })
+
+        reader.addEventListener('loadend', function() {
+          spinnerHide()
+          dropzone.appendChild(div)
         })
 
         reader.readAsDataURL(file)
@@ -57,8 +93,6 @@ document.addEventListener('turbolinks:load', ()=>{
     if (files) {
       [].forEach.call(files, readAndPreview)
     }
-    dropzone.innerHTML = ''
-    dropzone.appendChild(div)
   }
 
   const drop = (e) =>{
@@ -93,11 +127,27 @@ document.addEventListener('turbolinks:load', ()=>{
     }
   }
 
-  if (dropzone) {
+  const readFile = (e) => {
+    readImage(e.target.files)
+  }
+
+  const init = () => {
+    if (!dropzone) {
+      dropzone = document.querySelector('.dropzone')
+      dropzoneFile = document.querySelector('.dropzone_file')
+    }
+
     dropzone.addEventListener('dragover', dragover)
     dropzone.addEventListener('dragleave', dragleave)
     dropzone.addEventListener('drop', drop)
+    dropzoneFile.addEventListener('change', readFile)
+  }
+
+  if (dropzone) {
+    init()
   } else {
     console.warn('There is no dropzone class found!')
   }
+
+  window.dropzone_init = init
 })

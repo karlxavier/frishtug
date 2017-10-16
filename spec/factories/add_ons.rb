@@ -11,7 +11,7 @@
 
 FactoryGirl.define do
   factory :add_on do
-    name Faker::Lorem.word
+    name { Faker::Lorem.unique.word }
     menu_category nil
   end
 end

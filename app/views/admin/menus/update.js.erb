@@ -1,0 +1,3 @@
+var form = document.getElementById('new-menu-item')
+var flash = form.querySelector('#form-flash-messages');
+flash.innerHTML = '<%= escape_javascript render "shared/flash" %>';

@@ -34,20 +34,22 @@ RSpec.describe Menu, type: :model do
       expect(menu.errors.full_messages).to include('Price should be atleast 0.01')
     end
   end
-  
+
   describe 'ActiveModel associations' do
     it { should belong_to(:menu_category) }
     it { should belong_to(:diet_category) }
     it { should belong_to(:unit) }
+    it { should have_many(:add_ons).through(:menu_add_ons) }
+    it { should have_many(:menu_add_ons) }
   end
 
   it 'should save with diet_category' do
-    menu = build(:menu)
+    menu = build(:menu_with_diet_category)
     expect(menu).to be_valid
   end
 
   it 'should save without diet_category' do
-    menu = build(:menu, diet_category: nil)
+    menu = build(:menu_without_diet_category)
     expect(menu).to be_valid
   end
 end

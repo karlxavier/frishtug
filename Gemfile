@@ -55,8 +55,11 @@ group :development, :test do
 end
 
 group :test do
+  gem 'simplecov', require: false
+  gem 'rspec-instafail'
   gem 'capybara'
   gem 'chromedriver-helper'
+  gem 'poltergeist'
   gem 'rails-controller-testing'
   gem 'selenium-webdriver'
   gem 'shoulda-matchers'

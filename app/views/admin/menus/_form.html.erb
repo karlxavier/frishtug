@@ -9,31 +9,46 @@
       </ul>
     </div>
   <% end %>
-  <div>
-    <%= form.label :name %>
-    <%= form.text_field :name %>
-  </div>
-  <div>
-    <%= form.label :price %>
-    <%= form.text_field :price %>
-  </div>
-  <div>
-    <%= form.label :unit %>
-    <%= form.select :unit_id, Unit.all.map { |u| [u.name, u.id] } %>
-  </div>
-  <div>
-    <%= form.label :menu_category %>
-    <%= form.select :menu_category_id, MenuCategory.all.map { |c| [c.name, c.id]} %>
-  </div>
-  <div>
-    <%= form.label :diet_category %>
-    <%= form.select :diet_category_id, DietCategory.all.map { |c| [c.name, c.id]}, include_blank: '' %>
-  </div>
-  <div>
-    <%= form.label :image %>
-    <%= form.file_field :image %>
-  </div>
-  <div class="actions">
-    <%= form.submit 'Publish', class: 'btn btn-primary' %>
+  <div class="row">
+    <div class="col">
+      <div class="form-group">
+        <%= form.label :name %>
+        <%= form.text_field :name, class: 'form-control' %>
+      </div>
+      <div class="form-group">
+        <%= form.label :price %>
+        <%= form.text_field :price, class: 'form-control' %>
+      </div>
+      <div class="form-group">
+        <%= form.label :unit %>
+        <%= form.select :unit_id, Unit.all.map { |u| [u.name, u.id] }, {}, { class: 'form-control' } %>
+      </div>
+      <div class="form-group">
+        <%= form.label :menu_category %>
+        <%= form.select :menu_category_id, MenuCategory.all.map { |c| [c.name, c.id]}, {}, { class: 'form-control' } %>
+      </div>
+      <div class="form-group">
+        <%= form.label :diet_category %>
+        <%= form.select :diet_category_id, DietCategory.all.map { |c| [c.name, c.id]}, { include_blank: '' }, { class: 'form-control' } %>
+      </div>
+      <div class="actions">
+        <%= form.submit 'Publish', class: 'btn btn-brown' %>
+      </div>
+    </div>
+    <div class="col">
+      <div class="form-group">
+        <label for="">Image <small>(drag and drop your image at the dropzone)</small></label>
+        <div class="dropzone">
+          <% if menu.image? %>
+            <%= image_tag menu.image_url, height: '100', class: 'rounded raised-1' %>
+          <% else %>
+            <span>Drag your image here</span>
+            <span>or</span>
+            <%= form.label :image, 'Browse', class: 'btn btn-brown' %>
+          <% end %>
+        </div>
+        <%= form.file_field :image, class: 'd-none dropzone_file single_file only_image', id: 'menu_image' %>
+      </div>
+    </div>
   </div>
 <% end %>

@@ -1,35 +1,53 @@
-<%= modal_for "add-menu-item-modal-#{category_id}", "New #{MenuCategory.find(category_id).name} Menu Item" do %>
-  <%= form_for [:admin, menu], html: { id: 'new-menu-item'}, remote: true do |f| %>
-    <div id="form-flash-messages"></div>
-    <%= f.hidden_field :menu_category_id, value: category_id %>
-    <div class="form-group">
-      <%= f.label :name %>
-      <%= f.text_field :name, class: 'form-control' %>
+<%= form_for [:admin, menu], html: { id: 'new-menu-item'}, remote: true do |f| %>
+  <div id="form-flash-messages"></div>
+  <%= f.hidden_field :menu_category_id, value: @menu_category.id %>
+  <div class="form-group">
+    <%= f.label :name %>
+    <%= f.text_field :name, class: 'form-control' %>
+  </div>
+  <div class="row">
+    <div class="col">
+      <%= f.label :price %>
+      <%= f.number_field :price, class: 'form-control', min: 0 %>
     </div>
+    <div class="col">
+      <%= f.label :unit %>
+      <%= f.select :unit_id, Unit.all.collect { |u| [u.name, u.id]}, {}, { class: 'form-control', id: 'menu_unit_selection' } %>
+    </div>
+  </div>
+  <br>
+  <%= f.label :categories %>
+  <div class="col">
+    <%= f.collection_radio_buttons :diet_category, DietCategory.all, :id, :name do |r| %>
+      <div class="form-check form-check-inline">
+          <%= r.label(class: 'form-check-label') { r.radio_button(class: 'form-check-input diet-category-items') + r.text } %>
+        </div>
+    <% end %>
+  </div>
+  <div class="autohide_by_category">
+    <%= f.label :add_ons %>
     <div class="row">
       <div class="col">
-        <%= f.label :price %>
-        <%= f.number_field :price, class: 'form-control' %>
-      </div>
-      <div class="col">
-        <%= f.label :unit %>
-        <%= f.select :unit_id, Unit.all.collect { |u| [u.name, u.id]}, {}, { class: 'form-control', id: 'menu_unit_selection' } %>
+        <%= f.collection_check_boxes :add_on_ids, @menu_category.add_ons, :id, :name do |c| %>
+          <div class="form-check form-check-inline">
+            <%= c.label(class: 'form-check-label') { c.check_box(class: 'form-check-input add_ons') + c.text } %>
+          </div>
+        <% end %>
       </div>
     </div>
-    <br>
-    <%= f.label :categories %>
-    <div class="row">
-    </div>
-    <br>
-    <%= f.label :photo %>
-    <div class="form-group">
-      <div class="dropzone">
+  </div>
+  <%= f.label :photo %>
+  <div class="form-group">
+    <div class="dropzone">
+      <% if menu.image? %>
+        <%= image_tag menu.image_url, height: '100', class: 'rounded raised-1' %>
+      <% else %>
         <span>Drag your image here</span>
         <span>or</span>
-        <%= f.label :image, 'Browse', class: 'btn btn-default' %>
-      </div>
-      <%= f.file_field :image, class: 'd-none dropzone_file single_file only_image' %>
+        <%= f.label :image, 'Browse', class: 'btn btn-brown' %>
+      <% end %>
     </div>
-    <%= f.submit 'Publish', class: 'btn btn-brown float-right' %>
-  <% end %>
+    <%= f.file_field :image, class: 'd-none dropzone_file single_file only_image' %>
+  </div>
+  <%= f.submit 'Publish', class: 'btn btn-brown float-right' %>
 <% end %>

@@ -1,7 +1,7 @@
 class Admin::MenusController < Admin::BaseController
   before_action :authenticate_admin!
   before_action :set_menu, only: %i[show edit update destroy]
-  respond_to :js, only: :create
+  respond_to :js, except: [:destroy]
 
   # GET /menus
   # GET /menus.json
@@ -17,11 +17,15 @@ class Admin::MenusController < Admin::BaseController
 
   # GET /menus/new
   def new
+    @menu_category = MenuCategory.find(params[:category])
     @menu = Menu.new
+    respond_with(@menu)
   end
 
   # GET /menus/1/edit
-  def edit; end
+  def edit
+    @menu_category = @menu.menu_category
+  end
 
   # POST /menus
   # POST /menus.json
@@ -38,15 +42,12 @@ class Admin::MenusController < Admin::BaseController
   # PATCH/PUT /menus/1
   # PATCH/PUT /menus/1.json
   def update
-    respond_to do |format|
-      if @menu.update(menu_params)
-        format.html { redirect_to [:admin, @menu], notice: 'Menu was successfully updated.' }
-        format.json { render :show, status: :ok, location: [:admin, @menu] }
-      else
-        format.html { render :edit }
-        format.json { render json: @menu.errors, status: :unprocessable_entity }
-      end
+    if @menu.update(menu_params)
+      flash[:success] = 'Menu item successfully updated.'
+    else
+      flash[:error] = @menu.errors.full_messages
     end
+    respond_with(@menu)
   end
 
   # DELETE /menus/1
@@ -68,6 +69,6 @@ class Admin::MenusController < Admin::BaseController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def menu_params
-    params.fetch(:menu, {}).permit(:name, :image, :price, :unit_id, :menu_category_id, :diet_category_id)
+    params.fetch(:menu, {}).permit(:name, :image, :price, :unit_id, :menu_category_id, :diet_category_id, :add_on_ids)
   end
 end

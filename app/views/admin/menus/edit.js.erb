@@ -1,0 +1,7 @@
+$('#menu-item-modal .modal-body')
+  .html('<%= j render 'form_modal', menu: @menu, menu_category: @menu_category %>');
+$('#menu-item-modal .modal-title')
+  .html('Update <%= @menu.name.humanize.capitalize %>')
+$('#menu-item-modal').modal('show');
+dropzone_init();
+diet_category_init();

@@ -19,11 +19,14 @@ class Menu < ApplicationRecord
   belongs_to :unit
   belongs_to :menu_category
   belongs_to :diet_category, optional: true
+  has_many :menu_add_ons
+  has_many :add_ons, through: :menu_add_ons
   validates :name, :unit_id, :menu_category_id, :price, presence: true
   validates :name, uniqueness: true
   validate :sanitize_price
 
   mount_uploader :image, ImageUploader
+  accepts_nested_attributes_for :menu_add_ons
 
   def sanitize_price
     errors.add(:price, 'should be atleast 0.01') if price.nil? || price < 0.01
