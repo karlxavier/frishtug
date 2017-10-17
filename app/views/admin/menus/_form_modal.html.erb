@@ -18,13 +18,13 @@
   <br>
   <%= f.label :categories %>
   <div class="col">
-    <%= f.collection_radio_buttons :diet_category, DietCategory.all, :id, :name do |r| %>
+    <%= f.collection_radio_buttons :diet_category_id, DietCategory.all, :id, :name do |r| %>
       <div class="form-check form-check-inline">
           <%= r.label(class: 'form-check-label') { r.radio_button(class: 'form-check-input diet-category-items') + r.text } %>
         </div>
     <% end %>
   </div>
-  <div class="autohide_by_category">
+  <div class="autohide_by_category <%= 'd-none' if menu.diet_category_id? %>">
     <%= f.label :add_ons %>
     <div class="row">
       <div class="col">
@@ -44,10 +44,11 @@
       <% else %>
         <span>Drag your image here</span>
         <span>or</span>
-        <%= f.label :image, 'Browse', class: 'btn btn-brown' %>
+        <%= f.label :image, 'Browse', class: 'btn btn-outline-secondary' %>
       <% end %>
     </div>
     <%= f.file_field :image, class: 'd-none dropzone_file single_file only_image' %>
   </div>
+  <%= f.submit 'Save as Draft', class: 'btn btn-outline-secondary float-right ml-3' %>
   <%= f.submit 'Publish', class: 'btn btn-brown float-right' %>
 <% end %>

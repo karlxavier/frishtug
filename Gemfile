@@ -52,6 +52,7 @@ group :development, :test do
   gem 'faker'
   gem 'fuubar'
   gem 'rspec-rails'
+  gem 'spring-commands-rspec'
 end
 
 group :test do

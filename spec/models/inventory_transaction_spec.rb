@@ -10,8 +10,6 @@
 #  updated_at       :datetime         not null
 #
 
-require 'rails_helper'
-
 RSpec.describe InventoryTransaction, type: :model do
   it 'should have a valid factory' do
     expect(build(:inventory_transaction)).to be_valid

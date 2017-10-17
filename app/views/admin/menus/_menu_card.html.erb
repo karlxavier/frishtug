@@ -1,5 +1,5 @@
 <div class="col-12 col-sm-4 col-md-4 col-xl-3">
-  <div class="card border-0">
+  <div class="card border-0 <%= 'draft-card' if !menu.published? %>">
     <%= link_to edit_admin_menu_path(menu, format: :js), class: "#{menu.name.parameterize}", remote: true do %>
       <img class="card-img-top rounded raised-1 no-hover-raised" src="<%= menu.image_url if menu.image? %>" alt="Card image cap">
     <% end %>
@@ -9,6 +9,9 @@
       </h4>
       <a class="card-text card-link">
         <%= number_to_currency(menu.price, unit: '$') %>/<%= menu.unit.name %>
+        <% unless menu.published? %>
+          <span class="badge badge-secondary">Draft</span>
+        <% end %>
       </a>
     </div>
   </div>

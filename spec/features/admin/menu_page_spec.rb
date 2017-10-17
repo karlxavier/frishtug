@@ -37,6 +37,15 @@ feature 'Admin menu page', type: :feature do
     admin_published_the_menu
   end
 
+  scenario 'creates a draft menu with addons', js: true do
+    create_list(:add_on, 3, menu_category_id: MenuCategory.first.id)
+    admin_signs_in_and_proceed_to_your_menu
+    admin_clicks_add_menu_item
+    admin_fills_in_menu_form_fields
+    admin_selects_addons
+    admin_saves_the_menu_as_draft
+  end
+
   scenario 'creates a category without add-ons' do
     admin_signs_in_and_proceed_to_your_menu
     expect(find('#title')).to have_content('Your Menu')
@@ -99,6 +108,11 @@ feature 'Admin menu page', type: :feature do
   def admin_published_the_menu
     click_button 'Publish'
     expect(page).to have_content('Menu successfully publish.')
+  end
+
+  def admin_saves_the_menu_as_draft
+    click_button 'Save as Draft'
+    expect(page).to have_content('Menu successfully save as draft.')
   end
 
   def admin_signs_in_and_proceed_to_your_menu

@@ -1,3 +1,6 @@
+body {
+  background: #f9f9f9;
+}
 .btn-brown {
   background: #4E3C44;
   border-color: #4E3C44;
@@ -77,4 +80,18 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.card-container {
+  min-height: 600px;
+}
+
+.card-container > .card-header {
+  line-height: 3rem;
+  background: #ffffff;
+}
+
+.draft-card img {
+  -webkit-filter: grayscale(100%);
+  filter: grayscale(100%);
 }

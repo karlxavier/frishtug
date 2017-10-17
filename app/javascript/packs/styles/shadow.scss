@@ -30,10 +30,8 @@
   transition: all 0.3s cubic-bezier(.25,.8,.25,1);
 }
 
-.no-hover-raised {
-  &:hover {
-    @include card_shadow(0)
-  }
+.raised-no-hover-1 {
+  @include card_shadow(1);
 }
 
 .raised-1 {
