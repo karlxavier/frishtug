@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171010074906) do
+ActiveRecord::Schema.define(version: 20171017073438) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,6 +21,15 @@ ActiveRecord::Schema.define(version: 20171010074906) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["menu_category_id"], name: "index_add_ons_on_menu_category_id"
+  end
+
+  create_table "add_ons_menus", force: :cascade do |t|
+    t.bigint "add_on_id"
+    t.bigint "menu_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["add_on_id"], name: "index_add_ons_menus_on_add_on_id"
+    t.index ["menu_id"], name: "index_add_ons_menus_on_menu_id"
   end
 
   create_table "addresses", force: :cascade do |t|
@@ -75,15 +84,6 @@ ActiveRecord::Schema.define(version: 20171010074906) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["inventory_id"], name: "index_inventory_transactions_on_inventory_id"
-  end
-
-  create_table "menu_add_ons", force: :cascade do |t|
-    t.bigint "menu_id"
-    t.bigint "add_on_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["add_on_id"], name: "index_menu_add_ons_on_add_on_id"
-    t.index ["menu_id"], name: "index_menu_add_ons_on_menu_id"
   end
 
   create_table "menu_categories", force: :cascade do |t|
@@ -160,10 +160,10 @@ ActiveRecord::Schema.define(version: 20171010074906) do
   end
 
   add_foreign_key "add_ons", "menu_categories"
+  add_foreign_key "add_ons_menus", "add_ons"
+  add_foreign_key "add_ons_menus", "menus"
   add_foreign_key "inventories", "menus"
   add_foreign_key "inventory_transactions", "inventories"
-  add_foreign_key "menu_add_ons", "add_ons"
-  add_foreign_key "menu_add_ons", "menus"
   add_foreign_key "menus", "diet_categories"
   add_foreign_key "menus", "menu_categories"
   add_foreign_key "menus", "units"

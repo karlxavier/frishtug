@@ -12,6 +12,7 @@
 # Class names
 # id name menu_category_id
 class AddOn < ApplicationRecord
+  has_and_belongs_to_many :menus
   belongs_to :menu_category
   validates :name, :menu_category_id, presence: true
 end

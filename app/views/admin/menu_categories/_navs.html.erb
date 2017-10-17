@@ -5,7 +5,7 @@
         klass = "active" if index == 0
       %>
       <a href="#category_<%= c.id %>" class="nav-link nav-category-item <%= klass %> category-item-<%= c.id %>" data-toggle="tab" aria-expanded="<%= index == 0 %>">
-        <%= c.name %>(<%= c.menus.size %>)
+        <%= c.name %><span class="<%= "#{c.name.parameterize}-size" %>">(<%= c.menus.size %>)</span>
       </a>
     </li>
   <% end %>

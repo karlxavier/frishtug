@@ -1,3 +1,5 @@
 var form = document.getElementById('new-menu-item')
 var flash = form.querySelector('#form-flash-messages');
 flash.innerHTML = '<%= escape_javascript render "shared/flash" %>';
+$('.modal').animate({ scrollTop: 0 }, 'slow');
+$('#<%= @menu.name.parameterize %>').replaceWith('<%= j render 'menu_card', menu: @menu %>');
