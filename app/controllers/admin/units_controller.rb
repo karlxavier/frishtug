@@ -1,15 +1,11 @@
 class Admin::UnitsController < Admin::BaseController
   before_action :set_unit, only: %i[show edit update destroy]
-
+  respond_to :js, only: [:destroy, :create, :update]
   # GET /units
   # GET /units.json
   def index
     @units = Unit.all
   end
-
-  # GET /units/1
-  # GET /units/1.json
-  def show; end
 
   # GET /units/new
   def new
@@ -23,16 +19,12 @@ class Admin::UnitsController < Admin::BaseController
   # POST /units.json
   def create
     @unit = Unit.new(unit_params)
-
-    respond_to do |format|
-      if @unit.save
-        format.html { redirect_to [:admin, @unit], notice: 'Unit was successfully created.' }
-        format.json { render :show, status: :created, location: [:admin, @unit] }
-      else
-        format.html { render :new }
-        format.json { render json: @unit.errors, status: :unprocessable_entity }
-      end
+    if @unit.save
+      flash[:success] = "#{@unit.name} has been save"
+    else
+      flash[:error] = @unit.errors
     end
+    respond_with(@unit)
   end
 
   # PATCH/PUT /units/1
@@ -52,11 +44,12 @@ class Admin::UnitsController < Admin::BaseController
   # DELETE /units/1
   # DELETE /units/1.json
   def destroy
-    @unit.destroy
-    respond_to do |format|
-      format.html { redirect_to admin_units_url, notice: 'Unit was successfully destroyed.' }
-      format.json { head :no_content }
+    if @unit.destroy
+      flash[:success] = "#{@unit.name} has been deleted!"
+    else
+      flash[:error] = "#{@unit.name} failed to delete"
     end
+    respond_with(@unit)
   end
 
   private

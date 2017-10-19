@@ -1,0 +1,18 @@
+<% if object.errors.any? %>
+  <div class="alert alert-danger error-explanation rounded-0" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <h4 class="alert-heading">
+      <%= pluralize(object.errors.count, "error") %> prohibited this <%= object.class %> from being saved:
+    </h4>
+    <hr>
+    <ul class="list-group">
+      <% object.errors.full_messages.each do |message| %>
+        <li class="list-group-item list-group-item-danger rounded-0">
+          <%= message %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

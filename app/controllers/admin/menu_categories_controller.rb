@@ -1,6 +1,7 @@
 class Admin::MenuCategoriesController < Admin::BaseController
   before_action :set_menu_category, only: %i[show edit update destroy]
-  respond_to :js, only: :create
+  respond_to :js, only: %i[create destroy]
+  respond_to :html, only: :create
   # GET /menu_categories
   # GET /menu_categories.json
   def index
@@ -36,8 +37,8 @@ class Admin::MenuCategoriesController < Admin::BaseController
   def update
     respond_to do |format|
       if @menu_category.update(menu_category_params)
-        format.html { redirect_to @menu_category, notice: 'Menu category was successfully updated.' }
-        format.json { render :show, status: :ok, location: @menu_category }
+        format.html { redirect_to [:admin, @menu_category], notice: 'Menu category was successfully updated.' }
+        format.json { render :show, status: :ok, location: [:admin, @menu_category] }
       else
         format.html { render :edit }
         format.json { render json: @menu_category.errors, status: :unprocessable_entity }
@@ -48,11 +49,12 @@ class Admin::MenuCategoriesController < Admin::BaseController
   # DELETE /menu_categories/1
   # DELETE /menu_categories/1.json
   def destroy
-    @menu_category.destroy
-    respond_to do |format|
-      format.html { redirect_to menu_categories_url, notice: 'Menu category was successfully destroyed.' }
-      format.json { head :no_content }
+    if @menu_category.destroy
+      flash[:success] = "#{@menu_category.name} has been deleted!"
+    else
+      flash[:error] = "#{@menu_category.name} failed to delete!"
     end
+    respond_with(@menu_category)
   end
 
   private

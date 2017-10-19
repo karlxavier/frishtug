@@ -1,7 +1,7 @@
 class Admin::MenusController < Admin::BaseController
   before_action :authenticate_admin!
   before_action :set_menu, only: %i[show edit update destroy]
-  respond_to :js, except: [:destroy]
+  respond_to :js
 
   # GET /menus
   # GET /menus.json
@@ -55,11 +55,12 @@ class Admin::MenusController < Admin::BaseController
   # DELETE /menus/1
   # DELETE /menus/1.json
   def destroy
-    @menu.destroy
-    respond_to do |format|
-      format.html { redirect_to admin_menus_url, notice: 'Menu was successfully destroyed.' }
-      format.json { head :no_content }
+    if @menu.destroy
+      flash[:success] = "#{@menu.name} has been deleted!"
+    else
+      flash[:error] = @menu.errors
     end
+    respond_with(@menu)
   end
 
   private

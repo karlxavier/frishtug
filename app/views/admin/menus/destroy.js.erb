@@ -1,0 +1,11 @@
+$('.modal').modal('hide');
+
+$('#<%= @menu.name.parameterize %>').empty();
+
+var flash = form.querySelector('#form-flash-messages');
+
+if (flash) {
+  flash.innerHTML = '<%= escape_javascript render "shared/flash" %>';
+}
+
+$('.<%= @menu.menu_category.name.parameterize %>-size').html('(<%= @menu.menu_category.menus.size %>)')

@@ -1,2 +1,10 @@
 var flash = document.getElementById('form-flash-messages');
-flash.innerHTML = '<%= escape_javascript render "shared/flash" %>';
+var errorNotification = document.querySelector('.card-flashes');
+var modal = $('.modal');
+if (modal) {
+  modal.animate({ scrollTop: 0 }, 'slow');
+  flash.innerHTML = '<%= j render 'shared/flash' %>';
+} else {
+  errorNotification.innerHTML = '<%= j render 'shared/error_explanation', object: @menu_category %>'
+}
+

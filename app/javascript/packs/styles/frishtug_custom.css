@@ -1,6 +1,18 @@
 body {
   background: #f9f9f9;
+  font-family: 'Lato', sans-serif;
 }
+
+.btn {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: normal;
+  font-size: 15px;
+}
+
+.btn-uppercase {
+  text-transform: uppercase;
+}
+
 .btn-brown {
   background: #4E3C44;
   border-color: #4E3C44;

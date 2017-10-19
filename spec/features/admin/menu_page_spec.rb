@@ -13,7 +13,7 @@ feature 'Admin menu page', type: :feature do
   end
 
   scenario 'has category navs' do
-    expected_categories = MenuCategory.all.map(&:name).map { |m| "#{m}(0)" }
+    expected_categories = MenuCategory.all.map(&:name).map { |m| "#{m} (0)" }
     admin_signs_in_and_proceed_to_your_menu
     actual_categories = find('ul#categories-nav').all('li a.nav-link').map(&:text)
     expect(actual_categories).to match_array(expected_categories)

@@ -1,1 +1,1 @@
-json.partial! "menus/menu", menu: @menu
+json.partial! "menu", menu: @menu

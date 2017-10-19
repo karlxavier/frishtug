@@ -1,17 +1,30 @@
-<%= form_with(model: menu_category, local: true) do |form| %>
-  <% if menu_category.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(menu_category.errors.count, "error") %> prohibited this menu_category from being saved:</h2>
-
-      <ul>
-      <% menu_category.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class="actions">
-    <%= form.submit %>
+<%= form_for [:admin, menu_category],
+  html: { id: 'new-menu-category' },
+  remote: true,
+  format: :js,
+  data: {
+    menu_category: menu_category.to_json(except: [:created_at, :updated_at]),
+    add_ons_attributes: menu_category.add_ons.to_json(except: [:menu_category_id, :created_at, :updated_at])
+    } do |form| %>
+  <div id="form-flash-messages"></div>
+  <div class="form-group">
+    <%= form.label :name %>
+    <input type="text" id="menu_category_name" name="menu_category[name]" v-model="menu_category.name" class="form-control">
   </div>
+  <h5>Add-ons</h5>
+  <div v-for="(addons, index) in menu_category.add_ons_attributes">
+    <div :class="addons._delete !== 1 ? 'form-group' : 'd-none'" >
+      <label :for="'menu_category_addons_name' + (index !== 0 ? `_${index}` : '')">Name</label>
+      <input type="text" name="'menu_category[add_ons_attributes][name]'" v-model="addons.name" class="form-control" :id="'menu_category_addons_name' + (index !== 0 ? `_${index}` : '')">
+      <input type="hidden" name="menu_category[add_ons_attributes][id]" v-model="addons.id" class="form-control">
+      <input type="hidden" name="menu_category[add_ons_attributes][_delete]" v-model="addons._delete" class="form-control">
+      <a href="javascript:void(0)" @click="hideAddons(index)">- Delete</a>
+    </div>
+  </div>
+  <a href="javascript:void(0)" @click="addAddons">+ Add Add-ons</a>
+  <%= form.submit 'Save', class: 'btn btn-primary float-right' %>
+<% end %>
+
+<%= content_for :header_js do %>
+  <%= javascript_pack_tag 'admin/vue_category' %>
 <% end %>
