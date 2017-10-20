@@ -1,0 +1,12 @@
+<div class="row">
+  <div class="col">
+    <h1 id="title">
+      <%= link_to "Plans", admin_plans_path %>
+    </h1>
+  </div>
+  <div class="col">
+    <%= link_to new_admin_plan_path, class: 'add-category-btn float-right' do %>
+      <img src="<%= asset_pack_path 'packs/images/add-icon.svg' %>"> Add Plan
+    <% end %>
+  </div>
+</div>

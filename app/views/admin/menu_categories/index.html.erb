@@ -1,9 +1,10 @@
 <%= card_container do %>
   <table class="table table-striped">
-    <thead class="thead-inverse">
+    <thead>
       <tr>
         <th>#</th>
         <th>Name</th>
+        <th>Menus</th>
         <th colspan="3"></th>
       </tr>
     </thead>
@@ -13,6 +14,7 @@
         <tr class="<%= menu_category.name.parameterize %>">
           <td><%= menu_category.id %></td>
           <td><%= menu_category.name %></td>
+          <td><%= menu_category.menus.size %></td>
           <td><%= link_to 'Edit', edit_admin_menu_category_path(menu_category) %></td>
           <td><%= link_to 'Destroy', admin_menu_category_path(menu_category), method: :delete, remote: true, data: { confirm: 'Are you sure?' } %></td>
         </tr>

@@ -25,6 +25,12 @@ module ApplicationHelper
     render 'shared/card_container', content: content
   end
 
+  def card(&block)
+    return 'no block given' unless block_given?
+    content = capture(&block)
+    render 'shared/card', content: content
+  end
+
   def alert_flash(key)
     alerts = {
       success: 'alert-success',

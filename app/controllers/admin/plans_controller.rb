@@ -1,7 +1,7 @@
 class Admin::PlansController < Admin::BaseController
   before_action :authenticate_admin!
   before_action :set_plan, only: %i[show edit update destroy]
-  respond_to :js, only: [:create, :update]
+  respond_to :js, only: %i[create update destroy]
 
   # GET /plans
   # GET /plans.json
@@ -47,11 +47,8 @@ class Admin::PlansController < Admin::BaseController
   # DELETE /plans/1
   # DELETE /plans/1.json
   def destroy
-    @plan.destroy
-    respond_to do |format|
-      format.html { redirect_to plans_url, notice: 'Plan was successfully destroyed.' }
-      format.json { head :no_content }
-    end
+    flash[:success] = "#{@plan.name} has been deleted." if @plan.destroy
+    respond_with(@plan)
   end
 
   private
@@ -63,6 +60,6 @@ class Admin::PlansController < Admin::BaseController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def plan_params
-    params.fetch(:plan, {}).permit(:name)
+    params.fetch(:plan, {}).permit(:name, :description, :price, :shipping, :shipping_fee)
   end
 end

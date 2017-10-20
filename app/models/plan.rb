@@ -17,5 +17,6 @@
 class Plan < ApplicationRecord
   enum shipping: %i[free paid]
   validates :name, :price, presence: true
+  validates :name, uniqueness: true
   has_many :users
 end

@@ -17,7 +17,7 @@
   </div>
   <div class="form-group">
     <%= form.label :shipping %>
-    <%= form.select :shipping, Plan.shippings , {}, { class: 'form-control plan-shipping' } %>
+    <%= form.select :shipping, [:free, :paid] , {}, { class: 'form-control plan-shipping' } %>
   </div>
   <div class="form-group d-none plan-shipping-fee fadeInUp">
     <%= form.label :shipping_fee %>
