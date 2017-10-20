@@ -1,4 +1,4 @@
-document.addEventListener('turbolinks:load', ()=>{
+document.addEventListener('DOMContentLoaded', ()=>{
   let dropzone = document.querySelector('.dropzone')
   let dropzoneFile = document.querySelector('.dropzone_file')
 

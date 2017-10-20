@@ -11,5 +11,6 @@ Rails.application.routes.draw do
     resources :menus, except: :show
     resources :dashboard, only: :index
     resources :menu_categories, except: %i[show]
+    resources :plans
   end
 end

@@ -1,7 +1,9 @@
-<%= form_with(model: [:admin, unit], remote: true) do |form| %>
-  <%= form.label :name %>
-  <%= form.text_field :name %>
+<%= form_for [:admin, unit], remote: true do |form| %>
+  <div class="form-group">
+    <%= form.label :name %>
+    <%= form.text_field :name, class: 'form-control' %>
+  </div>
   <div class="actions">
-    <%= form.submit %>
+    <%= form.submit "Save", class: 'btn btn-brown float-right' %>
   </div>
 <% end %>

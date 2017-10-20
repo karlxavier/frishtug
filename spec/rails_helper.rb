@@ -18,9 +18,11 @@ RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
   config.filter_rails_from_backtrace!
   # config.filter_gems_from_backtrace("gem name")
+  config.render_views
   config.include LoginHelper, type: :feature
   config.include ForceFill, type: :feature
   config.include DropzoneHelper, type: :feature
+  config.include Devise::Test::ControllerHelpers, type: :controller
   config.before :suite do
     # compile js files before testing
     Webpacker.compile

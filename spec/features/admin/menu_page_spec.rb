@@ -1,6 +1,3 @@
-require 'spec_helper'
-require 'rails_helper'
-
 feature 'Admin menu page', type: :feature do
   before :each do
     create_list(:menu_category_unique, 3)

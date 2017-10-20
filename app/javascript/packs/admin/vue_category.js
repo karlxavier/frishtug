@@ -2,7 +2,7 @@ import Vue from 'vue/dist/vue.esm'
 import TurbolinksAdapter from 'vue-turbolinks'
 Vue.use(TurbolinksAdapter)
 
-document.addEventListener('turbolinks:load', () => {
+document.addEventListener('DOMContentLoaded', () => {
   var el = document.querySelector('#new-menu-category')
   var menu_category = JSON.parse(el.dataset.menuCategory)
   var add_ons_attributes = JSON.parse(el.dataset.addOnsAttributes)
