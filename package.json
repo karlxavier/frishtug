@@ -6,6 +6,7 @@
     "animate.css": "^3.5.2",
     "coffeescript": "1.12.7",
     "dropzone": "^5.2.0",
+    "sweetalert2": "^6.11.1",
     "vue": "^2.4.4",
     "vue-turbolinks": "^2.0.0"
   },

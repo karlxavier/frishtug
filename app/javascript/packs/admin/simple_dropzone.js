@@ -132,15 +132,14 @@ document.addEventListener('DOMContentLoaded', ()=>{
   }
 
   const init = () => {
-    if (!dropzone) {
-      dropzone = document.querySelector('.dropzone')
-      dropzoneFile = document.querySelector('.dropzone_file')
+    dropzone = document.querySelector('.dropzone')
+    dropzoneFile = document.querySelector('.dropzone_file')
+    if (dropzone) {
+      dropzone.addEventListener('dragover', dragover)
+      dropzone.addEventListener('dragleave', dragleave)
+      dropzone.addEventListener('drop', drop)
+      dropzoneFile.addEventListener('change', readFile)
     }
-
-    dropzone.addEventListener('dragover', dragover)
-    dropzone.addEventListener('dragleave', dragleave)
-    dropzone.addEventListener('drop', drop)
-    dropzoneFile.addEventListener('change', readFile)
   }
 
   if (dropzone) {

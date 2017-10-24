@@ -33,7 +33,8 @@ RSpec.describe User, type: :model do
   end
 
   describe 'ActiveModel associations' do
-    it { should have_many(:address) }
+    it { should have_many(:addresses) }
     it { should belong_to(:plan) }
+    it { should have_one(:contact_number) }
   end
 end

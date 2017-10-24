@@ -25,8 +25,9 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
-  
+
   validates :first_name, :last_name, presence: true
-  has_many :address, as: :addressable
+  has_many :addresses, as: :addressable
+  has_one :contact_number, dependent: :destroy
   belongs_to :plan, optional: true
 end

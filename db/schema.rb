@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171017073438) do
+ActiveRecord::Schema.define(version: 20171020092944) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -60,6 +60,35 @@ ActiveRecord::Schema.define(version: 20171017073438) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_admins_on_email", unique: true
+  end
+
+  create_table "checkings", force: :cascade do |t|
+    t.string "bank_name"
+    t.string "account_number"
+    t.string "routing_number"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_checkings_on_user_id"
+  end
+
+  create_table "contact_numbers", force: :cascade do |t|
+    t.string "phone_number"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_contact_numbers_on_user_id"
+  end
+
+  create_table "credit_cards", force: :cascade do |t|
+    t.string "number"
+    t.integer "month", limit: 2
+    t.integer "year", limit: 2
+    t.integer "cvc"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_credit_cards_on_user_id"
   end
 
   create_table "diet_categories", force: :cascade do |t|
@@ -162,6 +191,9 @@ ActiveRecord::Schema.define(version: 20171017073438) do
   add_foreign_key "add_ons", "menu_categories"
   add_foreign_key "add_ons_menus", "add_ons"
   add_foreign_key "add_ons_menus", "menus"
+  add_foreign_key "checkings", "users"
+  add_foreign_key "contact_numbers", "users"
+  add_foreign_key "credit_cards", "users"
   add_foreign_key "inventories", "menus"
   add_foreign_key "inventory_transactions", "inventories"
   add_foreign_key "menus", "diet_categories"

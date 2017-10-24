@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :user_registrations, only: %i[index create]
 
   require 'sidekiq/web'
   mount Sidekiq::Web => '/sidekiq'

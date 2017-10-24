@@ -55,6 +55,6 @@
   <%= f.submit 'Save as Draft', class: 'btn btn-outline-secondary float-right ml-3' %>
   <%= f.submit 'Publish', class: 'btn btn-brown float-right' %>
   <% if menu.id? %>
-    <%= link_to 'Delete' , admin_menu_path(menu.id), method: :delete, class: 'btn btn-danger float-right mr-3', remote: true, data: { confirm: 'Are you sure?' } %>
+    <%= link_to 'Delete' , admin_menu_path(menu.id), method: :delete, class: 'btn btn-danger float-right mr-3', remote: true, data: { confirmswt: 'Are you sure?' } %>
   <% end %>
 <% end %>
