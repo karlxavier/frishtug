@@ -11,30 +11,4 @@ import swal from 'sweetalert2'
 document.addEventListener('DOMContentLoaded', () => {
   // expose globally so we can use it anywhere withou webpack
   window.swal
-
-  const anchorsConfirm = () => {
-    const anchors = document.querySelectorAll('a[data-confirmswt]')
-    console.log(anchors)
-    anchors.forEach( (anchor) => {
-      anchor.addEventListener('click', (e) => {
-        e.preventDefault()
-        const message = e.dataset.dataConfirmswt
-        if (!message) { return true }
-
-        swal({
-          title: message,
-          type: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, delete it!'
-        }).then(function () {
-          console.log('test')
-        })
-
-      })
-    })
-  }
-
-  window.anchorsConfirm = anchorsConfirm
 })
