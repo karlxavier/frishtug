@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
-  resources :user_registrations, only: %i[index create]
+  resources :user_registrations, only: %i[index create] do
+    get :schedule, on: :collection
+  end
 
   require 'sidekiq/web'
   mount Sidekiq::Web => '/sidekiq'

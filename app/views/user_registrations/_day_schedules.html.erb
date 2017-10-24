@@ -1,0 +1,11 @@
+<% schedule.each_with_index do |day, index| %>
+  <label class="list-group-item <%= 'active' if index == 0 %>" for="start_date_<%= index %>">
+    <%= day.strftime('%b %d') %> - <%= (day + 4.days).strftime('%b %d') %>
+    <% if index == 0 %>
+      <small class="text-right float-right">
+        *Earliest available schedule
+      </small>
+    <% end %>
+    <input type="radio" name="registration_form[start_date]" id="start_date_<%= index %>" class="d-none" value="<%= day %>">
+  </label>
+<% end %>

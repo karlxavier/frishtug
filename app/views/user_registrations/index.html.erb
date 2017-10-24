@@ -1,4 +1,4 @@
-<%= form_for @registration, url: user_registrations_path(format: :js), remote: true do |form| %>
+<%= form_with model: @registration, url: user_registrations_path(format: :js) do |form| %>
   <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
     <li class="nav-item">
       <a class="nav-link active" id="sign_up_tab" data-toggle="pill" href="#sign_up" role="tab" aria-controls="sign_up" aria-selected="true">Sign Up</a>
@@ -6,13 +6,24 @@
     <li class="nav-item">
       <a class="nav-link" id="delivery_information_tab" data-toggle="pill" href="#delivery_information" role="tab" aria-controls="delivery_information" aria-selected="false">Delivery Information</a>
     </li>
+    <li class="nav-item">
+      <a class="nav-link" id="plan_tab" data-toggle="pill" href="#plan" role="tab" aria-controls="plan" aria-selected="false">Plan</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="days_tab" data-toggle="pill" href="#days" role="tab" aria-controls="days" aria-selected="false">Days</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="payment_setup_tab" data-toggle="pill" href="#payment_setup" role="tab" aria-controls="payment_setup" aria-selected="false">Payment Setup</a>
+    </li>
   </ul>
 
   <div class="tab-content" id="pills-tabContent">
+
+    <%# Sign up %>
     <div class="tab-pane fade show active container-fluid" id="sign_up" role="tabpanel" aria-labelledby="sign_up_tab">
       <div class="row justify-content-center align-items-center">
         <div class="col-12 col-md-3">
-          <h3>Sign Up: Create Account</h3>
+          <h3 class="text-uppercase">Sign Up: Create Account</h3>
           <div class="form-group row">
             <div class="col">
               <%= form.text_field :first_name, class: 'form-control', placeholder: 'First Name' %>
@@ -32,10 +43,19 @@
       </div>
     </div>
 
+    <%# Delivery Information %>
     <div class="tab-pane fade container-fluid" id="delivery_information" role="tabpanel" aria-labelledby="delivery_information_tab">
       <div class="row justify-content-center align-items-center">
         <div class="col-12 col-md-3">
-          <h3>Delivery Information</h3>
+          <h3 class="text-uppercase">Delivery Information</h3>
+          <div class="form-group">
+            <% @registration.address_types.each do |type| %>
+              <label for="<%= type.to_s.parameterize %>">
+                <%= form.radio_button :location_at, type, id: "#{type.to_s.parameterize}", class: '', checked: (true if type == :at_work) %>
+                <%= type.to_s.humanize %>
+              </label>
+            <% end %>
+          </div>
           <div class="form-group">
             <%= form.text_field :line1, class: 'form-control', placeholder: 'Address Line 1' %>
           </div>
@@ -68,5 +88,92 @@
         </div>
       </div>
     </div>
+
+    <%# Plan %>
+    <div class="tab-pane fade container-fluid" id="plan" role="tabpanel" aria-labelledby="plan_tab">
+      <div class="card-deck">
+        <% Plan.all.each do |p| %>
+          <div class="card text-center <%= p.name.parameterize %>">
+            <div class="card-body">
+              <h4 class="card-title">
+                <%= p.name %>
+              </h4>
+              <p class="card-text">
+                <%= p.description %>
+              </p>
+              <p class="card-text">
+                <% if p.free? %>
+                  Free Deliver
+                <% else %>
+                  <%= p.shipping_note %>
+                <% end %>
+              </p>
+              <p class="card-text text-upcase">Note:</p>
+              <small class="card-text">
+                <%= p.note %>
+              </small>
+            </div>
+            <div class="card-footer">
+              <label for="<%= "#{p.name.parameterize}-#{p.id}" %>" class="btn btn-brown">
+                <%= form.radio_button :plan_id, p.id, id: "#{p.name.parameterize}-#{p.id}", class: 'd-none' %>
+                Choose <%= p.name %>
+              </label>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <%# Days %>
+    <div class="tab-pane fade container-fluid" id="days" role="tabpanel" aria-labelledby="days_tab">
+      <div class="row justify-content-center align-items-center">
+        <div class="col-12 col-md-6">
+          <h4 class="text-center text-uppercase">Choose Delivery Day</h4>
+          <div class="row justify-content-center schedule-types">
+            <% @registration.schedule_types.each_with_index do |s, index| %>
+                <div class="form-check form-check-inline">
+                  <label for="<%= s %>" class="btn btn-outline-dark form-check-label px-4 py-4 <%= 'btn-brown' if index == 0 %>">
+                    <%= form.radio_button :schedule, s, id: s, class: 'd-none form-check-input', checked: (true if index == 0) %>
+                    <%= s.to_s.humanize %>
+                  </label>
+                </div>
+            <% end %>
+          </div>
+          <p>
+            Choose a specific date(dates will be change according to the 5 day schedule above)
+          </p>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-md-4 col-md-offset-4">
+          <div class="list-group days-schedule">
+            <%= render 'day_schedules', {schedule: @registration.schedule_days(:monday) } %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%# Payment Setup %>
+    <div class="tab-pane fade container-fluid" id="payment_setup" role="tabpanel" aria-labelledby="payment_setup_tab">
+      <div class="row justify-content-center align-items-center">
+        <div class="col-12 col-md-6">
+          <h4 class="text-center text-uppercase">Payment</h4>
+
+          <% @registration.payment_methods.each do |payment_method| %>
+            <div class="form-check form-check-inline payment_methods">
+              <label for="<%= payment_method %>" class="form-check-label">
+                <%= form.radio_button :payment_method, payment_method, id: payment_method,class: 'form-check-input', checked: (true if payment_method == :credit_card) %>
+                Pay by <%= payment_method.to_s.humanize.titleize %>
+              </label>
+            </div>
+          <% end %>
+
+        </div>
+      </div>
+    </div>
   </div>
+<% end %>
+
+<%= content_for :footer_js do %>
+  <%= javascript_pack_tag 'user_registration' %>
 <% end %>

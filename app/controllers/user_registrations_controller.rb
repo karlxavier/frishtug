@@ -14,6 +14,14 @@ class UserRegistrationsController < ApplicationController
     respond_with(@registration)
   end
 
+  def schedule
+    type = :monday
+    type = :sunday if params[:type] == 'sunday_to_thursday'
+    @schedule = Scheduler.new(type).run
+  end
+
+  def payment_method; end
+
   private
 
   def registration_params

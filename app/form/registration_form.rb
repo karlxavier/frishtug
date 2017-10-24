@@ -6,6 +6,7 @@ class RegistrationForm
                 :email,
                 :password,
                 :plan_id, # User params
+                :location_at,
                 :line1,
                 :line2,
                 :front_door,
@@ -20,21 +21,19 @@ class RegistrationForm
                 :bank_name,
                 :account_number,
                 :routing_number,
-                :number,
+                :card_number,
                 :month,
                 :year,
                 :cvc,
                 :payment_method
 
-  enum payment_method: %i[credit_card checking]
-
   validates :first_name, :last_name, :email, :password, presence: true
-  validates :line1, :line2, :city, :state, :zip_code, presence: true
+  validates :location_at, :line1, :line2, :city, :state, :zip_code, presence: true
   validates :phone_number, presence: true
   # validates :option, :schedule, :start_date, presence: true
   validate :user_email_is_unique
-  validates :bank_name, :account_number, :routing_number, if: :checking?
-  validates :number, :month, :year, :cvc, if: :credit_card?
+  validates :bank_name, :account_number, :routing_number, presence: true, if: :checking?
+  validates :card_number, :month, :year, :cvc, presence: true, if: :credit_card?
 
   def save
     if valid?
@@ -45,14 +44,30 @@ class RegistrationForm
     end
   end
 
+  def address_types
+    %i[at_work at_home multiple_workplaces]
+  end
+
+  def schedule_types
+    %i[monday_to_friday sunday_to_thursday]
+  end
+
+  def schedule_days(type)
+    Scheduler.new(type).run
+  end
+
+  def payment_methods
+    %i[credit_card checking]
+  end
+
   private
 
   def checking?
-    payment_method.checking?
+    payment_method == :checking
   end
 
   def credit_card?
-    payment_method.credit_card?
+    payment_method == :credit_card?
   end
 
   def user_email_is_unique
@@ -64,7 +79,7 @@ class RegistrationForm
     user = User.create!(user_params)
     user.addresses.create!(address_params)
     user.contact_number.create!(phone_number: phone_number)
-    user.delivery.create!(delivery_params)
+    user.schedule.create!(schedule_params)
   end
 
   def user_params
@@ -79,6 +94,7 @@ class RegistrationForm
 
   def address_params
     {
+      location_at: location_at,
       line1: line1,
       line2: line2,
       front_door: front_door,
@@ -88,17 +104,16 @@ class RegistrationForm
     }
   end
 
-  def delivery_params
+  def schedule_params
     {
-      option: option,
-      schedule: schedule,
+      option: schedule,
       start_date: start_date
     }
   end
 
   def credit_card_params
     {
-      number: number,
+      number: card_number,
       month: month,
       year: year,
       cvc: cvc

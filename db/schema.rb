@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171020092944) do
+ActiveRecord::Schema.define(version: 20171024035008) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,6 +43,7 @@ ActiveRecord::Schema.define(version: 20171020092944) do
     t.bigint "addressable_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "location_at"
     t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable_type_and_addressable_id"
   end
 
@@ -157,6 +158,17 @@ ActiveRecord::Schema.define(version: 20171020092944) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "shipping_fee", precision: 8, scale: 2
+    t.text "note"
+    t.string "shipping_note"
+  end
+
+  create_table "schedules", force: :cascade do |t|
+    t.integer "option"
+    t.datetime "start_date"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_schedules_on_user_id"
   end
 
   create_table "units", force: :cascade do |t|
@@ -200,5 +212,6 @@ ActiveRecord::Schema.define(version: 20171020092944) do
   add_foreign_key "menus", "menu_categories"
   add_foreign_key "menus", "units"
   add_foreign_key "orders", "users"
+  add_foreign_key "schedules", "users"
   add_foreign_key "users", "plans"
 end
