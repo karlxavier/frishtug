@@ -15,6 +15,9 @@
     <li class="nav-item">
       <a class="nav-link" id="payment_setup_tab" data-toggle="pill" href="#payment_setup" role="tab" aria-controls="payment_setup" aria-selected="false">Payment Setup</a>
     </li>
+    <li class="nav-item">
+      <a class="nav-link" id="meals_tab" data-toggle="pill" href="#meals" role="tab" aria-controls="meals" aria-selected="false">Meals</a>
+    </li>
   </ul>
 
   <div class="tab-content" id="pills-tabContent">
@@ -156,9 +159,8 @@
     <%# Payment Setup %>
     <div class="tab-pane fade container-fluid" id="payment_setup" role="tabpanel" aria-labelledby="payment_setup_tab">
       <div class="row justify-content-center align-items-center">
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-md-6 payment-method-options">
           <h4 class="text-center text-uppercase">Payment</h4>
-
           <% @registration.payment_methods.each do |payment_method| %>
             <div class="form-check form-check-inline payment_methods">
               <label for="<%= payment_method %>" class="form-check-label">
@@ -167,8 +169,19 @@
               </label>
             </div>
           <% end %>
-
         </div>
+      </div>
+      <div class="row justify-content-center align-items-center">
+        <div class="col-12 col-md-6 payment-method-container">
+          <%= render 'credit_card' %>
+        </div>
+      </div>
+    </div>
+
+    <%# Meals %>
+    <div class="tab-pane fade container-fluid" id="meals" role="tabpanel" aria-labelledby="meals_tab">
+      <div class="container-fluid">
+        <%= render 'day_selection_meals', categorized_menus: @categorized_menus %>
       </div>
     </div>
   </div>

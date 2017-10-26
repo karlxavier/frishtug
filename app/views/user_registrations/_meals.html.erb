@@ -1,0 +1,51 @@
+<div class="row">
+  <div class="col">
+    <ul class="nav nav-pills justify-content-center" id="category_navs">
+      <% categorized_menus.each do |category| %>
+        <li class="nav-item">
+          <%= link_to category.name.titleize, "##{ category.name.parameterize }", class: 'nav-link btn btn-outline-dark mx-2' %>
+        </li>
+      <% end %>
+    </ul>
+
+    <ul class="nav justify-content-center">
+      <li class="nav-item mx-2">
+        <strong class="text-uppercase">Legend</strong>
+      </li>
+      <li class="nav-item mx-2">
+        <span class="fa fa-star diet-icons sugar-free mr-1"></span>
+        Sugar Free
+      </li>
+      <li class="nav-item mx-2">
+        <span class="fa fa-star diet-icons gluten-free mr-1"></span>
+        Gluten Free
+      </li>
+      <li class="nav-item mx-2">
+        <span class="fa fa-star diet-icons carb-free mr-1"></span>
+        Carb Free
+      </li>
+      <li class="nav-item mx-2">
+        <span class="fa fa-star diet-icons may-contain-allergens mr-1"></span>
+        May Contain Allergens
+      </li>
+    </ul>
+
+
+    <% categorized_menus.each do |category| %>
+      <div class="row" id="<%= category.name.parameterize %>">
+        <div class="container-fluid">
+          <h4 class="text-uppercase">
+            <%= category.name.upcase %>
+          </h4>
+        </div>
+        <div class="container-fluid">
+          <div class="card-deck">
+            <% category.menus.each do |menu| %>
+              <%= render 'shared/menus/products', { menu: menu, control: true } %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

@@ -17,4 +17,8 @@ class MenuCategory < ApplicationRecord
   has_many :add_ons, dependent: :destroy
 
   accepts_nested_attributes_for :add_ons, allow_destroy: true
+
+  def self.published_menus
+    includes(:menus).where.not(menus: { published_at: nil }).sort
+  end
 end

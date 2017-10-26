@@ -17,23 +17,23 @@ body {
   background: #4E3C44;
   border-color: #4E3C44;
   color: #ffffff!important;
-}
 
-.btn-brown:hover,
-.btn-brown:focus {
-  background: rgba(78, 60, 68, 0.918);
+    &:hover,
+    &:focus {
+      background: rgba(78, 60, 68, 0.918);
+    }
 }
 
 .btn-brown-outline {
   background: transparent;
   border-color: #4E3C44;
   color: #4E3C44!important;
-}
 
-.btn-brown-outline:hover,
-.btn-brown-outline:focus {
-  background: #4E3C44;
-  color: #ffffff!important;
+    &:hover,
+    &:focus {
+      background: #4E3C44;
+      color: #ffffff!important;
+    }
 }
 
 a, .active-link, .card-link {
@@ -106,4 +106,47 @@ body {
 .draft-card img {
   -webkit-filter: grayscale(100%);
   filter: grayscale(100%);
+}
+
+.diet-icons {
+  font-size: 13px!important;
+}
+
+.carb-free {
+  color: green;
+}
+
+.sugar-free {
+  color: yellow;
+}
+
+.gluten-free {
+  color: orangered;
+}
+
+.may-contain-allergens {
+  color: cyan;
+}
+
+.meal-counter {
+  display: inline-flex;
+  width: 31px;
+  height: 31px;
+  border: 1px solid #959595;
+  align-items: center;
+  justify-content: center;
+  font-family: "Lato";
+  font-weight: 400;
+}
+
+.ctrl-btns {
+  display: inline-flex;
+  width: 31px;
+  height: 31px;
+  border: 1px solid #333;
+  align-items: center;
+  justify-content: center;
+  font-family: "Lato";
+  font-weight: 900;
+  vertical-align: top;
 }

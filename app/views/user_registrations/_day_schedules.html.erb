@@ -1,5 +1,10 @@
 <% schedule.each_with_index do |day, index| %>
-  <label class="list-group-item <%= 'active' if index == 0 %>" for="start_date_<%= index %>">
+  <label
+  class="list-group-item <%= 'active' if index == 0 %>"
+  for="start_date_<%= index %>"
+  data-schedule-days="<%=
+    (day..(day + 4.days)).map { |d| d.strftime('%m/%d/%Y') }.join(',')
+  %>">
     <%= day.strftime('%b %d') %> - <%= (day + 4.days).strftime('%b %d') %>
     <% if index == 0 %>
       <small class="text-right float-right">

@@ -3,6 +3,7 @@ class UserRegistrationsController < ApplicationController
 
   def index
     @registration = RegistrationForm.new
+    @categorized_menus = MenuCategory.published_menus
   end
 
   def create

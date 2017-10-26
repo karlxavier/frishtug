@@ -1,6 +1,9 @@
 Rails.application.routes.draw do
   resources :user_registrations, only: %i[index create] do
-    get :schedule, on: :collection
+    collection do
+      get :schedule
+      get :payment_method
+    end
   end
 
   require 'sidekiq/web'
