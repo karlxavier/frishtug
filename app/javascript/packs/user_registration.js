@@ -1,6 +1,9 @@
 (function(win){
 
   const order = {
+    plan: null,
+    plan_price: null,
+    shipping_fee: 0,
     start_date: null,
     schedule: 'monday_to_friday',
     day_1: {
@@ -295,26 +298,23 @@
     const target = document.querySelector('.order-list')
     target.innerHTML = ''
 
-    const printText = (text) => {
-      return document.createTextNode(text)
-    }
-
     days.forEach(day => {
       const el = document.createElement('div')
       const order_day = order[day]
+      el.className = 'mb-3'
       el.innerHTML = template
 
       if (order_day.meal_ids.length === 0) {
         return false
       }
 
-      el.querySelector('.order-title').appendChild(printText(order_day.day.toUpperCase()))
+      appendTo(el, order_day.day.toUpperCase(), '.order-title')
       order_day.meals.forEach( (meal, index) => {
         const div = document.createElement('div')
         div.innerHTML = listTemplate
-        div.querySelector('.meal-name').appendChild(printText(meal.name))
-        div.querySelector('.meal-price').appendChild(printText(toCurrency(meal.price)))
-        div.querySelector('.meal-count').appendChild(printText(meal.count))
+        appendTo(div, meal.name, '.meal-name')
+        appendTo(div, toCurrency(meal.price), '.meal-price')
+        appendTo(div, meal.count, '.meal-count')
 
         div.querySelector('.add-meal').addEventListener('click', () => {
           const target = document.querySelector(`#${day.split('_').join('-')}`)
@@ -323,7 +323,7 @@
           order[day].meal_ids.push(meal.id)
           order[day].meals[index].count += 1
           order[day].meals[index].price += parseFloat(card.getAttribute('data-meal-price'))
-          counter.innerHTML = order[day].meals[index].count
+          innerHtmlOf(counter, order[day].meals[index].count)
           renderOrders()
         })
 
@@ -336,22 +336,73 @@
           if(meal.count > 1) {
             order[day].meals[index].count -= 1
             order[day].meals[index].price -= parseFloat(card.getAttribute('data-meal-price'))
-            counter.innerHTML = order[day].meals[index].count
+            innerHtmlOf(counter, order[day].meals[index].count)
           } else {
             order[day].meals.splice(index, 1)
-            counter.innerHTML = 0
+            innerHtmlOf(counter, 0)
           }
           renderOrders()
         })
 
         const tr = div.querySelector('tr')
-        el.querySelector('tbody').appendChild(tr)
+        appendTo(el, tr, 'tbody')
       })
 
-      const totalPrice = order_day.meals.reduce( (sum, n) => { return sum + parseFloat(n.price) }, 0)
-      el.querySelector('.meal-total').appendChild(printText(toCurrency(totalPrice)))
-      target.appendChild(el)
+      const totalPrice = sumOf(getByDayPrices(order_day.meals))
+      appendTo(el, toCurrency(totalPrice), '.meal-total')
+      appendTo(target, el)
+      enableSaveMealPlanBtn(order_day.meals)
     })
+  }
+
+  const createTextNode = (text) => {
+    return document.createTextNode(text)
+  }
+
+  const appendTo = (el, textOrElement, classOrId) => {
+    if (classOrId) {
+      el = el.querySelector(classOrId)
+    }
+
+    if (typeof textOrElement === 'string'
+        || typeof textOrElement === 'number') {
+      textOrElement = createTextNode(textOrElement)
+      el.appendChild(textOrElement)
+    } else if (typeof textOrElement === 'object') {
+      el.appendChild(textOrElement)
+    }
+  }
+
+  const innerHtmlOf = (el, text, classOrId) => {
+    if (classOrId) {
+      el = el.querySelector(classOrId)
+    }
+
+    el.innerHTML = text
+  }
+
+  const getByDayPrices = (orders) => {
+    return orders.map( n => {
+      return n.price
+    })
+  }
+
+  const sumOf = (prices) => {
+    return prices.reduce( (sum, n) => {
+      return sum + parseFloat(n)
+    }, 0)
+  }
+
+  const enableSaveMealPlanBtn = (meals) => {
+    const btn = document.querySelector('.btn--save-meal-plan')
+    const total = sumOf(getByDayPrices(meals))
+    if (total >= 10) {
+      btn.classList.remove('disabled')
+      populateReviewPage()
+    } else {
+      btn.classList.remove('disabled')
+      btn.classList.add('disabled')
+    }
   }
 
   const toCurrency = (number) => {
@@ -361,6 +412,33 @@
     })
   }
 
+
+  const populateReviewPage = () => {
+    const page = document.querySelector('#review_order')
+    schedule = order.schedule === 'sunday_to_thursday'
+                    ? 'Sunday - Thursday' : 'Monday - Friday'
+    shipping = order.shipping_fee === 0 ? "Free" : toCurrency(order.shipping_fee)
+    innerHtmlOf(page, order.plan, '.choosen_plan')
+    innerHtmlOf(page, order.plan_price, '.price')
+    innerHtmlOf(page, shipping, '.shipping')
+    innerHtmlOf(page, schedule, '.delivery_schedule')
+    innerHtmlOf(page, order.day_1.date, '.first_delivery_date')
+  }
+
+  const planSelectorInit = () => {
+    const labels = document.querySelectorAll('.plan--btns')
+    labels.forEach( label => {
+      const radio = label.querySelector('input')
+      radio.addEventListener('click', () => {
+        const card = label.closest('.card')
+        order.plan_price = toCurrency(card.dataset.planPrice)
+        order.plan = card.dataset.planName
+        order.shipping_fee = card.dataset.planShippingFee
+      })
+    })
+  }
+
+  planSelectorInit()
   scheduleSelecter()
   cvcInputControl()
   paymentMethods()

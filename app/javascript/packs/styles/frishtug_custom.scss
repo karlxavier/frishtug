@@ -1,10 +1,33 @@
+$light-bg:                    #f9f9f9;
+$muted-color:                 #acacac;
+$green-check-bg:              #37c429;
+$chocolate:                   #562d07;
+$light-chocolate:             #8b7562;
+$allergens-color:             #43ccff;
+$carb-free-color:             #8dc63f;
+$sugar-free-color:            #eaaf30;
+$gluten-free-color:           #a0410d;
+$pure-white:                  #ffffff;
+$disabled-step-bg:            #737272;
+$lato:                        "Lato", sans-serif;
+$montserrat:                  "Montserrat", sans-serif;
+$base-dark:                   #191919;
 body {
-  background: #f9f9f9;
-  font-family: 'Lato', sans-serif;
+  background: $light-bg;
+  font-family: $lato;
+  color: $base-dark;
+}
+
+.font-family-lato {
+  font-family: $lato!important;
+}
+
+.font-family-montserrat {
+  font-family: $montserrat!important;
 }
 
 .btn {
-  font-family: 'Montserrat', sans-serif;
+  font-family: $montserrat;
   font-weight: normal;
   font-size: 15px;
 }
@@ -14,56 +37,78 @@ body {
 }
 
 .btn-brown {
-  background: #4E3C44;
-  border-color: #4E3C44;
-  color: #ffffff!important;
+  background: $chocolate;
+  border-color: $chocolate;
+  color: $pure-white !important;
 
-    &:hover,
-    &:focus {
-      background: rgba(78, 60, 68, 0.918);
-    }
+  &:hover,
+  &:focus {
+    background: lighten( $chocolate, 5%);
+  }
 }
 
 .btn-brown-outline {
   background: transparent;
-  border-color: #4E3C44;
-  color: #4E3C44!important;
+  border-color: $chocolate;
+  color: $chocolate!important;
 
-    &:hover,
-    &:focus {
-      background: #4E3C44;
-      color: #ffffff!important;
-    }
+  &:hover,
+  &:focus {
+    background: $chocolate;
+    color: $pure-white!important;
+  }
 }
 
-a, .active-link, .card-link {
-  color: #DFB676!important;
+a,
+.active-link,
+.card-link {
+  color: $light-chocolate!important;
   cursor: pointer;
+  &:hover,
+  &:focus {
+    color: rgba(223, 181, 118, 0.788)!important;
+    text-decoration: none;
+  }
 }
 
-a:hover, a:focus, .card-link:hover, .card-link:focus,
-.active-link:hover, .active-link:focus {
-  color: rgba(223, 181, 118, 0.788)!important;
-  text-decoration: none;
+a.btn,
+a.btn-brown,
+a.nav-link.active {
+  color: $pure-white!important;
+
+  &:hover,
+  &:focus {
+    color: $pure-white!important;
+  }
 }
 
-.text-muted-frish, label {
-  color: #898989;
+a.nav-link,
+a.btn-outline-dark,
+.nav-tabs a.nav-link.active {
+  color: $base-dark!important;
+}
+
+.text-muted,
+label,
+.text-muted-frish,
+.nav-tabs a.nav-link {
+  color: $muted-color!important;
+
+  &:hover,
+  &:focus {
+    color: $base-dark;
+  }
 }
 
 .text-brown {
-  color: #4E3C44;
-}
-
-body {
-  color: #191919;
+  color: $chocolate;
 }
 
 .dropzone {
   display: flex;
   width: 100%;
   min-height: 180px;
-  border: 1px dashed darkgoldenrod;
+  border: 1px dashed $light-chocolate;
   border-width: 2px;
   align-items: center;
   justify-content: center;
@@ -74,7 +119,7 @@ body {
 .is_dragging {
   border-color: darkgrey;
   color: darkgray;
-  background: rgba(204, 204, 204, 0.13);
+  background: $base-dark;
 }
 
 .has_an_error {
@@ -84,8 +129,8 @@ body {
 
 .add-menu-item {
   background: transparent;
-  border-color: #dfb676;
-  color: #dfb676 !important;
+  border-color: $light-chocolate;
+  color: $light-chocolate !important;
   height: 150px;
   border: 1px dashed;
   border-width: 2px;
@@ -100,7 +145,7 @@ body {
 
 .card-container > .card-header {
   line-height: 3rem;
-  background: #ffffff;
+  background: $pure-white;
 }
 
 .draft-card img {
@@ -109,23 +154,23 @@ body {
 }
 
 .diet-icons {
-  font-size: 13px!important;
+  font-size: 13px !important;
 }
 
 .carb-free {
-  color: green;
+  color: $carb-free-color;
 }
 
 .sugar-free {
-  color: yellow;
+  color: $sugar-free-color;
 }
 
 .gluten-free {
-  color: orangered;
+  color: $gluten-free-color;
 }
 
 .may-contain-allergens {
-  color: cyan;
+  color: $allergens-color;
 }
 
 .meal-counter {
@@ -149,4 +194,31 @@ body {
   font-family: "Lato";
   font-weight: 900;
   vertical-align: top;
+}
+
+
+.btn-outline--category,
+a.btn-outline--category {
+  color: $base-dark;
+  border: 1px solid #e1e1e1;
+  background: transparent!important;
+  border-radius: 0!important;
+
+  &:hover,
+  &:focus {
+    background: lighten($chocolate, 10%)!important;
+    color: $pure-white;
+  }
+}
+
+a.btn-outline--category.active {
+  background: $chocolate!important;
+  color: $pure-white!important;
+}
+
+.fixed-rigth {
+  position: fixed;
+  top: 10rem;
+  right: 0;
+  z-index: 1030;
 }
