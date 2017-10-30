@@ -25,23 +25,26 @@ class RegistrationForm
                 :month,
                 :year,
                 :cvc,
-                :payment_method
+                :payment_method,
+                :orders,
+                :billing_line_1,
+                :billing_line_2,
+                :billing_city,
+                :billing_state,
+                :billing_zip_code,
+                :billing_phone_number
 
   validates :first_name, :last_name, :email, :password, presence: true
   validates :location_at, :line1, :line2, :city, :state, :zip_code, presence: true
   validates :phone_number, presence: true
   # validates :option, :schedule, :start_date, presence: true
-  validate :user_email_is_unique
+  validate :user_email_unique?
   validates :bank_name, :account_number, :routing_number, presence: true, if: :checking?
   validates :card_number, :month, :year, :cvc, presence: true, if: :credit_card?
 
   def save
-    if valid?
-      persist!
-      true
-    else
-      false
-    end
+    return false if invalid?
+    persist!
   end
 
   def address_types
@@ -70,16 +73,29 @@ class RegistrationForm
     payment_method == :credit_card?
   end
 
-  def user_email_is_unique
+  def user_email_unique?
     return false unless User.where(email: email).exists?
     errors.add(:email, 'Email is already in use.')
   end
 
   def persist!
-    user = User.create!(user_params)
-    user.addresses.create!(address_params)
-    user.contact_number.create!(phone_number: phone_number)
-    user.schedule.create!(schedule_params)
+    ActiveRecord::Base.transaction do
+      user = User.create!(user_params)
+      user.addresses.create!(address_params)
+      user.create_contact_number!(phone_number: phone_number)
+      user.create_schedule!(schedule_params)
+      orders.each do |o|
+        order = user.orders.create!(placed_on: o['order_date'])
+        order.menu_ids = o['menu_ids'][0].split(',')
+      end
+    end
+
+    true
+  rescue ActiveRecord::StatementInvalid => e
+    # e.message and e.cause.message  can be helpful
+    errors.add(:base, e.message)
+
+    false
   end
 
   def user_params

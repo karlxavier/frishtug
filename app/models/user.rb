@@ -29,5 +29,7 @@ class User < ApplicationRecord
   validates :first_name, :last_name, presence: true
   has_many :addresses, as: :addressable
   has_one :contact_number, dependent: :destroy
+  has_one :schedule, dependent: :destroy
   belongs_to :plan, optional: true
+  has_many :orders, dependent: :destroy
 end

@@ -20,6 +20,7 @@ class Menu < ApplicationRecord
   belongs_to :menu_category
   belongs_to :diet_category, optional: true
   has_and_belongs_to_many :add_ons
+  has_and_belongs_to_many :orders
   validates :name, :unit_id, :menu_category_id, :price, presence: true
   validates :name, uniqueness: true
   validate :sanitize_price

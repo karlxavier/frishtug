@@ -38,7 +38,27 @@ class UserRegistrationsController < ApplicationController
             :city,
             :state,
             :zip_code,
-            :group_code
+            :group_code,
+            :phone_number,
+            :plan_id,
+            :card_number,
+            :month,
+            :year,
+            :cvc,
+            :bank_name,
+            :routing_number,
+            :account_number,
+            :start_date,
+            :location_at,
+            :schedule,
+            :payment_method,
+            :billing_line_1,
+            :billing_line_2,
+            :billing_city,
+            :billing_state,
+            :billing_zip_code,
+            :billing_phone_number,
+            orders: [:order_date, menu_ids: []]
           )
   end
 end

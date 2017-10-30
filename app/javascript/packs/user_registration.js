@@ -291,8 +291,8 @@
     })
   }
 
+  const days = [1,2,3,4,5].map( n => { return `day_${n}` })
   const renderOrders = () => {
-    const days = [1,2,3,4,5].map( n => { return `day_${n}` })
     const template = document.querySelector('#order-template').innerHTML
     const listTemplate = document.querySelector('#order-list-template').innerHTML
     const target = document.querySelector('.order-list')
@@ -433,11 +433,42 @@
         const card = label.closest('.card')
         order.plan_price = toCurrency(card.dataset.planPrice)
         order.plan = card.dataset.planName
-        order.shipping_fee = card.dataset.planShippingFee
+        order.shipping_fee = parseFloat(card.dataset.planShippingFee)
       })
     })
   }
 
+  const completeAction = () => {
+    const btn = document.querySelector('.complete-orders-btn')
+    btn.addEventListener('click', (e) => {
+      e.preventDefault()
+      const form = document.querySelector('form#sign_up_form')
+      const formData = new FormData(form)
+      const ordersData = []
+
+      days.forEach( day => {
+        const order_by_day = order[day]
+        formData.append('registration_form[orders][][order_date]', order_by_day.date)
+        formData.append('registration_form[orders][][menu_ids][]', order_by_day.meal_ids)
+      })
+      var AUTH_TOKEN = $('meta[name=csrf-token]').attr('content')
+      $.ajax({
+        url: form.action,
+        type: 'POST',
+        headers: {
+          'X_CSRF_TOKEN': AUTH_TOKEN
+        },
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: (data) => {
+          alert('test')
+        }
+      })
+    })
+  }
+
+  completeAction()
   planSelectorInit()
   scheduleSelecter()
   cvcInputControl()

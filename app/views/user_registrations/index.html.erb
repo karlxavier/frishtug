@@ -1,4 +1,4 @@
-<%= form_with model: @registration, url: user_registrations_path(format: :js) do |form| %>
+<%= form_with model: @registration, url: user_registrations_path(format: :js), id: 'sign_up_form' do |form| %>
   <ul class="nav nav-pills mb-3 justify-content-center" id="steps-tab" role="tablist">
     <li class="nav-item">
       <a class="nav-link active" id="sign_up_tab" data-toggle="tab" href="#sign_up" >Sign Up</a>
@@ -90,7 +90,6 @@
           <div class="form-group">
             <%= form.text_field :group_code, class: 'form-control', placeholder: 'Group Code' %>
           </div>
-          <%= form.submit 'Save', class: 'btn btn-brown btn-block' %>
         </div>
       </div>
     </div>
@@ -102,7 +101,7 @@
           <div class="card text-center <%= p.name.parameterize %>"
             data-plan-name="<%= p.name %>"
             data-plan-price="<%= p.price %>"
-            data-plan-shipping-fee="<%= p.shipping_fee? ? p.shipping_fee : 'free' %>">
+              data-plan-shipping-fee="<%= p.shipping_fee? ? p.shipping_fee : 0 %>">
             <div class="card-body">
               <h4 class="card-title">
                 <%= p.name %>
@@ -194,7 +193,7 @@
     <%# Review Orders %>
     <div class="tab-pane" id="review_order">
       <div class="container-fluid">
-        <%= render 'review_orders' %>
+        <%= render 'review_orders', form: form %>
       </div>
     </div>
   </div>
