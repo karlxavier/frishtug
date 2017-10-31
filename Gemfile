@@ -34,6 +34,7 @@ gem 'jbuilder', '~> 2.5'
 # gem 'capistrano-rails', group: :development
 
 # profiling
+gem 'activemerchant'
 gem 'bootsnap', '~> 1.1', '>= 1.1.3'
 gem 'bootstrap', '~> 4.0.0.beta'
 gem 'carrierwave'
@@ -52,6 +53,7 @@ group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'database_cleaner'
+  gem 'dotenv-rails'
   gem 'factory_girl_rails'
   gem 'faker'
   gem 'fuubar'
@@ -60,14 +62,14 @@ group :development, :test do
 end
 
 group :test do
-  gem 'simplecov', require: false
-  gem 'rspec-instafail'
   gem 'capybara'
   gem 'chromedriver-helper'
   gem 'poltergeist'
   gem 'rails-controller-testing'
+  gem 'rspec-instafail'
   gem 'selenium-webdriver'
   gem 'shoulda-matchers'
+  gem 'simplecov', require: false
 end
 
 group :development do

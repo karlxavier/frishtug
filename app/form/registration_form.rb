@@ -85,9 +85,17 @@ class RegistrationForm
       user.create_contact_number!(phone_number: phone_number)
       user.create_schedule!(schedule_params)
       orders.each do |o|
-        order = user.orders.create!(placed_on: o['order_date'])
-        order.menu_ids = o['menu_ids'][0].split(',')
+        if o[:order_date].present?
+          order = user.orders.create!(placed_on: o[:order_date])
+          order.menu_ids = o[:menu_ids][0].split(',')
+        else
+          error.add(:order, 'Place on is blank')
+          return false
+        end
       end
+      payment_method.classify.constantize.create!(payment_method_params.merge!(user_id: user.id))
+      payment_processor = PaymentProcessor.new(user)
+      raise StandardError, payment_processor.errors unless payment_processor.run
     end
 
     true
@@ -104,6 +112,7 @@ class RegistrationForm
       last_name: last_name,
       email: email,
       password: password,
+      password_confirmation: password,
       plan_id: plan_id
     }
   end
@@ -127,6 +136,10 @@ class RegistrationForm
     }
   end
 
+  def payment_method_params
+    send("#{payment_method}_params")
+  end
+
   def credit_card_params
     {
       number: card_number,
@@ -136,7 +149,7 @@ class RegistrationForm
     }
   end
 
-  def checking_account_params
+  def checking_params
     {
       bank_name: bank_name,
       account_number: account_number,

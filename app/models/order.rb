@@ -19,5 +19,4 @@ class Order < ApplicationRecord
   enum status: %i[in_transit completed]
   belongs_to :user
   has_and_belongs_to_many :menus
-  validates :placed_on, :user_id, presence: true
 end

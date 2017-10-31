@@ -28,8 +28,14 @@ class User < ApplicationRecord
 
   validates :first_name, :last_name, presence: true
   has_many :addresses, as: :addressable
+  has_many :credit_cards, dependent: :destroy
+  has_many :checkings, dependent: :destroy
   has_one :contact_number, dependent: :destroy
   has_one :schedule, dependent: :destroy
   belongs_to :plan, optional: true
   has_many :orders, dependent: :destroy
+
+  def full_name
+    "#{first_name} #{last_name}"
+  end
 end
