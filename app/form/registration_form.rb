@@ -94,8 +94,8 @@ class RegistrationForm
         end
       end
       payment_method.classify.constantize.create!(payment_method_params.merge!(user_id: user.id))
-      payment_processor = PaymentProcessor.new(user)
-      raise StandardError, payment_processor.errors unless payment_processor.run
+      subscription_processor = SubscriptionProcessor.new(user)
+      raise StandardError, subscription_processor.errors unless subscription_processor.run
     end
 
     true

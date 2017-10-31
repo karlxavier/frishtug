@@ -1,5 +1,5 @@
 require 'active_merchant'
-class PaymentProcessor
+class SubscriptionProcessor
   attr_reader :errors
 
   def initialize(user)
@@ -29,9 +29,42 @@ class PaymentProcessor
     end
   end
 
+  def cancel
+    return false unless subscribed?
+    response = gateway.cancel_recurring(user.subscription_id)
+
+    if response.success?
+      true
+    else
+      @errors.push(response.message)
+      false
+    end
+  end
+
+  def update
+    return false unless subscribed?
+    options_with_subscription = option.merge!(subscription_id: user.subscription_id)
+    response = gateway.update_recurring(options_with_subscription)
+
+    if response.success?
+      true
+    else
+      @errors.push(response.message)
+      false
+    end
+  end
+
   private
 
-  attr_accessor :charge_amount, :user
+  attr_accessor :charge_amount, :user, :errors
+
+  def subscribed?
+    unless user.subscription_id?
+      errors.push('User is not subscribe')
+      return false
+    end
+    true
+  end
 
   def options
     {
