@@ -1,0 +1,32 @@
+<div class="row justify-content-center align-items-center">
+  <div class="col-12 col-md-3">
+    <h3 class="text-uppercase">Sign Up: Create Account</h3>
+    <div class="form-group row">
+      <div class="col">
+        <%= form.text_field :first_name, class: 'form-control', placeholder: 'First Name' %>
+        <div class="invalid-feedback">
+          First name is required
+        </div>
+      </div>
+      <div class="col">
+        <%= form.text_field :last_name, class: 'form-control', placeholder: 'Last Name' %>
+        <div class="invalid-feedback">
+          Last name is required
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= form.text_field :email, class: 'form-control', placeholder: 'Email' %>
+      <div class="invalid-feedback">
+          Email is required
+      </div>
+    </div>
+    <div class="form-group">
+      <%= form.password_field :password, class: 'form-control', placeholder: 'Password' %>
+      <div class="invalid-feedback">
+        Password is required
+      </div>
+    </div>
+    <a href="javascript:void(0)" class="btn btn-brown btn-block text-uppercase" @click="nextTab">Next Step</a>
+  </div>
+</div>

@@ -95,7 +95,7 @@
     }
   }
 
-  if (scheduleTypeLabels) {
+  if (!scheduleTypeLabels) {
     scheduleTypeLabels.forEach( label => {
       const radio = label.querySelector('input')
       label.addEventListener('click', (e) => {
@@ -472,8 +472,8 @@
   planSelectorInit()
   scheduleSelecter()
   cvcInputControl()
-  paymentMethods()
-  addBillingInfo()
+  //paymentMethods()
+  //addBillingInfo()
   mealSelectorInit()
   mealCounterObserver()
   window.order = order

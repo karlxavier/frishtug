@@ -1,0 +1,22 @@
+<div class="row justify-content-center align-items-center">
+  <div class="col-12 col-md-6 payment-method-options">
+    <h4 class="text-center text-uppercase">Payment</h4>
+    <% @registration.payment_methods.each do |payment_method| %>
+      <div class="form-check form-check-inline payment_methods">
+        <label for="<%= payment_method %>" class="form-check-label">
+
+          <input type="radio" name="registration_form[payment_method]" class="form-check-input" value="<%= payment_method %>" id="<%= payment_method %>" v-model="payment_method">
+          Pay by <%= payment_method.to_s.humanize.titleize %>
+        </label>
+      </div>
+    <% end %>
+  </div>
+</div>
+<div class="row justify-content-center align-items-center">
+  <div class="col-12 col-md-6 payment-method-container" v-if="payment_method === 'credit_card'">
+    <%= render 'credit_card' %>
+  </div>
+  <div class="col-12 col-md-6 payment-method-container" v-else>
+    <%= render 'checking' %>
+  </div>
+</div>

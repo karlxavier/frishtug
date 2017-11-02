@@ -8,6 +8,7 @@
     "dropzone": "^5.2.0",
     "sweetalert2": "^6.11.1",
     "vue": "^2.4.4",
+    "vue-form-wizard": "^0.7.0",
     "vue-turbolinks": "^2.0.0"
   },
   "devDependencies": {

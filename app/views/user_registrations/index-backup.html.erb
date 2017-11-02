@@ -1,0 +1,204 @@
+<%= form_with model: @registration, url: user_registrations_path(format: :js), id: 'sign_up_form' do |form| %>
+  <ul class="nav nav-pills mb-3 justify-content-center" id="steps-tab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id="sign_up_tab" data-toggle="tab" href="#sign_up" >Sign Up</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="delivery_information_tab" data-toggle="tab" href="#delivery_information">Delivery Information</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="plan_tab" data-toggle="tab" href="#plan">Plan</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="days_tab" data-toggle="tab" href="#days">Days</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="payment_setup_tab" data-toggle="tab" href="#payment_setup" >Payment Setup</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="meals_tab" data-toggle="tab" href="#meals">Meals</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="review_order_tab" data-toggle="tab" href="#review_order" >Review Order</a>
+    </li>
+  </ul>
+
+  <div class="tab-content" id="pills-tabContent">
+
+    <%# Sign up %>
+    <div class="tab-pane active show" id="sign_up">
+      <div class="row justify-content-center align-items-center">
+        <div class="col-12 col-md-3">
+          <h3 class="text-uppercase">Sign Up: Create Account</h3>
+          <div class="form-group row">
+            <div class="col">
+              <%= form.text_field :first_name, class: 'form-control', placeholder: 'First Name' %>
+            </div>
+            <div class="col">
+              <%= form.text_field :last_name, class: 'form-control', placeholder: 'Last Name' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= form.text_field :email, class: 'form-control', placeholder: 'Email' %>
+          </div>
+          <div class="form-group">
+            <%= form.password_field :password, class: 'form-control', placeholder: 'Password' %>
+          </div>
+          <a class="btn btn-brown btn-block" data-toggle="pill" href="#delivery_information">Next</a>
+        </div>
+      </div>
+    </div>
+
+    <%# Delivery Information %>
+    <div class="tab-pane" id="delivery_information">
+      <div class="row justify-content-center align-items-center">
+        <div class="col-12 col-md-3">
+          <h3 class="text-uppercase">Delivery Information</h3>
+          <div class="form-group">
+            <% @registration.address_types.each do |type| %>
+              <label for="<%= type.to_s.parameterize %>">
+                <%= form.radio_button :location_at, type, id: "#{type.to_s.parameterize}", class: '', checked: (true if type == :at_work) %>
+                <%= type.to_s.humanize %>
+              </label>
+            <% end %>
+          </div>
+          <div class="form-group">
+            <%= form.text_field :line1, class: 'form-control', placeholder: 'Address Line 1' %>
+          </div>
+          <div class="form-group">
+            <%= form.text_field :line2, class: 'form-control', placeholder: 'Address Line 2' %>
+          </div>
+          <div class="form-group">
+            <%= form.text_field :front_door, class: 'form-control', placeholder: 'Front Door Code (if applicable)' %>
+          </div>
+          <div class="form-group row">
+            <div class="col">
+              <%= form.text_field :city, class: 'form-control', placeholder: 'City' %>
+            </div>
+            <div class="col">
+              <%= form.text_field :state, class: 'form-control', placeholder: 'State' %>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col">
+              <%= form.text_field :zip_code, class: 'form-control', placeholder: 'Zipcode' %>
+            </div>
+            <div class="col">
+              <%= form.text_field :phone_number, class: 'form-control', placeholder: 'Phone Number' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= form.text_field :group_code, class: 'form-control', placeholder: 'Group Code' %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%# Plan %>
+    <div class="tab-pane" id="plan">
+      <div class="card-deck">
+        <% Plan.all.sort.each do |p| %>
+          <div class="card text-center <%= p.name.parameterize %>"
+            data-plan-name="<%= p.name %>"
+            data-plan-price="<%= p.price %>"
+              data-plan-shipping-fee="<%= p.shipping_fee? ? p.shipping_fee : 0 %>">
+            <div class="card-body">
+              <h4 class="card-title">
+                <%= p.name %>
+              </h4>
+              <p class="card-text plan--description">
+                <%= p.description.html_safe %>
+              </p>
+              <p class="card-text">
+                <% if p.free? %>
+                  Free Deliver
+                <% else %>
+                  <%= p.shipping_note %>
+                <% end %>
+              </p>
+              <p class="card-text text-upcase">Note:</p>
+              <small class="card-text">
+                <%= p.note %>
+              </small>
+            </div>
+            <div class="card-footer">
+              <label for="<%= "#{p.name.parameterize}-#{p.id}" %>" class="btn btn-brown plan--btns">
+                <%= form.radio_button :plan_id, p.id, id: "#{p.name.parameterize}-#{p.id}", class: 'd-none' %>
+                Choose <%= p.name %>
+              </label>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <%# Days %>
+    <div class="tab-pane" id="days">
+      <div class="row justify-content-center align-items-center">
+        <div class="col-12 col-md-6">
+          <h4 class="text-center text-uppercase">Choose Delivery Day</h4>
+          <div class="row justify-content-center schedule-types">
+            <% @registration.schedule_types.each_with_index do |s, index| %>
+                <div class="form-check form-check-inline">
+                  <label for="<%= s %>" class="btn btn-outline-dark form-check-label px-4 py-4 <%= 'btn-brown' if index == 0 %>">
+                    <%= form.radio_button :schedule, s, id: s, class: 'd-none form-check-input', checked: (true if index == 0) %>
+                    <%= s.to_s.humanize %>
+                  </label>
+                </div>
+            <% end %>
+          </div>
+          <p>
+            Choose a specific date(dates will be change according to the 5 day schedule above)
+          </p>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-md-4 col-md-offset-4">
+          <div class="list-group days-schedule">
+            <%= render 'day_schedules', {schedule: @registration.schedule_days(:monday) } %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%# Payment Setup %>
+    <div class="tab-pane" id="payment_setup">
+      <div class="row justify-content-center align-items-center">
+        <div class="col-12 col-md-6 payment-method-options">
+          <h4 class="text-center text-uppercase">Payment</h4>
+          <% @registration.payment_methods.each do |payment_method| %>
+            <div class="form-check form-check-inline payment_methods">
+              <label for="<%= payment_method %>" class="form-check-label">
+                <%= form.radio_button :payment_method, payment_method, id: payment_method,class: 'form-check-input', checked: (true if payment_method == :credit_card) %>
+                Pay by <%= payment_method.to_s.humanize.titleize %>
+              </label>
+            </div>
+          <% end %>
+        </div>
+      </div>
+      <div class="row justify-content-center align-items-center">
+        <div class="col-12 col-md-6 payment-method-container">
+          <%= render 'credit_card' %>
+        </div>
+      </div>
+    </div>
+
+    <%# Meals %>
+    <div class="tab-pane" id="meals">
+      <div class="container-fluid">
+        <%= render 'day_selection_meals', categorized_menus: @categorized_menus %>
+      </div>
+    </div>
+
+    <%# Review Orders %>
+    <div class="tab-pane" id="review_order">
+      <div class="container-fluid">
+        <%= render 'review_orders', form: form %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<%= content_for :footer_js do %>
+  <%= javascript_pack_tag 'user_registration' %>
+<% end %>

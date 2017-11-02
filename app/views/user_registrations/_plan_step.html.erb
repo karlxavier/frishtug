@@ -1,0 +1,34 @@
+<div class="card-deck">
+  <% Plan.all.sort.each do |p| %>
+    <div class="card text-center <%= p.name.parameterize %>"
+      data-plan-name="<%= p.name %>"
+      data-plan-price="<%= p.price %>"
+        data-plan-shipping-fee="<%= p.shipping_fee? ? p.shipping_fee : 0 %>">
+      <div class="card-body">
+        <h4 class="card-title">
+          <%= p.name %>
+        </h4>
+        <p class="card-text plan--description">
+          <%= p.description.html_safe %>
+        </p>
+        <p class="card-text">
+          <% if p.free? %>
+            Free Deliver
+          <% else %>
+            <%= p.shipping_note %>
+          <% end %>
+        </p>
+        <p class="card-text text-upcase">Note:</p>
+        <small class="card-text">
+          <%= p.note %>
+        </small>
+      </div>
+      <div class="card-footer">
+        <label for="<%= "#{p.name.parameterize}-#{p.id}" %>" class="btn btn-brown plan--btns">
+          <input type="radio" name="registration_form[plan_id]" value="<%= p.id %>" id="<%= "#{p.name.parameterize}-#{p.id}" %>" class="d-none" @click="nextTab">
+          Choose <%= p.name %>
+        </label>
+      </div>
+    </div>
+  <% end %>
+</div>

@@ -1,0 +1,13 @@
+.wizard-progress-with-circle {
+  display: none;
+}
+.vue-form-wizard {
+  .wizard-icon-circle {
+    border: 0;
+
+    .wizard-icon-container {
+      top: 0;
+      border-radius: 50%;
+    }
+  }
+}

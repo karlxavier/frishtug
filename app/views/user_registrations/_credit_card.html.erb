@@ -1,26 +1,41 @@
 <div class="form-group">
   <input type="text" name="registration_form[card_number]" id="registration_form_card_number" class="form-control" placeholder="Credit Card Number">
+  <div class="invalid-feedback">
+    Credit Card is required
+  </div>
 </div>
 <div class="form-group row">
   <div class="col">
     <%= select "registration_form", "month", months_with_index_options, {}, class: 'form-control' %>
+    <div class="invalid-feedback">
+      Please select a month
+    </div>
   </div>
   <div class="col">
     <%= select "registration_form", "year", years_options, {}, class: 'form-control' %>
+    <div class="invalid-feedback">
+      Please select a year
+    </div>
   </div>
   <div class="col">
-    <input type="number" min="0" max="9999" name="registration_form[cvc]" id="registration_form_cvc" class="form-control cvc-input-control" placeholder="CVC">
+    <input type="number" min="0" max="9999" name="registration_form[cvc]" id="registration_form_cvc" class="form-control cvc-input-control" placeholder="CVV">
+    <div class="invalid-feedback">
+      CVV is required
+    </div>
   </div>
 </div>
 <div class="form-check">
   <label for="registration_form_different_billing" class="form-check-label">
-    <input type="checkbox" name="registration_form[different_billing]" value="true" class="form-check-input" id="registration_form_different_billing">
+    <input type="checkbox" name="registration_form[different_billing]" value="true" class="form-check-input" id="registration_form_different_billing" v-model="different_billing">
     Billing address is different to delivery address
   </label>
 </div>
-<div class="different-billing d-none">
+<div class="different-billing" v-if="different_billing">
   <div class="form-group">
     <input type="text" class="form-control" name="registration_form[billing_line_1]" placeholder="Address Line 1">
+    <div class="invalid-feedback">
+      Line1 is required
+    </div>
   </div>
   <div class="form-group">
     <input type="text" class="form-control" name="registration_form[billing_line_2]" placeholder="Address Line 2">
@@ -28,17 +43,29 @@
   <div class="form-group row">
     <div class="col">
       <input type="text" class="form-control" name="registration_form[billing_city]" placeholder="City">
+      <div class="invalid-feedback">
+        City is required
+      </div>
     </div>
     <div class="col">
       <input type="text" class="form-control" name="registration_form[billing_state]" placeholder="State">
+      <div class="invalid-feedback">
+        State is required
+      </div>
     </div>
   </div>
   <div class="form-group row">
     <div class="col">
-      <input type="text" class="form-control" name="registration_form[billing_zip_code]" placeholder="ZIP Code">
+      <input type="text" class="form-control" name="registration_form[billing_zip_code]" placeholder="Zipcode">
+      <div class="invalid-feedback">
+        Zipcode is required
+      </div>
     </div>
     <div class="col">
       <input type="text" class="form-control" name="registration_form[billing_phone_number]" placeholder="Phone Number">
     </div>
   </div>
 </div>
+<a href="javascript:void(0)" class="btn btn-brown text-uppercase" @click="nextTab">
+  Continue to meal selection
+</a>

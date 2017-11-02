@@ -1,12 +1,24 @@
 <div class="form-group">
-  <input type="text" name="registration_form[bank_name]" placeholder="Bank Name" class="form-control">
+  <input type="text" name="registration_form[bank_name]" placeholder="Bank Name" class="form-control" required>
+  <div class="invalid-feedback">
+    Bank name is required
+  </div>
 </div>
 <div class="form-group">
   <input type="text" name="registration_form[account_number]" placeholder="Account Number" class="form-control">
+  <div class="invalid-feedback">
+    Account number is required
+  </div>
 </div>
 <div class="form-group">
   <input type="text" name="registration_form[routing_number]" placeholder="Routing Number" class="form-control">
+  <div class="invalid-feedback">
+    Routing number is required
+  </div>
 </div>
 <small class="text-muted">
   Account will be activated upon receiving and clearing of check
 </small>
+<a href="javascript:void(0)" class="btn btn-brown text-uppercase" @click="nextTab">
+  Continue to meal selection
+</a>

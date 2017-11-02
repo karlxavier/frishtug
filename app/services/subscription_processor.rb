@@ -1,11 +1,12 @@
 require 'active_merchant'
+require 'active_merchant/billing/rails'
+
 class SubscriptionProcessor
-  attr_reader :errors
+  include ActiveModel::Validations
 
   def initialize(user)
     @user = user
     @charge_amount = user.plan.price
-    @errors = []
     mode
   end
 
@@ -21,11 +22,15 @@ class SubscriptionProcessor
         )
         true
       else
-        @errors.push(response.message)
+        errors.add(:base, response.message)
         false
       end
     else
-      @errors.push('Credit card is invalid!')
+      error_message = <<-EOF.squish
+        Error: Credit card not valid.
+        #{credit_card.errors.full_messages.join('.\n')}
+      EOF
+      errors.add(:base, error_message)
     end
   end
 
@@ -36,7 +41,7 @@ class SubscriptionProcessor
     if response.success?
       true
     else
-      @errors.push(response.message)
+      errors.add(:base, response.message)
       false
     end
   end
@@ -49,18 +54,18 @@ class SubscriptionProcessor
     if response.success?
       true
     else
-      @errors.push(response.message)
+      errors.add(:base, response.message)
       false
     end
   end
 
   private
 
-  attr_accessor :charge_amount, :user, :errors
+  attr_accessor :charge_amount, :user
 
   def subscribed?
     unless user.subscription_id?
-      errors.push('User is not subscribe')
+      errors.add(:base, 'User is not subscribe')
       return false
     end
     true

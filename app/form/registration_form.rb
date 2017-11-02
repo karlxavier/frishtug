@@ -35,7 +35,7 @@ class RegistrationForm
                 :billing_phone_number
 
   validates :first_name, :last_name, :email, :password, presence: true
-  validates :location_at, :line1, :line2, :city, :state, :zip_code, presence: true
+  validates :location_at, :line1, :city, :state, :zip_code, presence: true
   validates :phone_number, presence: true
   # validates :option, :schedule, :start_date, presence: true
   validate :user_email_unique?
@@ -95,7 +95,7 @@ class RegistrationForm
       end
       payment_method.classify.constantize.create!(payment_method_params.merge!(user_id: user.id))
       subscription_processor = SubscriptionProcessor.new(user)
-      raise StandardError, subscription_processor.errors unless subscription_processor.run
+      raise StandardError, subscription_processor.errors.full_messages unless subscription_processor.run
     end
 
     true
