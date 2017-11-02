@@ -68,6 +68,10 @@ class SubscriptionProcessor
 
   def options
     {
+      amount: amount_to_cents,
+      subscription_name: user.plan.name,
+      credit_card: credit_card,
+      billing_address: billing_address,
       interval: {
         unit: :months,
         length: 1
@@ -75,8 +79,7 @@ class SubscriptionProcessor
       duration: {
         start_date: start_date,
         occurrences: 12
-      },
-      billing_address: billing_address
+      }
     }
   end
 
