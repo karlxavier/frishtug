@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171031092951) do
+ActiveRecord::Schema.define(version: 20171103060312) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -169,6 +169,9 @@ ActiveRecord::Schema.define(version: 20171031092951) do
     t.decimal "shipping_fee", precision: 8, scale: 2
     t.text "note"
     t.string "shipping_note"
+    t.string "stripe_plan_id"
+    t.string "interval"
+    t.index ["stripe_plan_id"], name: "index_plans_on_stripe_plan_id"
   end
 
   create_table "schedules", force: :cascade do |t|
@@ -202,14 +205,19 @@ ActiveRecord::Schema.define(version: 20171031092951) do
     t.string "first_name"
     t.string "last_name"
     t.bigint "plan_id"
-    t.string "subscription_id"
-    t.string "customer_id"
-    t.string "customer_payment_id"
+    t.string "stripe_token"
+    t.datetime "subscribe_at"
+    t.datetime "subscription_expires_at"
+    t.string "stripe_customer_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["first_name"], name: "index_users_on_first_name"
     t.index ["last_name"], name: "index_users_on_last_name"
     t.index ["plan_id"], name: "index_users_on_plan_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["stripe_customer_id"], name: "index_users_on_stripe_customer_id"
+    t.index ["stripe_token"], name: "index_users_on_stripe_token"
+    t.index ["subscribe_at"], name: "index_users_on_subscribe_at"
+    t.index ["subscription_expires_at"], name: "index_users_on_subscription_expires_at"
   end
 
   add_foreign_key "add_ons", "menu_categories"

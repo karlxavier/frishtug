@@ -47,6 +47,7 @@ gem 'piet'
 gem 'popper_js', '~> 1.11.1'
 gem 'rack-mini-profiler'
 gem 'sidekiq'
+gem 'stripe'
 gem 'trix'
 
 group :development, :test do

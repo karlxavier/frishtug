@@ -1,24 +1,53 @@
 <div class="form-group">
-  <input type="text" name="registration_form[card_number]" id="registration_form_card_number" class="form-control" placeholder="Credit Card Number">
+  <input type="text"
+    name="registration_form[card_number]"
+    id="registration_form_card_number"
+    class="form-control"
+    placeholder="Credit Card Number"
+    data-stripe="number">
   <div class="invalid-feedback">
     Credit Card is required
   </div>
 </div>
 <div class="form-group row">
   <div class="col">
-    <%= select "registration_form", "month", months_with_index_options, {}, class: 'form-control' %>
+    <%= select "registration_form",
+      "month",
+      months_with_index_options,
+      {},
+      class: 'form-control',
+      data: {
+        stripe: 'exp_month'
+      }
+    %>
     <div class="invalid-feedback">
       Please select a month
     </div>
   </div>
   <div class="col">
-    <%= select "registration_form", "year", years_options, {}, class: 'form-control' %>
+    <%= select "registration_form",
+      "year",
+      years_options,
+      {},
+      class: 'form-control',
+      data: {
+        stripe: 'exp_year'
+      }
+    %>
     <div class="invalid-feedback">
       Please select a year
     </div>
   </div>
   <div class="col">
-    <input type="number" min="0" max="9999" name="registration_form[cvc]" id="registration_form_cvc" class="form-control cvc-input-control" placeholder="CVV">
+    <input type="number"
+           min="0"
+           max="9999"
+           name="registration_form[cvc]"
+           id="registration_form_cvc"
+           class="form-control cvc-input-control"
+           placeholder="CVV"
+           data-strip="cvc"
+    >
     <div class="invalid-feedback">
       CVV is required
     </div>

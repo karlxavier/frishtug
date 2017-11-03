@@ -9,20 +9,21 @@ const registrationForm = new Vue({
     payment_method: 'credit_card',
     different_billing: false,
     delivery_date: document.querySelector('#start_date_0').value,
-    schedule: 'monday_to_friday'
+    schedule: 'monday_to_friday',
+    stripe_key: '<%= STRIPE_PUBLIC_KEY %>'
   },
   methods: {
     onComplete: function() {
       alert('Yay. Done!')
     },
     nextTab: function() {
-      console.log('test: ', this.formWizard.data)
       const btn = document.querySelector('.wizard-btn')
       const click = new Event('click')
       btn.dispatchEvent(click)
     },
     changeSchedule: function() {
       const _this = this
+      setTabsSchedule(_this.schedule)
       setTimeout(() => {
         _this.delivery_date = document.querySelector('#start_date_0').value
       }, 300)
@@ -95,9 +96,30 @@ const registrationForm = new Vue({
         _this.nextTab()
         return true
       })
+    },
+    createToken: function() {
+      const _this = this
+      const form = document.querySelector('form#sign_up_form')
+      Stripe.setPublishableKey(_this.stripe_key)
+      form.classList.add('disabled')
+      Stripe.card.createToken(form, stripeResponseHandler);
     }
   }
 })
+
+
+const stripeResponseHandler = (status, response) => {
+  const form = document.querySelector('form#sign_up_form')
+
+  if (response.error) {
+    const paymentError = form.querySelector('payment_errors')
+    form.classList.remove('disabled')
+    paymentError.innerHtml = response.error
+  } else {
+    const token = response.id
+    completeAction(token)
+  }
+}
 
 const multiplePresenceValidator = (inputsNameClassOrIds) => {
   let invalid = 0

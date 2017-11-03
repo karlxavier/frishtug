@@ -1,2 +1,17 @@
-alert('<%= @message %>');
-alert('<%= @registration.errors.messages %>');
+<% if @registration.errors.present? %>
+  swal(
+    'Opps...',
+    '<%= @registration.errors.full_messages.join(', ') %>',
+    'error'
+  );
+<% else %>
+  swal({
+      title: 'Congratulations!',
+      text: "You have made your first meal plan.",
+      type: 'success',
+      confirmButtonColor: '#3085d6',
+      confirmButtonText: 'REVIEW ORDER'
+  }).then( function() {
+    return true
+  })
+<% end %>

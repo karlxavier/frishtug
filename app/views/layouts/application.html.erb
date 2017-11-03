@@ -6,9 +6,10 @@
     <%= render 'shared/font_assets'%>
     <%= csrf_meta_tags %>
     <%= stylesheet_link_tag 'application', media: 'all' %>
-    <%= stylesheet_pack_tag 'application' %>
     <%= javascript_include_tag 'application' %>
-    <%= javascript_pack_tag 'application' %>
+    <%= javascript_include_tag 'https://js.stripe.com/v2/' %>
+    <%= stylesheet_pack_tag 'application' %>
+    <%= javascript_pack_tag 'sweet_alert' %>
     <%= yield :header_js %>
   </head>
   <body>

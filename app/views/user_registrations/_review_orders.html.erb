@@ -38,6 +38,13 @@
 
 <div class="row justify-content-center">
   <div class="col-md-2">
-    <%= form.submit "Complete Sign Up", class: 'btn btn-brown text-uppercase complete-orders-btn' %>
+    <input
+      type="submit"
+      name="commit"
+      value="Complete Sign Up"
+      data-disable-with="Complete Sign Up"
+      class="btn btn-brown text-uppercase complete-orders-btn"
+      v-on:click.prevent="createToken"
+    >
   </div>
 </div>

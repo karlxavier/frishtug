@@ -58,6 +58,7 @@ class UserRegistrationsController < ApplicationController
             :billing_state,
             :billing_zip_code,
             :billing_phone_number,
+            :stripe_token,
             orders: [:order_date, menu_ids: []]
           )
   end

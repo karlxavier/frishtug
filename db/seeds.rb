@@ -20,6 +20,7 @@ Plan.create([
     name: 'Option 1',
     description: '$20 per day, at $400 monthly',
     price: 20,
+    interval: 'month',
     shipping: :free,
     note: 'Incididunt esse elit magna incididunt nulla. Sunt ipsum eu cillum nisi officia labore. Anim ullamco esse nulla aliqua minim officia elit sint nostrud occaecat velit sint.'
   },
@@ -27,6 +28,7 @@ Plan.create([
     name: 'Option 2',
     description: '$14.95 x 20 days = $299',
     price: 14.95,
+    interval: 'month',
     shipping: :free,
     note: 'Voluptate ipsum ipsum cupidatat amet sint ea. Reprehenderit deserunt consectetur veniam sunt dolore.'
   },
@@ -34,6 +36,7 @@ Plan.create([
     name: 'Option 3',
     description: '$10 per day, at $200 monthly',
     price: 10,
+    interval: 'month',
     shipping: :paid,
     shipping_fee: 40,
     shipping_note: 'Additional $40 for Delivery',
@@ -43,9 +46,14 @@ Plan.create([
     name: 'Option 4',
     description: 'Single breakfast at $25',
     price: 25,
+    interval: nil,
     shipping: :paid,
     shipping_fee: 40,
     shipping_note: 'Delivery will be xx USD',
     note: 'Mollit eiusmod est est commodo qui. Laboris enim laboris qui sunt quis consectetur laboris minim dolor anim irure ut esse in.'
   }
 ])
+
+StripePlanner.new(Plan.first).run
+StripePlanner.new(Plan.second).run
+StripePlanner.new(Plan.third).run

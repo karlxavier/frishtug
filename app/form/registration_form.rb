@@ -32,7 +32,8 @@ class RegistrationForm
                 :billing_city,
                 :billing_state,
                 :billing_zip_code,
-                :billing_phone_number
+                :billing_phone_number,
+                :stripe_token
 
   validates :first_name, :last_name, :email, :password, presence: true
   validates :location_at, :line1, :city, :state, :zip_code, presence: true
@@ -41,6 +42,7 @@ class RegistrationForm
   validate :user_email_unique?
   validates :bank_name, :account_number, :routing_number, presence: true, if: :checking?
   validates :card_number, :month, :year, :cvc, presence: true, if: :credit_card?
+  validates :stripe_token, presence: true
 
   def save
     return false if invalid?
@@ -75,7 +77,7 @@ class RegistrationForm
 
   def user_email_unique?
     return false unless User.where(email: email).exists?
-    errors.add(:email, 'Email is already in use.')
+    errors.add(:email, 'is already registered.')
   end
 
   def persist!
@@ -84,6 +86,7 @@ class RegistrationForm
       user.addresses.create!(address_params)
       user.create_contact_number!(phone_number: phone_number)
       user.create_schedule!(schedule_params)
+
       orders.each do |o|
         if o[:order_date].present?
           order = user.orders.create!(placed_on: o[:order_date])
@@ -93,9 +96,13 @@ class RegistrationForm
           return false
         end
       end
-      payment_method.classify.constantize.create!(payment_method_params.merge!(user_id: user.id))
-      subscription_processor = SubscriptionProcessor.new(user)
-      raise StandardError, subscription_processor.errors.full_messages unless subscription_processor.run
+
+      payment_method.classify.constantize.create!(
+        payment_method_params.merge!(user_id: user.id)
+      )
+
+      stripe_subscription = StripeSubscriptioner.new(user)
+      stripe_subscription.run
     end
 
     true
@@ -113,7 +120,8 @@ class RegistrationForm
       email: email,
       password: password,
       password_confirmation: password,
-      plan_id: plan_id
+      plan_id: plan_id,
+      stripe_token: stripe_token
     }
   end
 

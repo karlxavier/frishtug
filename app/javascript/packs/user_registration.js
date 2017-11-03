@@ -1,3 +1,4 @@
+import swal from 'sweetalert2'
 (function(win){
 
   const order = {
@@ -125,10 +126,19 @@
     })
   }
 
-  const setTabsSchedule = (schedules) => {
+  const setTabsSchedule = (schedule) => {
+    order.schedule = schedule
+    const mondayToFriday = ["monday", "tuesday", "wednesday", "thursday", "friday"]
+    const sundayToThursday = ["sunday", "monday", "tuesday", "wednesday", "thursday"]
     const mealSelectionTabs = document.querySelector('#meal-selection-tab')
     if (mealSelectionTabs) {
       const tabs = mealSelectionTabs.querySelectorAll('li.nav-item')
+      let schedules = mondayToFriday
+
+      if (schedule === 'sunday_to_thursday') {
+        schedules = sundayToThursday
+      }
+
       schedules.forEach( (schedule, index) => {
         const a = tabs[index].querySelector('a')
         const targetTab = document.querySelector(`#${a.getAttribute('aria-controls')}`)
@@ -415,13 +425,13 @@
 
   const populateReviewPage = () => {
     const page = document.querySelector('#review_order')
-    schedule = order.schedule === 'sunday_to_thursday'
+    const schedules = order.schedule === 'sunday_to_thursday'
                     ? 'Sunday - Thursday' : 'Monday - Friday'
-    shipping = order.shipping_fee === 0 ? "Free" : toCurrency(order.shipping_fee)
+    const shipping = order.shipping_fee === 0 ? "Free" : toCurrency(order.shipping_fee)
     innerHtmlOf(page, order.plan, '.choosen_plan')
     innerHtmlOf(page, order.plan_price, '.price')
     innerHtmlOf(page, shipping, '.shipping')
-    innerHtmlOf(page, schedule, '.delivery_schedule')
+    innerHtmlOf(page, schedules, '.delivery_schedule')
     innerHtmlOf(page, order.day_1.date, '.first_delivery_date')
   }
 
@@ -438,37 +448,34 @@
     })
   }
 
-  const completeAction = () => {
-    const btn = document.querySelector('.complete-orders-btn')
-    btn.addEventListener('click', (e) => {
-      e.preventDefault()
-      const form = document.querySelector('form#sign_up_form')
-      const formData = new FormData(form)
-      const ordersData = []
+  const completeAction = (token) => {
+    const form = document.querySelector('form#sign_up_form')
+    const formData = new FormData(form)
+    const ordersData = []
 
-      days.forEach( day => {
-        const order_by_day = order[day]
-        formData.append('registration_form[orders][][order_date]', order_by_day.date)
-        formData.append('registration_form[orders][][menu_ids][]', order_by_day.meal_ids)
-      })
-      var AUTH_TOKEN = $('meta[name=csrf-token]').attr('content')
-      $.ajax({
-        url: form.action,
-        type: 'POST',
-        headers: {
-          'X_CSRF_TOKEN': AUTH_TOKEN
-        },
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: (data) => {
-          alert('test')
-        }
-      })
+    days.forEach( day => {
+      const order_by_day = order[day]
+      formData.append('registration_form[orders][][order_date]', order_by_day.date)
+      formData.append('registration_form[orders][][menu_ids][]', order_by_day.meal_ids)
+    })
+
+    formData.append('registration_form[stripe_token]', token)
+    var AUTH_TOKEN = $('meta[name=csrf-token]').attr('content')
+    $.ajax({
+      url: form.action,
+      type: 'POST',
+      headers: {
+        'X_CSRF_TOKEN': AUTH_TOKEN
+      },
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: (data) => {
+        eval(data)
+      }
     })
   }
 
-  completeAction()
   planSelectorInit()
   scheduleSelecter()
   cvcInputControl()
@@ -476,6 +483,7 @@
   //addBillingInfo()
   mealSelectorInit()
   mealCounterObserver()
+  window.setTabsSchedule = setTabsSchedule
+  window.completeAction = completeAction
   window.order = order
-  window.renderOrders = renderOrders
 }(window))

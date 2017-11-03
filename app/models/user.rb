@@ -27,7 +27,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable
 
   validates :first_name, :last_name, presence: true
-  has_many :addresses, as: :addressable
+  has_many :addresses, as: :addressable, dependent: :destroy
   has_many :credit_cards, dependent: :destroy
   has_many :checkings, dependent: :destroy
   has_one :contact_number, dependent: :destroy
