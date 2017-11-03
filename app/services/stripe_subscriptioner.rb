@@ -6,21 +6,48 @@ class StripeSubscriptioner
   end
 
   def run
-    customer = create_stripe_customer
-    subscribe_customer(customer.id)
-    update_user(customer.id)
-    true
-  rescue Stripe::CardError => e
-    errors.add(:credit_card, e.message)
+    begin
+      customer     = create_stripe_customer
+      subscription = subscribe_customer(customer.id)
+      update_user(customer, subscription)
+      true
+    rescue Stripe::StripeError => e
+      errors.add(:credit_card, e.message)
+      false
+    end
+  end
+
+  def retrieve
+    return false if user_not_subscribed?
+    Stripe::Subscription.retrieve(user.stripe_subscription_id)
+  end
+
+  def cancel
+    subscription = retrieve
+    if subscription
+      subscription.delete
+      true
+    end
+
+    false
   end
 
 private
 
   attr_accessor :user
 
-  def update_user(customer_id)
+  def user_not_subscribed?
+    if !user.stripe_subscription_id?
+      errors.add(:user, 'is not subscribe.')
+      return true
+    end
+    false
+  end
+
+  def update_user(customer, subscription)
     user.update_attributes(
-      stripe_customer_id: customer_id
+      stripe_customer_id: customer.id,
+      stripe_subscription_id: subscription.id
     )
   end
 

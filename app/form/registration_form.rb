@@ -101,8 +101,13 @@ class RegistrationForm
         payment_method_params.merge!(user_id: user.id)
       )
 
-      stripe_subscription = StripeSubscriptioner.new(user)
-      stripe_subscription.run
+      if payment_method == :credit_card
+        stripe_subscription = StripeSubscriptioner.new(user)
+        if stripe_subscription.run
+          user.approved = true
+          user.save
+        end
+      end
     end
 
     true
