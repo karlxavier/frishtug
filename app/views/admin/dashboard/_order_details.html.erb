@@ -1,0 +1,51 @@
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th>QTY</th>
+      <th>ITEM</th>
+      <th>PRICE</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% o.grouped_menus.each do |m| %>
+      <tr id="<%= "#{o.id} - #{m[:name]}" %>">
+        <td><%= m[:quantity] %></td>
+        <td><%= m[:name] %></td>
+        <td><%= monefy(m[:price]) %></td>
+      </tr>
+    <% end %>
+    <tr>
+      <td colspan="2">
+        <span class="float-right">
+          Sub-total
+        </span>
+      </td>
+      <td>
+        <%= monefy(o.sub_total) %>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <span class="float-right">
+          Shipping
+        </span>
+      </td>
+      <td>
+        <%= monefy(o.shipping_fee) %>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <span class="float-right">
+          Total
+        </span>
+      </td>
+      <td>
+        <%= monefy(o.total) %>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<a href="javascript:void(0)" @click="hideDetails(<%= o.id %>)">
+  Hide Order Details <i class="fa fa-angle-up"></i>
+</a>

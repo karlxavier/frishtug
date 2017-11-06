@@ -1,0 +1,34 @@
+<% orders.each do |o| %>
+  <div class="container-fluid mt-4">
+    <div class="row">
+      <div class="col">
+        <h5>
+          <%= o.menus.size %>
+          <small class="text-muted">(placed on <%= o.placed_on.strftime('%I:%M %P') %>)</small>
+        </h5>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <strong><%= o.user.full_name %></strong>
+        <p><%= o.user.full_address %></p>
+        <a href="javascript:void(0)" @click="showDetails(<%= o.id %>)" id="view-<%= o.id %>">
+          View Order Details <i class="fa fa-angle-down"></i>
+        </a>
+      </div>
+      <div class="col">
+        NOTES
+      </div>
+      <div class="col">
+        SKU
+      </div>
+    </div>
+
+    <div class="row fade d-none" id="<%= "order-#{o.id}" %>">
+      <div class="col-6">
+        <%= render 'order_details', o: o %>
+      </div>
+    </div>
+  </div>
+<% end %>

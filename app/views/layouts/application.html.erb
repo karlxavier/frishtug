@@ -17,6 +17,6 @@
     <%= render 'shared/notifications' %>
     <%= yield %>
     <%= yield :footer_js %>
-    <script src="https://use.fontawesome.com/69863dce90.js"></script>
+    <%= javascript_include_tag 'https://use.fontawesome.com/69863dce90.js' %>
   </body>
 </html>

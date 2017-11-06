@@ -32,10 +32,21 @@ class User < ApplicationRecord
   has_many :checkings, dependent: :destroy
   has_one :contact_number, dependent: :destroy
   has_one :schedule, dependent: :destroy
-  belongs_to :plan, optional: true
+  belongs_to :plan, optional: true, counter_cache: true
   has_many :orders, dependent: :destroy
+  scope :only_approved, -> { where(approved: true) }
 
   def full_name
-    "#{first_name} #{last_name}"
+    "#{first_name} #{last_name}".titleize
+  end
+
+  def full_address
+    <<-EOT
+      #{addresses.first.line1}
+      #{addresses.first.line2}
+      #{addresses.first.city}
+      #{addresses.first.state}
+      #{addresses.first.zip_code}
+    EOT
   end
 end

@@ -1,3 +1,5 @@
 class Admin::DashboardController < Admin::BaseController
-  def index; end
+  def index
+    @order_query = OrderQuery.new
+  end
 end
