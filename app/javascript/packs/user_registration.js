@@ -130,9 +130,9 @@ import swal from 'sweetalert2'
     order.schedule = schedule
     const mondayToFriday = ["monday", "tuesday", "wednesday", "thursday", "friday"]
     const sundayToThursday = ["sunday", "monday", "tuesday", "wednesday", "thursday"]
-    const mealSelectionTabs = document.querySelector('#meal-selection-tab')
+    const mealSelectionTabs = document.querySelector('.nav-tabs-wrapper')
     if (mealSelectionTabs) {
-      const tabs = mealSelectionTabs.querySelectorAll('li.nav-item')
+      const tabs = mealSelectionTabs.querySelectorAll('li.tab')
       let schedules = mondayToFriday
 
       if (schedule === 'sunday_to_thursday') {
@@ -140,10 +140,6 @@ import swal from 'sweetalert2'
       }
 
       schedules.forEach( (schedule, index) => {
-        const a = tabs[index].querySelector('a')
-        const targetTab = document.querySelector(`#${a.getAttribute('aria-controls')}`)
-        a.innerHTML = schedule.toUpperCase()
-        targetTab.setAttribute('data-meal-schedule', schedule)
         order[`day_${index + 1}`].day = schedule
       })
     }
@@ -246,7 +242,7 @@ import swal from 'sweetalert2'
         const mealName = card.dataset.mealName
         const mealPrice = card.dataset.mealPrice
         const mealImage = card.querySelector('img').src
-        const day = card.closest('div.tab-pane').id.split('-').join('_')
+        const day = card.closest('div.tab_pane').id.split('-').join('_')
         order[day].meal_ids.push(mealId)
         addMeals(day, mealName, mealId, mealPrice, mealImage)
         order.total_count += 1
@@ -267,7 +263,7 @@ import swal from 'sweetalert2'
           const mealName = card.dataset.mealName
           const mealPrice = card.dataset.mealPrice.toString()
           const mealImage = card.querySelector('img').src
-          const day = card.closest('div.tab-pane').id.split('-').join('_')
+          const day = card.closest('div.tab_pane').id.split('-').join('_')
           const index = order[day].meal_ids.indexOf(mealId)
           order[day].meal_ids.splice(index, 1)
           removeMeals(day, mealName, mealId, mealPrice, mealImage)
@@ -448,7 +444,7 @@ import swal from 'sweetalert2'
     })
   }
 
-  const completeAction = (token) => {
+  const completeAction = (token, brand) => {
     const form = document.querySelector('form#sign_up_form')
     const formData = new FormData(form)
     const ordersData = []
@@ -460,6 +456,7 @@ import swal from 'sweetalert2'
     })
 
     formData.append('registration_form[stripe_token]', token)
+    formData.append('registration_form[card_brand]', brand)
     var AUTH_TOKEN = $('meta[name=csrf-token]').attr('content')
     $.ajax({
       url: form.action,

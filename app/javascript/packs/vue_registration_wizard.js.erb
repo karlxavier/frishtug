@@ -1,8 +1,17 @@
 import VueFormWizard from 'vue-form-wizard'
+import VueTabs from 'vue-nav-tabs'
 import Vue from 'vue/dist/vue.esm'
 import swal from 'sweetalert2'
 
+// Components
 Vue.use(VueFormWizard)
+Vue.use(VueTabs)
+
+// Days
+const mondayToFriday = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+const sundayToThursday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"]
+
+
 const registrationForm = new Vue({
   el: '#registration-form',
   data: {
@@ -10,7 +19,39 @@ const registrationForm = new Vue({
     different_billing: false,
     delivery_date: document.querySelector('#start_date_0').value,
     schedule: 'monday_to_friday',
-    stripe_key: '<%= STRIPE_PUBLIC_KEY %>'
+    stripe_key: '<%= STRIPE_PUBLIC_KEY %>',
+    billing_address: {
+      address_line1: null,
+      address_line2: null,
+      address_city: null,
+      address_state: null,
+      address_country: 'US',
+      address_zip: null
+    },
+    credit_card_billing_address: {
+      address_line1: null,
+      address_line2: null,
+      address_city: null,
+      address_state: null,
+      address_country: 'US',
+      address_zip: null
+    },
+    credit_card: {
+      number: null,
+      cvc: null,
+      exp_month: '',
+      exp_year: ''
+    },
+    bank_account: {
+      country: 'US',
+      currency: 'usd',
+      routing_number: null,
+      account_number: null,
+      account_holder_name: null,
+      account_holder_type: 'individual'
+    },
+    error_messages: '',
+    tab_titles: mondayToFriday
   },
   methods: {
     onComplete: function() {
@@ -24,6 +65,12 @@ const registrationForm = new Vue({
     changeSchedule: function() {
       const _this = this
       setTabsSchedule(_this.schedule)
+      if (_this.schedule === 'sunday_to_thursday') {
+        _this.tab_titles = sundayToThursday
+      } else {
+        _this.tab_titles = mondayToFriday
+      }
+
       setTimeout(() => {
         _this.delivery_date = document.querySelector('#start_date_0').value
       }, 300)
@@ -102,7 +149,16 @@ const registrationForm = new Vue({
       const form = document.querySelector('form#sign_up_form')
       Stripe.setPublishableKey(_this.stripe_key)
       form.classList.add('disabled')
-      Stripe.card.createToken(form, stripeResponseHandler);
+
+      if (_this.payment_method === 'credit_card') {
+        Stripe.card.createToken(
+          _this.credit_card
+        , stripeResponseHandler)
+      } else {
+        Stripe.bankAccount.createToken(
+          _this.bank_account
+        , stripeResponseHandler)
+      }
     }
   }
 })
@@ -114,10 +170,11 @@ const stripeResponseHandler = (status, response) => {
   if (response.error) {
     const paymentError = form.querySelector('payment_errors')
     form.classList.remove('disabled')
-    paymentError.innerHtml = response.error
+    registrationForm.error_messages = response.error.message
   } else {
     const token = response.id
-    completeAction(token)
+    const brand = response.card.brand
+    completeAction(token, brand)
   }
 }
 

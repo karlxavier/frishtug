@@ -6,11 +6,12 @@
   );
 <% else %>
   swal({
-      title: 'Congratulations!',
+      title: 'Here is your group code!',
       text: "You have made your first meal plan.",
       type: 'success',
       confirmButtonColor: '#3085d6',
-      confirmButtonText: 'REVIEW ORDER'
+      confirmButtonText: 'DONE',
+      cancelButtonText: 'CANCEL'
   }).then( function() {
     return true
   })

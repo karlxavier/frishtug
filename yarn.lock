@@ -5147,6 +5147,10 @@ vue-form-wizard@^0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/vue-form-wizard/-/vue-form-wizard-0.7.0.tgz#fcfbb2d7b430cb9e2642ba577cf5c192131aa80e"
 
+vue-nav-tabs@^0.5.4:
+  version "0.5.4"
+  resolved "https://registry.yarnpkg.com/vue-nav-tabs/-/vue-nav-tabs-0.5.4.tgz#2cac400fc83a66bd6cd9c36d2c863187846d0cba"
+
 vue-turbolinks@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/vue-turbolinks/-/vue-turbolinks-2.0.0.tgz#150b101957edfc1ad533dff14a382cce11120da2"

@@ -33,7 +33,8 @@ class RegistrationForm
                 :billing_state,
                 :billing_zip_code,
                 :billing_phone_number,
-                :stripe_token
+                :stripe_token,
+                :card_brand
 
   validates :first_name, :last_name, :email, :password, presence: true
   validates :location_at, :line1, :city, :state, :zip_code, presence: true
@@ -83,39 +84,45 @@ class RegistrationForm
   def persist!
     ActiveRecord::Base.transaction do
       user = User.create!(user_params)
-      user.addresses.create!(address_params)
-      user.create_contact_number!(phone_number: phone_number)
-      user.create_schedule!(schedule_params)
-
-      orders.each do |o|
-        if o[:order_date].present?
-          order = user.orders.create!(placed_on: o[:order_date])
-          order.menu_ids = o[:menu_ids][0].split(',')
-        else
-          error.add(:order, 'Place on is blank')
-          return false
-        end
-      end
-
-      payment_method.classify.constantize.create!(
-        payment_method_params.merge!(user_id: user.id)
-      )
-
-      if payment_method == :credit_card
-        stripe_subscription = StripeSubscriptioner.new(user)
-        if stripe_subscription.run
-          user.approved = true
-          user.save
-        end
-      end
+      create_user_info(user)
+      create_orders(user)
+      save_and_charge_payment(user)
     end
-
     true
   rescue ActiveRecord::StatementInvalid => e
     # e.message and e.cause.message  can be helpful
     errors.add(:base, e.message)
 
     false
+  end
+
+  def create_user_info(user)
+    user.addresses.create!(address_params)
+    user.create_contact_number!(phone_number: phone_number)
+    user.create_schedule!(schedule_params)
+  end
+
+  def create_orders(user)
+    orders.each do |o|
+      if o[:order_date].present?
+        order = user.orders.create!(placed_on: o[:order_date])
+        order.menu_ids = o[:menu_ids][0].split(',')
+      else
+        error.add(:order, 'Place on is blank')
+        return false
+      end
+    end
+  end
+
+  def save_and_charge_payment(user)
+    payment_method.classify.constantize.create!(
+      payment_method_params.merge!(user_id: user.id)
+    )
+    stripe_subscription = StripeSubscriptioner.new(user)
+    if stripe_subscription.run
+      user.approved = true
+      user.save
+    end
   end
 
   def user_params
@@ -155,10 +162,11 @@ class RegistrationForm
 
   def credit_card_params
     {
-      number: card_number,
+      number: "****#{card_number.last(4)}",
       month: month,
       year: year,
-      cvc: cvc
+      cvc: cvc,
+      brand: card_brand
     }
   end
 

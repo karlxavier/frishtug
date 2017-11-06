@@ -10,26 +10,26 @@
       <% end %>
     </div>
     <div class="form-group">
-      <%= form.text_field :line1, class: 'form-control', placeholder: 'Address Line 1' %>
+      <%= form.text_field :line1, class: 'form-control', placeholder: 'Address Line 1', 'v-model': 'billing_address.address_line1' %>
       <div class="invalid-feedback">
         Line1 is required
       </div>
     </div>
     <div class="form-group">
-      <%= form.text_field :line2, class: 'form-control', placeholder: 'Address Line 2' %>
+      <%= form.text_field :line2, class: 'form-control', placeholder: 'Address Line 2', 'v-model': 'billing_address.address_line2' %>
     </div>
     <div class="form-group">
       <%= form.text_field :front_door, class: 'form-control', placeholder: 'Front Door Code (if applicable)' %>
     </div>
     <div class="form-group row">
       <div class="col">
-        <%= form.text_field :city, class: 'form-control', placeholder: 'City' %>
+        <%= form.text_field :city, class: 'form-control', placeholder: 'City', 'v-model': 'billing_address.address_city' %>
         <div class="invalid-feedback">
           City is required
         </div>
       </div>
       <div class="col">
-        <%= form.text_field :state, class: 'form-control', placeholder: 'State' %>
+        <%= form.text_field :state, class: 'form-control', placeholder: 'State', 'v-model': 'billing_address.address_state' %>
         <div class="invalid-feedback">
           State is required
         </div>
@@ -37,7 +37,7 @@
     </div>
     <div class="form-group row">
       <div class="col">
-        <%= form.text_field :zip_code, class: 'form-control', placeholder: 'Zipcode' %>
+        <%= form.text_field :zip_code, class: 'form-control', placeholder: 'Zipcode', 'v-model': 'billing_address.address_zip' %>
         <div class="invalid-feedback">
           Zipcode is required
         </div>
