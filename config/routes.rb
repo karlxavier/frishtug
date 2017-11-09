@@ -1,8 +1,4 @@
 Rails.application.routes.draw do
-  namespace :user do
-    get 'settings/index'
-  end
-
   resources :user_registrations, only: %i[index create] do
     collection do
       get :schedule
@@ -22,5 +18,12 @@ Rails.application.routes.draw do
     resources :dashboard, only: :index
     resources :menu_categories, except: %i[show]
     resources :plans
+  end
+
+  namespace :user do
+    resources :dashboard, only: :index
+    resources :settings, only: :index
+    resources :user_information, only: %i[index create]
+    resources :change_password, only: %i[index create]
   end
 end

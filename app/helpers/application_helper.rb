@@ -14,6 +14,13 @@ module ApplicationHelper
     end
   end
 
+  def user_signout_link
+    css_class = 'nav-link ml-auto'
+    if current_user
+      link_to 'Logout', destroy_user_session_path, method: :delete, class: css_class
+    end
+  end
+
   def modal_for(id, title, &block)
     content = capture(&block) if block_given?
     render 'shared/modal', id: id, title: title, content: content

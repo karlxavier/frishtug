@@ -1,0 +1,33 @@
+<%= content_tag :div, 
+  id: 'change_password',
+  class: 'col-md-6' do %>
+
+  <h3 class="text-uppercase">Change Password</h3>
+  <%= form_with url: user_change_password_index_path, local: true, class: 'change_password_form' do |f| %>
+    <div class="form-group">
+      <label for="user_password">Old Password</label>
+      <input type="password" name="user[password]" class="form-control" id="user_password" v-model="user.old_password">
+      <div class="invalid-feedback">
+        Password is incorrect
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col">
+        <label for="user_new_password">New Password</label>
+        <input type="password" name="user[new_password]" class="form-control" id="user_new_password" v-model="user.new_password">
+      </div>
+      <div class="col">
+        <label for="user_confirm_password">Confirm Password</label>
+        <input type="password" name="user[confirm_password]" class="form-control" id="user_confirm_password" v-model="user.confirm_password">
+        <div class="invalid-feedback">
+          Password does not match
+        </div>
+      </div>
+    </div>
+    <%= f.submit 'Save Changes', class: 'btn btn-brown text-uppercase' %>
+  <% end %>
+<% end %>
+
+<%= content_for :footer_js do %>
+  <%= javascript_pack_tag 'user/vue_change_password.js' %>
+<% end %>

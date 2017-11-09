@@ -34,7 +34,9 @@ class User < ApplicationRecord
   has_one :schedule, dependent: :destroy
   belongs_to :plan, optional: true
   has_many :orders, dependent: :destroy
-
+  
+  accepts_nested_attributes_for :contact_number
+  
   def full_name
     "#{first_name} #{last_name}"
   end
