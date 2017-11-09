@@ -22,4 +22,9 @@ class Address < ApplicationRecord
   enum location_at: %i[at_work at_home multiple_workplaces]
   belongs_to :addressable, polymorphic: true
   validates :line1, :city, :state, :zip_code, presence: true
+  geocode_by :full_address
+
+  def full_address
+    [line1, line2, city, state, country].compact.join(', ')
+  end
 end

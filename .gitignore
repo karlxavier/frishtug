@@ -25,3 +25,7 @@
 
 # Ignore vscode config
 .vscode
+
+# Ignore .env
+.env.*
+.env

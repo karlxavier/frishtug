@@ -8,4 +8,8 @@ module DateTimeHelper
     offset_year = Date.current.year + 15
     (start_year..offset_year).to_a.reverse.map { |y| [y, y] }.insert(0, ['Year', nil])
   end
+
+  def current_sale_date
+    Date.current.strftime('%B %d')
+  end
 end

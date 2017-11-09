@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171106065027) do
+ActiveRecord::Schema.define(version: 20171109023409) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,6 +44,8 @@ ActiveRecord::Schema.define(version: 20171106065027) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "location_at"
+    t.float "latitude"
+    t.float "longitude"
     t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable_type_and_addressable_id"
   end
 
@@ -157,6 +159,8 @@ ActiveRecord::Schema.define(version: 20171106065027) do
     t.string "remarks"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "order_date"
+    t.index ["order_date"], name: "index_orders_on_order_date"
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
@@ -183,6 +187,14 @@ ActiveRecord::Schema.define(version: 20171106065027) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_schedules_on_user_id"
+  end
+
+  create_table "stores", force: :cascade do |t|
+    t.integer "_id"
+    t.string "_code"
+    t.integer "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "units", force: :cascade do |t|

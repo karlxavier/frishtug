@@ -21,7 +21,8 @@
         NOTES
       </div>
       <div class="col">
-        SKU
+        <% code = "13/#{o.id}-#{o.placed_on.strftime('%m%d%Y')}/#{o.menus.size}"%>
+        <%= Barcoder.new(code).run %>
       </div>
     </div>
 

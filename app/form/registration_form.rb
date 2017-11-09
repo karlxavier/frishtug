@@ -105,7 +105,7 @@ class RegistrationForm
   def create_orders(user)
     orders.each do |o|
       if o[:order_date].present?
-        order = user.orders.create!(placed_on: o[:order_date])
+        order = user.orders.create!(placed_on: DateTime.current.utc)
         order.menu_ids = o[:menu_ids][0].split(',')
       else
         error.add(:order, 'Place on is blank')
