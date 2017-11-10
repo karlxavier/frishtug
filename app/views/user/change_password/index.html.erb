@@ -24,7 +24,7 @@
         </div>
       </div>
     </div>
-    <%= f.submit 'Save Changes', class: 'btn btn-brown text-uppercase' %>
+    <%= f.submit 'Save Changes', class: 'btn btn-brown text-uppercase', 'v-on:click.prevent': 'saveChanges' %>
   <% end %>
 <% end %>
 

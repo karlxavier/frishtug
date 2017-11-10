@@ -6,25 +6,30 @@
 //   error: handle error
 // })
 
-const post = (obj) => {
+const postJson = (obj) => {
   const request = new XMLHttpRequest()
   const token = document.querySelector('meta[name="csrf-token"]').content
 
   request.open('POST', obj.url, true)
-  request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
+  //request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
+  request.setRequestHeader('Content-Type', 'application/json')
   request.setRequestHeader('X-CSRF-TOKEN', token)
 
   request.onload = function() {
     if (request.status >= 200 && request.status < 400) {
       const response = request.responseText;
-      obj.success(response)
+      if (obj.hasOwnProperty('success')) {
+        obj.success(response)
+      }
     } else {
       const response = request.responseText;
-      obj.error(response)
+      if (obj.hasOwnProperty('error')) {
+        obj.error(response)
+      }
     }
   };
 
-  request.send(obj.data)
+  request.send( JSON.stringify(obj.data) )
 }
 
 const get = (obj) => {
@@ -45,10 +50,78 @@ const get = (obj) => {
     console.error('There was a connection error of some sort')
   };
 
+  request.send()
+}
+
+const postForm = (obj) => {
+  const request = new XMLHttpRequest()
+  const token = document.querySelector('meta[name="csrf-token"]').content
+
+  request.open('POST', obj.url, true)
+  request.setRequestHeader('X-CSRF-TOKEN', token)
+
+  request.onload = function() {
+    if (request.status >= 200 && request.status < 400) {
+      const response = request.responseText;
+      if (obj.hasOwnProperty('success')) {
+        obj.success(response)
+      }
+    } else {
+      const response = request.responseText;
+      if (obj.hasOwnProperty('error')) {
+        obj.error(response)
+      }
+    }
+  };
+
   request.send(obj.data)
 }
 
+const serializeForm = (element, additionalParams) => {
+  let inputs = [element]
+  let params = []
+
+  if (typeof element === 'object' && element.nodeName === 'FORM') {
+    inputs = Array.from(element.elements)
+  }
+
+  inputs.forEach( input => {
+    if (!input.name) {
+      return
+    }
+
+    if (input.nodeName === 'SELECT') {
+      return Array.from(input.options).forEach(option => {
+        if (option.selected) {
+          return params.push({
+            name: input.name,
+            value: option.value
+          })
+        }
+      })
+    } else if (input.checked || ['radio', 'checkbox', 'submit'].indexOf(input.type) === -1) {
+      return params.push({
+        name: input.name,
+        value: input.value
+      })
+    }
+  })
+
+  if (additionalParams) {
+    params.push(additionalParams)
+  }
+
+  return params.map( param => {
+    if (param.name !== null) {
+      return (encodeURIComponent(param.name)) + '=' + (encodeURIComponent(param.value))
+    } else {
+      return param
+    }
+  }).join('&')
+}
 module.exports = {
-  post: post,
-  get: get
+  postJson: postJson,
+  get: get,
+  postForm: postForm,
+  serializeForm: serializeForm
 }
