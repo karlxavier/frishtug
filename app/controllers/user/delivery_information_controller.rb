@@ -9,16 +9,17 @@ class User::DeliveryInformationController < User::BaseController
   ].freeze
 
   def index
-    @user_addresses = current_user.addresses
+    @user_addresses = current_user.addresses.order(:created_at)
     @user_addresses_json = @user_addresses.to_json(except: EXCEPTED_COLUMNS)
   end
 
   def create
-    if save_addresses
+    @errors = []
+    if save_addresses && @errors.count < 0
       render json: response_message('success', 'Address updated!'), status: :ok
     else
       # message = @address.errors.full_messages.join(', ')
-      render json: response_message('error', @errors), status: :unprocessable_entity
+      render json: response_message('error', @errors.join(', ')), status: :unprocessable_entity
     end
   end
 
@@ -32,13 +33,17 @@ class User::DeliveryInformationController < User::BaseController
           current_user.addresses.create!(address_param)
         else
           address = Address.find(address_param[:id])
-          address.update_attributes!(address_param)
+          begin
+            address.update_attributes!(address_param)
+          rescue
+            @errors.push(address.errors.full_messages.join(', '))
+          end
         end
       end
     end
     true
   rescue ActiveRecord::StatementInvalid => e
-    @errors = e.message
+    @errors.push(e.message)
     false
   end
 
