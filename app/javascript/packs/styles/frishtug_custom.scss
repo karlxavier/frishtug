@@ -59,34 +59,34 @@ body {
   }
 }
 
-a,
-.active-link,
-.card-link {
-  color: $light-chocolate!important;
-  cursor: pointer;
-  &:hover,
-  &:focus {
-    color: rgba(223, 181, 118, 0.788)!important;
-    text-decoration: none;
-  }
-}
+// a,
+// .active-link,
+// .card-link {
+//   color: $light-chocolate!important;
+//   cursor: pointer;
+//   &:hover,
+//   &:focus {
+//     color: rgba(223, 181, 118, 0.788)!important;
+//     text-decoration: none;
+//   }
+// }
 
-a.btn,
-a.btn-brown,
-a.nav-link.active {
-  color: $pure-white!important;
+// a.btn,
+// a.btn-brown,
+// a.nav-link.active {
+//   color: $pure-white!important;
 
-  &:hover,
-  &:focus {
-    color: $pure-white!important;
-  }
-}
+//   &:hover,
+//   &:focus {
+//     color: $pure-white!important;
+//   }
+// }
 
-a.nav-link,
-a.btn-outline-dark,
-.nav-tabs a.nav-link.active {
-  color: $base-dark!important;
-}
+// a.nav-link,
+// a.btn-outline-dark,
+// .nav-tabs a.nav-link.active {
+//   color: $base-dark!important;
+// }
 
 .text-muted,
 label,

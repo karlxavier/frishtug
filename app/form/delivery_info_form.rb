@@ -1,6 +1,6 @@
 class DeliveryInfoForm
   include ActiveModel::Model
-  attr_accessor :address, :current_user
+  attr_accessor :addresses, :current_user
 
   validate :address_is_array?
   
@@ -13,7 +13,7 @@ class DeliveryInfoForm
 
   def persist!
     ActiveRecord::Base.transaction do
-      address.each do |param|
+      addresses.each do |param|
         id = param[:id]
         to_delete = param[:_delete]
         
@@ -43,7 +43,7 @@ class DeliveryInfoForm
   end
 
   def address_is_array?
-    return true if address.is_a?(Array)
+    return true if addresses.is_a?(Array)
     errors.add(:base, 'is not an array of addresses')
   end
 end

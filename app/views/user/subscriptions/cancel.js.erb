@@ -1,0 +1,8 @@
+<% if @response_msg[:status] == 'success' %>
+  document.querySelector('.card-container').innerHTML = ''
+<% end %>
+swal(
+  '<%= @response_msg[:status].upcase %>',
+  '<%= @response_msg[:message] %>',
+  '<%= @response_msg[:status] %>'
+);

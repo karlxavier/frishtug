@@ -6,15 +6,13 @@ class StripeSubscriptioner
   end
 
   def run
-    begin
-      customer     = create_stripe_customer
-      subscription = subscribe_customer(customer.id)
-      update_user(customer, subscription)
-      true
-    rescue Stripe::StripeError => e
-      errors.add(:credit_card, e.message)
-      false
-    end
+    customer_id  = customer_setup
+    subscription = subscribe_customer(customer_id)
+    update_user(customer_id, subscription.id)
+    true
+  rescue Stripe::StripeError => e
+    errors.add(:credit_card, e.message)
+    false
   end
 
   def retrieve
@@ -24,17 +22,28 @@ class StripeSubscriptioner
 
   def cancel
     subscription = retrieve
-    if subscription
-      subscription.delete
-      true
-    end
-
+    subscription.delete
+    true
+  rescue Stripe::InvalidRequestError => e
+    logger.error "Stripe error while canceling the subscription: #{ e.message }"
+    errors.add :base, e.message 
     false
   end
 
 private
 
   attr_accessor :user
+
+  def customer_setup
+    return user.stripe_customer_id if existing_stripe_customer?
+    customer = create_stripe_customer
+    customer.id
+  end
+  
+  def existing_stripe_customer?
+    return true unless user.stripe_customer_id.nil?
+    false
+  end
 
   def user_not_subscribed?
     if !user.stripe_subscription_id?
@@ -44,10 +53,10 @@ private
     false
   end
 
-  def update_user(customer, subscription)
+  def update_user(customer_id, subscription_id)
     user.update_attributes(
-      stripe_customer_id: customer.id,
-      stripe_subscription_id: subscription.id
+      stripe_customer_id: customer_id,
+      stripe_subscription_id: subscription_id
     )
   end
 

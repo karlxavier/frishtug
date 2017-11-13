@@ -122,6 +122,8 @@ class RegistrationForm
     if stripe_subscription.run
       user.approved = true
       user.save
+    else
+      raise stripe_subscription.errors.full_messages.join(', ')
     end
   end
 

@@ -27,5 +27,8 @@ Rails.application.routes.draw do
     resources :user_information, only: %i[index create]
     resources :change_password, only: %i[index create]
     resources :delivery_information, only: %i[index create]
+    resources :subscriptions do
+      post :cancel, on: :collection
+    end
   end
 end

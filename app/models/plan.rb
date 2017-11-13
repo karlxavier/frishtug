@@ -21,4 +21,5 @@ class Plan < ApplicationRecord
   validates :name, :price, presence: true
   validates :name, uniqueness: true
   has_many :users
+  has_many :comments, as: :commentable
 end

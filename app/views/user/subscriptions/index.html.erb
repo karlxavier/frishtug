@@ -1,0 +1,31 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-6 col-md-6">
+      <h4>Subscriptions</h4>
+      
+      <% if @plan.present? %>
+        <div class="card-container">
+          <div class="card mb-4" style='width: 18rem;'>
+            <div class="card-body">
+              <span>PLAN: <%= @plan.name %></span>
+              <p class="mb-0"><%= @plan.description %></p>
+              <p>Renewal on <%= time_at(@subscription.current_period_end, '%B %d, %Y') %></p>
+            </div>
+          </div>
+          <button class="btn btn-brown text-uppercase" data-toggle="modal" data-target="#cancel_subscription">Cancel Subscription</button>
+        </div>  
+      <% end %>
+      
+    </div>
+  </div>
+</div>
+
+<%= modal_for 'cancel_subscription', 'Cancel Subscription' do %>
+  <%= form_with url: cancel_user_subscriptions_path do |form|  %>
+  <span><strong>We're sad to see you go.. ;(</strong></span>
+  <p>We'd love to know how we can better our service and satisfy you.</p>
+  <%= form.text_area :body, rows: 5, class: 'form-control mb-3', placeholder: 'please write your feedback here' %>
+  <%= form.submit 'Cancel Subscription', class: 'btn btn-brown mb-3 float-right text-uppercase' %>
+  <a href="javascript:void(0)" class="btn btn-default text-uppercase float-right"  data-dismiss="modal">Do not cancel</a>
+  <% end %>
+<% end %>

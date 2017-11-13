@@ -1,0 +1,37 @@
+class SubscriptionCanceler
+  include ActiveModel::Validations
+
+  def initialize(user, feedback)
+    @user = user
+    @plan = @user.plan
+    @feedback = feedback
+  end
+
+  def run
+    @subscription = StripeSubscriptioner.new(user)
+    if @subscription.cancel
+      create_a_feedback
+      unsubscribe_user
+      true
+    else
+      errors.add(:base, 'Can\'t cancel subscription')
+      false
+    end
+  end
+
+  private
+
+    attr_accessor :user, :feedback, :plan
+
+    def create_a_feedback
+      return nil if feedback.empty?
+      plan.comments.create!(body: feedback, user_id: user.id)
+    end
+
+    def unsubscribe_user
+      user.update_attributes(
+        stripe_customer_id: nil,
+        plan_id: nil
+      )
+    end
+end

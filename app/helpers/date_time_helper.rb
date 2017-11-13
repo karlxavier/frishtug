@@ -8,4 +8,9 @@ module DateTimeHelper
     offset_year = Date.current.year + 15
     (start_year..offset_year).to_a.reverse.map { |y| [y, y] }.insert(0, ['Year', nil])
   end
+
+  def time_at(number, format = '%F')
+    return 'Cannot convert non integer to time' unless number.is_a? Integer
+    Time.at(number).strftime(format)
+  end
 end
