@@ -13,7 +13,10 @@
             </div>
           </div>
           <button class="btn btn-brown text-uppercase" data-toggle="modal" data-target="#cancel_subscription">Cancel Subscription</button>
-        </div>  
+        </div>
+      <% else %>
+        <h6>You are not subscribe to a plan.</h6>
+        <%= link_to 'Choose plans', choose_plans_user_subscriptions_path, class: 'btn btn-brown text-uppercase' %>
       <% end %>
       
     </div>

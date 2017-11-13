@@ -18,12 +18,30 @@ class User::SubscriptionsController < User::BaseController
     end
   end
 
+  def choose_plans; end
+
+  def subscribe
+    subscribe_to_plan
+    @subscription = StripeSubscriptioner.new(current_user)
+    if @subscription.run
+      redirect_to user_subscriptions_path, notice: 'Subscription successful'
+    else 
+      flash[:error] = @subscription.errors.full_messages.join(', ')
+      redirect_back fallback_location: :back
+    end
+  end
+
   private
 
-    def response_msg(status, message)
-      {
-        status: status,
-        message: message
-      }
-    end
+  def subscribe_to_plan
+    user = current_user
+    user.update_attributes(plan_id: params[:id])
+  end
+
+  def response_msg(status, message)
+    {
+      status: status,
+      message: message
+    }
+  end
 end

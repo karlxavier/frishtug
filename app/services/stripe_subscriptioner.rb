@@ -6,12 +6,12 @@ class StripeSubscriptioner
   end
 
   def run
-    customer_id  = customer_setup
-    subscription = subscribe_customer(customer_id)
-    update_user(customer_id, subscription.id)
+    customer  = find_or_create_stripe_customer
+    subscription = subscribe_customer(customer.id)
+    update_user(customer.id, subscription.id)
     true
   rescue Stripe::StripeError => e
-    errors.add(:credit_card, e.message)
+    errors.add(:base, e.message)
     false
   end
 
@@ -34,10 +34,12 @@ private
 
   attr_accessor :user
 
-  def customer_setup
-    return user.stripe_customer_id if existing_stripe_customer?
-    customer = create_stripe_customer
-    customer.id
+  def find_or_create_stripe_customer
+    if existing_stripe_customer?
+      Stripe::Customer.retrieve(user.stripe_customer_id)
+    else
+      create_stripe_customer
+    end
   end
   
   def existing_stripe_customer?
