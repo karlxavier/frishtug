@@ -25,7 +25,7 @@ class Address < ApplicationRecord
   validates :line1, :city, :state, :zip_code, presence: true
 
   def self.specified_location
-    if self.location_ats != :multiple_workplaces
+    if location_ats != :multiple_workplaces
       return where(location_at: :at_work).first
     end
     where(location_at: :multiple_workplaces)

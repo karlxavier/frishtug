@@ -26,33 +26,35 @@
       </div>
     </div>
     <div v-for="(address, index) in addresses">
-      <hr v-if="index === 1" class="mt-4"></hr>
-      <input type="hidden" v-model='address.id' name="address_id">
-      <div class="form-group">
-        <label for="address_line1">Address Line 1</label>
-        <input type="text" class="form-control" id="address_line1" name="address[line1]" v-model="address.line1">
-      </div>
-      <div class="form-group">
-        <label for="address_line2">Address Line 2</label>
-        <input type="text" class="form-control" id="address_line2" name="address[line2]" v-model="address.line2">
-      </div>
-      <div class="form-group">
-        <label for="address_front_door">Front Door Code</label>
-        <input type="text" class="form-control" id="address_front_door" name="address[front_door]" v-model="address.front_door">
-      </div>
-      <div class="form-group row">
-        <div class="col">
-          <label for="adrress_city">City</label>
-          <input type="text" class="form-control" id="address_city" name="address[city]"  v-model="address.city"> 
+      <div v-if="address._delete !== 1">
+         <hr v-if="index === 1" class="mt-4"></hr>
+        <input type="hidden" v-model='address.id' name="address_id">
+        <div class="form-group">
+          <label for="address_line1">Address Line 1</label>
+          <input type="text" class="form-control" id="address_line1" name="address[line1]" v-model="address.line1">
         </div>
-        <div class="col">
-          <label for="address_state">State</label>
-          <input type="text" class="form-control" id="address_state" name="address[state]" v-model="address.state"> 
+        <div class="form-group">
+          <label for="address_line2">Address Line 2</label>
+          <input type="text" class="form-control" id="address_line2" name="address[line2]" v-model="address.line2">
         </div>
-      </div>
-      <div class="form-group">
-        <label for="address_zip_code">ZIP Code</label>
-        <input type="text" class="form-control" id="address_zip_code" name="address[zip_code]"  v-model="address.zip_code">
+        <div class="form-group">
+          <label for="address_front_door">Front Door Code</label>
+          <input type="text" class="form-control" id="address_front_door" name="address[front_door]" v-model="address.front_door">
+        </div>
+        <div class="form-group row">
+          <div class="col">
+            <label for="adrress_city">City</label>
+            <input type="text" class="form-control" id="address_city" name="address[city]"  v-model="address.city"> 
+          </div>
+          <div class="col">
+            <label for="address_state">State</label>
+            <input type="text" class="form-control" id="address_state" name="address[state]" v-model="address.state"> 
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="address_zip_code">ZIP Code</label>
+          <input type="text" class="form-control" id="address_zip_code" name="address[zip_code]"  v-model="address.zip_code">
+        </div>
       </div>
     </div>
     <a href="javascript:void(0)" class="link" v-if="show" v-on:click="addAddress"> + Add Address</a>

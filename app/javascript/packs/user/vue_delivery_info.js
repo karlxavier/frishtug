@@ -2,11 +2,11 @@ import Vue from 'vue/dist/vue.esm'
 import swal from 'sweetalert2'
 import ajax from '../lib/ajax_lib'
 
-window.ajax = ajax
 const el = document.querySelector('#user_delivery_info')
 
 if (el) {
   const addresses = JSON.parse(el.dataset.addresses)
+  addresses.forEach( address => { address._delete = null })
   const userDelivery = new Vue({
     el: el,
     data: {
@@ -42,10 +42,19 @@ if (el) {
       },
       showAddBtn: () => {
         userDelivery.show = true
+        userDelivery.addresses.forEach((address, index) => {
+          if (index !== 0) {
+            address._delete = null
+          }
+        })
       },
       hideAddBtn: () => {
         userDelivery.show = false
-        userDelivery.addresses = userDelivery.addresses[0]
+        userDelivery.addresses.forEach((address, index) => {
+          if (index !== 0) {
+            address._delete = 1
+          }
+        })
       },
       addAddress: () => {
         userDelivery.addresses.push({
@@ -56,7 +65,8 @@ if (el) {
           front_door: '',
           state: '',
           zip_code: '',
-          location_at: 'multiple_workplaces'
+          location_at: 'multiple_workplaces',
+          _delete: null
         })
       }
     }
