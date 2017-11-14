@@ -54,6 +54,16 @@ const registrationForm = new Vue({
     tab_titles: mondayToFriday
   },
   methods: {
+    formatCardNumber: () => {
+      const _this = registrationForm
+      _this.credit_card.number = _this.credit_card.number.replace(/[^\d]/g, '')
+      _this.credit_card.number = _this.credit_card.number.substring(0, 16)
+
+      const numberSections = _this.credit_card.number.match(/\d{1,4}/g)
+      if (numberSections !== null) {
+        _this.credit_card.number = numberSections.join(' ')
+      }
+    },
     onComplete: function() {
       alert('Yay. Done!')
     },
@@ -151,9 +161,12 @@ const registrationForm = new Vue({
       form.classList.add('disabled')
 
       if (_this.payment_method === 'credit_card') {
-        Stripe.card.createToken(
-          _this.credit_card
-        , stripeResponseHandler)
+        Stripe.card.createToken({
+          number: _this.credit_card.number.replace(/\s+/g, ''),
+          exp_month: _this.credit_card.exp_month,
+          exp_year: _this.credit_card.exp_year,
+          cvc: _this.credit_card.cvc
+        }, stripeResponseHandler)
       } else {
         Stripe.bankAccount.createToken(
           _this.bank_account

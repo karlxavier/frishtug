@@ -38,6 +38,23 @@ class User < ApplicationRecord
   accepts_nested_attributes_for :contact_number
   
   def full_name
-    "#{first_name} #{last_name}"
+    "#{first_name} #{last_name}".titleize
+  end
+
+  def payment_information
+    entries = []
+    if checkings.present?
+      checkings.each do |c|
+        entries.push c
+      end
+    end
+    
+    if credit_cards.present?
+      credit_cards.each do |cc|
+        entries.push cc
+      end
+    end
+    
+    entries
   end
 end

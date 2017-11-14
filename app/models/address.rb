@@ -21,7 +21,7 @@
 class Address < ApplicationRecord
   enum location_at: %i[at_work at_home multiple_workplaces]
   enum status: %i[active inactive]
-  belongs_to :addressable, polymorphic: true
+  belongs_to :addressable, polymorphic: true, optional: true
   validates :line1, :city, :state, :zip_code, presence: true
 
   def self.specified_location
@@ -29,5 +29,24 @@ class Address < ApplicationRecord
       return where(location_at: :at_work).first
     end
     where(location_at: :multiple_workplaces)
+  end
+
+  def full_formatted_address
+    formatted = <<-HEREDOC
+      #{line1}#{print_line2?}#{print_front_door_code?}<br>
+      #{city}, #{state} #{zip_code}<br>
+      United States
+    HEREDOC
+    formatted.html_safe
+  end
+
+  private
+
+  def print_line2?
+    line2.present? ? ", #{line2}" : ''
+  end
+
+  def print_front_door_code?
+    front_door.present? ? ", #{front_door}" : ''
   end
 end

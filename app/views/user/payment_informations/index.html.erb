@@ -1,0 +1,8 @@
+<div class="container-fluid">
+  <h4 class="text-uppercase">Payment Information</h4>
+
+  <% @payment_informations.each do |payment_info| %>
+    <%= render_class payment_info, payment_info: payment_info %>
+  <% end %>
+  <%= link_to_btn 'Add new payment method', new_user_payment_information_path %>
+</div>

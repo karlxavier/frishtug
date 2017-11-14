@@ -1,3 +1,4 @@
+# Subscription Canceler accepts a User Object and a feedback message
 class SubscriptionCanceler
   include ActiveModel::Validations
 
@@ -14,24 +15,24 @@ class SubscriptionCanceler
       unsubscribe_user
       true
     else
-      errors.add(:base, 'Can\'t cancel subscription')
+      errors.add(:base, @subscription.errors.full_messages.join(', '))
       false
     end
   end
 
   private
 
-    attr_accessor :user, :feedback, :plan
+  attr_accessor :user, :feedback, :plan
 
-    def create_a_feedback
-      return nil if feedback.empty?
-      plan.comments.create!(body: feedback, user_id: user.id)
-    end
+  def create_a_feedback
+    return nil if feedback.empty?
+    plan.comments.create!(body: feedback, user_id: user.id)
+  end
 
-    def unsubscribe_user
-      user.update_attributes(
-        stripe_subscription_id: nil,
-        plan_id: nil
-      )
-    end
+  def unsubscribe_user
+    user.update_attributes(
+      stripe_subscription_id: nil,
+      plan_id: nil
+    )
+  end
 end

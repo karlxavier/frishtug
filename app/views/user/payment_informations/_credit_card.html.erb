@@ -1,0 +1,25 @@
+<div class="row">
+  <div class="col">
+    <strong><%= payment_info&.brand %> <%= payment_info&.number %></strong>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <strong>Card Holder Name</strong>
+    <p><%= payment_info.user.full_name %></p>
+  </div>
+  <div class="col">
+    <strong>Expires</strong>
+    <p><%= "#{trailing(payment_info&.month, 2, '0')}/#{payment_info&.year}" %></p>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <strong>Billing Address</strong>
+    <% unless payment_info&.address.present? %>
+      <p><%= payment_info.user.addresses.first.full_formatted_address %></p>
+    <% else %>
+      <p><%= payment_info.address.full_formatted_address %></p>
+    <% end %>
+  </div>
+</div>

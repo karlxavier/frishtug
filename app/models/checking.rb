@@ -13,4 +13,9 @@
 
 class Checking < ApplicationRecord
   belongs_to :user
+  before_save :set_account_number
+
+  def set_account_number
+    self[:account_number] = "****#{account_number.last(4)}"
+  end
 end

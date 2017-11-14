@@ -46,4 +46,18 @@ module ApplicationHelper
     }
     alerts[key.to_sym]
   end
+
+  def trailing(text, length, str)
+    text.to_s.rjust(length, str)
+  end
+
+  def render_class(klass, **options)
+    render klass.class.to_s.underscore, options
+  end
+
+  def link_to_btn(text, path, klass=nil, id=nil)
+    klass ||= 'btn-brown'
+    id ||= text.parameterize.underscore
+    link_to text, path, class: "btn text-uppercase #{klass}", id: id
+  end
 end

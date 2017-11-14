@@ -1,0 +1,46 @@
+<div id="payment_method_container">
+  <form id="payment_method_form">
+    <div class="errors" v-if="error_messages.length > 0">
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Opps!..</strong>
+        {{ error_messages }}
+      </div>
+    </div>
+    <div class="form-check form-check-inline">
+      <label class="form-check-label">
+        <input type="radio" 
+          name="payment_method" 
+          value="credit_card" 
+          v-model="payment_method"
+          class="form-check-input"
+          checked>
+        Credit Card
+      </label>
+    </div>
+    <div class=" form-check form-check-inline">
+      <label class="form-check-label">
+        <input type="radio" 
+        name="payment_method" 
+        value="checking" 
+        v-model="payment_method"
+        class="form-check-input">
+        Checking
+      </label>
+    </div>
+
+    <%# Credit Card %>
+    <div v-if="payment_method === 'credit_card'">
+      <%= render 'credit_card_form' %>
+    </div>
+
+    <%# Checking %>
+    <div v-else>
+      <%= render 'checking_form' %>
+    </div>
+
+    <input type="submit" name="commit" value="Save Changes" class="btn btn-brown text-uppercase px-4" v-on:click.prevent="saveChanges($event)">
+  </form>
+</div>
+<%= content_for :footer_js do %>
+  <%= javascript_pack_tag 'user/vue_payment_method' %>
+<% end %>

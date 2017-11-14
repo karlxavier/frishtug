@@ -24,7 +24,7 @@
         </small>
       </div>
       <div class="card-footer">
-        <%= link_to "Choose #{p.name}", subscribe_user_subscriptions_path(id: p.id), class: 'btn btn-brown plan--btns' %>
+        <%= link_to_btn "Choose #{p.name}", subscribe_user_subscriptions_path(id: p.id), 'btn-brown plan--btns' %>
       </div>
     </div>
   <% end %>

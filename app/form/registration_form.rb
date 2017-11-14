@@ -108,8 +108,8 @@ class RegistrationForm
         order = user.orders.create!(placed_on: o[:order_date])
         order.menu_ids = o[:menu_ids][0].split(',')
       else
-        error.add(:order, 'Place on is blank')
-        return false
+        error.add(:base, 'Order place on is blank')
+        raise ActiveRecord::Rollback
       end
     end
   end
@@ -123,7 +123,8 @@ class RegistrationForm
       user.approved = true
       user.save
     else
-      raise stripe_subscription.errors.full_messages.join(', ')
+      error.add(:base, stripe_subscription.errors.full_messages.join(', '))
+      raise ActiveRecord::Rollback
     end
   end
 

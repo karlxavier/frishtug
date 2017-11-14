@@ -8,14 +8,15 @@
     <%= stylesheet_link_tag 'application', media: 'all' %>
     <%= stylesheet_pack_tag 'application' %>
     <%= javascript_include_tag 'application' %>
+    <%= javascript_include_tag 'https://js.stripe.com/v2/' %>
     <%= javascript_pack_tag 'app' %>
     <%= yield :header_js %>
   </head>
   <body>
-    <%= render 'layouts/user_navbar' %>
+    <%= render 'user/user_navbar' %>
     <div class="container-fluid">
       <div class="row">
-        <%= render 'layouts/user_sidebar' %>
+        <%= render 'user/user_sidebar' %>
         <div class="col-12 col-md-9 col-xl-10">
           <%= render 'shared/flash' %>
           <%= yield %>
@@ -23,5 +24,8 @@
       </div>
     </div>
     <%= yield :footer_js %>
+    <%= javascript_tag 'defer' do %>
+      localStorage.setItem('full_name', '<%= current_user.full_name %>');
+    <% end %>
   </body>
 </html>

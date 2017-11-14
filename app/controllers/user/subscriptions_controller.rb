@@ -8,7 +8,6 @@ class User::SubscriptionsController < User::BaseController
 
   def cancel
     @canceler = SubscriptionCanceler.new(current_user, params[:body])
-    # if @canceler.run
     if @canceler.run
       @response_msg = response_msg('success', 'Successfuly canceled subscription')
       respond_with(@response_msg)

@@ -6,7 +6,7 @@ class StripeSubscriptioner
   end
 
   def run
-    customer  = find_or_create_stripe_customer
+    customer = find_or_create_stripe_customer
     subscription = subscribe_customer(customer.id)
     update_user(customer.id, subscription.id)
     true
@@ -25,12 +25,12 @@ class StripeSubscriptioner
     subscription.delete
     true
   rescue Stripe::InvalidRequestError => e
-    logger.error "Stripe error while canceling the subscription: #{ e.message }"
-    errors.add :base, e.message 
+    logger.error "Stripe error while canceling the subscription: #{e.message}"
+    errors.add :base, e.message
     false
   end
 
-private
+  private
 
   attr_accessor :user
 
@@ -41,14 +41,14 @@ private
       create_stripe_customer
     end
   end
-  
+
   def existing_stripe_customer?
     return true unless user.stripe_customer_id.nil?
     false
   end
 
   def user_not_subscribed?
-    if !user.stripe_subscription_id?
+    unless user.stripe_subscription_id?
       errors.add(:user, 'is not subscribe.')
       return true
     end

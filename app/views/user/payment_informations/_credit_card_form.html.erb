@@ -1,12 +1,12 @@
 <div class="form-group">
   <input type="text"
-    name="registration_form[card_number]"
-    id="registration_form_card_number"
+    name="card_number"
+    id="card_number"
     class="form-control"
     placeholder="Credit Card Number"
     data-stripe="number"
     v-model="credit_card.number"
-    v-on:keyup="formatCardNumber()">
+    v-on:keyup="formatCardNumber">
   <div class="invalid-feedback">
     Credit Card is required
   </div>
@@ -46,8 +46,8 @@
     <input type="number"
            min="0"
            max="9999"
-           name="registration_form[cvc]"
-           id="registration_form_cvc"
+           name="cvc"
+           id="cvc"
            class="form-control cvc-input-control"
            placeholder="CVV"
            data-stripe="cvc"
@@ -59,30 +59,30 @@
   </div>
 </div>
 <div class="form-check">
-  <label for="registration_form_different_billing" class="form-check-label">
-    <input type="checkbox" name="registration_form[different_billing]" value="true" class="form-check-input" id="registration_form_different_billing" v-model="different_billing">
+  <label for="different_billing" class="form-check-label">
+    <input type="checkbox" name="different_billing" value="true" class="form-check-input" id="different_billing" v-model="different_billing">
     Billing address is different to delivery address
   </label>
 </div>
 <div class="different-billing" v-if="different_billing">
   <div class="form-group">
-    <input type="text" class="form-control" name="registration_form[billing_line_1]" placeholder="Address Line 1" v-model="credit_card_billing_address.address_line1">
+    <input type="text" class="form-control" name="billing_line_1" placeholder="Address Line 1" v-model="billing_address.address_line1">
     <div class="invalid-feedback">
       Line1 is required
     </div>
   </div>
   <div class="form-group">
-    <input type="text" class="form-control" name="registration_form[billing_line_2]" placeholder="Address Line 2" v-model="credit_card_billing_address.address_line2">
+    <input type="text" class="form-control" name="billing_line_2" placeholder="Address Line 2" v-model="billing_address.address_line2">
   </div>
   <div class="form-group row">
     <div class="col">
-      <input type="text" class="form-control" name="registration_form[billing_city]" placeholder="City" v-model="credit_card_billing_address.address_city">
+      <input type="text" class="form-control" name="billing_city" placeholder="City" v-model="billing_address.address_city">
       <div class="invalid-feedback">
         City is required
       </div>
     </div>
     <div class="col">
-      <input type="text" class="form-control" name="registration_form[billing_state]" placeholder="State" v-model="credit_card_billing_address.address_state">
+      <input type="text" class="form-control" name="billing_state" placeholder="State" v-model="billing_address.address_state">
       <div class="invalid-feedback">
         State is required
       </div>
@@ -90,16 +90,13 @@
   </div>
   <div class="form-group row">
     <div class="col">
-      <input type="text" class="form-control" name="registration_form[billing_zip_code]" placeholder="Zipcode" v-model="credit_card_billing_address.address_zip">
+      <input type="text" class="form-control" name="billing_zip_code" placeholder="Zipcode" v-model="billing_address.address_zip">
       <div class="invalid-feedback">
         Zipcode is required
       </div>
     </div>
     <div class="col">
-      <input type="text" class="form-control" name="registration_form[billing_phone_number]" placeholder="Phone Number">
+      <input type="text" class="form-control" name="billing_phone_number" placeholder="Phone Number">
     </div>
   </div>
 </div>
-<a href="javascript:void(0)" class="btn btn-brown text-uppercase" @click="nextTab">
-  Continue to meal selection
-</a>
