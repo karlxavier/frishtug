@@ -40,6 +40,12 @@
   </div>
 <% end %>
 
+<%= content_for :header do %>
+  <%= javascript_tag do %>
+    localStorage.setItem('allowed_zip_codes', '<%= raw @allowed_zip_codes.to_json %>');
+  <% end %>
+<% end %>
+
 <%= content_for :footer_js do %>
   <%= javascript_pack_tag 'vue_registration_wizard' %>
   <%= javascript_pack_tag 'user_registration' %>

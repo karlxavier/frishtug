@@ -14,6 +14,9 @@
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  location_at      :integer
+#  latitude         :float
+#  longitude        :float
+#  status           :integer
 #
 
 # Column names
@@ -22,7 +25,7 @@ class Address < ApplicationRecord
   enum location_at: %i[at_work at_home multiple_workplaces]
   enum status: %i[active inactive]
   belongs_to :addressable, polymorphic: true, optional: true
-  validates :line1, :city, :state, :zip_code, presence: true
+  geocoded_by :full_address
 
   def self.specified_location
     if location_ats != :multiple_workplaces
@@ -38,6 +41,10 @@ class Address < ApplicationRecord
       United States
     HEREDOC
     formatted.html_safe
+  end
+
+  def full_address
+    [line1, line2, city, state, 'US'].compact.join(', ')
   end
 
   private

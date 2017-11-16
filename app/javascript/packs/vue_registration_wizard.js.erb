@@ -20,14 +20,14 @@ const registrationForm = new Vue({
     delivery_date: document.querySelector('#start_date_0').value,
     schedule: 'monday_to_friday',
     stripe_key: '<%= STRIPE_PUBLIC_KEY %>',
-    billing_address: {
-      address_line1: null,
-      address_line2: null,
-      address_city: null,
-      address_state: null,
-      address_country: 'US',
-      address_zip: null
-    },
+    billing_address: [{
+      line1: null,
+      line2: null,
+      city: null,
+      state: null,
+      zip_code: null,
+      location_at: 'at_work'
+    }],
     credit_card_billing_address: {
       address_line1: null,
       address_line2: null,
@@ -51,9 +51,31 @@ const registrationForm = new Vue({
       account_holder_type: 'individual'
     },
     error_messages: '',
-    tab_titles: mondayToFriday
+    tab_titles: mondayToFriday,
+    allowed_zip_codes: JSON.parse(localStorage.getItem('allowed_zip_codes')),
+    interval: '',
   },
   methods: {
+    setInterVal: function(interval) {
+      this.interval = interval
+      if (interval === 'month') {
+        order.order_type = 'multiple'
+      } else {
+        order.order_type = 'single'
+      }
+      this.nextTab()
+    },
+    addBillingAddress: function() {
+      const _this = registrationForm
+      _this.billing_address.push({
+        line1: null,
+        line2: null,
+        city: null,
+        state: null,
+        zip_code: null,
+        location_at: 'multiple_workplaces'
+      })
+    },
     formatCardNumber: () => {
       const _this = registrationForm
       _this.credit_card.number = _this.credit_card.number.replace(/[^\d]/g, '')
@@ -86,11 +108,12 @@ const registrationForm = new Vue({
       }, 300)
     },
     isActiveSchedule: function(sched) {
-      if (this.schedule === sched) {
-        return ' btn-brown'
-      } else {
-        return ''
-      }
+      if (this.schedule === sched) { return ' btn-brown' }
+      return ''
+    },
+    isActiveDeliveryDate: function(date) {
+      if (this.delivery_date === date) { return ' btn-brown' }
+      return ''
     },
     formatDate: function(date) {
       const d = new Date(date)
@@ -138,7 +161,7 @@ const registrationForm = new Vue({
         "[name='registration_form[account_number]']",
         "[name='registration_form[routing_number]']"
       ]
-
+      registrationForm.enableMealSelector()
       return multiplePresenceValidator(inputs)
     },
     showCongrats: function() {
@@ -172,6 +195,35 @@ const registrationForm = new Vue({
           _this.bank_account
         , stripeResponseHandler)
       }
+    },
+    validateZip: function(event) {
+      let showOrHide
+      registrationForm.billing_address.address_zip = event.target.value
+      if (isValidUSZip(registrationForm.billing_address.address_zip)) {
+        event.target.classList.add('is-valid')
+        event.target.classList.remove('is-invalid')
+        showOrHide = 'none'
+      } else {
+        event.target.classList.add('is-invalid')
+        showOrHide = 'block'
+      }
+      const col = event.target.closest('.col')
+      col.querySelector('.invalid-feedback').style.display = showOrHide
+    },
+    onlyNumber: function(event) {
+      if (event.target.tagName === 'INPUT' && event.target.type === 'text') {
+        event.target.value = event.target.value.replace(/[^\d]/g, '')
+      }
+    },
+    limitInput: function(event, limit) {
+      if (event.target.tagName === 'INPUT' && event.target.type === 'text') {
+        event.target.value = event.target.value.substring(0, limit)
+      }
+    },
+    enableMealSelector: function() {
+      mealSelectorInit()
+      mealCounterObserver()
+      return true
     }
   }
 })
@@ -218,4 +270,8 @@ const valueValidator = (input) => {
     input.classList.remove('is-invalid')
     return true
   }
+}
+
+const isValidUSZip = (zipCode) => {
+   return /^\d{5}$/.test(zipCode);
 }

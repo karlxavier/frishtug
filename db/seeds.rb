@@ -19,7 +19,7 @@ Plan.create([
   {
     name: 'Option 1',
     description: '$20 per day, at $400 monthly',
-    price: 20,
+    price: 400,
     interval: 'month',
     shipping: :free,
     note: 'Incididunt esse elit magna incididunt nulla. Sunt ipsum eu cillum nisi officia labore. Anim ullamco esse nulla aliqua minim officia elit sint nostrud occaecat velit sint.'
@@ -27,7 +27,7 @@ Plan.create([
   {
     name: 'Option 2',
     description: '$14.95 x 20 days = $299',
-    price: 14.95,
+    price: 299,
     interval: 'month',
     shipping: :free,
     note: 'Voluptate ipsum ipsum cupidatat amet sint ea. Reprehenderit deserunt consectetur veniam sunt dolore.'
@@ -35,7 +35,7 @@ Plan.create([
   {
     name: 'Option 3',
     description: '$10 per day, at $200 monthly',
-    price: 10,
+    price: 200,
     interval: 'month',
     shipping: :paid,
     shipping_fee: 40,

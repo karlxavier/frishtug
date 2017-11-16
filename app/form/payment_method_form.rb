@@ -1,8 +1,8 @@
 class PaymentMethodForm
   include ActiveModel::Model
   attr_accessor :type, :credit_card, :checking, :user
-  validate :user_as_object?
-  
+  validate :user_is_object?
+
   def save
     return false if invalid?
     persist!
@@ -26,7 +26,7 @@ class PaymentMethodForm
     false
   end
 
-  def user_as_object?
+  def user_is_object?
     user.is_a?(ActiveRecord::Base)
   end
 

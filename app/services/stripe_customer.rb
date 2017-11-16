@@ -11,7 +11,7 @@ class StripeCustomer
     true
   rescue Stripe::InvalidRequestError => e
     errors.add(:base, e.message)
-    false 
+    false
   end
 
   def remove_source(token)
@@ -19,7 +19,7 @@ class StripeCustomer
     true
   rescue Stripe::InvalidRequestError => e
     errors.add(:base, e.message)
-    false 
+    false
   end
 
   def set_default_source(token)
@@ -27,7 +27,7 @@ class StripeCustomer
     stripe_customer.save
   rescue Stripe::InvalidRequestError => e
     errors.add(:base, e.message)
-    false 
+    false
   end
 
   private

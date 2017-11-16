@@ -12,7 +12,7 @@
       <% end %>
     </h4>
     <% if !defined?(control).nil? %>
-      <%= render 'shared/menus/menu_controls', menu: menu %>
+      <%= render 'shared/menus/menu_controls', { menu: menu, fmodel: fmodel || nil } %>
     <% else %>
       <p class="card-text">
         <small class="text-muted">

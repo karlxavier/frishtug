@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-
   resources :user_registrations, only: %i[index create] do
     collection do
       get :schedule
@@ -17,8 +16,9 @@ Rails.application.routes.draw do
     resources :units, except: :show
     resources :menus, except: :show
     resources :dashboard, only: :index
-    resources :menu_categories, except: %i[show]
+    resources :menu_categories, except: :show
     resources :plans
+    resources :allowed_zip_codes, except: :show
   end
 
   namespace :user do

@@ -10,13 +10,15 @@
 #  user_id    :integer
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  brand      :string
+#  token      :string
 #
 
 class CreditCard < ApplicationRecord
   belongs_to :user
   has_one :address, as: :addressable, dependent: :destroy
   accepts_nested_attributes_for :address, reject_if: :all_blank, allow_destroy: true
-
+  validates :number, :month, :year, :cvc, presence: true
   before_save :set_card_number
 
   def set_card_number

@@ -1,4 +1,5 @@
 class UserRegistrationsController < ApplicationController
+  before_action :set_allowed_zip
   respond_to :js, except: :index
 
   def index
@@ -33,12 +34,6 @@ class UserRegistrationsController < ApplicationController
             :last_name,
             :email,
             :password,
-            :line1,
-            :line2,
-            :front_door,
-            :city,
-            :state,
-            :zip_code,
             :group_code,
             :phone_number,
             :plan_id,
@@ -50,7 +45,6 @@ class UserRegistrationsController < ApplicationController
             :routing_number,
             :account_number,
             :start_date,
-            :location_at,
             :schedule,
             :payment_method,
             :billing_line_1,
@@ -61,7 +55,20 @@ class UserRegistrationsController < ApplicationController
             :billing_phone_number,
             :stripe_token,
             :card_brand,
-            orders: [:order_date, menu_ids: []]
+            orders: [:order_date, menu_ids: []],
+            addresses: [
+              :line1,
+              :line2,
+              :front_door,
+              :city,
+              :state,
+              :zip_code,
+              :location_at,
+            ]
           )
+  end
+
+  def set_allowed_zip
+    @allowed_zip_codes = AllowedZipCode.all.map(&:zip)
   end
 end

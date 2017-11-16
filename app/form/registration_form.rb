@@ -6,13 +6,7 @@ class RegistrationForm
                 :email,
                 :password,
                 :plan_id, # User params
-                :location_at,
-                :line1,
-                :line2,
-                :front_door,
-                :city,
-                :state,
-                :zip_code, # Address params
+                :addresses,
                 :group_code,
                 :option,
                 :schedule,
@@ -37,7 +31,6 @@ class RegistrationForm
                 :card_brand
 
   validates :first_name, :last_name, :email, :password, presence: true
-  validates :location_at, :line1, :city, :state, :zip_code, presence: true
   validates :phone_number, presence: true
   # validates :option, :schedule, :start_date, presence: true
   validate :user_email_unique?
@@ -94,10 +87,17 @@ class RegistrationForm
     errors.add(:base, e.message)
 
     false
+  rescue ActiveRecord::Rollback => e
+    # e.message and e.cause.message  can be helpful
+    errors.add(:base, e.message)
+
+    false
   end
 
   def create_user_info(user)
-    user.addresses.create!(address_params)
+    addresses.each do |a|
+      user.addresses.create!(address_params(a))
+    end
     user.create_contact_number!(phone_number: phone_number)
     user.create_schedule!(schedule_params)
   end
@@ -108,7 +108,7 @@ class RegistrationForm
         order = user.orders.create!(placed_on: o[:order_date])
         order.menu_ids = o[:menu_ids][0].split(',')
       else
-        error.add(:base, 'Order place on is blank')
+        errors.add(:base, 'Order place on is blank')
         raise ActiveRecord::Rollback
       end
     end
@@ -118,12 +118,30 @@ class RegistrationForm
     payment_method.classify.constantize.create!(
       payment_method_params.merge!(user_id: user.id)
     )
+    if user.plan.interval == 'month'
+      create_subscription(user)
+    else
+      create_a_charge(user)
+    end
+  end
+
+  def create_a_charge(user)
+    amount_to_pay = user.orders.first.menus.map(&:price).inject(:+)
+    charge = StripeCharger.new(user, amount_to_pay)
+    charge.run
+    unless charge.errors.empty?
+      errors.add(:base, charge.errors.full_message.join(', '))
+      raise ActiveRecord::Rollback
+    end
+  end
+
+  def create_subscription(user)
     stripe_subscription = StripeSubscriptioner.new(user)
     if stripe_subscription.run
       user.approved = true
       user.save
     else
-      error.add(:base, stripe_subscription.errors.full_messages.join(', '))
+      errors.add(:base, stripe_subscription.errors.full_messages.join(', '))
       raise ActiveRecord::Rollback
     end
   end
@@ -140,15 +158,15 @@ class RegistrationForm
     }
   end
 
-  def address_params
+  def address_params(address)
     {
-      location_at: location_at,
-      line1: line1,
-      line2: line2,
-      front_door: front_door,
-      city: city,
-      state: state,
-      zip_code: zip_code
+      location_at: address[:location_at],
+      line1: address[:line1],
+      line2: address[:line2],
+      front_door: address[:front_door],
+      city: address[:city],
+      state: address[:state],
+      zip_code: address[:zip_code]
     }
   end
 
@@ -169,7 +187,8 @@ class RegistrationForm
       month: month,
       year: year,
       cvc: cvc,
-      brand: card_brand
+      brand: card_brand,
+      token: stripe_token
     }
   end
 
@@ -177,7 +196,8 @@ class RegistrationForm
     {
       bank_name: bank_name,
       account_number: account_number,
-      routing_number: routing_number
+      routing_number: routing_number,
+      token: stripe_token
     }
   end
 end

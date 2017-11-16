@@ -15,7 +15,7 @@ class User::DeliveryInformationController < User::BaseController
 
   def create
     @delivery_info_form = DeliveryInfoForm.new(
-      address: address_params,
+      addresses: address_params,
       current_user: current_user
     )
     if @delivery_info_form.save

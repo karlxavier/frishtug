@@ -1,0 +1,22 @@
+<%= card_container do %>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Zip</th>
+      <th colspan="2"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @admin_allowed_zip_codes.each do |admin_allowed_zip_code| %>
+      <tr>
+        <td><%= admin_allowed_zip_code.id %></td>
+        <td><%= admin_allowed_zip_code.zip %></td>
+        <td><%= link_to 'Edit', edit_admin_allowed_zip_code_path(admin_allowed_zip_code) %></td>
+        <td><%= link_to 'Destroy', admin_allowed_zip_code_path(admin_allowed_zip_code), method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<% end %>
