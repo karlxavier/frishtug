@@ -5,76 +5,118 @@
 //   success: handle successful response,
 //   error: handle error
 // })
+const putJson = (obj) => {
+  return new Promise((resolve, reject) => {
+    const request = new XMLHttpRequest()
+    const token = document.querySelector('meta[name="csrf-token"]').content
+
+    request.open('PUT', obj.url, true)
+    //request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
+    request.setRequestHeader('Content-Type', 'application/json')
+    request.setRequestHeader('X-CSRF-TOKEN', token)
+
+    request.onload = function() {
+      if (request.status >= 200 && request.status < 400) {
+        const response = request.responseText;
+        if (obj.hasOwnProperty('success')) {
+          obj.success(response)
+        }
+        resolve(response)
+      } else {
+        const response = request.responseText;
+        if (obj.hasOwnProperty('error')) {
+          obj.error(response)
+        }
+        reject(response)
+      }
+    };
+
+    request.send( JSON.stringify(obj.data) )
+  })
+}
 
 const postJson = (obj) => {
-  const request = new XMLHttpRequest()
-  const token = document.querySelector('meta[name="csrf-token"]').content
+  return new Promise((resolve, reject) => {
+    const request = new XMLHttpRequest()
+    const token = document.querySelector('meta[name="csrf-token"]').content
 
-  request.open('POST', obj.url, true)
-  //request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
-  request.setRequestHeader('Content-Type', 'application/json')
-  request.setRequestHeader('X-CSRF-TOKEN', token)
+    request.open('POST', obj.url, true)
+    //request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
+    request.setRequestHeader('Content-Type', 'application/json')
+    request.setRequestHeader('X-CSRF-TOKEN', token)
 
-  request.onload = function() {
-    if (request.status >= 200 && request.status < 400) {
-      const response = request.responseText;
-      if (obj.hasOwnProperty('success')) {
-        obj.success(response)
+    request.onload = function() {
+      if (request.status >= 200 && request.status < 400) {
+        const response = request.responseText;
+        if (obj.hasOwnProperty('success')) {
+          obj.success(response)
+        }
+        resolve(response)
+      } else {
+        const response = request.responseText;
+        if (obj.hasOwnProperty('error')) {
+          obj.error(response)
+        }
+        reject(response)
       }
-    } else {
-      const response = request.responseText;
-      if (obj.hasOwnProperty('error')) {
-        obj.error(response)
-      }
-    }
-  };
+    };
 
-  request.send( JSON.stringify(obj.data) )
+    request.send( JSON.stringify(obj.data) )
+  })
 }
 
 const get = (obj) => {
-  const request = new XMLHttpRequest()
-  request.open('GET', obj.url, true)
+  return new Promise((resolve, reject) => {
+    const request = new XMLHttpRequest()
+    request.open('GET', obj.url, true)
 
-  request.onload = function() {
-    if (request.status >= 200 && request.status < 400) {
-      const response = request.responseText
-      obj.success(response)
-    } else {
-      const response = request.responseText
-      obj.error(response)
-    }
-  };
+    request.onload = function() {
+      if (request.status >= 200 && request.status < 400) {
+        const response = request.responseText
+        obj.success(response)
+        resolve(response)
+      } else {
+        const response = request.responseText
+        obj.error(response)
+        reject(response)
+      }
+    };
 
-  request.onerror = function() {
-    console.error('There was a connection error of some sort')
-  };
+    request.onerror = function() {
+      console.error('There was a connection error of some sort')
+      reject('There was a connection error of some sort')
+    };
 
-  request.send()
+    request.send()
+  })
 }
 
 const postForm = (obj) => {
-  const request = new XMLHttpRequest()
-  const token = document.querySelector('meta[name="csrf-token"]').content
+  return new Promise((resolve, reject) => {
+    const request = new XMLHttpRequest()
+    const token = document.querySelector('meta[name="csrf-token"]').content
 
-  request.open('POST', obj.url, true)
-  request.setRequestHeader('X-CSRF-TOKEN', token)
+    request.open('POST', obj.url, true)
+    request.setRequestHeader('X-CSRF-TOKEN', token)
 
-  request.onload = function() {
-    if (request.status >= 200 && request.status < 400) {
-      const response = request.responseText;
-      if (obj.hasOwnProperty('success')) {
-        obj.success(response)
+    request.onload = function() {
+      if (request.status >= 200 && request.status < 400) {
+        const response = request.responseText;
+        resolve(response)
+        if (obj.hasOwnProperty('success')) {
+          obj.success(response)
+        }
+      } else {
+        const response = request.responseText;
+        reject(response)
+        if (obj.hasOwnProperty('error')) {
+          obj.error(response)
+        }
       }
-    } else {
-      const response = request.responseText;
-      if (obj.hasOwnProperty('error')) {
-        obj.error(response)
-      }
-    }
-  };
+    };
 
-  request.send(obj.data)
+    request.send(obj.data)
+  })
 }
 
 const serializeForm = (element, additionalParams) => {
@@ -123,5 +165,6 @@ module.exports = {
   postJson: postJson,
   get: get,
   postForm: postForm,
+  putJson: putJson,
   serializeForm: serializeForm
 }

@@ -1,5 +1,5 @@
 <div class="card-deck">
-  <% Plan.all.sort.each do |p| %>
+  <% Plan.subscriptions.sort.each do |p| %>
     <div class="card text-center <%= p.name.parameterize %>"
       data-plan-name="<%= p.name %>"
       data-plan-price="<%= p.price %>"

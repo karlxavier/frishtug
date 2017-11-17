@@ -6,7 +6,7 @@
         {{ error_messages }}
       </div>
     </div>
-    <div class="form-check form-check-inline">
+    <div class="form-check form-check-inline" v-if="mode === 'new'">
       <label class="form-check-label">
         <input type="radio" 
           name="payment_method" 
@@ -17,14 +17,14 @@
         Credit Card
       </label>
     </div>
-    <div class=" form-check form-check-inline">
+    <div class=" form-check form-check-inline" v-if="mode === 'new'">
       <label class="form-check-label">
         <input type="radio" 
         name="payment_method" 
         value="checking" 
         v-model="payment_method"
         class="form-check-input">
-        Checking
+        Check
       </label>
     </div>
 
@@ -37,10 +37,15 @@
     <div v-else>
       <%= render 'checking_form' %>
     </div>
-
-    <input type="submit" name="commit" value="Save Changes" class="btn btn-brown text-uppercase px-4" v-on:click.prevent="saveChanges($event)">
+    <div>
+      <%= render 'shared/form/note_for_required_fields' %>
+    </div>
+    <div class="row">
+      <div class="col">
+        <a href="javascript:void(0)" class="btn btn-default text-uppercase px-4 mr-4" @click="hideForm">Cancel</a>
+        <input type="submit" name="commit" value="Save New Payment Method" class="btn btn-brown text-uppercase px-4" v-on:click.prevent="saveChanges($event)" v-if="mode === 'new'">
+        <input type="submit" name="commit" value="Save Changes" class="btn btn-brown text-uppercase px-4" v-on:click.prevent="updateChanges($event)" v-if="mode === 'edit'">
+      </div>
+    </div>
   </form>
 </div>
-<%= content_for :footer_js do %>
-  <%= javascript_pack_tag 'user/vue_payment_method' %>
-<% end %>

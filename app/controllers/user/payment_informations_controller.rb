@@ -1,6 +1,6 @@
 class User::PaymentInformationsController < User::BaseController
   def index
-    @payment_informations = current_user.payment_information
+    @payment_informations = StripeCustomer.new(current_user).retrieve
   end
 
   def new; end
@@ -26,6 +26,27 @@ class User::PaymentInformationsController < User::BaseController
     render json: @msg, status: :ok
   end
 
+  def update
+    @payment_method = PaymentMethodForm.new(
+      type: params[:type],
+      credit_card: credit_card_params,
+      checking: checking_params,
+      user: current_user
+    )
+    if @payment_method.update
+      @msg = {
+        status: 'success',
+        message: 'Successfully updated payment method'
+      }
+    else
+      @msg = {
+        status: 'error',
+        message: @payment_method.errors.full_messages.join(', ')
+      }
+    end
+    render json: @msg, status: :ok
+  end
+
   private
 
   def credit_card_params
@@ -36,6 +57,7 @@ class User::PaymentInformationsController < User::BaseController
       :year,
       :token,
       :brand,
+      :name,
       address_attributes: %i[
         id
         line1

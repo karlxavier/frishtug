@@ -1,6 +1,7 @@
 import Vue from 'vue/dist/vue.esm'
 import swal from 'sweetalert2'
 import ajax from '../lib/ajax_lib'
+import { $only_numbers, $limit } from '../lib/input_helpers'
 
 const el = document.querySelector('#user_delivery_info')
 
@@ -68,6 +69,12 @@ if (el) {
           location_at: 'multiple_workplaces',
           _delete: null
         })
+      },
+      limitZipCode: (event, index) => {
+        userDelivery.addresses[index].zip_code = $limit(event.target, 5)
+      },
+      is_numeric: (event, index) => {
+        userDelivery.addresses[index].zip_code = $only_numbers(event.target)
       }
     }
   })

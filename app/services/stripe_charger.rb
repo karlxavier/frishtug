@@ -13,6 +13,7 @@ class StripeCharger
       source: @user.stripe_token,
       description: "Single Order Charge for #{@user.full_name} <#{@user.email}>"
     )
+    create_a_customer
     true
   rescue Stripe::InvalidRequestError => e
     errors.add(:base, e.message)
@@ -25,5 +26,10 @@ class StripeCharger
 
   def amount_to_cents
     ((amount + user.plan.shipping_fee).to_f * 100).to_i
+  end
+
+  def create_a_customer
+     customer = StripeCustomer.new(user)
+     customer.create
   end
 end

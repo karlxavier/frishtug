@@ -1,3 +1,13 @@
+# == Schema Information
+#
+# Table name: allowed_zip_codes
+#
+#  id         :integer          not null, primary key
+#  zip        :string
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
 require 'rails_helper'
 
 RSpec.describe AllowedZipCode, type: :model do

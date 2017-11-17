@@ -5,13 +5,13 @@
       <div class="form-group" v-if="index === 0">
         <% registration.address_types.each do |type| %>
           <label for="<%= type.to_s.parameterize %>">
-            <%= form.radio_button :location_at, type, name: 'registration_form[addresses][][location_at]', id: "#{type.to_s.parameterize}", class: '', checked: (true if type == :at_work), 'v-model': 'address.location_at' %>
+            <%= form.radio_button :location_at, type, name: 'registration_form[addresses][][location_at]', id: "#{type.to_s.parameterize}", class: '', checked: (true if type == :at_work), 'v-model': 'address.address_location_at' %>
             <%= type.to_s.humanize %>
           </label>
         <% end %>
       </div>
       <div v-else>
-        <input type="hidden" v-model="address.location_at" name="registration_form[addresses][][location_at]">
+        <input type="hidden" v-model="address.address_location_at" name="registration_form[addresses][][location_at]">
       </div>
       <div class="form-group">
         <%= form.text_field :line1, name: 'registration_form[addresses][][line1]', class: 'form-control', placeholder: 'Address Line 1', 'v-model': 'address.address_line1' %>
@@ -41,7 +41,7 @@
       </div>
       <div class="form-group row">
         <div class="col">
-          <%= form.text_field :zip_code,  name: 'registration_form[addresses][][zip_code]', class: 'form-control', placeholder: 'Zipcode', 'v-model': 'address.address_zip', 'v-on:blur': 'validateZip($event)', 'v-on:keyup': 'limitInput($event, 5) + onlyNumber($event)' %>
+          <%= form.text_field :zip_code,  name: 'registration_form[addresses][][zip_code]', class: 'form-control', placeholder: 'Zipcode', 'v-model': 'address.address_zip', 'v-on:blur': 'validateZip($event, "billing_address", index)', 'v-on:keyup': 'limitInput($event, 5) + onlyNumber($event)' %>
           <div class="invalid-feedback">
             Zipcode is required and must be a US zip.
           </div>

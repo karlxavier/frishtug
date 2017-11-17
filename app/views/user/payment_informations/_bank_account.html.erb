@@ -1,0 +1,28 @@
+<div class="row">
+  <div class="col">
+    <strong>
+      <%= source.bank_name %> <%= "****#{source.last4}" %>
+      <% if default == source.id %>
+        <span>(default)</span>
+      <% end %> 
+    </strong>
+  </div>
+  <div class="col">
+    <a href="javascript:void(0)" 
+    class="float-right"
+    @click="editBankPaymentMethod('<%= source.to_json %>')">
+      Edit
+    </a>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <strong>Account Holder Name</strong>
+    <p><%= source.account_holder_name || current_user.full_name %></p>
+  </div>
+  <div class="col">
+    <strong>Account Holder Type</strong>
+    <p><%= source.account_holder_type %></p>
+  </div>
+</div>
+<hr>

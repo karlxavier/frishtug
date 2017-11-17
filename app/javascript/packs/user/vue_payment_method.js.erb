@@ -1,26 +1,29 @@
 import Vue from 'vue/dist/vue.esm'
 import swal from 'sweetalert2'
 import ajax from '../lib/ajax_lib'
+import { $limit, $only_numbers } from '../lib/input_helpers'
 
-const el = document.querySelector('#payment_method_container')
+const el = document.querySelector('#payment_method_page')
 Stripe.setPublishableKey('<%= STRIPE_PUBLIC_KEY %>')
 
 const paymentMethod = new Vue({
   el: el,
   data: {
+    show: false,
     payment_method: 'credit_card',
     credit_card: {
       number: '',
       exp_month: '',
       exp_year: '',
-      cvc: ''
+      cvc: '',
+      name: '' 
     },
     checking: {
       country: 'US',
       currency: 'usd',
       routing_number: null,
       account_number: null,
-      account_holder_name: localStorage.getItem('full_name'),
+      account_holder_name: '',
       account_holder_type: 'individual',
       bank_name: '',
     },
@@ -36,8 +39,99 @@ const paymentMethod = new Vue({
     token: '',
     brand: '',
     error_messages: '',
+    mode: 'new'
+  },
+  mounted: function() {
+    const name = localStorage.getItem('full_name')
+    this.checking.account_holder_name = name
+    this.credit_card.name = name
   },
   methods: {
+    scrollDown: () => {
+      $("html, body").animate({ scrollTop: $(document).height() }, 1000);
+    },
+    hideForm: () => {
+      paymentMethod.show = false
+    },
+    editCardPaymentMethod: (json_data) => {
+      const card = JSON.parse(json_data)
+      paymentMethod.token = card.id
+      paymentMethod.brand = card.brand
+      paymentMethod.credit_card = {
+        number: card.last4,
+        exp_month: card.exp_month,
+        exp_year: card.exp_year,
+        cvc: card.cvc,
+        name: card.name
+      }
+
+      if (card.address_line1 !== '') {
+        paymentMethod.different_billing = true
+      }
+      paymentMethod.billing_address = {
+        address_line1: card.address_line1,
+        address_line2: card.address_line2,
+        address_city: card.address_city,
+        address_state: card.address_state,
+        address_country: 'US',
+        address_zip: card.address_zip
+      }
+      paymentMethod.show = true
+      paymentMethod.payment_method = 'credit_card'
+      paymentMethod.scrollDown()
+      paymentMethod.mode = 'edit'
+    },
+    editBankPaymentMethod: (json_data) => {
+      const bank = JSON.parse(json_data)
+      paymentMethod.token = bank.id
+      paymentMethod.checking = {
+        country: 'US',
+        currency: 'usd',
+        routing_number: bank.routing_number,
+        account_number: bank.account_number,
+        account_holder_name: localStorage.getItem('full_name'),
+        account_holder_type: bank.account_holder_type,
+        bank_name: bank.bank_name,
+      }
+      paymentMethod.show = true
+      paymentMethod.payment_method = 'checking'
+      paymentMethod.scrollDown()
+      paymentMethod.mode = 'edit'
+    }, 
+    newPaymentMethod: () => {
+      paymentMethod.different_billing = false
+      paymentMethod.checking = {
+        country: 'US',
+        currency: 'usd',
+        routing_number: null,
+        account_number: null,
+        account_holder_name: localStorage.getItem('full_name'),
+        account_holder_type: 'individual',
+        bank_name: '',
+      }
+
+      paymentMethod.credit_card = {
+        number: '',
+        exp_month: '',
+        exp_year: '',
+        cvc: '',
+        name: localStorage.getItem('full_name')
+      }
+
+      paymentMethod.billing_address = {
+        address_line1: '',
+        address_line2: '',
+        address_city: '',
+        address_state: '',
+        address_country: 'US',
+        address_zip: ''
+      }
+      paymentMethod.show = true
+      paymentMethod.scrollDown()
+      paymentMethod.mode = 'new'
+      paymentMethod.token = ''
+      paymentMethod.brand = ''
+    },
     changeType: () => {
       const _this = paymentMethod
       if (_this.payment_method === 'credit_card') {
@@ -66,6 +160,7 @@ const paymentMethod = new Vue({
           exp_month: _this.credit_card.exp_month,
           exp_year: _this.credit_card.exp_year,
           cvc: _this.credit_card.cvc,
+          name: _this.credit_card.name,
           address_line1: _this.billing_address.address_line1,
           address_line2: _this.billing_address.address_line2,
           address_city: _this.billing_address.address_city,
@@ -83,6 +178,15 @@ const paymentMethod = new Vue({
           account_holder_type: _this.checking.account_holder_type
         }, stripeResponseHandler)
       }
+    },
+    updateChanges: (event) => {
+      saveCompleted('/user/payment_informations', 'update')
+    },
+    limitInput: (event, num) => {
+      paymentMethod.billing_address.zip = $limit(event.target, num)
+    },
+    onlyNumbersInput: (event) => {
+      $only_numbers(event.target)
     }
   }
 })
@@ -106,11 +210,11 @@ const stripeResponseHandler = (status, response) => {
       paymentMethod.brand = brand
     }
      paymentMethod.error_messages = ''
-     saveCompleted()
+     saveCompleted('/user/payment_informations', 'save')
   }
 }
 
-const saveCompleted = () => {
+const saveCompleted = (url, option) => {
   let data;
   if (paymentMethod.payment_method === 'credit_card') {
     let cc = paymentMethod.credit_card
@@ -122,6 +226,7 @@ const saveCompleted = () => {
         cvc: cc.cvc,
         month: cc.exp_month,
         year: cc.exp_year,
+        name: cc.name,
         token: paymentMethod.token,
         brand: paymentMethod.brand,
         address_attributes: {
@@ -146,12 +251,31 @@ const saveCompleted = () => {
     }
   }
 
-  ajax.postJson({
-    url: '/user/payment_informations',
-    data: data,
-    success: responseHandler,
-    error: responseHandler
-  })
+  if(option === 'save') {
+    ajax.postJson({
+      url: url,
+      data: data
+    })
+    .then((response) => {
+      responseHandler(response)
+    })
+    .catch((response) => {
+      responseHandler(response)
+    })
+  } 
+
+  if (option === 'update') {
+    ajax.putJson({
+      url: url,
+      data: data
+    })
+    .then((response) => {
+      responseHandler(response)
+    })
+    .catch((response) => {
+      responseHandler(response)
+    })
+  }
 }
 
 const responseHandler = (response) => {

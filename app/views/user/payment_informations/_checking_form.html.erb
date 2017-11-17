@@ -1,33 +1,38 @@
-<div class="form-group">
-  <input type="text" name="bank_name" placeholder="Bank Name" class="form-control" required>
+<div class="form-group" v-if="mode === 'new'">
+  <label>Bank Name</label>
+  <input type="text" name="bank_name" placeholder="Bank Name" class="form-control" v-model="checking.bank_name">
   <div class="invalid-feedback">
     Bank name is required
   </div>
 </div>
-<div class="form-group">
-  <input type="text" name="account_number" placeholder="Account Number" class="form-control" v-model="checking.account_number">
+<div class="form-group" v-if="mode === 'new'">
+  <label>Account Number*</label>
+  <input type="text" name="account_number" placeholder="e.g 000123456789" class="form-control" v-model="checking.account_number">
   <div class="invalid-feedback">
     Account number is required
   </div>
 </div>
-<div class="form-group">
-  <input type="text" name="routing_number" placeholder="Routing Number" class="form-control" v-model="checking.routing_number">
+<div class="form-group" v-if="mode === 'new'">
+  <label>Routing Number*</label>
+  <input type="text" name="routing_number" placeholder="e.g 110000000" class="form-control" v-model="checking.routing_number">
   <div class="invalid-feedback">
     Routing number is required
   </div>
 </div>
 <div class="form-group">
-  <input type="text" name="account_holder_name" placeholder="Account Holder Name" class="form-control" v-model="checking.account_holder_name">
+  <label>Account Holder Name</label>
+  <input type="text" name="account_holder_name" placeholder="Account Holder Name" class="form-control" v-model="checking.account_holder_name" value="<%= current_user.full_name %>">
   <div class="invalid-feedback">
     Account Holder Name
   </div>
 </div>
 <div class="form-group">
+  <label>Account Holder Type</label>
   <select name="account_holder_type" v-model="checking.account_holder_type" class="form-control">
     <option value="individual">Individual</option>
     <option value="company">Company</option>
   </select>
   <div class="invalid-feedback">
-    Account Holder Name
+    Account Holder Type
   </div>
 </div>

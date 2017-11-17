@@ -23,6 +23,7 @@ class Plan < ApplicationRecord
   enum shipping: %i[free paid]
   validates :name, :price, presence: true
   validates :name, uniqueness: true
+  scope :subscriptions, -> { where(interval: 'month') }
   has_many :users
   has_many :comments, as: :commentable, dependent: :destroy
 end

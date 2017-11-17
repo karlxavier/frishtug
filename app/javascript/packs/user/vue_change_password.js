@@ -4,6 +4,14 @@ import ajax from '../lib/ajax_lib'
 const el = document.querySelector('#change_password')
 
 if (el) {
+  const responseHandler = (response) => {
+    const data = JSON.parse(response)
+    swal(
+      data.status.toUpperCase(),
+      data.message,
+      data.status
+    )
+  }
   const changePass = new Vue({
     el: el,
     data: {
@@ -20,23 +28,12 @@ if (el) {
         if (user.new_password === user.confirm_password) {
           ajax.postForm({
             url: '/user/change_password',
-            data: data,
-            success: function(response) {
-              const data = JSON.parse(response)
-              swal(
-                data.status.toUpperCase(),
-                data.message,
-                'success'
-              )
-            },
-            error: function(response) {
-              const data = JSON.parse(response)
-              swal(
-                data.status.toUpperCase(),
-                data.message,
-                'error'
-              )
-            }
+            data: data})
+          .then((response) => {
+            responseHandler(response)
+          })
+          .catch((error) => {
+            responseHandler(error)
           })
         } else {
           swal(

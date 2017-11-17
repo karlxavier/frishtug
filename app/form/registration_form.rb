@@ -85,12 +85,9 @@ class RegistrationForm
   rescue ActiveRecord::StatementInvalid => e
     # e.message and e.cause.message  can be helpful
     errors.add(:base, e.message)
-
     false
-  rescue ActiveRecord::Rollback => e
-    # e.message and e.cause.message  can be helpful
+  rescue ActiveRecord::RecordInvalid => e
     errors.add(:base, e.message)
-
     false
   end
 
@@ -109,7 +106,7 @@ class RegistrationForm
         order.menu_ids = o[:menu_ids][0].split(',')
       else
         errors.add(:base, 'Order place on is blank')
-        raise ActiveRecord::Rollback
+        raise ActiveRecord::StatementInvalid
       end
     end
   end
@@ -131,7 +128,7 @@ class RegistrationForm
     charge.run
     unless charge.errors.empty?
       errors.add(:base, charge.errors.full_message.join(', '))
-      raise ActiveRecord::Rollback
+      raise ActiveRecord::StatementInvalid
     end
   end
 
@@ -142,7 +139,7 @@ class RegistrationForm
       user.save
     else
       errors.add(:base, stripe_subscription.errors.full_messages.join(', '))
-      raise ActiveRecord::Rollback
+      raise ActiveRecord::StatementInvalid
     end
   end
 

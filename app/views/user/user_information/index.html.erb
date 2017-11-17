@@ -24,7 +24,17 @@
     </div>
     <div class="form-group">
       <label for="user_phone_number">Phone Number</label>
-      <input type="text" class="form-control" id="user_phone_number" name="user[contact_number_attributes][phone_number]" v-model="phone">
+      <input type="text" class="form-control" id="user_phone_number" name="user[contact_number_attributes][phone_number]" v-model="phone" v-on:keyup="onlyUsPhones($event)">
+      <div class="invalid-feedback">
+        Valid Formats are: <br>
+        (123) 456-7890 <br>
+        (123)456-7890 <br>
+        123-456-7890 <br>
+        123.456.7890 <br>
+        1234567890 <br>
+        +31313131313 <br>
+        075-12345678 <br>
+      </div>
     </div>
     <button type="submit" class="btn btn-brown text-uppercase">Save Changes</button>
   <% end %>

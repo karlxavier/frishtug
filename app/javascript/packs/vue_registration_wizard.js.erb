@@ -21,20 +21,21 @@ const registrationForm = new Vue({
     schedule: 'monday_to_friday',
     stripe_key: '<%= STRIPE_PUBLIC_KEY %>',
     billing_address: [{
-      line1: null,
-      line2: null,
-      city: null,
-      state: null,
-      zip_code: null,
-      location_at: 'at_work'
+      address_line1: '',
+      address_line2: '',
+      address_city: '',
+      address_state: '',
+      address_zip: '',
+      address_country: 'US',
+      address_location_at: 'at_work'
     }],
     credit_card_billing_address: {
-      address_line1: null,
-      address_line2: null,
-      address_city: null,
-      address_state: null,
+      address_line1: '',
+      address_line2: '',
+      address_city: '',
+      address_state: '',
       address_country: 'US',
-      address_zip: null
+      address_zip: ''
     },
     credit_card: {
       number: null,
@@ -180,15 +181,31 @@ const registrationForm = new Vue({
     createToken: function() {
       const _this = this
       const form = document.querySelector('form#sign_up_form')
+      let address
       Stripe.setPublishableKey(_this.stripe_key)
       form.classList.add('disabled')
 
       if (_this.payment_method === 'credit_card') {
+        if (hasAddress(_this.credit_card_billing_address)) {
+          address = _this.credit_card_billing_address
+          console.log('pasok')
+        } else {
+          address = _this.billing_address[0]
+        }
+
+        console.log(address)
+
         Stripe.card.createToken({
           number: _this.credit_card.number.replace(/\s+/g, ''),
           exp_month: _this.credit_card.exp_month,
           exp_year: _this.credit_card.exp_year,
-          cvc: _this.credit_card.cvc
+          cvc: _this.credit_card.cvc,
+          address_line1: address.address_line1,
+          address_line2: address.address_line2,
+          address_city: address.address_city,
+          address_state: address.address_state,
+          address_country: address.address_country,
+          address_zip: address.address_zip,
         }, stripeResponseHandler)
       } else {
         Stripe.bankAccount.createToken(
@@ -196,19 +213,14 @@ const registrationForm = new Vue({
         , stripeResponseHandler)
       }
     },
-    validateZip: function(event) {
+    validateZip: function(event, key, index) {
       let showOrHide
-      registrationForm.billing_address.address_zip = event.target.value
-      if (isValidUSZip(registrationForm.billing_address.address_zip)) {
-        event.target.classList.add('is-valid')
+      registrationForm[key][index].address_zip = event.target.value
+      if (isValidUSZip(registrationForm[key][index].address_zip)) {
         event.target.classList.remove('is-invalid')
-        showOrHide = 'none'
       } else {
         event.target.classList.add('is-invalid')
-        showOrHide = 'block'
       }
-      const col = event.target.closest('.col')
-      col.querySelector('.invalid-feedback').style.display = showOrHide
     },
     onlyNumber: function(event) {
       if (event.target.tagName === 'INPUT' && event.target.type === 'text') {
@@ -228,6 +240,16 @@ const registrationForm = new Vue({
   }
 })
 
+
+const hasAddress = (address) => {
+  const to_validate = ['address_line1', 'address_city', 'address_state', 'address_zip']
+  let is_valid = true
+  to_validate.forEach(key => {
+    is_valid = address[key] !== ''
+    if (!is_valid) { return }
+  })
+  return is_valid
+}
 
 const stripeResponseHandler = (status, response) => {
   const form = document.querySelector('form#sign_up_form')
@@ -275,3 +297,6 @@ const valueValidator = (input) => {
 const isValidUSZip = (zipCode) => {
    return /^\d{5}$/.test(zipCode);
 }
+
+window.hasAddress = hasAddress
+window.form_data = registrationForm

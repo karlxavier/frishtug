@@ -65,6 +65,7 @@ class StripeSubscriptioner
   def create_stripe_customer
     Stripe::Customer.create(
       email: user.email,
+      description: "Frishtug customer ##{user.id}, #{user.full_name} <#{user.email}>",
       source: user.stripe_token
     )
   end

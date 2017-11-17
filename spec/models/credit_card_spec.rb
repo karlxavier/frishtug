@@ -12,6 +12,7 @@
 #  updated_at :datetime         not null
 #  brand      :string
 #  token      :string
+#  name       :string
 #
 
 require 'rails_helper'

@@ -60,4 +60,13 @@ module ApplicationHelper
     id ||= text.parameterize.underscore
     link_to text, path, class: "btn text-uppercase #{klass}", id: id
   end
+
+  def address_from_source(source)
+    address = <<-HEREDOC
+      #{source.address_line1}#{source.address_line2.nil? ? '' : ", #{source.address_line2}"} <br>
+      #{source.address_city}, #{source.address_state} #{source.address_zip} <br>
+      #{source.address_country}
+    HEREDOC
+    address.html_safe
+  end
 end
