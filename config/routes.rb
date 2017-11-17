@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+
   resources :user_registrations, only: %i[index create] do
     collection do
       get :schedule
@@ -37,5 +38,6 @@ Rails.application.routes.draw do
         get :subscribe
       end
     end
+    resources :weekly_meals, only: :index
   end
 end

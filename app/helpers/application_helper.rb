@@ -1,4 +1,5 @@
 module ApplicationHelper
+  require 'calendar'
   def nav_link(content, path, *array)
     link_to(content, path, *array, class: 'nav-link')
   end
@@ -68,5 +69,9 @@ module ApplicationHelper
       #{source.address_country}
     HEREDOC
     address.html_safe
+  end
+
+  def calendar(date = Date.today, &block)
+    Calendar.new(self, date, block).table_compact
   end
 end
