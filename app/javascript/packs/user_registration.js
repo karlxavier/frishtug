@@ -366,7 +366,7 @@ import swal from 'sweetalert2'
         const totalPrice = sumOf(getByDayPrices(order_day.meals))
         appendTo(el, toCurrency(totalPrice), '.meal-total')
         appendTo(target, el)
-        enableSaveMealPlanBtn(order_day.meals)
+        enableSaveMealPlanBtn()
       })
     } else {
       const el = document.createElement('div')
@@ -419,7 +419,7 @@ import swal from 'sweetalert2'
         const totalPrice = sumOf(getByDayPrices(single_order.meals))
         appendTo(el, toCurrency(totalPrice), '.meal-total')
         appendTo(target, el)
-        enableSaveMealPlanBtn(single_order.meals)
+        enableSaveMealPlanBtn()
     }
   }
 
@@ -461,10 +461,31 @@ import swal from 'sweetalert2'
     }, 0)
   }
 
-  const enableSaveMealPlanBtn = (meals) => {
+  const enableSaveMealPlanBtn = () => {
     const btn = document.querySelector('.btn--save-meal-plan')
-    const total = sumOf(getByDayPrices(meals))
-    if (total >= 10) {
+    let shouldEnable = false
+
+    if (order.order_type !== 'single') {
+      const minimum = parseFloat(extract_number(order.plan_price)[0]) / 20
+      const totals = []
+
+      const isAllOverOrEqaulMinimun = (item, index, array) => {
+        return item >= minimum
+      }
+
+      days.forEach(day => {
+        const total = sumOf(getByDayPrices(order[day].meals))
+        totals.push(total)
+      })
+
+      if (totals.every(isAllOverOrEqaulMinimun)){
+        shouldEnable = true
+      }
+    } else {
+      shouldEnable = true
+    }
+
+    if (shouldEnable) {
       btn.classList.remove('disabled')
       populateReviewPage()
     } else {
@@ -501,16 +522,18 @@ import swal from 'sweetalert2'
 
     if (order.order_type === 'single') {
       amount = sumOf(getByDayPrices(order.single_order.meals))
-      plan_price = extract_number(order.plan_price)[0]
+      plan_price = parseInt(extract_number(order.plan_price)[0])
       if (plan_price > amount) { amount = plan_price }
       total = amount
-      if (order.shipping_fee !== 0) { total = total + order.shipping_fee }
+      if (order.shipping_fee !== 0) { total = total + parseInt(order.shipping_fee) }
       populateSched('Single Order', toCurrency(amount), 'Single Order', toCurrency(total))
     } else {
-      plan_price = extract_number(order.plan_price)[0]
-      if (order.shipping_fee !== 0) { total = plan_price + order.shipping_fee }
-      populateSched(schedules, order.plan_price, '5 Meals per week', toCurrency(total))
+      plan_price = parseInt(extract_number(order.plan_price)[0])
+      if (order.shipping_fee !== 0) { total = plan_price + parseInt(order.shipping_fee) }
+      populateSched(schedules, order.plan_price, '5 Meals per week', order.plan_price)
     }
+    console.log('total', total)
+    console.log(toCurrency(total))
   }
 
   const planSelectorInit = () => {

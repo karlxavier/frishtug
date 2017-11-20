@@ -6,15 +6,25 @@
 class Calendar
   HEADER = %w[Sunday Monday Tuesday Wednesday Thursday Friday Saturday].freeze
   HEADER_COMPACT = %w[S M T W T F S].freeze
+  WEEK_DAY = {
+    sunday: 0,
+    monday: 1,
+    tuesday: 2,
+    wednesday: 3,
+    thursday: 4,
+    friday: 5,
+    saturday: 6
+  }.freeze
   START_DAY = :sunday
 
   delegate :content_tag, to: :view
-  attr_accessor :view, :date, :block
+  attr_accessor :view, :date, :block, :disable_date
 
-  def initialize(view, date, block)
-    @view = view
-    @date = date
-    @block = block
+  def initialize(view, date, disable_date, block)
+    @view         = view
+    @date         = date
+    @disable_date = disable_date
+    @block        = block
   end
 
   def table
@@ -57,8 +67,9 @@ class Calendar
 
   def classes(day)
     klasses = []
-    klasses << 'today' if day == Date.today
+    klasses << 'today' if day == Date.current
     klasses << 'not-month' if day.month != date.month
+    klasses << 'disabled' if day.wday == WEEK_DAY[disable_date]
     klasses.empty? ? nil : klasses.join(' ')
   end
 

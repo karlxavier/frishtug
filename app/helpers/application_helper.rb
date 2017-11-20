@@ -71,7 +71,7 @@ module ApplicationHelper
     address.html_safe
   end
 
-  def calendar(date = Date.today, &block)
-    Calendar.new(self, date, block).table_compact
+  def calendar(date = Date.today, disable_date, &block)
+    Calendar.new(self, date, disable_date, block).table_compact
   end
 end

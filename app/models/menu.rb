@@ -30,4 +30,8 @@ class Menu < ApplicationRecord
   def sanitize_price
     errors.add(:price, 'should be atleast 0.01') if price.nil? || price < 0.01
   end
+
+  def category
+    self.menu_category
+  end
 end

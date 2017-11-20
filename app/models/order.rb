@@ -20,4 +20,16 @@ class Order < ApplicationRecord
   enum status: %i[in_transit completed]
   belongs_to :user
   has_and_belongs_to_many :menus
+
+  def self.this_week(start_date = Date.today.beginning_of_week(:sunday))
+    end_date = start_date.end_of_week(:sunday)
+    where(placed_on: start_date..end_date).includes(menus: [:menu_category]).map do |o|
+      {
+        placed_on: o.placed_on,
+        menus: o.menus.group_by do |m|
+          m.category.name
+        end
+      }
+    end
+  end
 end

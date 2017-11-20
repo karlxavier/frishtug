@@ -3,7 +3,7 @@ class Scheduler
     @type = type
     @start_date = nil
     @end_date = nil
-    @date = Date.today
+    @date = DateTime.current
   end
 
   def run

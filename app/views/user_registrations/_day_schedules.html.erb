@@ -3,7 +3,7 @@
   :class="'list-group-item <%= 'active' if index == 0 %> ' + (delivery_date === '<%= day %>' ? 'active' : '') "
   for="start_date_<%= index %>"
   data-schedule-days="<%=
-    (day..(day + 4.days)).map { |d| d.strftime('%m/%d/%Y') }.join(',')
+    (day..(day + 4.days)).map { |d| d }.join(',')
   %>">
     <%= day.strftime('%b %d') %> - <%= (day + 4.days).strftime('%b %d') %>
     <% if index == 0 %>

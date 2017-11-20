@@ -193,8 +193,6 @@ const registrationForm = new Vue({
           address = _this.billing_address[0]
         }
 
-        console.log(address)
-
         Stripe.card.createToken({
           number: _this.credit_card.number.replace(/\s+/g, ''),
           exp_month: _this.credit_card.exp_month,

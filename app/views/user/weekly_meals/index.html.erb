@@ -1,8 +1,32 @@
 <div class="row">
   <div class="col-4">
-    <%= Date.today.strftime('%B %Y') %>
-    <%= calendar do |date| %>
-      <%= date.strftime('%d') %>
+    <div class="row justify-content-center">
+      <div class="col-7 clearfix">
+        <%= link_to user_weekly_meals_path(date: @date.prev_month), class: 'mr-4' do %>
+          <i class="fa fa-angle-left" aria-hidden="true"></i>
+        <% end %>
+        <span><%= @date.strftime('%B %Y') %></span>
+        <%= link_to user_weekly_meals_path(date: @date.next_month), class: 'ml-4' do %>
+        <i class="fa fa-angle-right" aria-hidden="true"></i>
+        <% end %>
+      </div>
+    </div>
+    <%= calendar @date, :saturday do |date| %>
+      <% if @active_weeks.include?(date.to_s) %>
+        <a href="javascript:void(0)">
+          <%= date.strftime('%d') %>
+        </a>
+      <% else %>
+        <%= date.strftime('%d') %>
+      <% end %>
     <% end %>
+  </div>
+
+  <div class="col-8 px-4">
+    <div class="list-group">
+      <% @orders.each do |order| %>
+        <%= render 'order', order: order %>
+      <% end %>
+    </div>
   </div>
 </div>

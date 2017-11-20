@@ -1,0 +1,24 @@
+<div class="list-group-item rounded-0">
+  <div class="row">
+    <div class="col-12 clearfix">
+      <h5 class="float-left">
+        <%= order[:placed_on].strftime('%a, %b %d') %>
+      </h5>
+      <small class="float-right">
+        <a href="">Edit</a>
+      </small>
+    </div>
+  </div>
+  <div class="row">
+    <% order[:menus].each do |category_name, meals| %>
+      <div class="col-6">
+        <h6 class="text-uppercase"><%= category_name %></h6>
+        <ul class="list-unstyled">
+        <% meals.group_by(&:name).each do |name, items| %>
+          <li><%= name %> <%= "x #{items.length}" %></li>
+        <% end %>
+        </ul>
+      </div>
+    <% end %>
+  </div>
+</div>
