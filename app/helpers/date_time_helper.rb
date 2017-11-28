@@ -13,4 +13,8 @@ module DateTimeHelper
     return 'Cannot convert non integer to time' unless number.is_a? Integer
     Time.at(number).strftime(format)
   end
+
+  def format_date_AABBDD(date)
+    date.to_date.strftime('%^a ,%^b %d')
+  end
 end

@@ -32,7 +32,6 @@ class RegistrationForm
 
   validates :first_name, :last_name, :email, :password, presence: true
   validates :phone_number, presence: true
-  # validates :option, :schedule, :start_date, presence: true
   validate :user_email_unique?
   validates :bank_name, :account_number, :routing_number, presence: true, if: :checking?
   validates :card_number, :month, :year, :cvc, presence: true, if: :credit_card?
@@ -96,13 +95,13 @@ class RegistrationForm
       user.addresses.create!(address_params(a))
     end
     user.create_contact_number!(phone_number: phone_number)
-    user.create_schedule!(schedule_params)
+    # user.create_schedule!(schedule_params)
   end
 
   def create_orders(user)
     orders.each do |o|
       if o[:order_date].present?
-        order = user.orders.create!(order_date: o[:order_date], placed_on: o[:order_date])
+        order = user.orders.create!(order_date: Time.current, placed_on: o[:order_date])
         order.menu_ids = o[:menu_ids][0].split(',')
       else
         errors.add(:base, 'Order place on is blank')

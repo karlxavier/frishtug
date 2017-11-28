@@ -2,7 +2,8 @@ import VueFormWizard from 'vue-form-wizard'
 import VueTabs from 'vue-nav-tabs'
 import Vue from 'vue/dist/vue.esm'
 import swal from 'sweetalert2'
-
+import {pulse_loader} from './lib/loaders'
+import {get} from './lib/ajax_lib'
 // Components
 Vue.use(VueFormWizard)
 Vue.use(VueTabs)
@@ -17,7 +18,7 @@ const registrationForm = new Vue({
   data: {
     payment_method: 'credit_card',
     different_billing: false,
-    delivery_date: document.querySelector('#start_date_0').value,
+    delivery_date: '',
     schedule: 'monday_to_friday',
     stripe_key: '<%= STRIPE_PUBLIC_KEY %>',
     billing_address: [{
@@ -55,15 +56,78 @@ const registrationForm = new Vue({
     tab_titles: mondayToFriday,
     allowed_zip_codes: JSON.parse(localStorage.getItem('allowed_zip_codes')),
     interval: '',
+    delivery_dates: [],
+    date_names: mondayToFriday,
+    calendar: '',
+    current_date: new Date(localStorage.getItem('current_date_est'))
   },
   methods: {
+    changeCalendar: (date) => {
+      const _this = registrationForm
+      get({
+        url: `/user_registrations/days.json?date=${date}`
+      }).then((response) => {
+        const parsed = JSON.parse(response)
+        _this.calendar = parsed
+        setTimeout(function() {
+          registrationForm.populateCalendar()
+        }, 500)
+      })
+    },
+    populateCalendar: () => {
+      const _this = registrationForm
+      if (_this.interval !== 'single_order') {
+        const dates = registrationForm.delivery_dates
+        registrationForm.unpopulateCalendar()
+        dates.forEach( (date, index) => {
+          const el = document.querySelector(`.date-${date}`)
+          if (el) {
+            el.classList.add('active')
+            order[`day_${index + 1}`].date = date
+          }
+        })
+      } else {
+        const el = document.querySelector(`.date-${_this.delivery_date}`)
+        _this.unpopulateCalendar()
+        if (el) {
+          el.classList.add('active')
+        }
+      }
+    },
+    unpopulateCalendar: () => {
+      const calendar = document.querySelector('.calendar')
+      const aTags = calendar.querySelectorAll('a')
+      aTags.forEach(aTag => {
+        aTag.classList.remove('active')
+      })
+    },
+    selectDay: (date) => {
+      const _this = registrationForm
+      if (_this.interval !== 'single_order') {
+        getSchedule(date, _this)
+      } else {
+        _this.delivery_date = date
+        _this.populateCalendar()
+        order.single_order.date = date
+      }
+    },
     setInterVal: function(interval) {
       this.interval = interval
       if (interval === 'month') {
         order.order_type = 'multiple'
+        order.single_order.meal_ids = []
+        order.single_order.meals = []
       } else {
         order.order_type = 'single'
+        const day = [1,2,3,4,5]
+        day.forEach( d => {
+          const o = order[`day_${d}`]
+          o.meal_ids = []
+          o.meals = []
+        })
       }
+      renderOrders()
+      this.populateCalendar()
       this.nextTab()
     },
     addBillingAddress: function() {
@@ -234,9 +298,85 @@ const registrationForm = new Vue({
       mealSelectorInit()
       mealCounterObserver()
       return true
+    },
+    showDate: (date) => {
+      const newDate = new Date(date)
+      return newDate.getDate()
+    },
+    isNotSaturday: (date) => {
+      const newDate = new Date(date)
+      return newDate.getDay() < 6
+    },
+    isDisabledDate: (date) => {
+      const theDate = new Date(date)
+      const currentDate = new Date(registrationForm.current_date)
+      const isYesterdaysDate = theDate.getTime() < currentDate.getTime()
+      if (isYesterdaysDate) {
+        return true
+      }
+      
+      const isSameDate = theDate.getTime() === currentDate.getTime()
+      if (isSameDate) {
+        return true
+      }
+
+      const addOne = (date) => {
+        date.setDate(date.getDate() + 1) 
+        return date.getTime()
+      }
+      const isDatePlusOne = theDate.getTime() === addOne(currentDate)
+      if (isDatePlusOne) {
+        return get({
+          url: '/user_registrations/is_past_noon'
+        }).then( (response) => {
+          const parsed = JSON.parse(response)
+          if (parsed.is_past) {
+            return true
+          } else {
+            return false
+          }
+        })
+      }
+
+      return !registrationForm.isNotSaturday(date)
     }
   }
 })
+
+
+const getSchedule = (date, vueModel) => {
+  const _this = vueModel
+  get({
+    url: '/user_registrations/selected_date?date=' + date
+  }).then((response) => {
+    const res = JSON.parse(response)
+    const errorEl = document.querySelector('.calendar-errors')
+    if (res.status === 'success') {
+      errorEl.innerHTML = ''
+      _this.delivery_dates = res.dates
+      _this.date_names = res.names
+      _this.populateCalendar()
+    } else {
+      errorEl.innerHTML = ''
+      const div = document.createElement('div')
+      div.className = 'alert alert-danger'
+      div.innerHTML = `<strong>${res.message}</strong>`
+      errorEl.appendChild(div)
+      _this.unpopulateCalendar()
+    }
+  })
+}
+
+const getCalendar = () => {
+  const _this = registrationForm
+  get({
+    url: `/user_registrations/days.json`
+  }).then((response) => {
+    const parsed = JSON.parse(response)
+    _this.calendar = parsed
+  })
+}
+getCalendar()
 
 
 const hasAddress = (address) => {

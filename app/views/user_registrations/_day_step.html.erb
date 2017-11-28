@@ -1,46 +1,19 @@
-<div v-if="interval !== 'single_order'">
-  <div class="row justify-content-center align-items-center">
-    <div class="col-12 col-md-6">
-      <h4 class="text-center text-uppercase">Choose Delivery Day</h4>
-      <div class="row justify-content-center schedule-types">
-        <% registration.schedule_types.each_with_index do |s, index| %>
-            <div class="form-check form-check-inline">
-              <label for="<%= s %>" :class="'btn btn-outline-dark form-check-label px-4 py-4' + isActiveSchedule('<%= s %>')">
-                <input type="radio" name="registration_form[schedule]" value="<%= s %>" class="d-none form-check-input" id="<%= s %>" v-model="schedule" @click="changeSchedule">
-                <%= s.to_s.humanize %>
-              </label>
-            </div>
-        <% end %>
-      </div>
-      <p>
-        Choose a specific date(dates will be change according to the 5 day schedule above)
-      </p>
-    </div>
-  </div>
-  <div class="row justify-content-center">
-    <div class="col-md-4 col-md-offset-4">
-      <div class="list-group days-schedule" v-if="schedule === 'monday_to_friday'">
-        <%= render 'day_schedules', {schedule: registration.schedule_days(:monday) } %>
-      </div>
-      <div class="list-group days-schedule" v-else>
-        <%= render 'day_schedules', {schedule: registration.schedule_days(:sunday) } %>
-      </div>
-      <a href="javascript:void(0)" class="btn btn-brown btn-block text-uppercase" @click="nextTab">Continue To Payment</a>
-      <small>First Delivery Date: {{ formatDate(delivery_date) }}</small>
-    </div>
+<div class="row justify-content-center align-items-center">
+  <div class="col-12 col-md-6">
+    <h4 class="text-center text-uppercase">
+      Choose Delivery Day
+    </h4>
+    <p class="text-center" v-if="interval === 'single_order' ">
+      Choose when you want your <strong>single breakfast order</strong> to be delivered.
+    </p>
   </div>
 </div>
-
-<div v-else>
-    <div class="row justify-content-center align-items-center">
-    <div class="col-12 col-md-12">
-      <h4 class="text-center text-uppercase">Choose Delivery Day</h4>
-      <p class="text-center">
-        Choose when you want your <strong>single breakfast order</strong> to be delivered.
-      </p>
-      <div class="row justify-content-center schedule-types">
-        <%= render 'day_schedules_single_order', {schedule: registration.schedule_days(:single_order) } %>
-      </div>
+<div class="row justify-content-center">
+  <div class="col-md-4 col-md-offset-4">
+    <div class="calendar-errors"></div>
+    <div class="calendar-container">
+      <%= render 'calendar', month: Date.current %>
     </div>
+    <a href="javascript:void(0)" class="btn btn-brown btn-block text-uppercase" @click="nextTab">Continue To Payment</a>
   </div>
 </div>

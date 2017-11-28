@@ -41,6 +41,7 @@ class User < ApplicationRecord
   has_one :schedule, dependent: :destroy
   belongs_to :plan, optional: true
   has_many :orders, dependent: :destroy
+  has_many :temp_orders, dependent: :destroy
   
   accepts_nested_attributes_for :contact_number
   

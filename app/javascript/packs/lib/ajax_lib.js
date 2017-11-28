@@ -73,11 +73,15 @@ const get = (obj) => {
     request.onload = function() {
       if (request.status >= 200 && request.status < 400) {
         const response = request.responseText
-        obj.success(response)
+        if (obj.hasOwnProperty('success')) {
+          obj.success(response)
+        }
         resolve(response)
       } else {
         const response = request.responseText
-        obj.error(response)
+        if (obj.hasOwnProperty('error')) {
+          obj.error(response)
+        }
         reject(response)
       }
     };

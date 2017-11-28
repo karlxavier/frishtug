@@ -1,9 +1,10 @@
 Rails.application.routes.draw do
-
   resources :user_registrations, only: %i[index create] do
     collection do
       get :schedule
-      get :payment_method
+      get :selected_date
+      get :days
+      get :is_past_noon
     end
   end
 
@@ -38,6 +39,24 @@ Rails.application.routes.draw do
         get :subscribe
       end
     end
-    resources :weekly_meals, only: :index
+    resources :weekly_meals, except: :show do
+      collection do
+        get :category
+        get :edit
+      end
+    end
+    resources :temp_orders do
+      collection do
+        get :store
+        get :remove
+        get :persist
+      end
+    end
+    resources :orders do
+      collection do
+        get :store
+        get :remove
+      end
+    end
   end
 end

@@ -7,8 +7,10 @@ class StripeCustomer
 
   def create
     customer = stripe_create_customer
-    @user.stripe_customer_id = customer.id
-    @user.save
+    @user.update_attributes(
+      stripe_customer_id: customer.id
+    )
+    true
   rescue Stripe::InvalidRequestError => e
     errors.add(:base, e.message)
     false

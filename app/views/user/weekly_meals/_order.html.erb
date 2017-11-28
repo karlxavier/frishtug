@@ -5,7 +5,7 @@
         <%= order[:placed_on].strftime('%a, %b %d') %>
       </h5>
       <small class="float-right">
-        <a href="">Edit</a>
+        <%= link_to 'Edit', edit_user_weekly_meals_path(date: order[:placed_on].to_date) %>
       </small>
     </div>
   </div>

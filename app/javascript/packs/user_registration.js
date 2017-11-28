@@ -238,49 +238,59 @@ import swal from 'sweetalert2'
       })
     }
   }
+  
+  const mealSelectorHandler = (event) => {
+    const el = event.target
+    const counter = el.closest('div.col').querySelector('span.meal-counter')
+    const previousValue = parseInt(counter.innerHTML)
+    const card = el.closest('div.card')
+    const mealId = card.dataset.mealId
+    const mealName = card.dataset.mealName
+    const mealPrice = card.dataset.mealPrice
+    const mealImage = card.querySelector('img').src
+    const param = el.dataset.fmodel
+
+    if (el.classList.contains('meal-ctrl-btns-plus')) {
+      order[param].meal_ids.push(mealId)
+      addMeals(
+        param, 
+        mealName, 
+        mealId, 
+        mealPrice, 
+        mealImage)
+      order.total_count += 1
+      order.total_price += parseFloat(mealPrice)
+      order[param].element = counter
+      counter.innerHTML = parseInt(counter.innerHTML) + 1
+    } else {
+      if (previousValue !== 0) {
+        const index = order[param].meal_ids.indexOf(mealId.toString())
+        order[param].meal_ids.splice(index, 1)
+        removeMeals(
+          param, 
+          mealName, 
+          mealId.toString(), 
+          mealPrice.toString(), 
+          mealImage
+        )
+        order.total_count -= 1
+        order.total_price -= parseFloat(mealPrice.toString())
+        counter.innerHTML = previousValue - 1
+      }
+    }
+    renderOrders()
+  }
 
   const mealSelectorInit = () => {
     const plusBtns = document.querySelectorAll('.meal-ctrl-btns-plus')
     const minusBtns = document.querySelectorAll('.meal-ctrl-btns-minus')
+
     plusBtns.forEach( btn => {
-      btn.addEventListener('click', () => {
-        const counter = btn.closest('div.col').querySelector('span.meal-counter')
-        const card = btn.closest('div.card')
-        const mealId = card.dataset.mealId
-        const mealName = card.dataset.mealName
-        const mealPrice = card.dataset.mealPrice
-        const mealImage = card.querySelector('img').src
-        const param = btn.dataset.fmodel
-        order[param].meal_ids.push(mealId)
-        addMeals(param, mealName, mealId, mealPrice, mealImage)
-        order.total_count += 1
-        order.total_price += parseFloat(mealPrice)
-        order[param].element = counter
-        counter.innerHTML = parseInt(counter.innerHTML) + 1
-        renderOrders()
-      })
+      btn.addEventListener('click', mealSelectorHandler)
     })
 
     minusBtns.forEach( btn => {
-      btn.addEventListener('click', () => {
-        const counter = btn.closest('div.col').querySelector('span.meal-counter')
-        const previousValue = parseInt(counter.innerHTML)
-        if (previousValue !== 0) {
-          const card = btn.closest('div.card')
-          const mealId = card.dataset.mealId.toString()
-          const mealName = card.dataset.mealName
-          const mealPrice = card.dataset.mealPrice.toString()
-          const mealImage = card.querySelector('img').src
-          const param = btn.dataset.fmodel
-          const index = order[param].meal_ids.indexOf(mealId)
-          order[param].meal_ids.splice(index, 1)
-          removeMeals(param, mealName, mealId, mealPrice, mealImage)
-          order.total_count -= 1
-          order.total_price -= parseFloat(mealPrice)
-          counter.innerHTML = previousValue - 1
-          renderOrders()
-        }
-      })
+      btn.addEventListener('click', mealSelectorHandler)
     })
   }
 
@@ -306,6 +316,29 @@ import swal from 'sweetalert2'
   }
 
   const days = [1,2,3,4,5].map( n => { return `day_${n}` })
+  const orderClickHandler = (target, meal, attr, index, type) => {
+    return (event) => {
+      const card = target.querySelector('.card[data-meal-name="' + meal.name + '"]')
+      const counter = card.querySelector('span.meal-counter')
+      if (type === 'add') {
+        order[attr].meal_ids.push(meal.id)
+        order[attr].meals[index].count += 1
+        order[attr].meals[index].price += parseFloat(card.getAttribute('data-meal-price'))
+        innerHtmlOf(counter, order[attr].meals[index].count)
+      } else {
+        order[attr].meal_ids.splice(mealIndex, 1)
+        if(meal.count > 1) {
+          order[attr].meals[index].count -= 1
+          order[attr].meals[index].price -= parseFloat(card.getAttribute('data-meal-price'))
+          innerHtmlOf(counter, order[attr].meals[index].count)
+        } else {
+          order[attr].meals.splice(index, 1)
+          innerHtmlOf(counter, 0)
+        }
+      }
+      renderOrders()
+    }
+  }
   const renderOrders = () => {
     const template = document.querySelector('#order-template').innerHTML
     const listTemplate = document.querySelector('#order-list-template').innerHTML
@@ -331,33 +364,12 @@ import swal from 'sweetalert2'
           appendTo(div, toCurrency(meal.price), '.meal-price')
           appendTo(div, meal.count, '.meal-count')
 
-          div.querySelector('.add-meal').addEventListener('click', () => {
-            const target = document.querySelector(`#${day.split('_').join('-')}`)
-            const card = target.querySelector('.card[data-meal-name="' + meal.name + '"]')
-            const counter = card.querySelector(order[day].element)
-            order[day].meal_ids.push(meal.id)
-            order[day].meals[index].count += 1
-            order[day].meals[index].price += parseFloat(card.getAttribute('data-meal-price'))
-            innerHtmlOf(counter, order[day].meals[index].count)
-            renderOrders()
-          })
+          const target = document.querySelector(`#${day.split('_').join('-')}`)
+          div.querySelector('.add-meal')
+             .addEventListener('click', orderClickHandler(target, meal, day, index, 'add'))
 
-          div.querySelector('.remove-meal').addEventListener('click', () => {
-            const target = document.querySelector(`#${day.split('_').join('-')}`)
-            const card = target.querySelector('.card[data-meal-name="' + meal.name + '"]')
-            const counter = card.querySelector('span.meal-counter')
-            mealIndex = order[day].meal_ids.indexOf(order[day].meals[index].id)
-            order[day].meal_ids.splice(mealIndex, 1)
-            if(meal.count > 1) {
-              order[day].meals[index].count -= 1
-              order[day].meals[index].price -= parseFloat(card.getAttribute('data-meal-price'))
-              innerHtmlOf(counter, order[day].meals[index].count)
-            } else {
-              order[day].meals.splice(index, 1)
-              innerHtmlOf(counter, 0)
-            }
-            renderOrders()
-          })
+          div.querySelector('.remove-meal')
+             .addEventListener('click', orderClickHandler(target, meal, day, index, 'remove'))
 
           const tr = div.querySelector('tr')
           appendTo(el, tr, 'tbody')
@@ -384,33 +396,12 @@ import swal from 'sweetalert2'
           appendTo(div, toCurrency(meal.price), '.meal-price')
           appendTo(div, meal.count, '.meal-count')
 
-          div.querySelector('.add-meal').addEventListener('click', () => {
-            const target = document.querySelector(`#single_order`)
-            const card = target.querySelector('.card[data-meal-name="' + meal.name + '"]')
-            const counter = card.querySelector(single_order.element)
-            single_order.meal_ids.push(meal.id)
-            single_order.meals[index].count += 1
-            single_order.meals[index].price += parseFloat(card.getAttribute('data-meal-price'))
-            innerHtmlOf(counter, single_order.meals[index].count)
-            renderOrders()
-          })
+          const target = document.querySelector(`#single_order`)
+          div.querySelector('.add-meal')
+             .addEventListener('click', orderClickHandler(target, meal, 'single_order', index, 'add'))
 
-          div.querySelector('.remove-meal').addEventListener('click', () => {
-            const target = document.querySelector(`#single_order`)
-            const card = target.querySelector('.card[data-meal-name="' + meal.name + '"]')
-            const counter = card.querySelector('span.meal-counter')
-            mealIndex = single_order.meal_ids.indexOf(single_order.meals[index].id)
-            single_order.meal_ids.splice(mealIndex, 1)
-            if(meal.count > 1) {
-              single_order.meals[index].count -= 1
-              single_order.meals[index].price -= parseFloat(card.getAttribute('data-meal-price'))
-              innerHtmlOf(counter, single_order.meals[index].count)
-            } else {
-              single_order.meals.splice(index, 1)
-              innerHtmlOf(counter, 0)
-            }
-            renderOrders()
-          })
+          div.querySelector('.remove-meal')
+             .addEventListener('click', orderClickHandler(target, meal, 'single_order', index, 'remove'))
 
           const tr = div.querySelector('tr')
           appendTo(el, tr, 'tbody')
@@ -532,8 +523,6 @@ import swal from 'sweetalert2'
       if (order.shipping_fee !== 0) { total = plan_price + parseInt(order.shipping_fee) }
       populateSched(schedules, order.plan_price, '5 Meals per week', order.plan_price)
     }
-    console.log('total', total)
-    console.log(toCurrency(total))
   }
 
   const planSelectorInit = () => {
@@ -561,7 +550,7 @@ import swal from 'sweetalert2'
         formData.append('registration_form[orders][][menu_ids][]', order_by_day.meal_ids)
       })
     } else {
-      formData.append('registration_form[orders][][order_date]', order.start_date)
+      formData.append('registration_form[orders][][order_date]', order.single_order.date)
       formData.append('registration_form[orders][][menu_ids][]', order.single_order.meal_ids)
     }
     
@@ -593,11 +582,12 @@ import swal from 'sweetalert2'
   cvcInputControl()
   //paymentMethods()
   //addBillingInfo()
-  mealSelectorInit()
-  mealCounterObserver()
+  // mealSelectorInit()
+  // mealCounterObserver()
   window.setTabsSchedule = setTabsSchedule
   window.completeAction = completeAction
   window.order = order
   window.mealSelectorInit = mealSelectorInit
   window.mealCounterObserver = mealCounterObserver
+  window.renderOrders = renderOrders
 }(window))

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171117070825) do
+ActiveRecord::Schema.define(version: 20171124042313) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -178,6 +178,15 @@ ActiveRecord::Schema.define(version: 20171117070825) do
     t.index ["order_id"], name: "index_menus_orders_on_order_id"
   end
 
+  create_table "menus_temp_orders", force: :cascade do |t|
+    t.bigint "menu_id"
+    t.bigint "temp_order_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["menu_id"], name: "index_menus_temp_orders_on_menu_id"
+    t.index ["temp_order_id"], name: "index_menus_temp_orders_on_temp_order_id"
+  end
+
   create_table "orders", force: :cascade do |t|
     t.bigint "user_id"
     t.datetime "placed_on"
@@ -223,6 +232,14 @@ ActiveRecord::Schema.define(version: 20171117070825) do
     t.integer "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "temp_orders", force: :cascade do |t|
+    t.bigint "user_id"
+    t.datetime "order_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_temp_orders_on_user_id"
   end
 
   create_table "units", force: :cascade do |t|
@@ -280,7 +297,10 @@ ActiveRecord::Schema.define(version: 20171117070825) do
   add_foreign_key "menus", "units"
   add_foreign_key "menus_orders", "menus"
   add_foreign_key "menus_orders", "orders"
+  add_foreign_key "menus_temp_orders", "menus"
+  add_foreign_key "menus_temp_orders", "temp_orders"
   add_foreign_key "orders", "users"
   add_foreign_key "schedules", "users"
+  add_foreign_key "temp_orders", "users"
   add_foreign_key "users", "plans"
 end
