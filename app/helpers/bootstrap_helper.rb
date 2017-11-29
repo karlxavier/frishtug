@@ -16,8 +16,8 @@ module BootstrapHelper
   end
 
   ['display-1', 'display-2', 'display-3', 'display-4'].each do |method|
-    define_method method.underscore.to_sym do |content|
-      content_tag :h1, class: method do
+    define_method method.underscore.to_sym do |content, klass = nil|
+      content_tag :h1, class: [method, klass].join(' ') do
         "#{content}"
       end
     end

@@ -13,6 +13,9 @@
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  image            :string
+#  unit_size        :integer
+#  item_number      :string
+#  tax              :boolean          default(FALSE)
 #
 
 class Menu < ApplicationRecord
@@ -27,6 +30,7 @@ class Menu < ApplicationRecord
   validate :sanitize_price
 
   mount_uploader :image, ImageUploader
+  before_save :generate_item_number
 
   scope :filter_by_category, -> (category_id) { where(menu_category_id: category_id) }
 
@@ -36,5 +40,15 @@ class Menu < ApplicationRecord
 
   def category
     self.menu_category
+  end
+
+  private
+
+  def generate_item_number
+    unless self[:item_number].present?
+      random_number = (1..100).to_a.sample(5).join
+      menu_first_letters = self[:name].downcase.split.map(&:chr).join
+      self[:item_number] = menu_first_letters + random_number
+    end
   end
 end

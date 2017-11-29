@@ -10,6 +10,7 @@
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
 #  token          :string
+#  stripe_id      :string
 #
 
 class Checking < ApplicationRecord

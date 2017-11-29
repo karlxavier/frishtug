@@ -13,6 +13,7 @@
 #  brand      :string
 #  token      :string
 #  name       :string
+#  stripe_id  :string
 #
 
 class CreditCard < ApplicationRecord

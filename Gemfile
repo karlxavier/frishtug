@@ -35,21 +35,23 @@ gem 'jbuilder', '~> 2.5'
 
 # profiling
 gem 'activemerchant'
+gem 'activerecord-import', '~> 0.21.0'
 gem 'bootsnap', '~> 1.1', '>= 1.1.3'
 gem 'bootstrap', '~> 4.0.0.beta'
 gem 'carrierwave'
 gem 'devise'
 gem 'exception_handler'
+gem 'geocoder'
 gem 'high_voltage', '~> 3.0.0'
 gem 'jquery-rails'
 gem 'mini_magick'
 gem 'piet'
 gem 'popper_js', '~> 1.11.1'
 gem 'rack-mini-profiler'
+gem 'roo', '~> 2.7', '>= 2.7.1'
 gem 'sidekiq'
 gem 'stripe'
 gem 'trix'
-gem 'geocoder'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

@@ -1,3 +1,4 @@
+import fileIcon from '../images/file-icon.svg'
 document.addEventListener('DOMContentLoaded', ()=>{
   let dropzone = document.querySelector('.dropzone')
   let dropzoneFile = document.querySelector('.dropzone_file')
@@ -95,6 +96,39 @@ document.addEventListener('DOMContentLoaded', ()=>{
     }
   }
 
+  const readDocs = (files) => {
+    const div = document.createElement('div')
+    const textFile = 'text.*'
+    div.className = 'dropzone_uploaded_files'
+
+    const is_spreedsheet = (file) => {
+      return /\.(csv|xls|xlsx|xlsm)$/i.test(file.name) 
+    }
+
+    const displayFileIcon = (file) => {
+      if (file.type.match(textFile)) {
+        const img = new Image()
+        const p = document.createElement('p')
+        const text = document.createTextNode(file.type)
+        img.src = fileIcon
+        img.height = 100
+        img.title = file.name
+        img.className = 'rounded raised-1'
+        p.className = 'text-uppercase'
+        p.appendChild(text)
+        div.appendChild(img)
+        div.appendChild(p)
+        dropzone.innerHTML = '';
+        dropzone.appendChild(div)
+      }
+    }
+
+    if (files) {
+      [].forEach.call(files, displayFileIcon)
+    }
+
+  }
+
   const drop = (e) =>{
     e.preventDefault()
     e.stopPropagation();
@@ -120,6 +154,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     if (dropzoneFile) {
       dropzoneFile.files = files
       readImage(files)
+      readDocs(files)
       returnOriginalState()
     } else {
       console.warn('Please provide an input[type=file] with a class of dropzone_file')
