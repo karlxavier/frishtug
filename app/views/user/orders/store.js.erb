@@ -1,0 +1,4 @@
+var container = document.querySelector('#sidebar');
+var counter = document.querySelector('.counter-for--<%= @menu.name.parameterize %>');
+container.innerHTML = '<%= j render @order %>';
+counter.innerHTML = '<%= @menu_size %>'

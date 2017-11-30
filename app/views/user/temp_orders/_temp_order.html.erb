@@ -1,0 +1,53 @@
+<%
+  store_url = "store_user_#{temp_order.class.name.underscore.pluralize}_path" 
+  remove_url = "remove_user_#{temp_order.class.name.underscore.pluralize}_path"
+%>
+<h5><%= temp_order.order_date.strftime('%A, %b %d') %></h5>
+<% temp_order.grouped_menus.each do |name, menus| %>
+  <div class="row clearfix">
+    <div class="col-8">
+      <%= name %>
+      <span class="float-right row">
+        <div class="col">
+          <%= link_to '-', 
+            public_send(remove_url, menu_id: menus.first.id, date: params[:date]), 
+            class:'', 
+            remote: true 
+          %>
+        </div>
+        <div class="col">
+          <%= menus.size %>
+        </div>
+        <div class="col">
+          <%= link_to '+', 
+            public_send(store_url, menu_id: menus.first.id, date: params[:date]), 
+            class:'', 
+            remote: true 
+          %>
+        </div>
+      </span>
+    </div>
+    <div class="col-4">
+      <span class="float-right">
+        <%= monify(menus.map(&:price).inject(:+)) %>
+      </span>
+    </div>
+  </div>
+<% end %>
+<hr>
+<div class="row clearfix">
+  <div class="col">
+    <strong>Total</strong>
+  </div>
+  <div class="col">
+    <strong class="float-right">
+      <%= monify(temp_order.menus.map(&:price).inject(:+)) %>
+    </strong>
+  </div>
+</div>
+
+<div class="row mt-4">
+  <div class="col">
+    <%= link_to 'Save Meal Plan',  persist_user_temp_orders_path(date: params[:date]), class: 'btn btn-brown text-uppercase btn-block', remote: true %>
+  </div>
+</div>

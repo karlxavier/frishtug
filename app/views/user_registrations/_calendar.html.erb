@@ -1,0 +1,39 @@
+<div class="row justify-content-center">
+  <div class="col-8">
+    <a href="javascript:void(0)" v-on:click="changeCalendar(calendar.prev_month)">
+      <i class="fa fa-angle-left" aria-hidden="true"></i>
+    </a>
+    <span class="mx-4">{{ calendar.month }}</span>
+    <a href="javascript:void(0)"  v-on:click="changeCalendar(calendar.next_month)">
+      <i class="fa fa-angle-right" aria-hidden="true"></i>
+    </a>
+  </div>
+</div>
+
+<table class="calendar table table-bordered table-sm">
+  <thead>
+    <th>S</th>
+    <th>M</th>
+    <th>T</th>
+    <th>W</th>
+    <th>T</th>
+    <th>F</th>
+    <th>S</th>
+  </thead>
+  <tbody>
+    <tr v-for="days in calendar.days">
+      <td v-for="date in days">
+        <span v-if="isDisabledDate(date)" class="disabled">
+          {{ showDate(date) }}
+        </span>
+        <a 
+        href="javascript:void(0)" 
+        v-on:click="selectDay(date)"
+        :class="`date-${date}`"
+        v-else>
+        {{ showDate(date) }}
+        </a>
+      </td>
+    </tr>
+  </tbody>
+</table>

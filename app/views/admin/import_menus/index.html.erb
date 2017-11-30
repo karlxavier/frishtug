@@ -1,0 +1,70 @@
+<%= card_container do %>
+  <%= form_with url: import_admin_import_menus_path, multipart: true, local: true do |f| %>
+    <%= render 'shared/flash' %>
+    <div class="row">
+      <div class="col-8">
+        <h5 class="text-uppercase mb-0 text-muted-frish">Arguments</h5>
+        <hr class="mt-1">
+        <dl class="row">
+          <dt class="col-sm-3">name(Required)</dt>
+          <dd class="col-sm-9">
+            <p>A string by which the menu is known. It is also use to updated existing record.</p>
+          </dd>
+          <dt class="col-sm-3">price(Required)</dt>
+          <dd class="col-sm-9">
+            <p>A positive float number (e.g 2.99 to charge $2.99).</p>
+          </dd>
+          <dt class="col-sm-3">category(Required)</dt>
+          <dd class="col-sm-9">
+            <p>A string to classify menu's (e.g 'Bread rolls')</p>
+          </dd>
+          <dt class="col-sm-3">unit(Required)</dt>
+          <dd class="col-sm-9">
+            <p>A string for weights and measure (e.g oz for ounce).</p>
+          </dd>
+          <dt class="col-sm-3">unit_size</dt>
+          <dd class="col-sm-9">
+            <p>A number representing the size or measure of the menu.</p>
+          </dd>
+          <dt class="col-sm-3">description</dt>
+          <dd class="col-sm-9">
+            <p>A text describing the menu.</p>
+          </dd>
+          <dt class="col-sm-3">tax</dt>
+          <dd class="col-sm-9">
+            <p>A true/false value field that indicates a taxable menu.</p>
+          </dd>
+          <dt class="col-sm-3">image</dt>
+          <dd class="col-sm-9">
+            <p>A string containing a url to an image.</p>
+          </dd>
+          <dt class="col-sm-3">diet_category</dt>
+          <dd class="col-sm-9">
+            <p>A string containing either "Sugar Free, Gluten Free, Carb Free and May Contain Allergens".</p>
+          </dd>
+          <dt class="col-sm-3">item_number</dt>
+          <dd class="col-sm-9">
+            <p>A string to tag menu (e.g TB123 for Tuna Bread).</p>
+          </dd>
+        </dl>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="dropzone">
+        <span>Drag your "csv, xlsx, xls" file here for import</span>
+        <span>or</span>
+        <%= f.label :file, 'Browse', class: 'btn btn-outline-secondary' %>
+      </div>
+      <%= f.file_field :file, class: 'd-none dropzone_file single_file', id: 'file' %>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-4 col-lg-4">
+        <%= f.submit 'Import', class: 'btn btn-brown text-uppercase btn-block' %>
+      </div>
+    </div>
+  <% end %>
+<% end %>
+
+<%= content_for :footer_js do %>
+  <%= javascript_pack_tag 'admin/simple_dropzone' %>
+<% end %>

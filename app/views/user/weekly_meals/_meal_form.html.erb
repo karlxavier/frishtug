@@ -1,0 +1,85 @@
+
+<div class="container-fluid">
+  <div class="row" id="meal-form__wrapper">
+    <div class="col-9 col-md-9 col-lg-9" role="main" id="meal-form__container">
+      <div class="row header my-4 meal-form__header">
+        <div class="col">
+          <%= back_to_index_link('', 'fa fa-angle-left') %>
+          <%= "#{action_name.upcase} MEAL PLAN" %>  
+        </div>
+        <div class="col">
+          <div class="sidebar-controls float-right ml-4">
+            <a href="javascript:void(0)" class="btn btn-outline-dark show-sidebar">Show Meals</a>
+          </div>
+          <div class="float-right">
+            <%= format_date_AABBDD(params[:date]) %>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <ul class="nav nav-pills justify-content-center" id="category_navs">
+            <% categories.each do |category| %>
+              <li class="nav-item">
+                <%= 
+                  category_link(params[:date], category, category_id)
+                %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+
+      <div class="row justify-content-center mt-4">
+        <div class="col-8">
+          <ul class="nav justify-content-center">
+            <li class="nav-item mx-2">
+              <strong class="text-uppercase">Legend</strong>
+            </li>
+            <li class="nav-item mx-2">
+              <span class="fa fa-star diet-icons sugar-free mr-1"></span>
+              Sugar Free
+            </li>
+            <li class="nav-item mx-2">
+              <span class="fa fa-star diet-icons gluten-free mr-1"></span>
+              Gluten Free
+            </li>
+            <li class="nav-item mx-2">
+              <span class="fa fa-star diet-icons carb-free mr-1"></span>
+              Carb Free
+            </li>
+            <li class="nav-item mx-2">
+              <span class="fa fa-star diet-icons may-contain-allergens mr-1"></span>
+              May Contain Allergens
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="row">
+        <div class="container-fluid mt-4">
+          <div class="card-deck" id="menu-entries">
+            <%= render menus, order: orders %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-4 col-md-3 col-lg-3" role="sidebar" id="sidebar">
+      <div class="row meal-form__sidebar my-4">
+        <div class="col">
+          <span class="text-uppercase">Your meals</span>
+        </div>
+        <div class="col">
+          <a href="javascript:void(0)" class="btn btn-outline-dark hide-sidebar"> Hide Meals</a>
+        </div>
+      </div>
+      <div id="sidebar-list">
+        <%= render orders %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%= content_for :footer_js do %>
+  <%= javascript_pack_tag 'user/weekly_meal' %>
+<% end %>

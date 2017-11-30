@@ -1,0 +1,33 @@
+<h4><%= order.placed_on.strftime('%B') %></h4>
+<% order.grouped_menus.each do |name, menus| %>
+  <div class="row clearfix">
+    <div class="col-8">
+      <%= name %>
+      <span class="float-right">
+        <%= menus.size %>
+      </span>
+    </div>
+    <div class="col-4">
+      <span class="float-right">
+        <%= monify(menus.map(&:price).inject(:+)) %>
+      </span>
+    </div>
+  </div>
+<% end %>
+<hr>
+<div class="row clearfix">
+  <div class="col">
+    <strong>Total</strong>
+  </div>
+  <div class="col">
+    <strong class="float-right">
+      <%= monify(order.menus.map(&:price).inject(:+)) %>
+    </strong>
+  </div>
+</div>
+
+<div class="row mt-4">
+  <div class="col">
+    <%= link_to 'Save Meal Plan', "#", class: 'btn btn-brown text-uppercase btn-block' %>
+  </div>
+</div>
