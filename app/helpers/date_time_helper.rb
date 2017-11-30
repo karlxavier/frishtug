@@ -15,6 +15,6 @@ module DateTimeHelper
   end
 
   def format_date_AABBDD(date)
-    date.to_date.strftime('%^a ,%^b %d')
+    date.to_date.strftime('%^a, %^b %d')
   end
 end

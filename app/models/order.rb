@@ -33,6 +33,18 @@ class Order < ApplicationRecord
     end
   end
 
+  def placed_between?(range)
+    where(placed_on: range.start_date..range.end_date)
+  end
+
+  def self.placed_between?(range)
+    where(placed_on: range.start_date..range.end_date)
+  end
+
+  def self.not_placed_between?(range)
+    where.not(placed_on: range.start_date..range.end_date)
+  end
+
   def self.this_week(start_date = Date.today.beginning_of_week(:sunday))
     end_date = start_date.end_of_week(:sunday)
     where(placed_on: start_date..end_date).includes(menus: [:menu_category]).map do |o|
@@ -49,15 +61,7 @@ class Order < ApplicationRecord
     menus.group_by(&:name).sort
   end
 
-  def self.active_this_week
-    start_date = Date.today.beginning_of_week(:sunday)
-    end_date = start_date.end_of_week(:sunday)
-    where(placed_on: start_date..end_date).map {|a| a.placed_on.strftime('%Y-%m-%d')}
-  end
-
-  def self.not_this_week
-    start_date = Date.today.beginning_of_week(:sunday)
-    end_date = start_date.end_of_week(:sunday)
-    where.not(placed_on: start_date..end_date).map {|a| a.placed_on.strftime('%Y-%m-%d')}
+  def self.pluck_placed_on
+    pluck(:placed_on).map {|p| p.strftime('%Y-%m-%d')}
   end
 end

@@ -30,7 +30,7 @@ class Menu < ApplicationRecord
   validate :sanitize_price
 
   mount_uploader :image, ImageUploader
-  before_save :generate_item_number
+  before_save :generate_item_number_from_first_letters_of_name
 
   scope :filter_by_category, -> (category_id) { where(menu_category_id: category_id) }
 
@@ -42,13 +42,30 @@ class Menu < ApplicationRecord
     self.menu_category
   end
 
+  def self.shopping_lists?(range)
+    where(published: true).includes(:orders).map do |m|
+      list_by_range = m.orders.placed_between?(range)
+      next unless list_by_range.present?
+      {
+        menu: m,
+        order_ids: list_by_range.pluck(:id)
+      }
+    end.compact
+  end
+
   private
 
-  def generate_item_number
-    unless self[:item_number].present?
-      random_number = (1..100).to_a.sample(5).join
-      menu_first_letters = self[:name].downcase.split.map(&:chr).join
-      self[:item_number] = menu_first_letters + random_number
-    end
+  def generate_item_number_from_first_letters_of_name
+    return if self[:item_number].present?
+    generate_item_number(first_letters_of_name)
+  end
+
+  def generate_item_number(name)
+    random_number = (1..100).to_a.sample(5).join
+    name + random_number
+  end
+
+  def first_letters_of_name
+    self[:name].downcase.split.map(&:chr).join
   end
 end

@@ -1,15 +1,16 @@
 class User::WeeklyMealsController < User::BaseController
   before_action :set_temp_order, only: :new
   before_action :set_order_for_edit, :editable?, only: :edit
-  before_action :set_category_and_menus, only: [:new, :edit]
+  before_action :set_category_and_menus, only: %i[new edit]
+  before_action :set_date_range, :set_date, only: :index
   respond_to :js, only: :category
+  START_DATE = Date.current.beginning_of_week(:sunday)
 
   def index
-    @date = parsed_date(params[:date])
     order = current_user.orders
-    @active_this_week = order.active_this_week
-    @not_this_week = order.not_this_week
-    @completed = order.completed.map { |o| o.placed_on.strftime('%Y-%m-%d') }
+    @active_this_week = order.placed_between?(@date_range).pluck_placed_on
+    @not_this_week = order.not_placed_between?(@date_range).pluck_placed_on
+    @completed = order.completed.pluck_placed_on
     @orders = order.pending_deliveries
   end
 
@@ -22,6 +23,14 @@ class User::WeeklyMealsController < User::BaseController
   end
 
   private
+
+  def set_date
+    @date = parsed_date(params[:date])
+  end
+
+  def set_date_range
+    @date_range = DateRange.new(START_DATE, START_DATE.end_of_week)
+  end
 
   def parsed_date(date)
     return Date.current unless date
@@ -52,14 +61,23 @@ class User::WeeklyMealsController < User::BaseController
 
   def is_past_noon?
     closed_time = Time.zone.parse '11:00 am'
-    order_date.to_date == Date.current.tomorrow + 1 && Time.current >= closed_time
+    order_date.to_date == Date.current.tomorrow && Time.current >= closed_time
   end
 
   def is_yesterday?
     order_date.to_date < Date.current
   end
 
+  def is_today?
+    order_date.to_date == Date.current
+  end
+
   def editable?
+    if is_today?
+      flash[:error] = 'Too late to edit your meal for today.'
+      redirect_back fallback_location: :user_weekly_meals
+    end
+
     if is_past_noon?
       flash[:error] = 'Too late for tomorrow, your meal cannot be changed after 11am.'
       redirect_back fallback_location: :user_weekly_meals
