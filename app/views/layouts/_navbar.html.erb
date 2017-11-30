@@ -20,8 +20,8 @@
       <li class="nav-item <%= active?(page_path(id: 'contact_us')) %>">
         <%= nav_link 'Contact Us', page_path(id: 'contact_us') %>
       </li>
-      <li class="nav-item">
-        <a href="" class="nav-link text-muted">Logout</a>
+      <li class="nav-item <%= active?(user_registrations_path) %>">
+        <%= nav_link 'Sign Up', user_registrations_path %>
       </li>
     </ul>
   </div>

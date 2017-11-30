@@ -1,6 +1,6 @@
 <% schedule.each_with_index do |day, index| %>
   <label
-  class="list-group-item <%= 'active' if index == 0 %>"
+  :class="'list-group-item <%= 'active' if index == 0 %> ' + (delivery_date === '<%= day %>' ? 'active' : '') "
   for="start_date_<%= index %>"
   data-schedule-days="<%=
     (day..(day + 4.days)).map { |d| d }.join(',')

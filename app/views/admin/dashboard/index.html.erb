@@ -2,21 +2,21 @@
   <div class="row">
     <div class="col">
       Active Orders
-      <%= @order_query.active_orders.size %>
+      <h2><%= @order_query.active_orders.size %></h2>
     </div>
     <div class="col">
       Total Sales
-      <%= monefy(@order_query.total_sales) %>
+      <h2><%= to_currency(@order_query.total_sales) %></h2>
     </div>
     <div class="col">
       Best Seller
-      <%= @order_query.best_seller[:name] %>
+      <h2><%= @order_query.best_seller[:name] %></h2>
     </div>
   </div>
 </div>
 <%= card_container do %>
   <div id="frishtug_orders">
-  <h5><%= current_sale_date %> - Current Sales <%= monefy(@order_query.current_sales) %></h5>
+  <h5><%= current_sale_date %> - Current Sales <%= to_currency(@order_query.current_sales) %></h5>
     <vue-tabs>
       <v-tab title="TODAY (<%= @order_query.active_orders.size %>)">
         <%= render 'orders_today', orders: @order_query.active_orders %>

@@ -3,7 +3,8 @@
     <div class="card text-center <%= p.name.parameterize %>"
       data-plan-name="<%= p.name %>"
       data-plan-price="<%= p.price %>"
-        data-plan-shipping-fee="<%= p.shipping_fee? ? p.shipping_fee : 0 %>">
+      data-plan-interval="<%= p.interval || 'single_order' %>"
+      data-plan-shipping-fee="<%= p.shipping_fee? ? p.shipping_fee : 0 %>">
       <div class="card-body">
         <h4 class="card-title">
           <%= p.name %>
@@ -25,7 +26,12 @@
       </div>
       <div class="card-footer">
         <label for="<%= "#{p.name.parameterize}-#{p.id}" %>" class="btn btn-brown plan--btns">
-          <input type="radio" name="registration_form[plan_id]" value="<%= p.id %>" id="<%= "#{p.name.parameterize}-#{p.id}" %>" class="d-none" @click="nextTab">
+          <input type="radio" 
+          name="registration_form[plan_id]" 
+          value="<%= p.id %>" 
+          id="<%= "#{p.name.parameterize}-#{p.id}" %>" 
+          class="d-none"
+          @click="setInterVal('<%= p.interval || 'single_order' %>')">
           Choose <%= p.name %>
         </label>
       </div>

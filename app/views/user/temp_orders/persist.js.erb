@@ -1,0 +1,19 @@
+<% if @order.errors.present? %>
+  swal(
+    'Opps..',
+    '<%= @order.errors.full_message.join(', ') %>',
+    'error'
+  );
+<% else %>
+  swal({
+    title: 'Success',
+    text: "You won't be able to revert this!",
+    type: 'success',
+    confirmButtonColor: '#3085d6',
+    confirmButtonText: 'Done'
+    }).then(function (result) {
+      if (result) {
+        window.location = '<%= user_weekly_meals_path %>';
+      }
+    });
+<% end %>

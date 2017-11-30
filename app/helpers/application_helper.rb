@@ -1,4 +1,5 @@
 module ApplicationHelper
+  require 'calendar'
   def nav_link(content, path, *array)
     link_to(content, path, *array, class: 'nav-link')
   end
@@ -11,6 +12,13 @@ module ApplicationHelper
     css_class = 'nav-link ml-auto'
     if current_admin
       link_to 'Logout', destroy_admin_session_path, method: :delete, class: css_class
+    end
+  end
+
+  def user_signout_link
+    css_class = 'nav-link ml-auto'
+    if current_user
+      link_to 'Logout', destroy_user_session_path, method: :delete, class: css_class
     end
   end
 
@@ -38,5 +46,32 @@ module ApplicationHelper
       notice: 'alert-info'
     }
     alerts[key.to_sym]
+  end
+
+  def trailing(text, length, str)
+    text.to_s.rjust(length, str)
+  end
+
+  def render_class(klass, **options)
+    render klass.class.to_s.underscore, options
+  end
+
+  def link_to_btn(text, path, klass=nil, id=nil)
+    klass ||= 'btn-brown'
+    id ||= text.parameterize.underscore
+    link_to text, path, class: "btn text-uppercase #{klass}", id: id
+  end
+
+  def address_from_source(source)
+    address = <<-HEREDOC
+      #{source.address_line1}#{source.address_line2.nil? ? '' : ", #{source.address_line2}"} <br>
+      #{source.address_city}, #{source.address_state} #{source.address_zip} <br>
+      #{source.address_country}
+    HEREDOC
+    address.html_safe
+  end
+
+  def calendar(date = Date.current, disable_date = nil, &block)
+    Calendar.new(self, date, disable_date, block).table_compact
   end
 end

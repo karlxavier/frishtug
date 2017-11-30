@@ -2,42 +2,68 @@
 #
 # Table name: users
 #
-#  id                     :integer          not null, primary key
-#  email                  :string           default(""), not null
-#  encrypted_password     :string           default(""), not null
-#  reset_password_token   :string
-#  reset_password_sent_at :datetime
-#  remember_created_at    :datetime
-#  sign_in_count          :integer          default(0), not null
-#  current_sign_in_at     :datetime
-#  last_sign_in_at        :datetime
-#  current_sign_in_ip     :inet
-#  last_sign_in_ip        :inet
-#  created_at             :datetime         not null
-#  updated_at             :datetime         not null
-#  first_name             :string
-#  last_name              :string
-#  plan_id                :integer
+#  id                      :integer          not null, primary key
+#  email                   :string           default(""), not null
+#  encrypted_password      :string           default(""), not null
+#  reset_password_token    :string
+#  reset_password_sent_at  :datetime
+#  remember_created_at     :datetime
+#  sign_in_count           :integer          default(0), not null
+#  current_sign_in_at      :datetime
+#  last_sign_in_at         :datetime
+#  current_sign_in_ip      :inet
+#  last_sign_in_ip         :inet
+#  created_at              :datetime         not null
+#  updated_at              :datetime         not null
+#  first_name              :string
+#  last_name               :string
+#  plan_id                 :integer
+#  stripe_token            :string
+#  subscribe_at            :datetime
+#  subscription_expires_at :datetime
+#  stripe_customer_id      :string
+#  stripe_subscription_id  :string
+#  approved                :boolean          default(FALSE), not null
 #
 
 class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable,
+  devise :database_authenticatable,
          :recoverable, :rememberable, :trackable, :validatable
 
   validates :first_name, :last_name, presence: true
   has_many :addresses, as: :addressable, dependent: :destroy
   has_many :credit_cards, dependent: :destroy
   has_many :checkings, dependent: :destroy
+  has_many :comments, dependent: :destroy
   has_one :contact_number, dependent: :destroy
   has_one :schedule, dependent: :destroy
   belongs_to :plan, optional: true, counter_cache: true
   has_many :orders, dependent: :destroy
-  scope :only_approved, -> { where(approved: true) }
-
+  has_many :temp_orders, dependent: :destroy
+  
+  accepts_nested_attributes_for :contact_number
+  
   def full_name
     "#{first_name} #{last_name}".titleize
+  end
+
+  def payment_information
+    entries = []
+    if checkings.present?
+      checkings.each do |c|
+        entries.push c
+      end
+    end
+    
+    if credit_cards.present?
+      credit_cards.each do |cc|
+        entries.push cc
+      end
+    end
+    
+    entries
   end
 
   def full_address

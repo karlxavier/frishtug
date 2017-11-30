@@ -1,0 +1,284 @@
+import Vue from 'vue/dist/vue.esm'
+import swal from 'sweetalert2'
+import ajax from '../lib/ajax_lib'
+import { $limit, $only_numbers } from '../lib/input_helpers'
+
+const el = document.querySelector('#payment_method_page')
+Stripe.setPublishableKey('<%= STRIPE_PUBLIC_KEY %>')
+
+const paymentMethod = new Vue({
+  el: el,
+  data: {
+    show: false,
+    payment_method: 'credit_card',
+    credit_card: {
+      number: '',
+      exp_month: '',
+      exp_year: '',
+      cvc: '',
+      name: '' 
+    },
+    checking: {
+      country: 'US',
+      currency: 'usd',
+      routing_number: null,
+      account_number: null,
+      account_holder_name: '',
+      account_holder_type: 'individual',
+      bank_name: '',
+    },
+    billing_address: {
+      address_line1: '',
+      address_line2: '',
+      address_city: '',
+      address_state: '',
+      address_country: 'US',
+      address_zip: ''
+    },
+    different_billing: false,
+    token: '',
+    brand: '',
+    error_messages: '',
+    mode: 'new'
+  },
+  mounted: function() {
+    const name = localStorage.getItem('full_name')
+    this.checking.account_holder_name = name
+    this.credit_card.name = name
+  },
+  methods: {
+    scrollDown: () => {
+      $("html, body").animate({ scrollTop: $(document).height() }, 1000);
+    },
+    hideForm: () => {
+      paymentMethod.show = false
+    },
+    editCardPaymentMethod: (json_data) => {
+      const card = JSON.parse(json_data)
+      paymentMethod.token = card.id
+      paymentMethod.brand = card.brand
+      paymentMethod.credit_card = {
+        number: card.last4,
+        exp_month: card.exp_month,
+        exp_year: card.exp_year,
+        cvc: card.cvc,
+        name: card.name
+      }
+
+      if (card.address_line1 !== '') {
+        paymentMethod.different_billing = true
+      }
+      paymentMethod.billing_address = {
+        address_line1: card.address_line1,
+        address_line2: card.address_line2,
+        address_city: card.address_city,
+        address_state: card.address_state,
+        address_country: 'US',
+        address_zip: card.address_zip
+      }
+      paymentMethod.show = true
+      paymentMethod.payment_method = 'credit_card'
+      paymentMethod.scrollDown()
+      paymentMethod.mode = 'edit'
+    },
+    editBankPaymentMethod: (json_data) => {
+      const bank = JSON.parse(json_data)
+      paymentMethod.token = bank.id
+      paymentMethod.checking = {
+        country: 'US',
+        currency: 'usd',
+        routing_number: bank.routing_number,
+        account_number: bank.account_number,
+        account_holder_name: localStorage.getItem('full_name'),
+        account_holder_type: bank.account_holder_type,
+        bank_name: bank.bank_name,
+      }
+      paymentMethod.show = true
+      paymentMethod.payment_method = 'checking'
+      paymentMethod.scrollDown()
+      paymentMethod.mode = 'edit'
+    }, 
+    newPaymentMethod: () => {
+      paymentMethod.different_billing = false
+      paymentMethod.checking = {
+        country: 'US',
+        currency: 'usd',
+        routing_number: null,
+        account_number: null,
+        account_holder_name: localStorage.getItem('full_name'),
+        account_holder_type: 'individual',
+        bank_name: '',
+      }
+
+      paymentMethod.credit_card = {
+        number: '',
+        exp_month: '',
+        exp_year: '',
+        cvc: '',
+        name: localStorage.getItem('full_name')
+      }
+
+      paymentMethod.billing_address = {
+        address_line1: '',
+        address_line2: '',
+        address_city: '',
+        address_state: '',
+        address_country: 'US',
+        address_zip: ''
+      }
+      paymentMethod.show = true
+      paymentMethod.scrollDown()
+      paymentMethod.mode = 'new'
+      paymentMethod.token = ''
+      paymentMethod.brand = ''
+    },
+    changeType: () => {
+      const _this = paymentMethod
+      if (_this.payment_method === 'credit_card') {
+        _this.payment_method = 'checking'
+      } else {
+        _this.payment_method = 'credit_card'
+      }
+    },
+    formatCardNumber: () => {
+      const _this = paymentMethod
+      _this.credit_card.number = _this.credit_card.number.replace(/[^\d]/g, '')
+      _this.credit_card.number = _this.credit_card.number.substring(0, 16)
+
+      const numberSections = _this.credit_card.number.match(/\d{1,4}/g)
+      if (numberSections !== null) {
+        _this.credit_card.number = numberSections.join(' ')
+      }
+    },
+    saveChanges: (event) => {
+      const _this = paymentMethod
+      event.target.classList.add('disabled')
+
+      if (_this.payment_method === 'credit_card') {
+        Stripe.card.createToken({
+          number: _this.credit_card.number.replace(/\s+/g, ''),
+          exp_month: _this.credit_card.exp_month,
+          exp_year: _this.credit_card.exp_year,
+          cvc: _this.credit_card.cvc,
+          name: _this.credit_card.name,
+          address_line1: _this.billing_address.address_line1,
+          address_line2: _this.billing_address.address_line2,
+          address_city: _this.billing_address.address_city,
+          address_state: _this.billing_address.address_state,
+          address_zip: _this.billing_address.address_zip,
+          address_country: 'US'
+        }, stripeResponseHandler)
+      } else {
+        Stripe.bankAccount.createToken({
+          country: 'US',
+          currency: 'usd',
+          routing_number: _this.checking.routing_number,
+          account_number: _this.checking.account_number,
+          account_holder_name: _this.checking.account_holder_name,
+          account_holder_type: _this.checking.account_holder_type
+        }, stripeResponseHandler)
+      }
+    },
+    updateChanges: (event) => {
+      saveCompleted('/user/payment_informations', 'update')
+    },
+    limitInput: (event, num) => {
+      paymentMethod.billing_address.zip = $limit(event.target, num)
+    },
+    onlyNumbersInput: (event) => {
+      $only_numbers(event.target)
+    }
+  }
+})
+
+
+const stripeResponseHandler = (status, response) => {
+  const form = document.querySelector('form#payment_method_form')
+
+  if (response.error) {
+    const paymentError = form.querySelector('errors')
+    paymentMethod.error_messages = response.error.message
+  } else {
+    const token = response.id
+    paymentMethod.token = token
+
+    if (response.hasOwnProperty('card')) {
+      const brand = response.card.brand
+      paymentMethod.brand = brand
+    } else {
+      const brand = response.type
+      paymentMethod.brand = brand
+    }
+     paymentMethod.error_messages = ''
+     saveCompleted('/user/payment_informations', 'save')
+  }
+}
+
+const saveCompleted = (url, option) => {
+  let data;
+  if (paymentMethod.payment_method === 'credit_card') {
+    let cc = paymentMethod.credit_card
+    let add = paymentMethod.billing_address
+    data = {
+      type: 'credit_card',
+      credit_card: {
+        number: cc.number.replace(/\s+/g, ''),
+        cvc: cc.cvc,
+        month: cc.exp_month,
+        year: cc.exp_year,
+        name: cc.name,
+        token: paymentMethod.token,
+        brand: paymentMethod.brand,
+        address_attributes: {
+          line1: add.address_line1,
+          line2: add.address_line2,
+          city: add.address_city,
+          state: add.address_state,
+          zip_code: add.address_zip
+        }
+      }
+    }
+  } else {
+    let bc = paymentMethod.checking
+    data = {
+      type: 'checking',
+      checking: {
+        account_number: bc.account_number,
+        routing_number: bc.routing_number,
+        bank_name: bc.bank_name,
+        token: paymentMethod.token
+      }
+    }
+  }
+
+  if(option === 'save') {
+    ajax.postJson({
+      url: url,
+      data: data
+    })
+    .then((response) => {
+      responseHandler(response)
+    })
+    .catch((response) => {
+      responseHandler(response)
+    })
+  } 
+
+  if (option === 'update') {
+    ajax.putJson({
+      url: url,
+      data: data
+    })
+    .then((response) => {
+      responseHandler(response)
+    })
+    .catch((response) => {
+      responseHandler(response)
+    })
+  }
+}
+
+const responseHandler = (response) => {
+  const parsedData = JSON.parse(response)
+  swal(parsedData.status.toUpperCase(), parsedData.message, parsedData.status)
+}

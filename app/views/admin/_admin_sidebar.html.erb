@@ -16,6 +16,12 @@
       <li class="nav-item <%= active?(admin_plans_path) %>">
         <%= nav_link 'Plans', admin_plans_path %>
       </li>
+      <li class="nav-item <%= active?(admin_allowed_zip_codes_path) %>">
+        <%= nav_link 'Allowed Zip Codes', admin_allowed_zip_codes_path %>
+      </li>
+      <li class="nav-item <%= active?( admin_import_menus_path) %>">
+        <%= nav_link 'Import Menus', admin_import_menus_path %>
+      </li>
     </ul>
   </div>
 </div>

@@ -59,34 +59,34 @@ body {
   }
 }
 
-a,
-.active-link,
-.card-link {
-  color: $light-chocolate!important;
-  cursor: pointer;
-  &:hover,
-  &:focus {
-    color: rgba(223, 181, 118, 0.788)!important;
-    text-decoration: none;
-  }
-}
+// a,
+// .active-link,
+// .card-link {
+//   color: $light-chocolate!important;
+//   cursor: pointer;
+//   &:hover,
+//   &:focus {
+//     color: rgba(223, 181, 118, 0.788)!important;
+//     text-decoration: none;
+//   }
+// }
 
-a.btn,
-a.btn-brown,
-a.nav-link.active {
-  color: $pure-white!important;
+// a.btn,
+// a.btn-brown,
+// a.nav-link.active {
+//   color: $pure-white!important;
 
-  &:hover,
-  &:focus {
-    color: $pure-white!important;
-  }
-}
+//   &:hover,
+//   &:focus {
+//     color: $pure-white!important;
+//   }table-hover
+// }
 
-a.nav-link,
-a.btn-outline-dark,
-.nav-tabs a.nav-link.active {
-  color: $base-dark!important;
-}
+// a.nav-link,
+// a.btn-outline-dark,
+// .nav-tabs a.nav-link.active {
+//   color: $base-dark!important;
+// }
 
 .text-muted,
 label,
@@ -221,4 +221,103 @@ a.btn-outline--category.active {
   top: 10rem;
   right: 0;
   z-index: 1030;
+}
+
+// .not-month {
+//   background: #acacac;
+// }
+
+// .today {
+//   background: $allergens-color;
+// }
+
+.calendar {
+  td {
+    position: relative;
+    height: 36px;
+    width: 48px;
+
+    &.disabled {
+      background: #acacac;
+
+      & > a {
+        &:hover,
+        &:focus {
+          background: #acacac;
+          color: #333333;
+        }
+      }
+    }
+
+    & > span {
+      color: #333;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      line-height: 2;
+      cursor: pointer;
+      text-align: center;
+
+      &.disabled {
+        background: #acacac;
+      }
+    }
+
+    & > a {
+      color: #333;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      line-height: 2;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+
+      &.active {
+        background: #007bff;
+        color: #fff;
+      }
+
+      &.active_not_current_week {
+        background: #49709b;
+        color: #fff;
+      }
+
+      &.disabled {
+        background: #acacac;
+        color: #333333;
+        cursor: default;
+        pointer-events: none;
+      }
+
+      &.inactive {
+        background:#98b8c3;
+        color: #fff;
+      }
+
+      &:hover,
+      &:focus {
+        background: #007bff;
+        color: #ffffff;
+      }
+    }
+  }
+}
+
+.meal-form__header {
+  font-size: 21px;
+  color: #333;
+}
+
+.meal-form__sidebar {
+  font-size: 21px;
+  color: #333;
+
+  & > a {
+    font-size: 16px;
+  }
 }

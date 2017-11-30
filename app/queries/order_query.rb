@@ -1,13 +1,11 @@
 class OrderQuery
-  attr_accessor :date, :orders
-
-  def initialize(date = Date.current)
-    @date = date
+  def initialize(date_range)
+    @date_range = date_range
     @orders = Order.includes(:menus)
   end
 
   def active_orders
-    results = orders.where(placed_on: date.beginning_of_day..date.end_of_day)
+    results = orders.placed_between?(date_range)
 
     class << self
       def size
@@ -19,11 +17,11 @@ class OrderQuery
   end
 
   def total_sales
-    calculate_sales(orders)
+    total(orders)
   end
 
   def current_sales
-    calculate_sales(active_orders)
+    total(active_orders)
   end
 
   def best_seller
@@ -38,12 +36,14 @@ class OrderQuery
   end
 
   private
+  
+  attr_accessor :date_range, :orders
 
-  def calculate_sales(orders)
+  def total(orders)
     sales = []
     orders.each do |o|
       sales.push(o.menus.map(&:price).reduce(:+))
     end
-    sales.reduce(:+)
+    sales.compact.reduce(:+)
   end
 end

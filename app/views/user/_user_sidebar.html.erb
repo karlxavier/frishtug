@@ -1,0 +1,27 @@
+<div class="col-12 col-md-3 col-xl-2 sidebar" role="main-sidebar" id="main-sidebar">
+  <div class="flex-column navbar-collapse">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item <%= active?(user_dashboard_index_path) %>">
+        <%= nav_link 'Dashboard', user_dashboard_index_path %>
+      </li>
+      <li class="nav-item <%= active?(user_weekly_meals_path) %>">
+        <%= nav_link 'Weekly Meals', user_weekly_meals_path %>
+      </li>
+      <li class="nav-item <%= active?(user_user_information_index_path) %>">
+        <%= nav_link 'User Information', user_user_information_index_path %>
+      </li>
+      <li class="nav-item <%= active?(user_change_password_index_path) %>">
+        <%= nav_link 'Change Password', user_change_password_index_path %>
+      </li>
+      <li class="nav-item <%= active?(user_delivery_information_index_path) %>">
+        <%= nav_link 'Delivery Information', user_delivery_information_index_path %>
+      </li>
+      <li class="nav-item <%= active?(user_subscriptions_path) %>">
+        <%= nav_link 'Subscription', user_subscriptions_path %>
+      </li>
+      <li class="nav-item <%= active?(user_payment_informations_path) %>">
+        <%= nav_link 'Payment Information', user_payment_informations_path %>
+      </li>
+    </ul>
+  </div>
+</div>

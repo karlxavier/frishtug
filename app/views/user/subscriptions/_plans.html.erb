@@ -1,0 +1,31 @@
+<div class="card-deck">
+  <% Plan.subscriptions.sort.each do |p| %>
+    <div class="card text-center <%= p.name.parameterize %>"
+      data-plan-name="<%= p.name %>"
+      data-plan-price="<%= p.price %>"
+        data-plan-shipping-fee="<%= p.shipping_fee? ? p.shipping_fee : 0 %>">
+      <div class="card-body">
+        <h4 class="card-title">
+          <%= p.name %>
+        </h4>
+        <p class="card-text plan--description">
+          <%= p.description.html_safe %>
+        </p>
+        <p class="card-text">
+          <% if p.free? %>
+            Free Deliver
+          <% else %>
+            <%= p.shipping_note %>
+          <% end %>
+        </p>
+        <p class="card-text text-upcase">Note:</p>
+        <small class="card-text">
+          <%= p.note %>
+        </small>
+      </div>
+      <div class="card-footer">
+        <%= link_to_btn "Choose #{p.name}", subscribe_user_subscriptions_path(id: p.id), 'btn-brown plan--btns' %>
+      </div>
+    </div>
+  <% end %>
+</div>

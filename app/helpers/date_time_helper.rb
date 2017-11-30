@@ -9,6 +9,15 @@ module DateTimeHelper
     (start_year..offset_year).to_a.reverse.map { |y| [y, y] }.insert(0, ['Year', nil])
   end
 
+  def time_at(number, format = '%F')
+    return 'Cannot convert non integer to time' unless number.is_a? Integer
+    Time.at(number).strftime(format)
+  end
+
+  def format_date_AABBDD(date)
+    date.to_date.strftime('%^a, %^b %d')
+  end
+
   def current_sale_date
     Date.current.strftime('%B %d')
   end

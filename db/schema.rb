@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171109023409) do
+ActiveRecord::Schema.define(version: 20171129073605) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -46,6 +46,7 @@ ActiveRecord::Schema.define(version: 20171109023409) do
     t.integer "location_at"
     t.float "latitude"
     t.float "longitude"
+    t.integer "status"
     t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable_type_and_addressable_id"
   end
 
@@ -65,6 +66,13 @@ ActiveRecord::Schema.define(version: 20171109023409) do
     t.index ["email"], name: "index_admins_on_email", unique: true
   end
 
+  create_table "allowed_zip_codes", force: :cascade do |t|
+    t.string "zip"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["zip"], name: "index_allowed_zip_codes_on_zip"
+  end
+
   create_table "checkings", force: :cascade do |t|
     t.string "bank_name"
     t.string "account_number"
@@ -72,7 +80,22 @@ ActiveRecord::Schema.define(version: 20171109023409) do
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "token"
+    t.string "stripe_id"
+    t.index ["stripe_id"], name: "index_checkings_on_stripe_id"
+    t.index ["token"], name: "index_checkings_on_token"
     t.index ["user_id"], name: "index_checkings_on_user_id"
+  end
+
+  create_table "comments", force: :cascade do |t|
+    t.bigint "user_id"
+    t.text "body"
+    t.string "commentable_type"
+    t.bigint "commentable_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["commentable_type", "commentable_id"], name: "index_comments_on_commentable_type_and_commentable_id"
+    t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
   create_table "contact_numbers", force: :cascade do |t|
@@ -92,6 +115,11 @@ ActiveRecord::Schema.define(version: 20171109023409) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "brand"
+    t.string "token"
+    t.string "name"
+    t.string "stripe_id"
+    t.index ["stripe_id"], name: "index_credit_cards_on_stripe_id"
+    t.index ["token"], name: "index_credit_cards_on_token"
     t.index ["user_id"], name: "index_credit_cards_on_user_id"
   end
 
@@ -136,8 +164,13 @@ ActiveRecord::Schema.define(version: 20171109023409) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "image"
+    t.integer "unit_size"
+    t.string "item_number"
+    t.boolean "tax", default: false
+    t.text "description"
     t.index ["diet_category_id"], name: "index_menus_on_diet_category_id"
     t.index ["menu_category_id"], name: "index_menus_on_menu_category_id"
+    t.index ["name"], name: "index_menus_on_name", unique: true
     t.index ["unit_id"], name: "index_menus_on_unit_id"
   end
 
@@ -148,6 +181,15 @@ ActiveRecord::Schema.define(version: 20171109023409) do
     t.datetime "updated_at", null: false
     t.index ["menu_id"], name: "index_menus_orders_on_menu_id"
     t.index ["order_id"], name: "index_menus_orders_on_order_id"
+  end
+
+  create_table "menus_temp_orders", force: :cascade do |t|
+    t.bigint "menu_id"
+    t.bigint "temp_order_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["menu_id"], name: "index_menus_temp_orders_on_menu_id"
+    t.index ["temp_order_id"], name: "index_menus_temp_orders_on_temp_order_id"
   end
 
   create_table "orders", force: :cascade do |t|
@@ -197,6 +239,14 @@ ActiveRecord::Schema.define(version: 20171109023409) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "temp_orders", force: :cascade do |t|
+    t.bigint "user_id"
+    t.datetime "order_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_temp_orders_on_user_id"
+  end
+
   create_table "units", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -242,6 +292,7 @@ ActiveRecord::Schema.define(version: 20171109023409) do
   add_foreign_key "add_ons_menus", "add_ons"
   add_foreign_key "add_ons_menus", "menus"
   add_foreign_key "checkings", "users"
+  add_foreign_key "comments", "users"
   add_foreign_key "contact_numbers", "users"
   add_foreign_key "credit_cards", "users"
   add_foreign_key "inventories", "menus"
@@ -251,7 +302,10 @@ ActiveRecord::Schema.define(version: 20171109023409) do
   add_foreign_key "menus", "units"
   add_foreign_key "menus_orders", "menus"
   add_foreign_key "menus_orders", "orders"
+  add_foreign_key "menus_temp_orders", "menus"
+  add_foreign_key "menus_temp_orders", "temp_orders"
   add_foreign_key "orders", "users"
   add_foreign_key "schedules", "users"
+  add_foreign_key "temp_orders", "users"
   add_foreign_key "users", "plans"
 end

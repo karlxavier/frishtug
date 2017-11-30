@@ -1,5 +1,5 @@
 <%# render 'shared/menus/products', menu: menu, control: true  %>
-<div class="card col-12 col-md-3 px-0 border-0 mb-4 mt-1" data-meal-id="<%= menu.id %>" data-meal-price="<%= menu.price %>" data-meal-name="<%= menu.name %>">
+<div class="card col-12 col-md-3 px-0 border-0 mb-4 mt-1 mx-3" data-meal-id="<%= menu.id %>" data-meal-price="<%= menu.price %>" data-meal-name="<%= menu.name %>">
   <img class="card-img-top"
     src="<%= menu.image_url(:medium) if menu.image? %>"
     alt="<%= menu.name.titleize %>"
@@ -12,7 +12,7 @@
       <% end %>
     </h4>
     <% if !defined?(control).nil? %>
-      <%= render 'shared/menus/menu_controls', menu: menu %>
+      <%= render 'shared/menus/menu_controls', { menu: menu, fmodel: fmodel || nil } %>
     <% else %>
       <p class="card-text">
         <small class="text-muted">

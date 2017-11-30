@@ -1,0 +1,24 @@
+<div class="container-fluid" id="payment_method_page">
+  <h4 class="text-uppercase">Payment Information</h4>
+
+  <%# @payment_informations.each do |payment_info| %>
+    <%# render_class payment_info, payment_info: payment_info %>
+  <%# end %>
+  <div class="row">
+    <div class="col-6">
+      <% @payment_informations.sources.data.each do |source| %>
+        <%= render source.object, source: source, default: @payment_informations.default_source %>
+      <% end %>
+    </div>
+  </div>
+  <a href="javascript:void(0)" class="btn btn-brown text-uppercase mb-4" @click="newPaymentMethod" v-if="show === false">Add New Payment Method</a>
+  <div v-if="show === true" class="row mb-4">
+    <div class="col-6">
+       <%= render 'form' %>
+    </div>
+  </div>
+</div>
+
+<%= content_for :footer_js do %>
+  <%= javascript_pack_tag 'user/vue_payment_method' %>
+<% end %>

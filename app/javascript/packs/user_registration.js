@@ -7,6 +7,14 @@ import swal from 'sweetalert2'
     shipping_fee: 0,
     start_date: null,
     schedule: 'monday_to_friday',
+    order_type: 'multiple',
+    single_order: {
+      date: null,
+      meal_ids: [],
+      meals: [],
+      count: 0,
+      tax: 0,
+    },
     day_1: {
       date: null,
       meal_ids: [],
@@ -230,49 +238,59 @@ import swal from 'sweetalert2'
       })
     }
   }
+  
+  const mealSelectorHandler = (event) => {
+    const el = event.target
+    const counter = el.closest('div.col').querySelector('span.meal-counter')
+    const previousValue = parseInt(counter.innerHTML)
+    const card = el.closest('div.card')
+    const mealId = card.dataset.mealId
+    const mealName = card.dataset.mealName
+    const mealPrice = card.dataset.mealPrice
+    const mealImage = card.querySelector('img').src
+    const param = el.dataset.fmodel
+
+    if (el.classList.contains('meal-ctrl-btns-plus')) {
+      order[param].meal_ids.push(mealId)
+      addMeals(
+        param, 
+        mealName, 
+        mealId, 
+        mealPrice, 
+        mealImage)
+      order.total_count += 1
+      order.total_price += parseFloat(mealPrice)
+      order[param].element = counter
+      counter.innerHTML = parseInt(counter.innerHTML) + 1
+    } else {
+      if (previousValue !== 0) {
+        const index = order[param].meal_ids.indexOf(mealId.toString())
+        order[param].meal_ids.splice(index, 1)
+        removeMeals(
+          param, 
+          mealName, 
+          mealId.toString(), 
+          mealPrice.toString(), 
+          mealImage
+        )
+        order.total_count -= 1
+        order.total_price -= parseFloat(mealPrice.toString())
+        counter.innerHTML = previousValue - 1
+      }
+    }
+    renderOrders()
+  }
 
   const mealSelectorInit = () => {
     const plusBtns = document.querySelectorAll('.meal-ctrl-btns-plus')
     const minusBtns = document.querySelectorAll('.meal-ctrl-btns-minus')
+
     plusBtns.forEach( btn => {
-      btn.addEventListener('click', () => {
-        const counter = btn.closest('div.col').querySelector('span.meal-counter')
-        const card = btn.closest('div.card')
-        const mealId = card.dataset.mealId
-        const mealName = card.dataset.mealName
-        const mealPrice = card.dataset.mealPrice
-        const mealImage = card.querySelector('img').src
-        const day = card.closest('div.tab_pane').id.split('-').join('_')
-        order[day].meal_ids.push(mealId)
-        addMeals(day, mealName, mealId, mealPrice, mealImage)
-        order.total_count += 1
-        order.total_price += parseFloat(mealPrice)
-        order[day].element = counter
-        counter.innerHTML = parseInt(counter.innerHTML) + 1
-        renderOrders()
-      })
+      btn.addEventListener('click', mealSelectorHandler)
     })
 
     minusBtns.forEach( btn => {
-      btn.addEventListener('click', () => {
-        const counter = btn.closest('div.col').querySelector('span.meal-counter')
-        const previousValue = parseInt(counter.innerHTML)
-        if (previousValue !== 0) {
-          const card = btn.closest('div.card')
-          const mealId = card.dataset.mealId.toString()
-          const mealName = card.dataset.mealName
-          const mealPrice = card.dataset.mealPrice.toString()
-          const mealImage = card.querySelector('img').src
-          const day = card.closest('div.tab_pane').id.split('-').join('_')
-          const index = order[day].meal_ids.indexOf(mealId)
-          order[day].meal_ids.splice(index, 1)
-          removeMeals(day, mealName, mealId, mealPrice, mealImage)
-          order.total_count -= 1
-          order.total_price -= parseFloat(mealPrice)
-          counter.innerHTML = previousValue - 1
-          renderOrders()
-        }
-      })
+      btn.addEventListener('click', mealSelectorHandler)
     })
   }
 
@@ -298,67 +316,102 @@ import swal from 'sweetalert2'
   }
 
   const days = [1,2,3,4,5].map( n => { return `day_${n}` })
+  const orderClickHandler = (target, meal, attr, index, type) => {
+    return (event) => {
+      const card = target.querySelector('.card[data-meal-name="' + meal.name + '"]')
+      const counter = card.querySelector('span.meal-counter')
+      if (type === 'add') {
+        order[attr].meal_ids.push(meal.id)
+        order[attr].meals[index].count += 1
+        order[attr].meals[index].price += parseFloat(card.getAttribute('data-meal-price'))
+        innerHtmlOf(counter, order[attr].meals[index].count)
+      } else {
+        order[attr].meal_ids.splice(mealIndex, 1)
+        if(meal.count > 1) {
+          order[attr].meals[index].count -= 1
+          order[attr].meals[index].price -= parseFloat(card.getAttribute('data-meal-price'))
+          innerHtmlOf(counter, order[attr].meals[index].count)
+        } else {
+          order[attr].meals.splice(index, 1)
+          innerHtmlOf(counter, 0)
+        }
+      }
+      renderOrders()
+    }
+  }
   const renderOrders = () => {
     const template = document.querySelector('#order-template').innerHTML
     const listTemplate = document.querySelector('#order-list-template').innerHTML
     const target = document.querySelector('.order-list')
     target.innerHTML = ''
 
-    days.forEach(day => {
-      const el = document.createElement('div')
-      const order_day = order[day]
-      el.className = 'mb-3'
-      el.innerHTML = template
+    if (order.order_type === 'multiple') {
+      days.forEach(day => {
+        const el = document.createElement('div')
+        const order_day = order[day]
+        el.className = 'mb-3'
+        el.innerHTML = template
 
-      if (order_day.meal_ids.length === 0) {
-        return false
-      }
+        if (order_day.meal_ids.length === 0) {
+          return false
+        }
 
-      appendTo(el, order_day.day.toUpperCase(), '.order-title')
-      order_day.meals.forEach( (meal, index) => {
-        const div = document.createElement('div')
-        div.innerHTML = listTemplate
-        appendTo(div, meal.name, '.meal-name')
-        appendTo(div, toCurrency(meal.price), '.meal-price')
-        appendTo(div, meal.count, '.meal-count')
+        appendTo(el, order_day.day.toUpperCase(), '.order-title')
+        order_day.meals.forEach( (meal, index) => {
+          const div = document.createElement('div')
+          div.innerHTML = listTemplate
+          appendTo(div, meal.name, '.meal-name')
+          appendTo(div, toCurrency(meal.price), '.meal-price')
+          appendTo(div, meal.count, '.meal-count')
 
-        div.querySelector('.add-meal').addEventListener('click', () => {
           const target = document.querySelector(`#${day.split('_').join('-')}`)
-          const card = target.querySelector('.card[data-meal-name="' + meal.name + '"]')
-          const counter = card.querySelector(order[day].element)
-          order[day].meal_ids.push(meal.id)
-          order[day].meals[index].count += 1
-          order[day].meals[index].price += parseFloat(card.getAttribute('data-meal-price'))
-          innerHtmlOf(counter, order[day].meals[index].count)
-          renderOrders()
+          div.querySelector('.add-meal')
+             .addEventListener('click', orderClickHandler(target, meal, day, index, 'add'))
+
+          div.querySelector('.remove-meal')
+             .addEventListener('click', orderClickHandler(target, meal, day, index, 'remove'))
+
+          const tr = div.querySelector('tr')
+          appendTo(el, tr, 'tbody')
         })
 
-        div.querySelector('.remove-meal').addEventListener('click', () => {
-          const target = document.querySelector(`#${day.split('_').join('-')}`)
-          const card = target.querySelector('.card[data-meal-name="' + meal.name + '"]')
-          const counter = card.querySelector('span.meal-counter')
-          mealIndex = order[day].meal_ids.indexOf(order[day].meals[index].id)
-          order[day].meal_ids.splice(mealIndex, 1)
-          if(meal.count > 1) {
-            order[day].meals[index].count -= 1
-            order[day].meals[index].price -= parseFloat(card.getAttribute('data-meal-price'))
-            innerHtmlOf(counter, order[day].meals[index].count)
-          } else {
-            order[day].meals.splice(index, 1)
-            innerHtmlOf(counter, 0)
-          }
-          renderOrders()
-        })
-
-        const tr = div.querySelector('tr')
-        appendTo(el, tr, 'tbody')
+        const totalPrice = sumOf(getByDayPrices(order_day.meals))
+        appendTo(el, toCurrency(totalPrice), '.meal-total')
+        appendTo(target, el)
+        enableSaveMealPlanBtn()
       })
+    } else {
+      const el = document.createElement('div')
+        const single_order = order.single_order
+        el.className = 'mb-3'
+        el.innerHTML = template
 
-      const totalPrice = sumOf(getByDayPrices(order_day.meals))
-      appendTo(el, toCurrency(totalPrice), '.meal-total')
-      appendTo(target, el)
-      enableSaveMealPlanBtn(order_day.meals)
-    })
+        if (single_order.meal_ids.length === 0) {
+          return false
+        }
+        single_order.meals.forEach( (meal, index) => {
+          const div = document.createElement('div')
+          div.innerHTML = listTemplate
+          appendTo(div, meal.name, '.meal-name')
+          appendTo(div, toCurrency(meal.price), '.meal-price')
+          appendTo(div, meal.count, '.meal-count')
+
+          const target = document.querySelector(`#single_order`)
+          div.querySelector('.add-meal')
+             .addEventListener('click', orderClickHandler(target, meal, 'single_order', index, 'add'))
+
+          div.querySelector('.remove-meal')
+             .addEventListener('click', orderClickHandler(target, meal, 'single_order', index, 'remove'))
+
+          const tr = div.querySelector('tr')
+          appendTo(el, tr, 'tbody')
+        })
+
+        const totalPrice = sumOf(getByDayPrices(single_order.meals))
+        appendTo(el, toCurrency(totalPrice), '.meal-total')
+        appendTo(target, el)
+        enableSaveMealPlanBtn()
+    }
   }
 
   const createTextNode = (text) => {
@@ -399,10 +452,31 @@ import swal from 'sweetalert2'
     }, 0)
   }
 
-  const enableSaveMealPlanBtn = (meals) => {
+  const enableSaveMealPlanBtn = () => {
     const btn = document.querySelector('.btn--save-meal-plan')
-    const total = sumOf(getByDayPrices(meals))
-    if (total >= 10) {
+    let shouldEnable = false
+
+    if (order.order_type !== 'single') {
+      const minimum = parseFloat(extract_number(order.plan_price)[0]) / 20
+      const totals = []
+
+      const isAllOverOrEqaulMinimun = (item, index, array) => {
+        return item >= minimum
+      }
+
+      days.forEach(day => {
+        const total = sumOf(getByDayPrices(order[day].meals))
+        totals.push(total)
+      })
+
+      if (totals.every(isAllOverOrEqaulMinimun)){
+        shouldEnable = true
+      }
+    } else {
+      shouldEnable = true
+    }
+
+    if (shouldEnable) {
       btn.classList.remove('disabled')
       populateReviewPage()
     } else {
@@ -420,15 +494,35 @@ import swal from 'sweetalert2'
 
 
   const populateReviewPage = () => {
+    let total, amount, plan_price
     const page = document.querySelector('#review_order')
     const schedules = order.schedule === 'sunday_to_thursday'
                     ? 'Sunday - Thursday' : 'Monday - Friday'
     const shipping = order.shipping_fee === 0 ? "Free" : toCurrency(order.shipping_fee)
+
     innerHtmlOf(page, order.plan, '.choosen_plan')
-    innerHtmlOf(page, order.plan_price, '.price')
     innerHtmlOf(page, shipping, '.shipping')
-    innerHtmlOf(page, schedules, '.delivery_schedule')
     innerHtmlOf(page, order.day_1.date, '.first_delivery_date')
+
+    const populateSched = (sched, price, text, total) => {
+      innerHtmlOf(page, sched, '.delivery_schedule')
+      innerHtmlOf(page, price, '.price')
+      innerHtmlOf(page, text, '.meals__text')
+      innerHtmlOf(page, total, '.total_price_summary')
+    }
+
+    if (order.order_type === 'single') {
+      amount = sumOf(getByDayPrices(order.single_order.meals))
+      plan_price = parseInt(extract_number(order.plan_price)[0])
+      if (plan_price > amount) { amount = plan_price }
+      total = amount
+      if (order.shipping_fee !== 0) { total = total + parseInt(order.shipping_fee) }
+      populateSched('Single Order', toCurrency(amount), 'Single Order', toCurrency(total))
+    } else {
+      plan_price = parseInt(extract_number(order.plan_price)[0])
+      if (order.shipping_fee !== 0) { total = plan_price + parseInt(order.shipping_fee) }
+      populateSched(schedules, order.plan_price, '5 Meals per week', order.plan_price)
+    }
   }
 
   const planSelectorInit = () => {
@@ -449,11 +543,17 @@ import swal from 'sweetalert2'
     const formData = new FormData(form)
     const ordersData = []
 
-    days.forEach( day => {
-      const order_by_day = order[day]
-      formData.append('registration_form[orders][][order_date]', order_by_day.date)
-      formData.append('registration_form[orders][][menu_ids][]', order_by_day.meal_ids)
-    })
+    if (order.order_type === 'multiple') {
+      days.forEach( day => {
+        const order_by_day = order[day]
+        formData.append('registration_form[orders][][order_date]', order_by_day.date)
+        formData.append('registration_form[orders][][menu_ids][]', order_by_day.meal_ids)
+      })
+    } else {
+      formData.append('registration_form[orders][][order_date]', order.single_order.date)
+      formData.append('registration_form[orders][][menu_ids][]', order.single_order.meal_ids)
+    }
+    
 
     formData.append('registration_form[stripe_token]', token)
     formData.append('registration_form[card_brand]', brand)
@@ -473,14 +573,21 @@ import swal from 'sweetalert2'
     })
   }
 
+  const extract_number = (alphanumeric) => {
+    return alphanumeric.match(/\d+/g)
+  }
+
   planSelectorInit()
   scheduleSelecter()
   cvcInputControl()
   //paymentMethods()
   //addBillingInfo()
-  mealSelectorInit()
-  mealCounterObserver()
+  // mealSelectorInit()
+  // mealCounterObserver()
   window.setTabsSchedule = setTabsSchedule
   window.completeAction = completeAction
   window.order = order
+  window.mealSelectorInit = mealSelectorInit
+  window.mealCounterObserver = mealCounterObserver
+  window.renderOrders = renderOrders
 }(window))

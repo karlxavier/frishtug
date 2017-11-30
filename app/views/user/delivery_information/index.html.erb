@@ -1,0 +1,78 @@
+<%= content_tag :div, 
+  class: 'col-md-5',
+  id: 'user_delivery_info',
+  data: {
+    addresses: @user_addresses_json
+  } do %>
+  <h3 class="text-uppercase">Delivery Information</h3>
+  <form class="user_delivery_info">
+    <div class="form-group">
+      <h6>I am:</h6>
+      <div class="form-check form-check-inline">
+        <label class="form-check-label">
+          <input class="form-check-input" type="radio" name="address[location_at]" id="at_work" value="at_work" v-model="addresses[0].location_at" v-on:click="hideAddBtn"> At Work
+        </label>
+      </div>
+      <div class="form-check form-check-inline">
+        <label class="form-check-label">
+          <input class="form-check-input" type="radio" name="address[location_at]" id="at_home" value="at_home" v-model="addresses[0].location_at" v-on:click="hideAddBtn"> At Home
+        </label>
+      </div>
+      <div class="form-check form-check-inline disabled">
+        <label class="form-check-label">
+          <input class="form-check-input" type="radio" name="address[location_at]" id="multi_work" value="multiple_workplaces" v-model="addresses[0].location_at" v-on:click="showAddBtn">
+          Multiple Workplaces
+        </label>
+      </div>
+    </div>
+    <div v-for="(address, index) in addresses">
+      <div v-if="address._delete !== 1">
+         <hr v-if="index === 1" class="mt-4"></hr>
+        <input type="hidden" v-model='address.id' name="address_id">
+        <div class="form-group">
+          <label for="address_line1">Address Line 1*</label>
+          <input type="text" class="form-control" id="address_line1" name="address[line1]" v-model="address.line1">
+        </div>
+        <div class="form-group">
+          <label for="address_line2">Address Line 2</label>
+          <input type="text" class="form-control" id="address_line2" name="address[line2]" v-model="address.line2">
+        </div>
+        <div class="form-group">
+          <label for="address_front_door">Front Door Code</label>
+          <input type="text" class="form-control" id="address_front_door" name="address[front_door]" v-model="address.front_door">
+        </div>
+        <div class="form-group row">
+          <div class="col">
+            <label for="adrress_city">City*</label>
+            <input type="text" class="form-control" id="address_city" name="address[city]"  v-model="address.city"> 
+          </div>
+          <div class="col">
+            <label for="address_state">State*</label>
+            <input type="text" class="form-control" id="address_state" name="address[state]" v-model="address.state"> 
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="address_zip_code">ZIP Code*</label>
+          <input type="text" 
+            class="form-control" 
+            id="address_zip_code" 
+            name="address[zip_code]" 
+            v-model="address.zip_code" 
+            v-on:keyup="limitZipCode($event, index) + is_numeric($event, index)">
+        </div>
+      </div>
+    </div>
+    
+    <%= render 'shared/form/note_for_required_fields' %>
+    <div class="row">
+      <div class="col">
+        <a href="javascript:void(0)" class="link" v-if="show" v-on:click="addAddress"> + Add Address<br></a>
+        <button type="submit" class="btn btn-brown text-uppercase mt-3" v-on:click.prevent="saveChanges">Save Changes</button>
+      </div>
+    </div>
+  </form>
+<% end %>
+
+<%= content_for :footer_js do %>
+  <%= javascript_pack_tag 'user/vue_delivery_info' %>
+<% end %>

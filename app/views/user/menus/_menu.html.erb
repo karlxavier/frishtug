@@ -1,0 +1,45 @@
+<%
+  store_url = "store_user_#{order.class.name.underscore.pluralize}_path" 
+  remove_url = "remove_user_#{order.class.name.underscore.pluralize}_path"
+%>
+<div class="card col-12 col-md-3 px-0 border-0 mb-4 mt-1" data-meal-id="<%= menu.id %>" data-meal-price="<%= menu.price %>" data-meal-name="<%= menu.name %>">
+  <img class="card-img-top"
+    src="<%= menu.image_url(:medium) if menu.image? %>"
+    alt="<%= menu.name.titleize %>"
+    height="175">
+  <div class="card-body px-0 py-1">
+    <h4 class="card-title mb-0">
+      <%= menu.name.titleize %>
+      <% if menu.diet_category_id? %>
+        <span class="fa fa-star diet-icons <%= menu.diet_category&.name.parameterize %>">&nbsp;</span>
+      <% end %>
+    </h4>
+    <div class="row">
+      <div class="col-5">
+        <p class="card-text">
+          <small class="text-muted">
+            <%= to_currency(menu.price) %>
+            /<%= menu.unit.name.capitalize %>
+          </small>
+        </p>
+      </div>
+      <div class="col">
+        <div class="float-right">
+          <%= link_to '-', 
+            public_send(remove_url, menu_id: menu.id, date: params[:date]), 
+            class:'btn btn-brown ctrl-btns rounded-0', 
+            remote: true 
+          %>
+          <span class="counter-for--<%= menu.name.parameterize %> meal-counter">
+            <%= order.menus.where(id: menu.id).size || 0 %>
+          </span>
+          <%= link_to '+', 
+            public_send(store_url, menu_id: menu.id, date: params[:date]), 
+            class:'btn btn-brown ctrl-btns rounded-0', 
+            remote: true 
+          %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

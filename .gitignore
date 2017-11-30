@@ -29,3 +29,9 @@
 # Ignore .env
 .env.*
 .env
+
+# Ignore redis dump
+dump.rdb
+
+# Ignore images under public/uploads
+public/uploads

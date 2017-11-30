@@ -1,12 +1,10 @@
 Rails.application.routes.draw do
-  namespace :user do
-    get 'settings/index'
-  end
-
   resources :user_registrations, only: %i[index create] do
     collection do
       get :schedule
-      get :payment_method
+      get :selected_date
+      get :days
+      get :is_past_noon
     end
   end
 
@@ -16,11 +14,6 @@ Rails.application.routes.draw do
   devise_for :users
   devise_for :admins
 
-  namespace :admin do
-    resources :units, except: :show
-    resources :menus, except: :show
-    resources :dashboard, only: :index
-    resources :menu_categories, except: %i[show]
-    resources :plans
-  end
+  draw :admin
+  draw :user
 end

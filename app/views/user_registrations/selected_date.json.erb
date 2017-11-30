@@ -1,0 +1,12 @@
+<% if @errors.length > 0 %>
+  {
+    "status": "error",
+    "message": "<%= @errors.join(', ') %>"
+  }
+<% else %>
+  {
+    "status": "success",
+    "dates": <%= raw @dates.to_json %>,
+    "names": <%= raw @date_names.to_json %>
+  }
+<% end %>

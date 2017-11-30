@@ -1,57 +1,63 @@
 <div class="row justify-content-center align-items-center">
   <div class="col-12 col-md-3">
     <h3 class="text-uppercase">Delivery Information</h3>
-    <div class="form-group">
-      <% registration.address_types.each do |type| %>
-        <label for="<%= type.to_s.parameterize %>">
-          <%= form.radio_button :location_at, type, id: "#{type.to_s.parameterize}", class: '', checked: (true if type == :at_work) %>
-          <%= type.to_s.humanize %>
-        </label>
-      <% end %>
-    </div>
-    <div class="form-group">
-      <%= form.text_field :line1, class: 'form-control', placeholder: 'Address Line 1', 'v-model': 'billing_address.address_line1' %>
-      <div class="invalid-feedback">
-        Line1 is required
+    <div v-for="(address, index) in billing_address">
+      <div class="form-group" v-if="index === 0">
+        <% registration.address_types.each do |type| %>
+          <label for="<%= type.to_s.parameterize %>">
+            <%= form.radio_button :location_at, type, name: 'registration_form[addresses][][location_at]', id: "#{type.to_s.parameterize}", class: '', checked: (true if type == :at_work), 'v-model': 'address.address_location_at' %>
+            <%= type.to_s.humanize %>
+          </label>
+        <% end %>
       </div>
-    </div>
-    <div class="form-group">
-      <%= form.text_field :line2, class: 'form-control', placeholder: 'Address Line 2', 'v-model': 'billing_address.address_line2' %>
-    </div>
-    <div class="form-group">
-      <%= form.text_field :front_door, class: 'form-control', placeholder: 'Front Door Code (if applicable)' %>
-    </div>
-    <div class="form-group row">
-      <div class="col">
-        <%= form.text_field :city, class: 'form-control', placeholder: 'City', 'v-model': 'billing_address.address_city' %>
+      <div v-else>
+        <input type="hidden" v-model="address.address_location_at" name="registration_form[addresses][][location_at]">
+      </div>
+      <div class="form-group">
+        <%= form.text_field :line1, name: 'registration_form[addresses][][line1]', class: 'form-control', placeholder: 'Address Line 1', 'v-model': 'address.address_line1' %>
         <div class="invalid-feedback">
-          City is required
+          Line1 is required
         </div>
       </div>
-      <div class="col">
-        <%= form.text_field :state, class: 'form-control', placeholder: 'State', 'v-model': 'billing_address.address_state' %>
-        <div class="invalid-feedback">
-          State is required
+      <div class="form-group">
+        <%= form.text_field :line2, name: 'registration_form[addresses][][line2]', class: 'form-control', placeholder: 'Address Line 2', 'v-model': 'address.address_line2' %>
+      </div>
+      <div class="form-group">
+        <%= form.text_field :front_door, name: 'registration_form[addresses][][front_door]', class: 'form-control', placeholder: 'Front Door Code (if applicable)' %>
+      </div>
+      <div class="form-group row">
+        <div class="col">
+          <%= form.text_field :city, name: 'registration_form[addresses][][city]', class: 'form-control', placeholder: 'City', 'v-model': 'address.address_city' %>
+          <div class="invalid-feedback">
+            City is required
+          </div>
+        </div>
+        <div class="col">
+          <%= form.text_field :state,  name: 'registration_form[addresses][][state]', class: 'form-control', placeholder: 'State', 'v-model': 'address.address_state' %>
+          <div class="invalid-feedback">
+            State is required
+          </div>
         </div>
       </div>
-    </div>
-    <div class="form-group row">
-      <div class="col">
-        <%= form.text_field :zip_code, class: 'form-control', placeholder: 'Zipcode', 'v-model': 'billing_address.address_zip' %>
-        <div class="invalid-feedback">
-          Zipcode is required
+      <div class="form-group row">
+        <div class="col">
+          <%= form.text_field :zip_code,  name: 'registration_form[addresses][][zip_code]', class: 'form-control', placeholder: 'Zipcode', 'v-model': 'address.address_zip', 'v-on:blur': 'validateZip($event, "billing_address", index)', 'v-on:keyup': 'limitInput($event, 5) + onlyNumber($event)' %>
+          <div class="invalid-feedback">
+            Zipcode is required and must be a US zip.
+          </div>
         </div>
-      </div>
-      <div class="col">
-        <%= form.text_field :phone_number, class: 'form-control', placeholder: 'Phone Number' %>
-        <div class="invalid-feedback">
-          Phone Number is required
+        <div class="col" v-if="index === 0">
+          <%= form.text_field :phone_number, class: 'form-control', placeholder: 'Phone Number' %>
+          <div class="invalid-feedback">
+            Phone Number is required
+          </div>
         </div>
       </div>
     </div>
     <div class="form-group">
       <%= form.text_field :group_code, class: 'form-control', placeholder: 'Group Code' %>
     </div>
+    <a href="javascript:void(0)" class="mb-3" @click="addBillingAddress" v-if="billing_address[0].location_at === 'multiple_workplaces'">+ Add Next Address</a>
     <a href="javascript:void(0)" class="btn btn-brown btn-block text-uppercase" @click="nextTab">Next</a>
   </div>
 </div>

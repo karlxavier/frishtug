@@ -1,0 +1,121 @@
+<div class="form-group">
+  <label for="card_holder_name">Card Holder Name</label>
+  <input type="text"
+    name="card_holder_name"
+    id="card_holder_name"
+    class="form-control"
+    placeholder="Card Holder Name"
+    value="<%= current_user.full_name %>"
+    data-stripe="name"
+    v-model="credit_card.name">
+</div>
+<div class="form-group" v-if="mode === 'new'">
+  <label for="card_number">Card Number*</label>
+  <input type="text"
+    name="card_number"
+    id="card_number"
+    class="form-control"
+    placeholder="Credit Card Number"
+    data-stripe="number"
+    v-model="credit_card.number"
+    v-on:keyup="formatCardNumber">
+  <div class="invalid-feedback">
+    Credit Card is required
+  </div>
+</div>
+<div class="form-group row">
+  <div class="col">
+    <label for="exp_month">Exp. Month*</label>
+    <%= select "registration_form",
+      "month",
+      months_with_index_options,
+      {},
+      class: 'form-control',
+      id: 'exp_month',
+      data: {
+        stripe: 'exp_month'
+      },
+      'v-model': 'credit_card.exp_month'
+    %>
+    <div class="invalid-feedback">
+      Please select a month
+    </div>
+  </div>
+  <div class="col">
+    <label for="exp_year">Exp. Year*</label>
+    <%= select "registration_form",
+      "year",
+      years_options,
+      {},
+      class: 'form-control',
+      id: 'exp_year',
+      data: {
+        stripe: 'exp_year'
+      },
+      'v-model': 'credit_card.exp_year'
+    %>
+    <div class="invalid-feedback">
+      Please select a year
+    </div>
+  </div>
+  <div class="col">
+    <label for="cvc">CVV*</label>
+    <input type="number"
+           min="0"
+           max="9999"
+           name="cvc"
+           id="cvc"
+           class="form-control cvc-input-control"
+           placeholder="CVV"
+           data-stripe="cvc"
+           v-model="credit_card.cvc"
+    >
+    <div class="invalid-feedback">
+      CVV is required
+    </div>
+  </div>
+</div>
+<div class="form-check">
+  <label for="different_billing" class="form-check-label">
+    <input type="checkbox" name="different_billing" value="true" class="form-check-input" id="different_billing" v-model="different_billing">
+    Billing address is different to delivery address
+  </label>
+</div>
+<div class="different-billing" v-if="different_billing">
+  <div class="form-group">
+    <label>Address Line1*</label>
+    <input type="text" class="form-control" name="billing_line_1" placeholder="Address Line 1" v-model="billing_address.address_line1">
+    <div class="invalid-feedback">
+      Line1 is required
+    </div>
+  </div>
+  <div class="form-group">
+    <label>Address Line2</label>
+    <input type="text" class="form-control" name="billing_line_2" placeholder="Address Line 2" v-model="billing_address.address_line2">
+  </div>
+  <div class="form-group row">
+    <div class="col">
+      <label>Address City*</label>
+      <input type="text" class="form-control" name="billing_city" placeholder="City" v-model="billing_address.address_city">
+      <div class="invalid-feedback">
+        City is required
+      </div>
+    </div>
+    <div class="col">
+      <label>Address State*</label>
+      <input type="text" class="form-control" name="billing_state" placeholder="State" v-model="billing_address.address_state">
+      <div class="invalid-feedback">
+        State is required
+      </div>
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-6">
+      <label>Address ZipCode*</label>
+      <input type="text" class="form-control" name="billing_zip_code" placeholder="Zipcode" v-model="billing_address.address_zip" v-on:keyup="limitInput($event, 5) + onlyNumbersInput($event)">
+      <div class="invalid-feedback">
+        Zipcode is required
+      </div>
+    </div>
+  </div>
+</div>

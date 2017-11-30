@@ -1,0 +1,12 @@
+<div class="row">
+  <div class="col">
+    <h1 id="title">
+      <%= link_to "Allowed Zip Codes", admin_allowed_zip_codes_path %>
+    </h1>
+  </div>
+  <div class="col">
+    <%= link_to new_admin_allowed_zip_code_path, class: 'add-category-btn float-right' do %>
+      <img src="<%= asset_pack_path 'packs/images/add-icon.svg' %>"> Add Zip
+    <% end %>
+  </div>
+</div>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-us">
   <head>
     <title>Frishtug</title>
     <%= render 'shared/favicons' %>
@@ -11,6 +11,7 @@
     <%= stylesheet_pack_tag 'application' %>
     <%= javascript_pack_tag 'app' %>
     <%= yield :header_js %>
+    <%= yield :header %>
   </head>
   <body>
     <%= render 'layouts/navbar' %>

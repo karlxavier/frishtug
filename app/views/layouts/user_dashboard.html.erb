@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Frishtug</title>
+    <%= render 'shared/favicons' %>
+    <%= render 'shared/font_assets'%>
+    <%= csrf_meta_tags %>
+    <%= stylesheet_link_tag 'application', media: 'all' %>
+    <%= stylesheet_pack_tag 'application' %>
+    <%= javascript_include_tag 'application' %>
+    <%= javascript_include_tag 'https://js.stripe.com/v2/' %>
+    <%= javascript_pack_tag 'app' %>
+    <%= javascript_tag 'defer' do %>
+      localStorage.setItem('full_name', '<%= current_user.full_name %>');
+    <% end %>
+    <%= yield :header_js %>
+  </head>
+  <body>
+    <%= render 'user/user_navbar' %>
+    <div class="container-fluid">
+      <div class="row">
+        <%= render 'user/user_sidebar' %>
+        <div class="col-12 col-md-9 col-xl-10" id="main-container" role="main-container">
+          <%= render 'shared/flash' %>
+          <%= yield %>
+        </div>
+      </div>
+    </div>
+    <%= yield :footer_js %>
+    <script src="https://use.fontawesome.com/69863dce90.js"></script>
+  </body>
+</html>

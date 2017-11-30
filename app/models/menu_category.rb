@@ -11,6 +11,7 @@
 # Column names
 # id name
 class MenuCategory < ApplicationRecord
+  include NameSearchable
   validates :name, presence: true
   validates :name, uniqueness: true
   has_many :menus, dependent: :destroy
@@ -20,5 +21,9 @@ class MenuCategory < ApplicationRecord
 
   def self.published_menus
     includes(:menus).where.not(menus: { published_at: nil }).sort
+  end
+
+  def self.find_all_menus_by(category_id)
+    where(id: category_id).includes(:menus).where.not(menus: { published_at: nil }).sort
   end
 end

@@ -1,0 +1,38 @@
+<div class="row">
+  <div class="col-4">
+    <div class="row justify-content-center">
+      <div class="col-7 clearfix">
+        <%= link_to user_weekly_meals_path(date: @date.prev_month), class: 'mr-4' do %>
+          <i class="fa fa-angle-left" aria-hidden="true"></i>
+        <% end %>
+        <span><%= @date.strftime('%B %Y') %></span>
+        <%= link_to user_weekly_meals_path(date: @date.next_month), class: 'ml-4' do %>
+        <i class="fa fa-angle-right" aria-hidden="true"></i>
+        <% end %>
+      </div>
+    </div>
+    <%= calendar @date do |date| %>
+      <%
+        classes = []
+        url = "javascript:void(0)"
+        classes.push 'font-weight-bold' if date.today?
+        classes.push 'active' if @active_this_week.include?(date.to_s)
+        classes.push 'active_not_current_week' if @not_this_week.include?(date.to_s)
+        classes.push 'disabled' if date < Date.current || date.saturday?
+        url = new_user_weekly_meal_path(date: date) if date > Date.current && !date.saturday?
+        url = edit_user_weekly_meals_path(date: date) if @active_this_week.include?(date.to_s) || @not_this_week.include?(date.to_s)
+      %>
+      <a href="<%= url %>" class="<%= classes.join(' ') %>">
+        <%= date.strftime('%d') %>
+      </a>
+    <% end %>
+  </div>
+
+  <div class="col-8 px-4">
+    <div class="list-group">
+      <% @orders.each do |order| %>
+        <%= render 'order', order: order %>
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -13,6 +13,10 @@
 #  addressable_id   :integer
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
+#  location_at      :integer
+#  latitude         :float
+#  longitude        :float
+#  status           :integer
 #
 
 FactoryGirl.define do

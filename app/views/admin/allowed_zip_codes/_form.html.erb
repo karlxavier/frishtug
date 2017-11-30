@@ -1,0 +1,13 @@
+<%= form_with model: [:admin, admin_allowed_zip_code], local: true do |form| %>
+  <%= render 'shared/error_explanation', object: admin_allowed_zip_code %>
+  <div class="col-md-4">
+    <div class="form-group">
+      <%= form.label :zip %>
+      <%= form.text_field :zip, id: :admin_allowed_zip_code_zip, class: 'form-control' %>
+    </div>
+
+    <div class="actions">
+      <%= form.submit 'Save Zip Code', class: 'btn btn-brown text-uppercase' %>
+    </div>
+  </div>
+<% end %>

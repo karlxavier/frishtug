@@ -1,0 +1,36 @@
+<div class="row">
+  <div class="col">
+    <strong>
+      <%= source.brand %> <%= "****#{source.last4}" %>  
+      <% if default == source.id %>
+        <span>(default)</span>
+      <% end %>    
+    </strong>
+  </div>
+  <div class="col">
+    <a href="javascript:void(0)" 
+      class="float-right strong"
+      @click="editCardPaymentMethod('<%= source.to_json %>')">
+      Edit
+    </a>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <strong>Card Holder Name</strong>
+    <p><%= source.name || current_user.full_name %></p>
+  </div>
+  <div class="col">
+    <strong>Expires</strong>
+    <p><%= "#{trailing(source.exp_month, 2, '0')}/#{source.exp_year}" %></p>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <strong>Billing Address</strong>
+    <p>
+      <%= address_from_source(source) %>
+    </p>
+  </div>
+</div>
+<hr>

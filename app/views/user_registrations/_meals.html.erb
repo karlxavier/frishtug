@@ -39,9 +39,9 @@
           </h4>
         </div>
         <div class="container-fluid">
-          <div class="card-deck">
+          <div class="row">
             <% category.menus.each do |menu| %>
-              <%= render 'shared/menus/products', { menu: menu, control: true } %>
+              <%= render 'shared/menus/products', { menu: menu, control: true, fmodel: "day_#{num}" } %>
             <% end %>
           </div>
         </div>

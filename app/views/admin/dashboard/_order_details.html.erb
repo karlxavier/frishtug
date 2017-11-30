@@ -7,11 +7,11 @@
     </tr>
   </thead>
   <tbody>
-    <% o.grouped_menus.each do |m| %>
-      <tr id="<%= "#{o.id} - #{m[:name]}" %>">
-        <td><%= m[:quantity] %></td>
-        <td><%= m[:name] %></td>
-        <td><%= monefy(m[:price]) %></td>
+    <% o.grouped_menus.each do |name, menus| %>
+      <tr id="<%= "#{o.id} - #{name}" %>">
+        <td><%= menus.count %></td>
+        <td><%= name %></td>
+        <td><%= to_currency(menus.pluck(:price).inject(:+)) %></td>
       </tr>
     <% end %>
     <tr>
@@ -21,7 +21,7 @@
         </span>
       </td>
       <td>
-        <%= monefy(o.sub_total) %>
+        <%= to_currency(o.sub_total) %>
       </td>
     </tr>
     <tr>
@@ -31,7 +31,7 @@
         </span>
       </td>
       <td>
-        <%= monefy(o.shipping_fee) %>
+        <%= to_currency(o.shipping_fee) %>
       </td>
     </tr>
     <tr>
@@ -41,7 +41,7 @@
         </span>
       </td>
       <td>
-        <%= monefy(o.total) %>
+        <%= to_currency(o.total) %>
       </td>
     </tr>
   </tbody>
