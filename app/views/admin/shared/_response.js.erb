@@ -1,0 +1,7 @@
+<%
+  partial = object.errors.any? ? 'shared/error_explanation' : 'shared/flash' 
+%>
+
+$('.card-flashes').html('<%= j render partial, object: object %>');
+
+<% flash.clear %>

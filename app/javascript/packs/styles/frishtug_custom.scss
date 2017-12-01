@@ -321,3 +321,32 @@ a.btn-outline--category.active {
     font-size: 16px;
   }
 }
+
+
+.sidebar-navbar {
+  & li {
+    line-height: 16.6px;
+
+    & a {
+      color: #959595;
+      font-size: 14px;
+    }
+
+    &.active a {
+      color: rgb(223, 182, 118);
+      font-weight: bold;
+    }
+  }
+}
+
+.form-control {
+  border-radius: 0;
+}
+
+h1#title {
+  font-size: 28px;
+
+  & a {
+    color: #252525;
+  }
+}

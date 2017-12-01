@@ -1,5 +1,8 @@
 <%= form_for [:admin, menu_category],
-  html: { id: 'new-menu-category' },
+  html: {
+    id: 'new-menu-category',
+    class: 'col-12 col-md-4 col-lg-4'
+  },
   remote: true,
   format: :js,
   data: {
@@ -11,7 +14,7 @@
     <%= form.label :name %>
     <input type="text" id="menu_category_name" name="menu_category[name]" v-model="menu_category.name" class="form-control">
   </div>
-  <h5>Add-ons</h5>
+  <h5>Add-ons <a href="javascript:void(0)" @click="addAddons"><i class="fa fa-plus"></i></a></h5>
   <div v-for="(addons, index) in menu_category.add_ons_attributes">
     <div :class="addons._delete !== 1 ? 'form-group' : 'd-none'" >
       <label :for="'menu_category_addons_name' + (index !== 0 ? `_${index}` : '')">Name</label>
@@ -21,8 +24,9 @@
       <a href="javascript:void(0)" @click="hideAddons(index)">- Delete</a>
     </div>
   </div>
-  <a href="javascript:void(0)" @click="addAddons">+ Add Add-ons</a>
-  <%= form.submit 'Save', class: 'btn btn-brown float-right' %>
+  <div class="mt-2">
+    <%= form.submit 'Save Category', class: 'btn btn-brown text-uppercase' %>
+  </div>
 <% end %>
 
 <%= content_for :header_js do %>

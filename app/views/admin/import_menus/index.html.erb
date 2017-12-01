@@ -1,5 +1,5 @@
 <%= card_container do %>
-  <%= form_with url: import_admin_import_menus_path, multipart: true, local: true do |f| %>
+  <%= form_with url: import_admin_import_menus_path, multipart: true do |f| %>
     <%= render 'shared/flash' %>
     <div class="row">
       <div class="col-8">
@@ -57,10 +57,7 @@
       </div>
       <%= f.file_field :file, class: 'd-none dropzone_file single_file', id: 'file' %>
     </div>
-    <div class="row justify-content-center">
-      <div class="col-12 col-md-4 col-lg-4">
-        <%= f.submit 'Import', class: 'btn btn-brown text-uppercase btn-block' %>
-      </div>
+    <%= f.submit 'Import', class: 'btn btn-brown text-uppercase' %>
     </div>
   <% end %>
 <% end %>

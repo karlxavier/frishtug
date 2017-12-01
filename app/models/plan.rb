@@ -20,6 +20,7 @@
 # Column names
 # id name description price shipping shipping_fee
 class Plan < ApplicationRecord
+  include Subscribable
   enum shipping: %i[free paid]
   validates :name, :price, presence: true
   validates :name, uniqueness: true

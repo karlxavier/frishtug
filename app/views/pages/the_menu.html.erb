@@ -37,7 +37,7 @@
       </h4>
     </div>
     <div class="container">
-      <div class="card-deck">
+      <div class="row">
         <% category.menus.each do |menu| %>
           <%= render 'shared/menus/products', { menu: menu } %>
         <% end %>

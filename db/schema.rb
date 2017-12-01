@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171129073605) do
+ActiveRecord::Schema.define(version: 20171201061400) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -70,6 +70,8 @@ ActiveRecord::Schema.define(version: 20171129073605) do
     t.string "zip"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "store_id"
+    t.index ["store_id"], name: "index_allowed_zip_codes_on_store_id"
     t.index ["zip"], name: "index_allowed_zip_codes_on_zip"
   end
 
@@ -291,6 +293,7 @@ ActiveRecord::Schema.define(version: 20171129073605) do
   add_foreign_key "add_ons", "menu_categories"
   add_foreign_key "add_ons_menus", "add_ons"
   add_foreign_key "add_ons_menus", "menus"
+  add_foreign_key "allowed_zip_codes", "stores"
   add_foreign_key "checkings", "users"
   add_foreign_key "comments", "users"
   add_foreign_key "contact_numbers", "users"

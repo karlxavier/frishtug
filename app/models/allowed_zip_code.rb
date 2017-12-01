@@ -11,7 +11,7 @@
 class AllowedZipCode < ApplicationRecord
   validates :zip, uniqueness: true
   validates :zip, presence: true
-
+  belongs_to :store
   before_save :remove_leading_and_ending_space
 
   def remove_leading_and_ending_space

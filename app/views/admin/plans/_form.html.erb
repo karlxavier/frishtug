@@ -1,5 +1,12 @@
-<%= form_for [:admin, plan], remote: true do |form| %>
+<%= form_with model: [:admin, plan], class: 'col-12 col-md-10 col-lg-8', remote: true do |form| %>
   <%= render 'shared/error_explanation', object: plan %>
+  <div class="form-group">
+    <%= form.label :interval %>
+    <%= form.select :interval, [["Month", :month], ["None", nil]] , {}, { class: 'form-control plan-shipping' } %>
+    <small id="intervalHelp" class="form-text text-muted">
+      Set to month for a subscription base plan. None for a one time charge
+    </small>
+  </div>
   <div class="form-group">
     <%= form.label :name %>
     <%= form.text_field :name, class: 'form-control' %>
@@ -14,10 +21,14 @@
       <span class="input-group-addon" id="basic-addon1">$</span>
       <%= form.number_field :price, class: 'form-control', min: 0, step: '0.01' %>
     </div>
+    <small id="priceHelp" class="form-text text-muted">
+      Set the price base on the interval if it's month interval set it to the total price to be charge monthly.
+      Set the price to the minimum price a user can purchase when set to single interval
+    </small>
   </div>
   <div class="form-group">
     <%= form.label :shipping %>
-    <%= form.select :shipping, [:free, :paid] , {}, { class: 'form-control plan-shipping' } %>
+    <%= form.select :shipping, [["Free", :free], ["Paid", :paid]] , {}, { class: 'form-control plan-shipping' } %>
   </div>
   <div class="form-group d-none plan-shipping-fee fadeInUp">
     <%= form.label :shipping_fee %>
@@ -26,9 +37,7 @@
       <%= form.number_field :shipping_fee, class: 'form-control', min: 0, step: '0.01' %>
     </div>
   </div>
-  <div class="actions">
-    <%= form.submit 'Save', class: 'btn btn-brown float-right' %>
-  </div>
+  <%= form.submit 'Save Plan', class: 'btn btn-brown text-uppercase' %>
 <% end %>
 
 <%= content_for :footer_js do %>

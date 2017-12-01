@@ -9,5 +9,5 @@ namespace :admin do
     post :import, on: :collection
   end
   resources :shoppings_lists
-  resources :config
+  resources :configs
 end

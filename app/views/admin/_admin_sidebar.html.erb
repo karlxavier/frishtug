@@ -1,6 +1,6 @@
 <div class="col-12 col-md-3 col-xl-2 sidebar">
   <div class="flex-column navbar-collapse">
-    <ul class="navbar-nav ml-auto">
+    <ul class="navbar-nav ml-auto sidebar-navbar">
       <li class="nav-item <%= active?(admin_dashboard_index_path) %>">
         <%= nav_link 'Dashboard', admin_dashboard_index_path %>
       </li>
@@ -16,11 +16,11 @@
       <li class="nav-item <%= active?(admin_plans_path) %>">
         <%= nav_link 'Plans', admin_plans_path %>
       </li>
-      <li class="nav-item <%= active?(admin_allowed_zip_codes_path) %>">
-        <%= nav_link 'Allowed Zip Codes', admin_allowed_zip_codes_path %>
-      </li>
-      <li class="nav-item <%= active?( admin_import_menus_path) %>">
+      <li class="nav-item <%= active?(admin_import_menus_path) %>">
         <%= nav_link 'Import Menus', admin_import_menus_path %>
+      </li>
+      <li class="nav-item <%= active?(admin_configs_path ) %>">
+        <%= nav_link 'Store Config', admin_configs_path  %>
       </li>
     </ul>
   </div>

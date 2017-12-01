@@ -4,7 +4,7 @@ class Admin::UnitsController < Admin::BaseController
   # GET /units
   # GET /units.json
   def index
-    @units = Unit.all
+    @units = Unit.all.sort
   end
 
   # GET /units/new
@@ -30,15 +30,12 @@ class Admin::UnitsController < Admin::BaseController
   # PATCH/PUT /units/1
   # PATCH/PUT /units/1.json
   def update
-    respond_to do |format|
-      if @unit.update(unit_params)
-        format.html { redirect_to [:admin, @unit], notice: 'Unit was successfully updated.' }
-        format.json { render :show, status: :ok, location: [:admin, @unit] }
-      else
-        format.html { render :edit }
-        format.json { render json: @unit.errors, status: :unprocessable_entity }
-      end
+    if @unit.update(unit_params)
+      flash[:success] = "#{@unit.name} has been save"
+    else
+      flash[:error] = @unit.errors
     end
+    respond_with(@unit)
   end
 
   # DELETE /units/1

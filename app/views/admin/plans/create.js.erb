@@ -1,5 +1,1 @@
-<% if @plan.errors.count > 0 %>
-  $('.card-flashes').html('<%= j render 'shared/error_explanation', object: @plan %>');
-<% else %>
-  $('.card-flashes').html('<%= j render 'shared/flash' %>');
-<% end %>
+<%= render 'admin/shared/response', object: @plan %>

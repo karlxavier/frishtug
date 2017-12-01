@@ -1,6 +1,6 @@
 class Admin::MenuCategoriesController < Admin::BaseController
   before_action :set_menu_category, only: %i[show edit update destroy]
-  respond_to :js, only: %i[create destroy]
+  respond_to :js, only: %i[create destroy update]
   respond_to :html, only: :create
   # GET /menu_categories
   # GET /menu_categories.json
@@ -35,15 +35,12 @@ class Admin::MenuCategoriesController < Admin::BaseController
   # PATCH/PUT /menu_categories/1
   # PATCH/PUT /menu_categories/1.json
   def update
-    respond_to do |format|
-      if @menu_category.update(menu_category_params)
-        format.html { redirect_to [:admin, @menu_category], notice: 'Menu category was successfully updated.' }
-        format.json { render :show, status: :ok, location: [:admin, @menu_category] }
-      else
-        format.html { render :edit }
-        format.json { render json: @menu_category.errors, status: :unprocessable_entity }
-      end
+    if @menu_category.update(menu_category_params)
+      flash[:success] = 'Category save successfully.'
+    else
+      flash[:error] = @menu_category.errors.full_messages
     end
+    respond_with(@menu_category)
   end
 
   # DELETE /menu_categories/1
