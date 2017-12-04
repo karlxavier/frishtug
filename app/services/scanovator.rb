@@ -20,82 +20,82 @@
 
 
 class Scanovator
-  include ActiveModel::Validations
-  include HTTParty
-  base_uri 'https://barcoder-cyf.herokuapp.com/public'
+#   include ActiveModel::Validations
+#   include HTTParty
+#   base_uri 'https://barcoder-cyf.herokuapp.com/public'
 
-  ERROR_CODES = {
-    'SI': 'Store ID missing or incorrect',
-    'SC': 'Store Code missing or incorrect',
-    'FLN': 'need at least first or last name, none supplied',
-    'SA': 'street address missing',
-    'C': 'city missing',
-    'S': 'state missing',
-    'Z': 'zip code missing',
-    'OI': 'order number missing',
-    'OINU': 'order number not unique',
-    'NOB': 'total number of boxes missing'
-  }.freeze
+#   ERROR_CODES = {
+#     'SI': 'Store ID missing or incorrect',
+#     'SC': 'Store Code missing or incorrect',
+#     'FLN': 'need at least first or last name, none supplied',
+#     'SA': 'street address missing',
+#     'C': 'city missing',
+#     'S': 'state missing',
+#     'Z': 'zip code missing',
+#     'OI': 'order number missing',
+#     'OINU': 'order number not unique',
+#     'NOB': 'total number of boxes missing'
+#   }.freeze
 
-  def initialize(order)
-    @order = order
-    @store = Store.active
-  end
+#   def initialize(order)
+#     @order = order
+#     @store = Store.active
+#   end
 
-  def run
-    self.class.get('/new_order', new_order_options)
-  end
+#   def run
+#     self.class.get('/new_order', new_order_options)
+#   end
 
-  def query_order
-    response = self.class.get('/order_query', query_options)
-    response = HashParser.new(response.parsed_response).run
-    if response.state == 'success'
-      return response.data
-    else
-      errors.add(:base, 'cant find order_id')
-      false
-    end
-  end
+#   def query_order
+#     response = self.class.get('/order_query', query_options)
+#     response = HashParser.new(response.parsed_response).run
+#     if response.state == 'success'
+#       return response.data
+#     else
+#       errors.add(:base, 'cant find order_id')
+#       false
+#     end
+#   end
 
-private
+# private
 
-  attr_accessor :order
+#   attr_accessor :order
 
-  def address
-    order.user.addresses.first
-  end
+#   def address
+#     order.user.addresses.first
+#   end
 
-  def new_order_options
-    {
-      query: {
-        store_id: ,
-        store_code: ,
-        fname: order.user.first_name,
-        lname: order.user.last_name,
-        street_address: ,
-        unit: ,
-        city: address.city,
-        state: address.state,
-        zip: address.zip_code,
-        numofboxes: ,
-        phone: order.user.contact_number.phone_number,
-        cell1: ,
-        cell2: ,
-        order_id: order.code,
-        collect: ,
-        cod: ,
-        notes: ,
-        desc:
-      }
-    }
-  end
+#   def new_order_options
+#     {
+#       query: {
+#         store_id: ,
+#         store_code: ,
+#         fname: order.user.first_name,
+#         lname: order.user.last_name,
+#         street_address: ,
+#         unit: ,
+#         city: address.city,
+#         state: address.state,
+#         zip: address.zip_code,
+#         numofboxes: ,
+#         phone: order.user.contact_number.phone_number,
+#         cell1: ,
+#         cell2: ,
+#         order_id: order.code,
+#         collect: ,
+#         cod: ,
+#         notes: ,
+#         desc:
+#       }
+#     }
+#   end
 
-  def query_options
-    {
-      query: {
-        store_id: 15,
-        "order_id[]": order.code 
-      }
-    }
-  end
+#   def query_options
+#     {
+#       query: {
+#         store_id: 15,
+#         "order_id[]": order.code 
+#       }
+#     }
+#   end
 end
