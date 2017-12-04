@@ -4,11 +4,11 @@
       <h4 class="text-uppercase">Subscriptions</h4>
       
       <% if @plan.present? && !@plan.interval.nil? %>
-        <div class="card-container">
-          <div class="card mb-4" style='width: 18rem;'>
+        <div class="card-container" style='width: 18rem;'>
+          <div class="card mb-4 user-plan-card">
             <div class="card-body">
               <span>PLAN: <%= @plan.name %></span>
-              <p class="mb-0"><%= @plan.description %></p>
+              <%= @plan.description.html_safe %>
               <p>Renewal on <%= time_at(@subscription.current_period_end, '%B %d, %Y') %></p>
             </div>
           </div>

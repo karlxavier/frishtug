@@ -214,42 +214,45 @@ const stripeResponseHandler = (status, response) => {
   }
 }
 
-const saveCompleted = (url, option) => {
-  let data;
-  if (paymentMethod.payment_method === 'credit_card') {
-    let cc = paymentMethod.credit_card
-    let add = paymentMethod.billing_address
-    data = {
-      type: 'credit_card',
-      credit_card: {
-        number: cc.number.replace(/\s+/g, ''),
-        cvc: cc.cvc,
-        month: cc.exp_month,
-        year: cc.exp_year,
-        name: cc.name,
-        token: paymentMethod.token,
-        brand: paymentMethod.brand,
-        address_attributes: {
-          line1: add.address_line1,
-          line2: add.address_line2,
-          city: add.address_city,
-          state: add.address_state,
-          zip_code: add.address_zip
-        }
-      }
-    }
-  } else {
-    let bc = paymentMethod.checking
-    data = {
-      type: 'checking',
-      checking: {
-        account_number: bc.account_number,
-        routing_number: bc.routing_number,
-        bank_name: bc.bank_name,
-        token: paymentMethod.token
+const credit_card_params = () => {
+  let cc = paymentMethod.credit_card
+  let add = paymentMethod.billing_address
+  return {
+    type: 'credit_card',
+    credit_card: {
+      number: cc.number.replace(/\s+/g, ''),
+      cvc: cc.cvc,
+      month: cc.exp_month,
+      year: cc.exp_year,
+      name: cc.name,
+      token: paymentMethod.token,
+      brand: paymentMethod.brand,
+      address_attributes: {
+        line1: add.address_line1,
+        line2: add.address_line2,
+        city: add.address_city,
+        state: add.address_state,
+        zip_code: add.address_zip
       }
     }
   }
+}
+
+const checking_params = () => {
+  let bc = paymentMethod.checking
+  return {
+    type: 'checking',
+    checking: {
+      account_number: bc.account_number,
+      routing_number: bc.routing_number,
+      bank_name: bc.bank_name,
+      token: paymentMethod.token
+    }
+  }
+}
+
+const saveCompleted = (url, option) => {
+  let data = eval(`${paymentMethod.payment_method}_params()`)
 
   if(option === 'save') {
     ajax.postJson({
@@ -281,4 +284,9 @@ const saveCompleted = (url, option) => {
 const responseHandler = (response) => {
   const parsedData = JSON.parse(response)
   swal(parsedData.status.toUpperCase(), parsedData.message, parsedData.status)
+      .then( (result) => {
+        if (result) {
+          window.location = '/user/payment_informations'
+        }
+      })
 }

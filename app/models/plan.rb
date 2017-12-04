@@ -27,4 +27,16 @@ class Plan < ApplicationRecord
   scope :subscriptions, -> { where(interval: 'month') }
   has_many :users
   has_many :comments, as: :commentable, dependent: :destroy
+
+  def types
+    [['Individual', 'individual'], ['Group', 'group']]
+  end
+
+  def group?
+    self[:for_type] == 'group'
+  end
+
+  def individual?
+    self[:for_type] == 'individual'
+  end
 end

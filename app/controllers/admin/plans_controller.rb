@@ -6,7 +6,7 @@ class Admin::PlansController < Admin::BaseController
   # GET /plans
   # GET /plans.json
   def index
-    @plans = Plan.all
+    @plans = Plan.all.sort
   end
 
   # GET /plans/1
@@ -61,6 +61,6 @@ class Admin::PlansController < Admin::BaseController
   # Never trust parameters from the scary internet, only allow the white list through.
   def plan_params
     params.require(:plan).permit(:name, 
-      :description, :price, :shipping, :shipping_fee, :interval)
+      :description, :price, :shipping, :shipping_fee, :interval, :for_type)
   end
 end

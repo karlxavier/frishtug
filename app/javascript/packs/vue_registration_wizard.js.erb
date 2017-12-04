@@ -65,7 +65,7 @@ const registrationForm = new Vue({
     changeCalendar: (date) => {
       const _this = registrationForm
       get({
-        url: `/user_registrations/days.json?date=${date}`
+        url: `/calendars?date=${date}`
       }).then((response) => {
         const parsed = JSON.parse(response)
         _this.calendar = parsed
@@ -76,7 +76,7 @@ const registrationForm = new Vue({
     },
     populateCalendar: () => {
       const _this = registrationForm
-      if (_this.interval !== 'single_order') {
+      if (_this.interval === 'month') {
         const dates = registrationForm.delivery_dates
         registrationForm.unpopulateCalendar()
         dates.forEach( (date, index) => {
@@ -103,7 +103,7 @@ const registrationForm = new Vue({
     },
     selectDay: (date) => {
       const _this = registrationForm
-      if (_this.interval !== 'single_order') {
+      if (_this.interval === 'month') {
         getSchedule(date, _this)
       } else {
         _this.delivery_date = date
@@ -152,12 +152,12 @@ const registrationForm = new Vue({
       }
     },
     onComplete: function() {
-      alert('Yay. Done!')
     },
     nextTab: function() {
       const btn = document.querySelector('.wizard-btn')
       const click = new Event('click')
       btn.dispatchEvent(click)
+      setTimeout(changeCheckedTabs, 300)
     },
     changeSchedule: function() {
       const _this = this
@@ -245,14 +245,18 @@ const registrationForm = new Vue({
     createToken: function() {
       const _this = this
       const form = document.querySelector('form#sign_up_form')
+      const btn = form.querySelector('.complete-orders-btn')
       let address
-      Stripe.setPublishableKey(_this.stripe_key)
-      form.classList.add('disabled')
+      if (btn.classList.contains('disabled')) { return }
 
+      Stripe.setPublishableKey(_this.stripe_key)
+      btn.classList.add('disabled')
+      btn.innerHTML = `
+        <i class="fa fa-spinner fa-spin"></i> Processing..
+      `
       if (_this.payment_method === 'credit_card') {
         if (hasAddress(_this.credit_card_billing_address)) {
           address = _this.credit_card_billing_address
-          console.log('pasok')
         } else {
           address = _this.billing_address[0]
         }
@@ -327,7 +331,7 @@ const registrationForm = new Vue({
       const isDatePlusOne = theDate.getTime() === addOne(currentDate)
       if (isDatePlusOne) {
         return get({
-          url: '/user_registrations/is_past_noon'
+          url: '/past_noons'
         }).then( (response) => {
           const parsed = JSON.parse(response)
           if (parsed.is_past) {
@@ -339,6 +343,11 @@ const registrationForm = new Vue({
       }
 
       return !registrationForm.isNotSaturday(date)
+    },
+    handleTabChange: function(tabIndex, newTab, oldTab) {
+      console.log('tabindex', tabIndex)
+      console.log('newTab', newTab)
+      console.log('oldTab', oldTab)
     }
   }
 })
@@ -347,7 +356,7 @@ const registrationForm = new Vue({
 const getSchedule = (date, vueModel) => {
   const _this = vueModel
   get({
-    url: '/user_registrations/selected_date?date=' + date
+    url: '/selected_dates?date=' + date
   }).then((response) => {
     const res = JSON.parse(response)
     const errorEl = document.querySelector('.calendar-errors')
@@ -370,7 +379,7 @@ const getSchedule = (date, vueModel) => {
 const getCalendar = () => {
   const _this = registrationForm
   get({
-    url: `/user_registrations/days.json`
+    url: `/calendars.json`
   }).then((response) => {
     const parsed = JSON.parse(response)
     _this.calendar = parsed
@@ -391,10 +400,10 @@ const hasAddress = (address) => {
 
 const stripeResponseHandler = (status, response) => {
   const form = document.querySelector('form#sign_up_form')
+  const btn = form.querySelector('.complete-orders-btn')
 
   if (response.error) {
     const paymentError = form.querySelector('payment_errors')
-    form.classList.remove('disabled')
     registrationForm.error_messages = response.error.message
   } else {
     const token = response.id
@@ -436,5 +445,36 @@ const isValidUSZip = (zipCode) => {
    return /^\d{5}$/.test(zipCode);
 }
 
-window.hasAddress = hasAddress
-window.form_data = registrationForm
+const changeCheckedTabs = () => {
+  const greenColor = 'rgb(55, 196, 41)'
+  const ariaLabels = ["Create Account", 
+                      "Delivery Information", 
+                      "Plan", 
+                      "Days",
+                      "Payment Setup", 
+                      "Meals", 
+                      "Review Order"]
+  ariaLabels.forEach( label => {
+    const el = document.querySelector(`[aria-controls="${label}"]`)
+    const isChecked = el.classList.contains('checked')
+    const isActive = el.getAttribute('aria-selected')
+    if (isChecked && isActive === null) {
+      const icon = document.createElement('i')
+      const iconContainer = document.createElement('div')
+      iconContainer.className = 'wizard-icon-container'
+      iconContainer.style.backgroundColor = greenColor
+      icon.className = 'wizard-icon fa fa-check'
+      icon.style.color = '#ffffff'
+      iconContainer.appendChild(icon)
+      el.innerHTML = ''
+      el.appendChild(iconContainer)
+    } else {
+      return
+    }
+  })
+}
+
+(function(){
+  const el = document.querySelector('ul.wizard-nav-pills')
+  el.classList.add('container');
+}())

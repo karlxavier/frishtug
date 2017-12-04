@@ -9,10 +9,16 @@
   </div>
   <div class="col">
     <a href="javascript:void(0)" 
-      class="float-right strong"
+      class="float-right strong chocolate-font-color"
       @click="editCardPaymentMethod('<%= source.to_json %>')">
       Edit
     </a>
+    <% if default != source.id %>
+        <%= link_to 'Set Default', 
+            user_set_default_payments_path(source: source.id),
+            class: 'chocolate-font-color link-divided-right btn-link float-right',
+            method: :post %>
+    <% end %>
   </div>
 </div>
 <div class="row">
@@ -25,7 +31,7 @@
     <p><%= "#{trailing(source.exp_month, 2, '0')}/#{source.exp_year}" %></p>
   </div>
 </div>
-<div class="row">
+<div class="row <%= 'd-none' unless has_address(source) %>">
   <div class="col">
     <strong>Billing Address</strong>
     <p>

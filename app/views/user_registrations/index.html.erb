@@ -1,7 +1,7 @@
 <%= form_with model: @registration, url: user_registrations_path(format: :js), id: 'sign_up_form' do |form| %>
-  <div class="container">
+  <div class="container-fluid">
     <div id="registration-form">
-      <form-wizard @on-complete="onComplete" step-size="xs" color="#37c429">
+      <form-wizard @on-complete="onComplete" step-size="xs" color="#562d07">
         <h2 slot="title"></h2>
         <tab-content title="Create Account" :before-change="accountValidations">
           <%= render 'sign_up_step', form: form %>

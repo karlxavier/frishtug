@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171201061400) do
+ActiveRecord::Schema.define(version: 20171202065638) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -73,6 +73,15 @@ ActiveRecord::Schema.define(version: 20171201061400) do
     t.bigint "store_id"
     t.index ["store_id"], name: "index_allowed_zip_codes_on_store_id"
     t.index ["zip"], name: "index_allowed_zip_codes_on_zip"
+  end
+
+  create_table "candidates", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "referrer_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["referrer_id"], name: "index_candidates_on_referrer_id"
+    t.index ["user_id"], name: "index_candidates_on_user_id"
   end
 
   create_table "checkings", force: :cascade do |t|
@@ -221,7 +230,16 @@ ActiveRecord::Schema.define(version: 20171201061400) do
     t.string "stripe_plan_id"
     t.string "interval"
     t.integer "users_count", default: 0
+    t.string "for_type"
     t.index ["stripe_plan_id"], name: "index_plans_on_stripe_plan_id"
+  end
+
+  create_table "referrers", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "group_code"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_referrers_on_user_id"
   end
 
   create_table "schedules", force: :cascade do |t|
@@ -294,6 +312,8 @@ ActiveRecord::Schema.define(version: 20171201061400) do
   add_foreign_key "add_ons_menus", "add_ons"
   add_foreign_key "add_ons_menus", "menus"
   add_foreign_key "allowed_zip_codes", "stores"
+  add_foreign_key "candidates", "referrers"
+  add_foreign_key "candidates", "users"
   add_foreign_key "checkings", "users"
   add_foreign_key "comments", "users"
   add_foreign_key "contact_numbers", "users"
@@ -308,6 +328,7 @@ ActiveRecord::Schema.define(version: 20171201061400) do
   add_foreign_key "menus_temp_orders", "menus"
   add_foreign_key "menus_temp_orders", "temp_orders"
   add_foreign_key "orders", "users"
+  add_foreign_key "referrers", "users"
   add_foreign_key "schedules", "users"
   add_foreign_key "temp_orders", "users"
   add_foreign_key "users", "plans"

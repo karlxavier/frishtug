@@ -27,12 +27,6 @@
 #
 
 class User < ApplicationRecord
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable,
-         :recoverable, :rememberable, :trackable, :validatable
-
-  validates :first_name, :last_name, presence: true
   has_many :addresses, as: :addressable, dependent: :destroy
   has_many :credit_cards, dependent: :destroy
   has_many :checkings, dependent: :destroy
@@ -42,6 +36,14 @@ class User < ApplicationRecord
   belongs_to :plan, optional: true, counter_cache: true
   has_many :orders, dependent: :destroy
   has_many :temp_orders, dependent: :destroy
+  has_one :referrer, dependent: :destroy
+  has_one :candidate, dependent: :destroy
+
+  validates :first_name, :last_name, presence: true
+  # Include default devise modules. Others available are:
+  # :confirmable, :lockable, :timeoutable and :omniauthable
+  devise :database_authenticatable,
+         :recoverable, :rememberable, :trackable, :validatable
   
   accepts_nested_attributes_for :contact_number
   
@@ -74,5 +76,9 @@ class User < ApplicationRecord
       #{addresses.first.state}
       #{addresses.first.zip_code}
     EOT
+  end
+
+  def set_default_source(source)
+    StripeCustomer.new(self).set_default_source(source)
   end
 end

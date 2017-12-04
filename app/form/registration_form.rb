@@ -95,7 +95,24 @@ class RegistrationForm
       user.addresses.create!(address_params(a))
     end
     user.create_contact_number!(phone_number: phone_number)
-    # user.create_schedule!(schedule_params)
+    if user.plan.for_type == 'group'
+      create_referrer(user) unless group_code.present?
+      create_candidate(user) if group_code.present?
+    end
+  end
+
+  def create_candidate(user)
+    referrer = Referrer.find_by_group_code(group_code)
+    if referrer
+      user.create_candidate!(referrer_id: referrer.id)
+    else
+      @errors.add(:base, "Group code does not exists for #{group_code}")
+      raise ActiveRecord::StatementInvalid
+    end
+  end
+
+  def create_referrer(user)
+    user.create_referrer!(group_code: SecureRandom.urlsafe_base64(10))
   end
 
   def create_orders(user)

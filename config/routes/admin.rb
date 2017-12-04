@@ -1,4 +1,7 @@
 namespace :admin do
+  authenticate :admin do
+    mount Sidekiq::Web => '/sidekiq'
+  end
   resources :units, except: :show
   resources :menus, except: :show
   resources :dashboard, only: :index

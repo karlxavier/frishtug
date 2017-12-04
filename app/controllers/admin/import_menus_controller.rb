@@ -1,5 +1,13 @@
 class Admin::ImportMenusController < Admin::BaseController
-  def index; end
+  def index
+    if params[:download] == 'true'
+      send_file(
+        "#{Rails.root}/public/template.csv",
+        filename: "csv_template.csv",
+        type: 'text/csv'
+      )
+    end
+  end
 
   def import
     @menu_importer = MenuImporter.new(params[:file])

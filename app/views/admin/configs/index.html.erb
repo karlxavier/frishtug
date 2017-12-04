@@ -29,7 +29,9 @@
       </small>
     </div>
     <div>
-      <%= f.button 'Save Config', class: 'btn btn-brown text-uppercase' %>
+      <%= f.button 'Save Config', class: 'btn btn-brown text-uppercase', data: {
+        disable_with: disabled_text
+      } %>
     </div>
   <% end %>
 <% end %>

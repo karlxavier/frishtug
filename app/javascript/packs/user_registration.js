@@ -326,6 +326,7 @@ import swal from 'sweetalert2'
         order[attr].meals[index].price += parseFloat(card.getAttribute('data-meal-price'))
         innerHtmlOf(counter, order[attr].meals[index].count)
       } else {
+        const mealIndex = order[attr].meal_ids.indexOf(meal.id)
         order[attr].meal_ids.splice(mealIndex, 1)
         if(meal.count > 1) {
           order[attr].meals[index].count -= 1
@@ -558,15 +559,12 @@ import swal from 'sweetalert2'
     formData.append('registration_form[stripe_token]', token)
     formData.append('registration_form[card_brand]', brand)
     var AUTH_TOKEN = $('meta[name=csrf-token]').attr('content')
-    $.ajax({
+    Rails.ajax({
       url: form.action,
       type: 'POST',
-      headers: {
-        'X_CSRF_TOKEN': AUTH_TOKEN
-      },
       data: formData,
-      processData: false,
-      contentType: false,
+      // processData: false,
+      // contentType: false,
       success: (data) => {
         eval(data)
       }

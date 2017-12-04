@@ -4,7 +4,7 @@
       <% (1..5).each do |n| %>
         <v-tab :title="date_names[<%= n - 1 %>]">
           <div id="day-<%= n %>" class="tab_pane mt-3">
-            <%= render 'meals', { categorized_menus: categorized_menus, num: n } %>
+            <%= render 'meals', { categorized_menus: categorized_menus, fmodel: "day_#{n}" } %>
           </div>
         </v-tab>
       <% end %>
@@ -13,7 +13,7 @@
 
   <div class="col-md-9" v-else>
     <div id="single_order" class="mt-3">
-      <%= render 'meals_single_order', { categorized_menus: categorized_menus } %>
+      <%= render 'meals', { categorized_menus: categorized_menus, fmodel: "single_order" } %>
     </div>
   </div>
 
@@ -49,9 +49,13 @@
             <tr class="order-list-items">
               <td class="meal-name border-0 text-left"></td>
               <td class="meal-counter border-0 text-center">
-                <a href="javascript:void(0)" class="remove-meal">-</a>
+                <a href="javascript:void(0)" class="remove-meal mx-1 chocolate-font-color">
+                  <i class="fa fa-minus-square-o"></i>
+                </a>
                 <span class="meal-count"></span>
-                <a href="javascript:void(0)" class="add-meal">+</a>
+                <a href="javascript:void(0)" class="add-meal mx-1 chocolate-font-color">
+                  <i class="fa fa-plus-square-o"></i>
+                </a>
               </td>
               <td class="meal-price border-0 text-right"></td>
             </tr>

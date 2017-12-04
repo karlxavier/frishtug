@@ -1,14 +1,38 @@
+var btn = document.querySelector('button.complete-orders-btn');
+btn.classList.remove('disabled');
+btn.innerHTML = 'Complete Sign Up';
+
 <% if @registration.errors.present? %>
   swal(
     'Opps...',
     '<%= @registration.errors.full_messages.join(', ') %>',
     'error'
   );
-<% else %>
+<% elsif current_user.referrer %>
   swal({
-      title: 'Here is your group code!',
-      text: "You have made your first meal plan.",
-      type: 'success',
+      html: `
+        <div class="row">
+          <div class="col text-left">
+            <h5 class="mb-3">Here Is Your Group Code</h5>
+            <h1 class="dashed-box text-center">
+              <%= current_user.referrer.group_code %>
+            </h1>
+            <p>
+              <small>In order to avail of the Group Plan discount, you'll need to share the Group</small><br>
+              <small>Code to atleast 2 other people. Deliveries will be made to only one location.</small>
+            </p>
+            <ul class="list-inline">
+              <li class="list-inline-item">Share:</li>
+              <li class="list-inline-item">
+                <span class="chocolate-font-color"><i class="fa fa-envelope"></i>Email Code</span>
+              </li>
+              <li class="list-inline-item">
+                <span class="chocolate-font-color"><i class="fa fa-mobile"></i>Text Code</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      `,
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       confirmButtonText: 'done',
@@ -21,4 +45,6 @@
     window.location.href = '<%= new_user_session_path %>';
     }
   });
+<% else %>
+  window.location.href = '<%= new_user_session_path %>';
 <% end %>

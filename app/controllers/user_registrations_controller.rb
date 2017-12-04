@@ -1,8 +1,8 @@
 class UserRegistrationsController < ApplicationController
-  before_action :set_allowed_zip
+  before_action :user_exists?
+  before_action :set_allowed_zip, only: :index
   require 'date_helpers/weeks'
   respond_to :js, except: :index
-  respond_to :json, only: %i[selected_date days]
   SATURDAY = 6
 
   def index
@@ -26,50 +26,7 @@ class UserRegistrationsController < ApplicationController
     @schedule = Scheduler.new(type).run
   end
 
-  def selected_date
-    return nil unless params[:date]
-    verify_date(params[:date])
-    date = Date.parse(params[:date])
-    @dates = (date..(date + 4.days)).map { |d| d if d.wday != SATURDAY }.compact
-    @dates.push(@dates.last + 1.day).compact if @dates.length < 5
-    @date_names = @dates.map { |d| d.strftime('%A') }
-  end
-
-  def days
-    @date = Date.current
-    @date = Date.parse(params[:date]) if params[:date].present?
-    render json: {
-      month: @date.strftime('%B %Y'),
-      next_month: @date.next_month,
-      prev_month: @date.prev_month,
-      days: DateHelpers::Weeks.new(@date).full_month_weeks
-    }
-  end
-
-  def is_past_noon
-    render json: { is_past: !past_noon?(DateTime.current) }
-  end
-
   private
-
-  def verify_date(date)
-    date = Date.parse(date)
-    @errors = []
-    @errors.push 'We cant deliver after 12:00 pm.' if past_noon?(date)
-
-    @errors.push 'We cant travel back in time.' if past_date?(date)
-
-    @errors.push 'We are closed on saturdays.' if date.saturday?
-  end
-
-  def past_date?(date)
-    date < Date.current
-  end
-
-  def past_noon?(date)
-    closed_time = Time.zone.parse '11:00 am'
-    date.today? && Time.current >= closed_time
-  end
 
   def registration_params
     params.fetch(:registration_form, {})
@@ -114,5 +71,15 @@ class UserRegistrationsController < ApplicationController
 
   def set_allowed_zip
     @allowed_zip_codes = AllowedZipCode.all.map(&:zip)
+  end
+
+  def set_date
+    @date = params[:date]
+  end
+
+  def user_exists?
+    if current_user
+      redirect_to root_url, notice: 'Already signed up'
+    end
   end
 end

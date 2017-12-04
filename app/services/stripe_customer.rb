@@ -42,8 +42,10 @@ class StripeCustomer
   end
 
   def set_default_source(token)
-    stripe_customer.default_source = token
-    stripe_customer.save
+    customer = stripe_customer
+    customer.default_source = token
+    customer.save
+    true
   rescue Stripe::InvalidRequestError => e
     errors.add(:base, e.message)
     false

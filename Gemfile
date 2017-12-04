@@ -35,11 +35,12 @@ gem 'jbuilder', '~> 2.5'
 
 # profiling
 gem 'activemerchant'
-gem 'barby'
 gem 'activerecord-import', '~> 0.21.0'
+gem 'barby'
 gem 'bootsnap', '~> 1.1', '>= 1.1.3'
 gem 'bootstrap', '~> 4.0.0.beta'
 gem 'carrierwave'
+gem 'carrierwave-aws'
 gem 'devise'
 gem 'exception_handler'
 gem 'geocoder'

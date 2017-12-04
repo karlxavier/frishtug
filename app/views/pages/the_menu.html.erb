@@ -1,12 +1,27 @@
-<ul class="nav nav-pills justify-content-center" id="category_navs">
+<div class="text-center">
+  <h4 class="font-family-montserrat">THE MENU</h4>
+  <p class="mb-0">
+    Lorem impsum dolor sit amet, consectetur adipiscing elit. Praesent justo urna, finibus sit amet
+  </p>
+  <p>
+    tempor vitae, facilisis quis neque
+  </p>
+</div>
+
+<%
+  category_id = params[:category] || MenuCategory.first.id
+%>
+<ul class="nav nav-pills justify-content-center mt-4" id="category_navs">
   <% MenuCategory.published_menus.each do |category| %>
     <li class="nav-item">
-      <%= link_to category.name.titleize, "##{ category.name.parameterize }", class: 'nav-link btn btn-outline-dark mx-2' %>
+      <%= link_to category.name.titleize, 
+                  page_path(id: 'the_menu', category: category.id), 
+                  class: "nav-link btn btn-brown-outline mx-2 rounded-0 #{'active-btn' if category.id == category_id.to_i}" %>
     </li>
   <% end %>
 </ul>
 
-<ul class="nav justify-content-center">
+<ul class="nav justify-content-center mt-4">
   <li class="nav-item mx-2">
     <strong class="text-uppercase">Legend</strong>
   </li>
@@ -29,15 +44,10 @@
 </ul>
 
 
-<% MenuCategory.published_menus.each do |category| %>
-  <div class="row" id="<%= category.name.parameterize %>">
+<% MenuCategory.where(id: category_id).each do |category| %>
+  <div class="row mt-4" id="<%= category.name.parameterize %>">
     <div class="container">
-      <h4 class="text-uppercase">
-        <%= category.name.upcase %>
-      </h4>
-    </div>
-    <div class="container">
-      <div class="row">
+      <div class="row justify-content-center">
         <% category.menus.each do |menu| %>
           <%= render 'shared/menus/products', { menu: menu } %>
         <% end %>
@@ -46,9 +56,10 @@
   </div>
 <% end %>
 
-<%= content_for :footer_js do %>
-  <script type="text/javascript">
-    $('body').css('position', 'relative');
-    $('body').scrollspy({ target: '#category_navs' });
-  </script>
-<% end %>
+<div class="row justify-content-center mb-4">
+  <div class="col-12 col-md-6 text-center">
+    <h4 class="font-family-montserrat text-uppercase">Found anything interesting?</h4>
+    <p>let's create an account to order your food.</p>
+    <%= link_to 'Get Started', '/user_registrations', class: 'text-uppercase font-weight-bold btn btn-brown font-family-monsterrat' %>
+  </div>
+</div>

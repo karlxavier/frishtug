@@ -33,4 +33,5 @@ namespace :user do
       get :remove
     end
   end
+  resources :set_default_payments, only: :create
 end

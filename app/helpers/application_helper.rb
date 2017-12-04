@@ -1,7 +1,8 @@
 module ApplicationHelper
   require 'calendar'
-  def nav_link(content, path, *array)
-    link_to(content, path, *array, class: 'nav-link')
+  def nav_link(content, path, args = { class: 'nav-link' })
+    klass = args
+    link_to(content, path, klass)
   end
 
   def active?(path)
@@ -62,9 +63,14 @@ module ApplicationHelper
     link_to text, path, class: "btn text-uppercase #{klass}", id: id
   end
 
+  def has_address(source)
+    return false unless source.address_line1.present?
+    true
+  end
+
   def address_from_source(source)
     address = <<-HEREDOC
-      #{source.address_line1}#{source.address_line2.nil? ? '' : ", #{source.address_line2}"} <br>
+      #{source.address_line1}#{source.address_line2.empty? ? '' : ", #{source.address_line2}"} <br>
       #{source.address_city}, #{source.address_state} #{source.address_zip} <br>
       #{source.address_country}
     HEREDOC
@@ -73,5 +79,9 @@ module ApplicationHelper
 
   def calendar(date = Date.current, disable_date = nil, &block)
     Calendar.new(self, date, disable_date, block).table_compact
+  end
+
+  def disabled_text
+    '<i class="fa fa-spinner fa-spin"></i> Processing...'
   end
 end

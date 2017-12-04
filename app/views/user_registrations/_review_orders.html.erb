@@ -49,18 +49,20 @@
         <strong class="total_price_summary float-right"></strong>
       </div>
     </div>
+    <hr>
   </div>
 </div>
 
 <div class="row justify-content-center">
   <div class="col-md-2">
-    <input
+    <button
       type="submit"
       name="commit"
-      value="Complete Sign Up"
       data-disable-with="Complete Sign Up"
-      class="btn btn-brown text-uppercase complete-orders-btn"
+      class="btn btn-brown text-uppercase complete-orders-btn px-4"
       v-on:click.prevent="createToken"
     >
+      Complete Sign Up
+    </button>
   </div>
 </div>

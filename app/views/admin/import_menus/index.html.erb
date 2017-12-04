@@ -57,7 +57,9 @@
       </div>
       <%= f.file_field :file, class: 'd-none dropzone_file single_file', id: 'file' %>
     </div>
-    <%= f.submit 'Import', class: 'btn btn-brown text-uppercase' %>
+    <%= f.button 'Start Import', class: 'btn btn-brown text-uppercase', data: {
+      disable_with: disabled_text
+    } %>
     </div>
   <% end %>
 <% end %>
