@@ -503,13 +503,13 @@ import swal from 'sweetalert2'
 
     innerHtmlOf(page, order.plan, '.choosen_plan')
     innerHtmlOf(page, shipping, '.shipping')
-    innerHtmlOf(page, order.day_1.date, '.first_delivery_date')
 
-    const populateSched = (sched, price, text, total) => {
+    const populateSched = ({sched, price, text, total, first_delivery}) => {
       innerHtmlOf(page, sched, '.delivery_schedule')
       innerHtmlOf(page, price, '.price')
       innerHtmlOf(page, text, '.meals__text')
       innerHtmlOf(page, total, '.total_price_summary')
+      innerHtmlOf(page, first_delivery, '.first_delivery_date')
     }
 
     if (order.order_type === 'single') {
@@ -518,11 +518,23 @@ import swal from 'sweetalert2'
       if (plan_price > amount) { amount = plan_price }
       total = amount
       if (order.shipping_fee !== 0) { total = total + parseInt(order.shipping_fee) }
-      populateSched('Single Order', toCurrency(amount), 'Single Order', toCurrency(total))
+      populateSched({ 
+        sched: 'Single Order', 
+        price: toCurrency(amount), 
+        text: 'Single Order', 
+        total: toCurrency(total),
+        first_delivery: order.single_order.date
+      })
     } else {
       plan_price = parseInt(extract_number(order.plan_price)[0])
       if (order.shipping_fee !== 0) { total = plan_price + parseInt(order.shipping_fee) }
-      populateSched(schedules, order.plan_price, '5 Meals per week', order.plan_price)
+      populateSched({ 
+        sched: schedules, 
+        price: order.plan_price, 
+        text: '5 Meals per week', 
+        total: order.plan_price,
+        first_delivery: order.day_1.date
+      })
     }
   }
 
