@@ -356,8 +356,9 @@ import swal from 'sweetalert2'
         if (order_day.meal_ids.length === 0) {
           return false
         }
-
-        appendTo(el, order_day.day.toUpperCase(), '.order-title')
+        const daysArray = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+        const d = new Date(order_day.date)
+        appendTo(el, daysArray[d.getDay()], '.order-title')
         order_day.meals.forEach( (meal, index) => {
           const div = document.createElement('div')
           div.innerHTML = listTemplate
