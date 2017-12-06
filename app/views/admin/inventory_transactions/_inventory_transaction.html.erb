@@ -1,0 +1,10 @@
+<% decorate(inventory_transaction, InventoryTransactionDecorator) do |i| %>
+  <tr class="<%= i.inventory_id %>">
+    <td>
+      <%= i.menu_name %>
+    </td>
+    <td>
+      <%= i.quantity_sold %>
+    </td>
+  </tr>
+<% end %>

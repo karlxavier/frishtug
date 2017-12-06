@@ -505,8 +505,7 @@ import swal from 'sweetalert2'
     innerHtmlOf(page, order.plan, '.choosen_plan')
     innerHtmlOf(page, shipping, '.shipping')
 
-    const populateSched = ({sched, price, text, total, first_delivery}) => {
-      innerHtmlOf(page, sched, '.delivery_schedule')
+    const populateSched = ({price, text, total, first_delivery}) => {
       innerHtmlOf(page, price, '.price')
       innerHtmlOf(page, text, '.meals__text')
       innerHtmlOf(page, total, '.total_price_summary')

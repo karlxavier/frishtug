@@ -15,6 +15,7 @@
 #  stripe_plan_id :string
 #  interval       :string
 #  users_count    :integer          default(0)
+#  for_type       :string
 #
 
 # Column names

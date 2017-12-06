@@ -10,7 +10,7 @@
       <%= f.label :price %>
       <div class="input-group">
         <span class="input-group-addon" id="basic-addon1">$</span>
-        <%= f.number_field :price, class: 'form-control', min: 0 %>
+        <%= f.number_field :price, class: 'form-control' %>
       </div>
     </div>
     <div class="col">
@@ -20,10 +20,10 @@
   </div>
   <br>
   <%= f.label :categories %>
-  <div class="col">
-    <%= f.collection_radio_buttons :diet_category_id, DietCategory.all, :id, :name do |r| %>
+  <div class="col category-collection-checkboxes">
+    <%= f.collection_check_boxes :diet_category_id, DietCategory.all, :id, :name do |r| %>
       <div class="form-check form-check-inline">
-          <%= r.label(class: 'form-check-label') { r.radio_button(class: 'form-check-input diet-category-items') + r.text } %>
+          <%= r.label(class: 'form-check-label') { r.check_box(class: 'form-check-input diet-category-items') + r.text } %>
         </div>
     <% end %>
   </div>

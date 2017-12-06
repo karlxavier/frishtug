@@ -17,6 +17,7 @@
 # Column names
 # id user_id placed_on:timestamp eta:timestamp delivered_at:timestamp status:integer
 class Order < ApplicationRecord
+  include InventoryAccounting
   enum status: %i[in_transit completed]
   belongs_to :user
   has_and_belongs_to_many :menus

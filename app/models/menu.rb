@@ -16,15 +16,20 @@
 #  unit_size        :integer
 #  item_number      :string
 #  tax              :boolean          default(FALSE)
+#  description      :text
 #
 
 class Menu < ApplicationRecord
-  belongs_to :unit
-  belongs_to :menu_category
-  belongs_to :diet_category, optional: true
+  includes Inventoriable
+  belongs_to  :unit
+  belongs_to  :menu_category
+  belongs_to  :diet_category, optional: true
+  has_one     :inventory
+  
   has_and_belongs_to_many :add_ons
   has_and_belongs_to_many :orders
   has_and_belongs_to_many :temp_orders
+
   validates :name, :unit_id, :menu_category_id, :price, presence: true
   validates :name, uniqueness: true
   validate :sanitize_price

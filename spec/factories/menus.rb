@@ -16,6 +16,7 @@
 #  unit_size        :integer
 #  item_number      :string
 #  tax              :boolean          default(FALSE)
+#  description      :text
 #
 
 FactoryGirl.define do

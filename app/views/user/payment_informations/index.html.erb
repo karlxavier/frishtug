@@ -6,7 +6,7 @@
   <%# end %>
   <div class="row">
     <div class="col-6">
-      <% @payment_informations.sources.data.each do |source| %>
+      <% @payment_informations.sources.each do |source| %>
         <%= render source.object, source: source, default: @payment_informations.default_source %>
       <% end %>
     </div>

@@ -13,4 +13,5 @@ namespace :admin do
   end
   resources :shoppings_lists
   resources :configs
+  resources :inventory, only: :index
 end

@@ -1,5 +1,10 @@
 module ApplicationHelper
   require 'calendar'
+
+  def decorate(object, decorator)
+    yield decorator.new(object)
+  end
+
   def nav_link(content, path, args = { class: 'nav-link' })
     klass = args
     link_to(content, path, klass)

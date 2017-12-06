@@ -2,12 +2,12 @@
 #
 # Table name: inventories
 #
-#  id         :integer          not null, primary key
-#  menu_id    :integer
-#  quantity   :integer
-#  location   :string
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  id           :integer          not null, primary key
+#  menu_id      :integer
+#  location     :string
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  inventory_id :string
 #
 
 RSpec.describe Inventory, type: :model do

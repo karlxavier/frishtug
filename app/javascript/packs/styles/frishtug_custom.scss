@@ -20,10 +20,52 @@ body {
 
 .font-family-lato {
   font-family: $lato!important;
+
+  &-bold {
+    font-weight: 700;
+  }
+
+  &-black {
+    font-weight: 900;
+  }
 }
 
 .font-family-montserrat {
   font-family: $montserrat!important;
+  
+  &-medium {
+    font-weight: 500;
+  }
+
+  &-semi-bold {
+    font-weight: 600;
+  }
+
+  &-bold {
+    font-weight: 700;
+  }
+}
+
+.font-size {
+  &-12 {
+    font-size: 12px!important;
+  }
+
+  &-14 {
+    font-size: 14px!important;
+  }
+
+  &-16 {
+    font-size: 16px!important;
+  }
+
+  &-18 {
+    font-size: 18px!important;
+  }
+
+  &-20 {
+    font-size: 20px!important;
+  }
 }
 
 .btn {
@@ -106,9 +148,10 @@ label,
 
 .add-menu-item {
   background: transparent;
-  border-color: $light-chocolate;
-  color: $light-chocolate !important;
-  height: 150px;
+  border-color: #dfb676;
+  color: #dfb676 !important;
+  width: 226px;
+  height: 175px;
   border: 1px dashed;
   border-width: 2px;
   display: flex;
@@ -348,6 +391,8 @@ h1#title {
   padding: 0.5rem;
 }
 
+
+// font start
 .chocolate-font-color {
   color: $chocolate;  
 }
@@ -356,7 +401,19 @@ h1#title {
   color: #959595;
 }
 
+.dark-font-color {
+  color: #252525;
+}
+
 a {
+
+  &.nav-link.nav-category-item {
+    &.light-gray-font-color.active {
+      color: #dfb676;
+      font-weight: 600;
+      text-decoration: underline;
+    }
+  }
 
   &.light-gray-font-color {
     &:hover,
@@ -373,8 +430,16 @@ a {
       text-decoration: none;
     }
   }
-}
 
+  &.dark-font-color {
+    &:hover,
+    &:focus {
+      color: #959595;
+      text-decoration: none;
+    }
+  }
+}
+// font end
 
 table.table {
   & th {

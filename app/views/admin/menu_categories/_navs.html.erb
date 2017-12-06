@@ -2,7 +2,7 @@
   <% menu_category.each.with_index do |c, index| %>
     <li class="nav-item">
       <% klass = "active" if index == 0 %>
-      <a href="#category_<%= c.id %>" class="nav-link nav-category-item <%= klass %> category-item-<%= c.id %>" data-toggle="tab" aria-expanded="<%= index == 0 %>">
+      <a href="#category_<%= c.id %>" class="nav-link nav-category-item <%= klass %> category-item-<%= c.id %> light-gray-font-color text-uppercase font-size-14" data-toggle="tab" aria-expanded="<%= index == 0 %>">
         <%= c.name %>
         <span class="<%= "#{c.name.parameterize}-size" %>">
           (<%= c.menus.size %>)

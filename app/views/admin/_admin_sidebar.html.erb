@@ -7,20 +7,23 @@
       <li class="nav-item <%= active?(admin_menus_path) %>">
         <%= nav_link 'Your Menu', admin_menus_path %>
       </li>
-      <li class="nav-item <%= active?(admin_units_path) %>">
-        <%= nav_link 'Units', admin_units_path %>
-      </li>
       <li class="nav-item <%= active?(admin_menu_categories_path) %>">
         <%= nav_link 'Menu Categories', admin_menu_categories_path %>
-      </li>
-      <li class="nav-item <%= active?(admin_plans_path) %>">
-        <%= nav_link 'Plans', admin_plans_path %>
       </li>
       <li class="nav-item <%= active?(admin_import_menus_path) %>">
         <%= nav_link 'Import Menus', admin_import_menus_path %>
       </li>
-      <li class="nav-item <%= active?(admin_configs_path ) %>">
-        <%= nav_link 'Store Config', admin_configs_path  %>
+      <li class="nav-item <%= active?(admin_inventory_index_path) %>">
+        <%= nav_link 'Inventory', admin_inventory_index_path %>
+      </li>
+      <li class="nav-item <%= active?(admin_plans_path) %>">
+        <%= nav_link 'Plans', admin_plans_path %>
+      </li>
+      <li class="nav-item <%= active?(admin_units_path) %>">
+        <%= nav_link 'Units', admin_units_path %>
+      </li>
+      <li class="nav-item <%= active?(admin_configs_path) %>">
+        <%= nav_link 'Store Config', admin_configs_path %>
       </li>
     </ul>
   </div>

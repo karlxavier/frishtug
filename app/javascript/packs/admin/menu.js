@@ -1,19 +1,41 @@
 document.addEventListener('DOMContentLoaded', ()=>{
   (function(win) {
-    const init = () => {
-      let dietCategoryItem = document.querySelectorAll('.diet-category-items')
 
-      if (dietCategoryItem) {
-        Array.from(dietCategoryItem).forEach( (item) => {
-          item.addEventListener('click', () => {
-            let toHide = document.querySelector('.autohide_by_category')
-            if (toHide) { toHide.style.display = 'none' }
-          })
-        })
-      } else {
-        console.warn('Error')
-      }
+    const onlyCheckOne = ({ el }) => {
+      const dietCategoryItems = document.querySelectorAll('.diet-category-items')
+      dietCategoryItems.forEach( checkbox => {
+        if (checkbox !== el) {
+          checkbox.checked = false
+        }
+      })
     }
+
+    const unCheckAddOns = ({ el }) => {
+      el.querySelectorAll('input[type="checkbox"]').forEach( checkbox => {
+        checkbox.checked = false
+      })
+    }
+
+    const hideAddOns = ({ el }) => {
+      const toHide = document.querySelector('.autohide_by_category')
+      if (el.checked) {
+        toHide.classList.add('d-none')
+      } else {
+        toHide.classList.remove('d-none') 
+      }
+      unCheckAddOns({ el: toHide })
+    }
+
+    const init = () => {
+      const container = document.querySelector('.category-collection-checkboxes')
+      
+      container.addEventListener('click', (e) => {
+        if (e.target.type !== 'checkbox') { return }
+          onlyCheckOne({ el: e.target })
+          hideAddOns({ el: e.target })
+      })
+    }
+    
     win.diet_category_init = init
   }(window))
 })

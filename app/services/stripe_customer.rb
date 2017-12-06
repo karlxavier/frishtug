@@ -57,10 +57,16 @@ class StripeCustomer
 
   def retrieve
     stripe_customer
+  rescue Stripe::InvalidRequestError => e
+    errors.add(:base, e.message)
+    []
   end
 
   def sources
     stripe_customer.sources.data
+  rescue Stripe::InvalidRequestError => e
+    errors.add(:base, e.message)
+    []
   end
 
   def subscriptions
@@ -79,7 +85,7 @@ class StripeCustomer
   end
 
   def stripe_customer
-    Stripe::Customer.retrieve(@user.stripe_customer_id)
+    Stripe::Customer.retrieve(user.stripe_customer_id)
   end
 
   def set_card_source_attributes(source, params)

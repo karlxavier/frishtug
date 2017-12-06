@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171202065638) do
+ActiveRecord::Schema.define(version: 20171206012233) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -142,10 +142,11 @@ ActiveRecord::Schema.define(version: 20171202065638) do
 
   create_table "inventories", force: :cascade do |t|
     t.bigint "menu_id"
-    t.integer "quantity"
     t.string "location"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "inventory_id"
+    t.index ["inventory_id"], name: "index_inventories_on_inventory_id"
     t.index ["menu_id"], name: "index_inventories_on_menu_id"
   end
 

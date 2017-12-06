@@ -1,0 +1,26 @@
+<%= card_container do %>
+  <div class="row">
+    <div class="col">
+      <h6 class="font-family-montserrat">
+        <%= @date.today? ? "Today - #{@date.strftime('%B %d')}" : @date.strftime('%B %d') %>
+      </h6>
+    </div>
+  </div>
+  <hr class="mt-0">
+
+  <div class="row">
+    <div class="col">
+      <table class="table table-sm">
+        <thead>
+          <tr>
+            <th>Items</th>
+            <th>Number Sold</th>
+          </tr>
+        </thead>
+        <tbody>
+          <%= render @inventory_transactions %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% end %>

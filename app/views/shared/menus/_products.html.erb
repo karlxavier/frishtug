@@ -5,7 +5,7 @@
     alt="<%= menu.name.titleize %>"
     height="175">
   <div class="card-body px-0 py-1">
-    <h5 class="card-title mb-0">
+    <h5 class="card-title mb-0 font-family-montserrat">
       <%= menu.name.titleize %>
       <% if menu.diet_category_id? %>
         <span class="fa fa-star diet-icons <%= menu.diet_category&.name.parameterize %>">&nbsp;</span>

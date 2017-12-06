@@ -14,7 +14,12 @@
     <%= form.label :name %>
     <input type="text" id="menu_category_name" name="menu_category[name]" v-model="menu_category.name" class="form-control">
   </div>
-  <h5>Add-ons <a href="javascript:void(0)" @click="addAddons"><i class="fa fa-plus"></i></a></h5>
+  <h5>
+    Add-ons 
+    <a href="javascript:void(0)" @click="addAddons" class="chocolate-font-color">
+      <i class="fa fa-plus"></i>
+    </a>
+  </h5>
   <div v-for="(addons, index) in menu_category.add_ons_attributes">
     <div :class="addons._delete !== 1 ? 'form-group' : 'd-none'" >
       <label :for="'menu_category_addons_name' + (index !== 0 ? `_${index}` : '')">Name</label>
