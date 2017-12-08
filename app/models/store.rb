@@ -14,6 +14,8 @@ class Store < ApplicationRecord
   validates :_id, presence: true
   has_many :allowed_zip_codes, dependent: :destroy
 
+  mount_uploaders :home_page_images, ImageUploader
+
   def save_zip(zipcodes)
     self.allowed_zip_code_ids = create_zip_from(zipcodes)
   end

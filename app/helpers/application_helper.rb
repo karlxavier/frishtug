@@ -62,7 +62,7 @@ module ApplicationHelper
     render klass.class.to_s.underscore, options
   end
 
-  def link_to_btn(text, path, klass=nil, id=nil)
+  def link_to_btn(text, path, klass = nil, id = nil)
     klass ||= 'btn-brown'
     id ||= text.parameterize.underscore
     link_to text, path, class: "btn text-uppercase #{klass}", id: id
@@ -88,5 +88,18 @@ module ApplicationHelper
 
   def disabled_text
     '<i class="fa fa-spinner fa-spin"></i> Processing...'
+  end 
+
+  def print_btn(options = {})
+    options[:onclick] = 'window.print()'
+    link_to 'javascript:void(0)', options do
+      "<i class='fa fa-print burlywood-font-color mr-1'></i> Print".html_safe
+    end
+  end
+
+  def download_btn(name, path, options = {})
+    link_to path, options do
+      "<i class='fa fa-download burlywood-font-color mr-1'></i> #{name}".html_safe
+    end
   end
 end

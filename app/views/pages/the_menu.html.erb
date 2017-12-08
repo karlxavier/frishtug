@@ -1,11 +1,14 @@
-<div class="text-center">
-  <h4 class="font-family-montserrat">THE MENU</h4>
-  <p class="mb-0">
-    Lorem impsum dolor sit amet, consectetur adipiscing elit. Praesent justo urna, finibus sit amet
-  </p>
-  <p>
-    tempor vitae, facilisis quis neque
-  </p>
+<div class="banner">
+  <div class="fishnet">
+  </div>
+</div>
+
+<div class="row mx-0">
+  <div class="col text-center">
+    <h3 class="text-uppercase font-family-montserrat">The Menu</h3>
+    <p class="mb-0 font-size-18">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent justo urna, finibus sit amet</p>
+    <p class="font-size-18">tempor vitae, facilisis quis neque</p>
+  </div>
 </div>
 
 <%
@@ -45,7 +48,7 @@
 
 
 <% MenuCategory.where(id: category_id).each do |category| %>
-  <div class="row mt-4" id="<%= category.name.parameterize %>">
+  <div class="row mt-4 mx-0" id="<%= category.name.parameterize %>">
     <div class="container">
       <div class="row justify-content-center">
         <% category.menus.each do |menu| %>
@@ -56,10 +59,10 @@
   </div>
 <% end %>
 
-<div class="row justify-content-center mb-4">
+<div class="row justify-content-center mb-4 mx-0">
   <div class="col-12 col-md-6 text-center">
     <h4 class="font-family-montserrat text-uppercase">Found anything interesting?</h4>
     <p>let's create an account to order your food.</p>
-    <%= link_to 'Get Started', '/user_registrations', class: 'text-uppercase font-weight-bold btn btn-brown font-family-monsterrat' %>
+    <%= link_to 'Get Started', '/user_registrations', class: 'text-uppercase btn btn-brown font-family-montserrat-semi-bold' %>
   </div>
 </div>

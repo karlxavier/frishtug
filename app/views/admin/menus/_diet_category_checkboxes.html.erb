@@ -1,0 +1,10 @@
+<div class="form-check form-check-inline v-align-top">
+  <%= r.label(class: "form-check-label icon-label") { 
+    svg_tag(
+      "packs/images/#{r.text.parameterize}.svg", 
+      class: "label-icon #{r.text.parameterize}"
+    ) + r.check_box(
+      class: 'form-check-input diet-category-items d-none'
+    ) + r.text 
+  } %>
+</div>

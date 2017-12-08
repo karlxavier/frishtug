@@ -20,11 +20,9 @@
   </div>
   <br>
   <%= f.label :categories %>
-  <div class="col category-collection-checkboxes">
+  <div class="col category-collection-checkboxes px-0">
     <%= f.collection_check_boxes :diet_category_id, DietCategory.all, :id, :name do |r| %>
-      <div class="form-check form-check-inline">
-          <%= r.label(class: 'form-check-label') { r.check_box(class: 'form-check-input diet-category-items') + r.text } %>
-        </div>
+      <%= render 'diet_category_checkboxes', r: r %>
     <% end %>
   </div>
   <div class="autohide_by_category <%= 'd-none' if menu.diet_category_id? %>">
@@ -32,9 +30,7 @@
     <div class="row">
       <div class="col">
         <%= f.collection_check_boxes :add_on_ids, @menu_category.add_ons, :id, :name do |c| %>
-          <div class="form-check form-check-inline">
-            <%= c.label(class: 'form-check-label') { c.check_box(class: 'form-check-input add_ons') + c.text } %>
-          </div>
+          <%= render 'addons_checkboxes', c: c %>
         <% end %>
       </div>
     </div>

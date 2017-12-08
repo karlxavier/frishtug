@@ -40,6 +40,6 @@ class Admin::ConfigsController < Admin::BaseController
   end
 
   def store_config_params
-    params.require(:store).permit(:_id, :_code)
+    params.require(:store).permit(:_id, :_code, {home_page_images: []})
   end
 end

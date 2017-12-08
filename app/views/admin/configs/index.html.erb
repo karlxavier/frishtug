@@ -4,34 +4,59 @@
 %>
 <%= card_container do %>
   <%= form_with model: @store_config, 
-                url: url, 
-                class: 'col-md-4' do |f| %>
-    <%= render 'shared/flash' %>
-    <div class="form-group">
-      <label for="">Store Id</label>
-      <%= f.text_field :_id, class: 'form-control' %>
-      <small id="idHelp" class="form-text text-muted">
-        Required field for generating a Bar Code and Processing Orders.
-      </small>
+                url: url do |f| %>
+    <div class="col-md-4">
+      <%= render 'shared/flash' %>
+      <div class="form-group">
+        <label for="">Store Id</label>
+        <%= f.text_field :_id, class: 'form-control' %>
+        <small id="idHelp" class="form-text text-muted">
+          Required field for generating a Bar Code and Processing Orders.
+        </small>
+      </div>
+      <div class="form-group">
+        <label for="">Store Code</label>
+        <%= f.text_field :_code, class: 'form-control' %>
+        <small id="codeHelp" class="form-text text-muted">
+          Required field for generating a Bar Code and Processing Orders.
+        </small>
+      </div>
+      <div class="form-group">
+        <label for="">Allowed Zip Codes</label>
+        <%= f.text_area :zipcode, class: 'form-control', value: @zipcodes.join(','), name: 'zipcodes' %>
+        <small id="codeHelp" class="form-text text-muted">
+          Separate zipcodes with ',' (e.g '12345,54321,....')
+        </small>
+      </div>
     </div>
-    <div class="form-group">
-      <label for="">Store Code</label>
-      <%= f.text_field :_code, class: 'form-control' %>
-      <small id="codeHelp" class="form-text text-muted">
-        Required field for generating a Bar Code and Processing Orders.
-      </small>
+    <div class="col-md-8">
+      <div class="form-group">
+        <label for="">Home Page Images</label>
+        <div class="dropzone">
+          <% if @store_config.home_page_images? %>
+            <div>
+              <%- @store_config.home_page_images.each_with_index do |image, index| %>
+                <%= image_tag image.url, height: '100', class: 'rounded raised-1' %>
+              <% end %>
+            </div>
+          <% else %>
+            <span>Drag your image's here</span>
+            <span>or</span>
+            <%= f.label :home_page_images, 'Browse', class: 'btn btn-outline-secondary' %>
+          <% end %>
+        </div>
+        <%= f.file_field :home_page_images, 
+              class: 'd-none dropzone_file only_image', 
+              multiple: true, id: 'store_home_page_images' %>
+      </div>
     </div>
-    <div class="form-group">
-      <label for="">Allowed Zip Codes</label>
-      <%= f.text_area :zipcode, class: 'form-control', value: @zipcodes.join(','), name: 'zipcodes' %>
-      <small id="codeHelp" class="form-text text-muted">
-        Separate zipcodes with ',' (e.g '12345,54321,....')
-      </small>
-    </div>
-    <div>
+    <div class="col-md-4">
       <%= f.button 'Save Config', class: 'btn btn-brown text-uppercase', data: {
         disable_with: disabled_text
       } %>
     </div>
   <% end %>
+<% end %>
+<%- content_for :footer_js do %>
+  <%= javascript_pack_tag 'admin/simple_dropzone' %>
 <% end %>

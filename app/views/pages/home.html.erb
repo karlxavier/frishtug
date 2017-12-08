@@ -1,1 +1,61 @@
-<h1>Home Page</h1>
+<%- image_url = Store.first.home_page_images.collect { |i| i.background.url }.sample(1)%>
+<div class="row mx-0 justify-content-center align-content-center"
+  style="
+      background: url('<%=  image_url[0] %>') no-repeat;
+      background-position: top left;
+      background-size: cover;
+      width: 100%;
+      height: calc(100vh + 5rem);
+      overflow-x: hidden;">
+  <div class="text-center pt-4" style="background: rgba(255,255,255,.9); height: 254px; width: 790px; z-index: 1">
+    <h2 class="text-uppercase font-family-montserrat">Tagline Lorem Ipsum</h2>
+    <p class="mb-0 font-size-18">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent justo urna, finibus sit amet</p>
+    <p class="mb-0 font-size-18">tempor vitae, facilisis quis neque. Ut interdum bibendum tellus, eget consequat augue</p>
+    <p class=" font-size-18">hendrerit vel. Lorem ipsum dolor sit amey.</p>
+    <%= link_to 'Lets get started', '/user_registrations', class: 'btn btn-brown text-uppercase font-family-montserrat-semi-bold font-size-18 px-4' %>
+  </div>
+  <div class="row home-banner"></div>
+</div>
+
+<div class="row mx-0 justify-content-center transparent-bg">
+  <div class="text-center">
+    <i class="fa fa-map-marker fa-2x"></i>
+    <h4>Serving Monroe, Spring Valley, Monsey, Chesnut Ridge</h4>
+    <h4>Airmont and Welsey Hills</h4>
+  </div>
+</div>
+
+<div class="row mx-0 justify-content-center">
+  <div class="container text-center">
+    <h3 class="text-uppercase font-family-montserrat">how it works</h3>
+  </div>
+</div>
+
+<div class="row mx-0 justify-content-center">
+  <div class="container row text-center">
+    <div class="col">
+      <div class="text-center">
+        <img src="/uploads/icon/svg" alt="" class="rounded">
+      </div>
+      <h5>Sign Up + Account Setup</h5>
+    </div>
+    <div class="col">
+      <div class="text-center">
+        <img src="/uploads/icon/svg" alt="" class="rounded">
+      </div>
+      <h5>Setup your daily menu</h5>
+    </div>
+    <div class="col">
+      <div class="text-center">
+        <img src="/uploads/icon/svg" alt="" class="rounded">
+      </div>
+      <h5>Check Out</h5>
+    </div>
+    <div class="col">
+      <div class="text-center">
+        <img src="/uploads/icon/svg" alt="" class="rounded">
+      </div>
+      <h5>Wait for the delivery + Eat</h5>
+    </div>
+  </div>
+</div>

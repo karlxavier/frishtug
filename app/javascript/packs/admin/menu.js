@@ -1,11 +1,29 @@
 document.addEventListener('DOMContentLoaded', ()=>{
   (function(win) {
+    
+    const addInverseClass = ({el, type}) => {
+      const labelIcon = el.closest('.icon-label')
+      if (type === 'add') {
+        labelIcon.classList.add('inverse')
+      }
+      
+      if (type === 'remove') {
+        labelIcon.classList.remove('inverse')
+      }
+    }
 
     const onlyCheckOne = ({ el }) => {
       const dietCategoryItems = document.querySelectorAll('.diet-category-items')
       dietCategoryItems.forEach( checkbox => {
         if (checkbox !== el) {
           checkbox.checked = false
+          addInverseClass({el: checkbox, type: 'remove'})
+        }
+
+        if (el.checked == true) {
+          addInverseClass({el: el, type: 'add'})
+        } else {
+          addInverseClass({el: el, type: 'remove'})
         }
       })
     }

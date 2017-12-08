@@ -1,7 +1,13 @@
-$('#menu-item-modal .modal-body')
-  .html('<%= j render 'form_modal', menu: @menu, menu_category: @menu_category %>');
-$('#menu-item-modal .modal-title')
-  .html('Update <%= @menu.name.humanize.capitalize %>')
-$('#menu-item-modal').modal('show');
-dropzone_init();
-diet_category_init();
+(function() {
+  $('#menu-item-modal .modal-body')
+    .html('<%= j render 'form_modal', menu: @menu, menu_category: @menu_category %>');
+  $('#menu-item-modal .modal-title')
+    .html('Update <%= @menu.name.humanize.capitalize %>')
+  $('#menu-item-modal').modal('show');
+  <% if @menu.diet_category_id? %>
+      const label = document.querySelector('#menu-item-modal').querySelector('label[for="menu_diet_category_id_<%= @menu.diet_category_id %>"]');
+      label.classList.add('inverse');
+  <% end %>
+  dropzone_init();
+  diet_category_init();
+}())

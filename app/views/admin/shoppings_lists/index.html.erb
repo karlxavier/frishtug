@@ -1,16 +1,26 @@
 <%= card_container do %>
-  <h5>
-    <%= @date %>
-    <% items = @shopping_lists.map { |m| m[:menu].id }.count %>
-    <%= "-#{pluralize(items, 'item')}" %>
-  </h5>
-  <table class="table table-hover">
+  <div class="row clearfix">
+    <div class="col">
+      <span class="font-size-16 font-family-montserrat-semi-bold">
+        <%= @date %>
+        <% items = @shopping_lists.map { |m| m[:menu].id }.count %>
+        <%= "- #{pluralize(items, 'item')}" %>
+      </span>
+    </div>
+    <div class="col">
+      <%= print_btn class: 'light-gray-font-color float-right'%>
+    </div>
+  </div>
+  <hr>
+  <table class="table table-md">
     <tbody>
       <% @shopping_lists.each do |list| %>
         <tr class="<%= list[:menu].id %>">
           <td>
-            <h6><%= list[:menu].name %></h6>
-            <span>Order # <%= list[:order_ids].join(', ') %></span>
+            <span class="font-family-montserrat-semi-bold font-size-16 d-flex">
+              <%= list[:menu].name %>
+            </span>
+            <span class="font-size-14">Order # <%= list[:order_ids].join(', ') %></span>
           </td>
           <td>
             <span><%= list[:order_ids].length %></span>

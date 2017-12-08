@@ -13,12 +13,13 @@
     <%= yield :header_js %>
     <%= yield :header %>
   </head>
-  <body>
+  <body class="d-flex flex-column">
     <%= render 'layouts/navbar' %>
-    <div class="container-fluid px-0" style="margin-top: 5rem">
+    <div class="container-fluid px-0" style="margin-top: 5rem; flex: 1;">
       <%= render 'shared/notifications' %>
       <%= yield %>
     </div>
+    <%= render 'layouts/footer' %>
     <%= yield :footer_js %>
     <%= javascript_include_tag 'https://use.fontawesome.com/69863dce90.js' %>
   </body>
