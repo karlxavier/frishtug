@@ -57,7 +57,7 @@
     <div class="form-group">
       <%= form.text_field :group_code, class: 'form-control', placeholder: 'Group Code' %>
     </div>
-    <a href="javascript:void(0)" class="mb-3" @click="addBillingAddress" v-if="billing_address[0].location_at === 'multiple_workplaces'">+ Add Next Address</a>
-    <a href="javascript:void(0)" class="btn btn-brown btn-block text-uppercase" @click="nextTab">Next</a>
+    <a href="javascript:void(0)" class="chocolate-font-color" @click="addBillingAddress" v-if="billing_address[0].address_location_at === 'multiple_workplaces'">+ Add Next Address</a>
+    <a href="javascript:void(0)" class="btn btn-brown btn-block text-uppercase mt-3" @click="nextTab">Next</a>
   </div>
 </div>

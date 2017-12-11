@@ -746,3 +746,23 @@ table.table {
         width: 570px;
     }
 }
+
+.wizard-tab-content {
+    position: relative;
+
+    &:before {
+        content: '';
+        display: block;
+        width: 100%;
+        position: absolute;
+        top: 15px;
+        left: 0;
+        border-bottom: 1px solid #e1e1e1;
+    }
+}
+
+.vue-form-wizard.xs .wizard-icon-circle {
+    background: #777777;
+    color: $pure-white;
+
+}

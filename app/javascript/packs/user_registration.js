@@ -72,128 +72,6 @@ import swal from 'sweetalert2'
     }
   }
 
-  const scheduleTypeLabels = document.querySelectorAll('div.schedule-types label')
-  const scheduleSelecter = () => {
-    const labels = document.querySelectorAll('div.days-schedule label')
-    if (labels) {
-      labels.forEach( label => {
-        const radio = label.querySelector('input[type="radio"]')
-
-        const setOrderDays = () => {
-          const days = label.dataset.scheduleDays.split(',')
-          if (days) {
-            days.forEach( (day, index) => {
-              order[`day_${index + 1}`].date = day
-            })
-          }
-        }
-
-        if(label.classList.contains('active')) {
-          order.start_date = radio.value
-          setOrderDays()
-        }
-
-        radio.addEventListener('click', (e) => {
-          const activeLabel = document.querySelector('div.days-schedule label.active')
-          if (activeLabel) { activeLabel.classList.remove('active') }
-          label.classList.add('active')
-          order.start_date = radio.value
-          setOrderDays()
-        })
-      })
-    }
-  }
-
-  if (!scheduleTypeLabels) {
-    scheduleTypeLabels.forEach( label => {
-      const radio = label.querySelector('input')
-      label.addEventListener('click', (e) => {
-        const activeLabel = document.querySelector('div.schedule-types label.btn-brown')
-        if (activeLabel) { activeLabel.classList.remove('btn-brown') }
-        label.classList.add('btn-brown')
-      })
-
-      radio.addEventListener('click', () => {
-        order.schedule = radio.value
-        $.ajax({
-          url: `/user_registrations/schedule.js?type=${order.schedule}`,
-          type: 'GET',
-          dataType: 'script',
-          success: function() {
-            scheduleSelecter()
-            if (order.schedule === "sunday_to_thursday") {
-              const sundayToThursday = ["sunday", "monday", "tuesday", "wednesday", "thursday"]
-              setTabsSchedule(sundayToThursday)
-            } else {
-              const mondayToFriday = ["monday", "tuesday", "wednesday", "thursday", "friday"]
-              setTabsSchedule(mondayToFriday)
-            }
-          }
-        })
-      })
-    })
-  }
-
-  const setTabsSchedule = (schedule) => {
-    order.schedule = schedule
-    const mondayToFriday = ["monday", "tuesday", "wednesday", "thursday", "friday"]
-    const sundayToThursday = ["sunday", "monday", "tuesday", "wednesday", "thursday"]
-    const mealSelectionTabs = document.querySelector('.nav-tabs-wrapper')
-    if (mealSelectionTabs) {
-      const tabs = mealSelectionTabs.querySelectorAll('li.tab')
-      let schedules = mondayToFriday
-
-      if (schedule === 'sunday_to_thursday') {
-        schedules = sundayToThursday
-      }
-
-      schedules.forEach( (schedule, index) => {
-        order[`day_${index + 1}`].day = schedule
-      })
-    }
-  }
-
-  const cvcInputControl = () => {
-    const cvcInput = document.querySelector('input.cvc-input-control')
-    if (cvcInput) {
-      cvcInput.addEventListener('input', () => {
-        if (cvcInput.value.length > 4) { cvcInput.value = cvcInput.value.slice(0, 4) }
-      })
-    }
-  }
-
-  const paymentMethods = () => {
-    const container = document.querySelector('div.payment-method-options')
-    const radios = container.querySelectorAll('input[type="radio"]')
-    radios.forEach( radio => {
-      radio.addEventListener('click', () => {
-        $.ajax({
-          url: `/user_registrations/payment_method.js?type=${radio.value}`,
-          type: 'GET',
-          dataType: 'script',
-          success: function() {
-            if (radio.value === 'credit_card') {
-              cvcInputControl()
-              addBillingInfo()
-            }
-          }
-        })
-      })
-    })
-  }
-
-  const addBillingInfo = () => {
-    const billingCheckbox = document.querySelector('input#registration_form_different_billing')
-    if (billingCheckbox) {
-      billingCheckbox.addEventListener('click', () => {
-        const billingContainer = document.querySelector('div.different-billing')
-        if (billingContainer) {
-          billingContainer.classList.toggle('d-none')
-        }
-      })
-    }
-  }
-
   const addMeals = (day, name, id, price, image) => {
     const hasName = (array) => {
       return array.name === name
@@ -340,6 +218,7 @@ import swal from 'sweetalert2'
       renderOrders()
     }
   }
+  
   const renderOrders = () => {
     const template = document.querySelector('#order-template').innerHTML
     const listTemplate = document.querySelector('#order-list-template').innerHTML
@@ -588,13 +467,6 @@ import swal from 'sweetalert2'
   }
 
   planSelectorInit()
-  scheduleSelecter()
-  cvcInputControl()
-  //paymentMethods()
-  //addBillingInfo()
-  // mealSelectorInit()
-  // mealCounterObserver()
-  window.setTabsSchedule = setTabsSchedule
   window.completeAction = completeAction
   window.order = order
   window.mealSelectorInit = mealSelectorInit

@@ -159,23 +159,6 @@ const registrationForm = new Vue({
       btn.dispatchEvent(click)
       setTimeout(changeCheckedTabs, 300)
     },
-    changeSchedule: function() {
-      const _this = this
-      setTabsSchedule(_this.schedule)
-      if (_this.schedule === 'sunday_to_thursday') {
-        _this.tab_titles = sundayToThursday
-      } else {
-        _this.tab_titles = mondayToFriday
-      }
-
-      setTimeout(() => {
-        _this.delivery_date = document.querySelector('#start_date_0').value
-      }, 300)
-    },
-    isActiveSchedule: function(sched) {
-      if (this.schedule === sched) { return ' btn-brown' }
-      return ''
-    },
     isActiveDeliveryDate: function(date) {
       if (this.delivery_date === date) { return ' btn-brown' }
       return ''

@@ -13,6 +13,9 @@
 class Store < ApplicationRecord
   validates :_id, presence: true
   has_many :allowed_zip_codes, dependent: :destroy
+  has_one :tax, dependent: :destroy
+
+  accepts_nested_attributes_for :tax
 
   mount_uploaders :home_page_images, ImageUploader
 

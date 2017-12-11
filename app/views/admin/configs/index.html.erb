@@ -28,6 +28,15 @@
           Separate zipcodes with ',' (e.g '12345,54321,....')
         </small>
       </div>
+      <div class="form-group">
+        <label for="">Tax Rate</label>
+        <%= f.fields_for :tax, @store_config.tax || @store_config.build_tax do |t| %>
+          <div class="input-group">
+            <%= t.number_field :rate, class: 'form-control', step: '0.1' %>
+            <span class="input-group-addon">%</span>
+          </div>
+        <% end %>
+      </div>
     </div>
     <div class="col-md-8">
       <div class="form-group">

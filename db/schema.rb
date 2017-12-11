@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171206065323) do
+ActiveRecord::Schema.define(version: 20171211083157) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -261,6 +261,14 @@ ActiveRecord::Schema.define(version: 20171206065323) do
     t.string "home_page_images", default: [], array: true
   end
 
+  create_table "taxes", force: :cascade do |t|
+    t.float "rate"
+    t.bigint "store_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["store_id"], name: "index_taxes_on_store_id"
+  end
+
   create_table "temp_orders", force: :cascade do |t|
     t.bigint "user_id"
     t.datetime "order_date"
@@ -332,6 +340,7 @@ ActiveRecord::Schema.define(version: 20171206065323) do
   add_foreign_key "orders", "users"
   add_foreign_key "referrers", "users"
   add_foreign_key "schedules", "users"
+  add_foreign_key "taxes", "stores"
   add_foreign_key "temp_orders", "users"
   add_foreign_key "users", "plans"
 end

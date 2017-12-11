@@ -7,13 +7,19 @@
     </p>
   </div>
   <div class="col">
-    <a href="javascript:void(0)" class="ctrl-btns btn btn-brown meal-ctrl-btns-minus rounded-0 disabled"  data-fmodel="<%= fmodel %>">
+    <a href="javascript:void(0)" 
+       class="ctrl-btns btn btn-brown meal-ctrl-btns-minus rounded-0 disabled"
+       data-fmodel="<%= fmodel %>"
+       data-value="<%= menu.to_json_for_cart(only: [:id, :name, :price]) %>">
       -
     </a>
     <span class="meal-counter <%= menu.name.parameterize %>">
       0
     </span>
-    <a href="javascript:void(0)" class="ctrl-btns btn btn-brown meal-ctrl-btns-plus rounded-0" data-fmodel="<%= fmodel %>">
+    <a href="javascript:void(0)" 
+      class="ctrl-btns btn btn-brown meal-ctrl-btns-plus rounded-0" 
+      data-fmodel="<%= fmodel %>"
+      data-value="<%= menu.to_json_for_cart(only: [:id, :name, :price]) %>">
       +
     </a>
   </div>
