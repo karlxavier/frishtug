@@ -1,4 +1,4 @@
-<div class="banner">
+<div class="banner" style="background-image: url('<%= asset_pack_path "packs/images/plan_banner_bg.jpg" %>')">
   <div class="fishnet">
   </div>
 </div>
@@ -8,5 +8,70 @@
     <h3 class="text-uppercase font-family-montserrat">Plan Options</h3>
     <p class="mb-0 font-size-18">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent justo urna, finibus sit amet</p>
     <p class="font-size-18">tempor vitae, facilisis quis neque</p>
+  </div>
+</div>
+
+<div class="container mt-48px">
+  <div class="card-deck">
+    <% Plan.all.sort.each do |p| %>
+      <div class="card text-center <%= p.name.parameterize %>"
+        data-plan-name="<%= p.name %>"
+        data-plan-price="<%= p.price %>"
+        data-plan-interval="<%= p.interval || 'single_order' %>"
+        data-plan-shipping-fee="<%= p.shipping_fee? ? p.shipping_fee : 0 %>">
+        <div class="card-body">
+          <h4 class="card-title">
+            <%= p.name %>
+          </h4>
+          <p class="card-text plan--description">
+            <%= p.description.html_safe %>
+          </p>
+          <p class="card-text">
+            <% if p.free? %>
+              Free Deliver
+            <% else %>
+              <%= p.shipping_note %>
+            <% end %>
+          </p>
+          <p class="card-text text-upcase">Note:</p>
+          <small class="card-text">
+            <%= p.note %>
+          </small>
+        </div>
+        <div class="card-footer">
+          <label for="<%= "#{p.name.parameterize}-#{p.id}" %>" class="btn btn-brown plan--btns">
+            <input type="radio" 
+            name="registration_form[plan_id]" 
+            value="<%= p.id %>" 
+            id="<%= "#{p.name.parameterize}-#{p.id}" %>" 
+            class="d-none"
+            @click="setInterVal('<%= p.interval || 'single_order' %>')">
+            Choose <%= p.name %>
+          </label>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<div class="footer-banner height-390px mt-48px" 
+  style="background-image: url('<%= asset_pack_path "packs/images/plan_footer_banner_bg.jpg" %>');">
+  <div class="footer-banner__header mt-48px">
+    <h4 class="text-center text-uppercase">Notes to remember:</h4>
+  </div>
+  <div class="footer-banner__body container text-center">
+    <p>Notes that the users should know could be listed here.</p>
+    <p>if some one selects the $10 pkg and adds to it after sign up extra items they will not get free shipping.</p>
+    <p>Option 2 is for Office Groups, and will have 1 delivery point. (No multiple drop off locations)</p>
+    <p>Customer has to log in before 11am in order to change tomorrow's menu.</p>
+    <p>
+      Option to select multiple delivery locations for service type worker, like contractors, customer needs to change the <br>
+      address a day before 11 am for the change of address delivery.
+    </p>
+    <p>
+      Etcetera
+    </p>
+  </div>
+  <div class="footer-banner__footer container mb-4">
   </div>
 </div>

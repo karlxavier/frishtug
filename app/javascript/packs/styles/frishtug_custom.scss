@@ -15,10 +15,34 @@ $montserrat: "Montserrat",
 sans-serif;
 $base-dark: #252525;
 $base-darker: #191919;
+
+html {
+    /* Adjust font size */
+    font-size: 100%;
+    -webkit-text-size-adjust: 100%;
+    /* Font varient */
+    font-variant-ligatures: none;
+    -webkit-font-variant-ligatures: none;
+    /* Smoothing */
+    text-rendering: optimizeLegibility;
+    -moz-osx-font-smoothing: grayscale;
+    font-smoothing: antialiased;
+    -webkit-font-smoothing: antialiased;
+    text-shadow: rgba(0, 0, 0, .01) 0 0 1px;
+}
+
 body {
     background: $light-bg;
     font-family: $lato;
     color: $base-dark;
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+.main {
+    flex: 1;
+    margin-top: 6.25rem;
 }
 
 h {
@@ -66,19 +90,35 @@ h {
 
 .font-size {
     &-12 {
-        font-size: 12px!important;
+        font-size: 0.75rem!important;
     }
+
     &-14 {
-        font-size: 14px!important;
+        font-size: 0.875!important;
     }
+
     &-16 {
-        font-size: 16px!important;
+        font-size: 1rem!important;
     }
+
     &-18 {
-        font-size: 18px!important;
+        font-size: 1.125rem!important;
     }
+
     &-20 {
-        font-size: 20px!important;
+        font-size: 1.25rem!important;
+    }
+
+    &-22 {
+        font-size: 1.375rem!important;
+    }
+
+    &-24 {
+        font-size: 1.5rem!important;
+    }
+
+    &-28 {
+        font-size: 1.75rem!important;
     }
 }
 
@@ -602,7 +642,7 @@ table.table {
     display: flex;
     width: 100%;
     height: 250px;
-    background: url('https://picsum.photos/250/1600/?random') no-repeat;
+    background: #e1e1e1;
     background-size: cover;
     background-position: center;
     margin-bottom: 50px;
@@ -627,17 +667,29 @@ table.table {
     display: flex;
     width: 100%;
     height: calc(100vh + 5rem);
-    position: absolute;
-    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,ffffff+100&0+0,0.04+25,0.19+58,1+89 */
-    background: -moz-linear-gradient(top, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.04) 25%, rgba(255, 255, 255, 0.19) 60%, rgba(255, 255, 255, 1) 100%, rgba(255, 255, 255, 1) 100%);
-    /* FF3.6-15 */
-    background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.04) 25%, rgba(255, 255, 255, 0.19) 60%, rgba(255, 255, 255, 1) 100%, rgba(255, 255, 255, 1) 100%);
-    /* Chrome10-25,Safari5.1-6 */
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.04) 25%, rgba(255, 255, 255, 0.19) 60%, rgba(255, 255, 255, 1) 100%, rgba(255, 255, 255, 1) 100%);
-    /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff', GradientType=0);
-    /* IE6-9 */
-    z-index: 0;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    overflow-x: hidden;
+
+    &__gradient-mask {
+        display: flex;
+        width: 100vw;
+        max-width: 100%;
+        height: calc(100vh + 5rem);
+        position: absolute;
+        left: 0;
+        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,ffffff+100&0+0,0.04+25,0.19+58,1+89 */
+        background: -moz-linear-gradient(top, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.04) 25%, rgba(255, 255, 255, 0.19) 60%, rgba(255, 255, 255, 1) 100%, rgba(255, 255, 255, 1) 100%);
+        /* FF3.6-15 */
+        background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.04) 25%, rgba(255, 255, 255, 0.19) 60%, rgba(255, 255, 255, 1) 100%, rgba(255, 255, 255, 1) 100%);
+        /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.04) 25%, rgba(255, 255, 255, 0.19) 60%, rgba(255, 255, 255, 1) 100%, rgba(255, 255, 255, 1) 100%);
+        /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff', GradientType=0);
+        /* IE6-9 */
+        z-index: 0;
+    }
 }
 
 .footer {
@@ -645,8 +697,6 @@ table.table {
   display: flex;
   align-items: center;
   background: #dbdbdb;
-  position: relative;
-  bottom: -100px;
 
   &__copyright {
     font-size: 14px;
@@ -765,4 +815,170 @@ table.table {
     background: #777777;
     color: $pure-white;
 
+}
+
+.mb {
+    &-42px {
+        margin-bottom: 2.625rem;
+    }
+
+    &-50px {
+        margin-bottom: 3.125rem;
+    }
+
+    &-123px {
+        margin-bottom: 7.688rem;
+    }
+}
+
+.mt {
+    &-48px {
+        margin-top: 3rem;
+    }
+
+    &-60px {
+        margin-top: 3.75rem;
+    }
+}
+
+.footer-banner {
+    display: flex;
+    flex-flow: row wrap;
+    width: 100%;
+    height: 30.63rem;
+    background: #252525;
+    align-items: center;
+    justify-items: center;
+    color: $pure-white;
+
+    &__header {
+        flex: 1 100%;
+        align-self: start;
+    }
+
+    &__body {
+        align-self: baseline;
+    }
+
+    &__footer {
+        align-self: baseline
+    }
+}
+
+.other-features {
+    list-style: none;
+    padding: 0;
+
+    & li {
+        padding-left: 1.3rem;
+        padding-top: 3.25rem;
+
+        &:first-child {
+            padding-top: 0;
+        }
+
+        &.fa-cutlery,
+        &.fa-trash-o {
+            padding-top: 1.7rem;
+        }
+
+        &.fa-home:before {
+            content: "\f015";
+            font-family: FontAwesome;
+            display: inline-block;
+            margin-left: -1.3em;
+            width: 1.3em;
+            font-size: 22px;
+        }
+
+        &.fa-search:before {
+            content: "\f002";
+            font-family: FontAwesome;
+            display: inline-block;
+            margin-left: -1.3em;
+            width: 1.3em;
+            font-size: 22px;
+        }
+
+        &.fa-credit-card:before {
+            content: "\f09d";
+            font-family: FontAwesome;
+            display: inline-block;
+            margin-left: -1.3em;
+            width: 1.3em;
+            font-size: 22px;
+        }
+
+        &.fa-money:before {
+            content: "\f0d6";
+            font-family: FontAwesome;
+            display: inline-block;
+            margin-left: -1.3em;
+            width: 1.3em;
+            font-size: 22px;
+        }
+
+        &.fa-cutlery:before {
+            content: "\f0f5";
+            font-family: FontAwesome;
+            display: inline-block;
+            margin-left: -1.3em;
+            width: 1.3em;
+            font-size: 22px;
+        }
+
+        &.fa-map-marker:before {
+            content: "\f041";
+            font-family: FontAwesome;
+            display: inline-block;
+            margin-left: -1.3em;
+            width: 1.3em;
+            font-size: 22px;
+        }
+
+        &.fa-users:before {
+            content: "\f0c0";
+            font-family: FontAwesome;
+            display: inline-block;
+            margin-left: -1.3em;
+            width: 1.3em;
+            font-size: 22px;
+        }
+
+        &.fa-trash-o:before {
+            content: "\f014";
+            font-family: FontAwesome;
+            display: inline-block;
+            margin-left: -1.3em;
+            width: 1.3em;
+            font-size: 22px;
+        }
+
+        &.fa-envelope-o:before {
+            content: "\f003";
+            font-family: FontAwesome;
+            display: inline-block;
+            margin-left: -1.3em;
+            width: 1.3em;
+            font-size: 22px;
+        }
+        
+    }
+}
+
+.light-link {
+    color: $pure-white;
+    &:hover, &:focus {
+        color: lightgrey;
+    }
+}
+
+.text-underline {
+    text-decoration: underline;
+}
+
+.height {
+    &-390px {
+        height: 24.38rem;
+    }
 }

@@ -1,12 +1,6 @@
 <%- image_url = Store.first.home_page_images.collect { |i| i.background.url }.sample(1)%>
-<div class="row mx-0 justify-content-center align-content-center"
-  style="
-      background: url('<%=  image_url[0] %>') no-repeat;
-      background-position: top left;
-      background-size: cover;
-      width: 100%;
-      height: calc(100vh + 5rem);
-      overflow-x: hidden;">
+<div class="row mx-0 justify-content-center align-items-center home-banner"
+  style="background-image: url('<%=  image_url[0] %>');">
   <div class="text-center pt-4" style="background: rgba(255,255,255,.9); height: 254px; width: 790px; z-index: 1">
     <h2 class="text-uppercase font-family-montserrat">Tagline Lorem Ipsum</h2>
     <p class="mb-0 font-size-18">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent justo urna, finibus sit amet</p>
@@ -14,10 +8,10 @@
     <p class=" font-size-18">hendrerit vel. Lorem ipsum dolor sit amey.</p>
     <%= link_to 'Lets get started', '/user_registrations', class: 'btn btn-brown text-uppercase font-family-montserrat-semi-bold font-size-18 px-4' %>
   </div>
-  <div class="row home-banner"></div>
+  <div class="home-banner__gradient-mask"></div>
 </div>
 
-<div class="row mx-0 justify-content-center transparent-bg">
+<div class="row mx-0 justify-content-center transparent-bg mb-123px">
   <div class="text-center">
     <i class="fa fa-map-marker fa-2x"></i>
     <h4>Serving Monroe, Spring Valley, Monsey, Chesnut Ridge</h4>
@@ -25,47 +19,45 @@
   </div>
 </div>
 
-<div class="row mx-0 justify-content-center">
+<div class="row mx-0 justify-content-center mb-42px">
   <div class="container text-center">
-    <h3 class="text-uppercase font-family-montserrat">how it works</h3>
+    <h4 class="text-uppercase font-family-montserrat">how it works</h4>
   </div>
 </div>
 
 <div class="row mx-0 justify-content-center">
-  <div class="container row text-center">
+  <div class="container row text-center align-items-end">
     <div class="col">
       <div class="text-center">
-        <img src="/uploads/icon/svg" alt="" class="rounded">
+        <img src="<%= asset_pack_path 'packs/images/pen_icon.png' %>" alt="" class="rounded">
       </div>
-      <h5>Sign Up + Account Setup</h5>
+      <span class="font-size-18 font-family-montserrat">Sign Up + Account Setup</span>
     </div>
     <div class="col">
       <div class="text-center">
-        <img src="/uploads/icon/svg" alt="" class="rounded">
+        <img src="<%= asset_pack_path 'packs/images/select_meal_icon.png' %>" alt="" class="rounded">
       </div>
-      <h5>Setup your daily menu</h5>
+      <span class="font-size-18 font-family-montserrat">Setup your daily menu</span>
     </div>
     <div class="col">
       <div class="text-center">
-        <img src="/uploads/icon/svg" alt="" class="rounded">
+        <img src="<%= asset_pack_path 'packs/images/shopping_cart_icon.png' %>" alt="" class="rounded">
       </div>
-      <h5>Check Out</h5>
+      <span class="font-size-18 font-family-montserrat">Check Out</span>
     </div>
     <div class="col">
       <div class="text-center">
-        <img src="/uploads/icon/svg" alt="" class="rounded">
+        <img src="<%= asset_pack_path 'packs/images/eat_icon.png' %>" alt="" class="rounded">
       </div>
-      <h5>Wait for the delivery + Eat</h5>
+      <span class="font-size-18 font-family-montserrat">Wait for the delivery + Eat</span>
     </div>
   </div>
 </div>
 
-<div class="container">
+<div class="container mb-50px">
   <hr class="pb-4">
-  <div class="row justify-content-center">
-    <div class="col-4 col-md-4 col-lg-4">
-      <%= link_to 'Learn More', '/how_it_works', class: 'btn btn-brown-outline-rounded font-family-montserrat-semi-bold text-uppercase' %>
-      <%= link_to 'Register', '/user_registrations', class: 'btn btn-brown-outline-rounded font-family-montserrat-semi-bold text-uppercase' %>
-    </div>
+  <div class="container text-center">
+    <%= link_to 'Learn More', '/how_it_works', class: 'btn btn-brown-outline-rounded font-family-montserrat-semi-bold text-uppercase' %>
+    <%= link_to 'Register', '/user_registrations', class: 'btn btn-brown-outline-rounded font-family-montserrat-semi-bold text-uppercase' %>
   </div>
 </div>

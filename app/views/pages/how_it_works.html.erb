@@ -1,12 +1,122 @@
-<div class="banner">
+<div class="banner" style="background-image: url('<%= asset_pack_path 'packs/images/how_it_works_banner_bg.jpg'%>')">
   <div class="fishnet">
   </div>
 </div>
 
 <div class="row mx-0">
   <div class="col text-center">
-    <h3 class="text-uppercase font-family-montserrat">How it works</h3>
+    <h4 class="text-uppercase font-family-montserrat">How it works</h4>
     <p class="mb-0 font-size-18">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent justo urna, finibus sit amet</p>
     <p class="font-size-18">tempor vitae, facilisis quis neque</p>
+  </div>
+</div>
+
+<div class="row mx-0 justify-content-center">
+  <div class="container row text-center align-items-end">
+    <div class="col">
+      <div class="text-center">
+        <img src="<%= asset_pack_path 'packs/images/pen_icon.png' %>" alt="" class="rounded">
+      </div>
+      <span class="font-size-18 font-family-montserrat">Sign Up + Account Setup</span>
+    </div>
+    <div class="col">
+      <div class="text-center">
+        <img src="<%= asset_pack_path 'packs/images/select_meal_icon.png' %>" alt="" class="rounded">
+      </div>
+      <span class="font-size-18 font-family-montserrat">Setup your daily menu</span>
+    </div>
+    <div class="col">
+      <div class="text-center">
+        <img src="<%= asset_pack_path 'packs/images/shopping_cart_icon.png' %>" alt="" class="rounded">
+      </div>
+      <span class="font-size-18 font-family-montserrat">Check Out</span>
+    </div>
+    <div class="col">
+      <div class="text-center">
+        <img src="<%= asset_pack_path 'packs/images/eat_icon.png' %>" alt="" class="rounded">
+      </div>
+      <span class="font-size-18 font-family-montserrat">Wait for the delivery + Eat</span>
+    </div>
+  </div>
+</div>
+
+<div class="row mx-0 justify-content-center mt-3">
+  <div class="container row text-center align-items-start">
+    <div class="col">
+      <span class="font-size-14">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent justo urna, finibus sit amet tempor vitae.
+      </span>
+    </div>
+    <div class="col">
+      <span class="font-size-14">
+        Choose from 4 Plan Choices. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent justo urna,
+      </span>
+    </div>
+    <div class="col">
+      <span class="font-size-14">
+        Check out is easy and safe! Just make sure you’ve addded all your info when you register. Lorem ipsum dolor sit.
+      </span>
+    </div>
+    <div class="col">
+      <span class="font-size-14">
+        Get it today, delivered to your home or office!
+      </span>
+    </div>
+  </div>
+</div>
+
+<div class="row mx-0 justify-content-center mt-60px mb-50px">
+  <div class="container row text-center align-items-start">
+    <div class="col">
+      <span class="font-size-18 font-family-montserrat">
+        Tagline here lorem sit amet dolor sit amet!
+      </span>
+      <%= link_to 'View Our Menu', '/the_menu', 
+        class: 'btn btn-brown-outline-rounded font-family-montserrat text-uppercase ml-4' %>
+    </div>
+  </div>
+</div>
+
+
+<div class="footer-banner" 
+  style="background-image: url('<%= asset_pack_path "packs/images/how_it_works_footer_banner_bg.jpg" %>');">
+  <div class="footer-banner__header mt-48px">
+    <h4 class="text-center text-uppercase">Why Order from us? / other features</h4>
+  </div>
+  <div class="footer-banner__body container">
+    <div class="row justify-content-center">
+      <div class="col">
+        <ul class="other-features">
+          <li class="fa-home">Order breakfast and lunch daily online</li>
+          <li class="fa-search">Track orders live from the site</li>
+          <li class="fa-credit-card">Cash or Card payment</li>
+        </ul>
+      </div>
+      <div class="col">
+        <ul class="other-features">
+          <li class="fa-money">You can get free delivery with orders amount to $14.99 and up</li>
+          <li class="fa-cutlery">We offer a separate Diet Menu</li>
+          <li class="fa-map-marker">Multiple delivery locations</li>
+        </ul>
+      </div>
+      <div class="col">
+        <ul class="other-features">
+          <li class="fa-users">Gets free delivery with orders from group of 5 and more</li>
+          <li class="fa-trash-o">Disable the service on spot</li>
+          <li class="fa-envelope-o">Receive billing through Email notifications</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer-banner__footer container mb-4">
+    <div class="row text-center">
+      <div class="col">
+        <p class="font-size-18 font-family-montserrat">
+          To receive a brochure in yiddish click <%= link_to 'here', '#', class: 'light-link text-underline' %>
+        </p>
+        <%= link_to 'Questions? Contact Us', '/contact_us', 
+          class: 'btn btn-outline-light text-uppercase font-family-montserrat' %>
+      </div>
+    </div>
   </div>
 </div>
