@@ -9,10 +9,8 @@ $sugar-free-color: #eaaf30;
 $gluten-free-color: #a0410d;
 $pure-white: #ffffff;
 $disabled-step-bg: #737272;
-$lato: "Lato",
-sans-serif;
-$montserrat: "Montserrat",
-sans-serif;
+$lato: "Lato", sans-serif;
+$montserrat: "Montserrat", sans-serif;
 $base-dark: #252525;
 $base-darker: #191919;
 
@@ -48,7 +46,6 @@ body {
 h {
     &1,&2,&3,&4,&5,&6 {
         font-family: $montserrat;
-        font-weight: normal;
     }
 }
 
@@ -980,5 +977,62 @@ table.table {
 .height {
     &-390px {
         height: 24.38rem;
+    }
+}
+
+.fullwidth-bg {
+    display: flex;
+    width: 100%;
+    height: calc(100vh - 6.25rem);
+    position: relative;
+    background: gray;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    align-items: center;
+    justify-content: center;
+
+    & > .fishnet {
+        width: inherit;
+        height: inherit;
+    }
+}
+
+.login-form {
+    display: flex;
+    width: 33.75rem;
+    height: 17.19rem;
+    position: absolute;
+    background: $pure-white;
+
+    & > div {
+        width: inherit;
+        height: inherit;
+    }
+}
+
+
+.login-control {
+    &::placeholder {
+        color: #252525;
+        font-style: italic;
+        text-align: center;
+    }
+}
+
+.contact-form__container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background: $pure-white;
+}
+
+.half_banner_bg {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    & > div {
+        width: inherit;
+        height: inherit;
     }
 }

@@ -1,1 +1,53 @@
-
+<div class="fullwidth-bg">
+  <div class="contact-form__container justify-content-center align-items-center">
+    <div class="col-10">
+      <h4 class="text-uppercase">Contact Us</h4>
+      <div class="row mb-3">
+        <div class="col">
+          <h6>
+            Give Us a Call<br>
+            <small>123.456.7890</small>
+          </h6>
+        </div>
+        <div class="col">
+          <h6>
+            Questions?<br>
+            <small>info@frishtug.com</small>
+          </h6>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col">
+          <h6>
+            Headquarters Address<br>
+            <small>123 Imperial Beach Blvd, Imperial Beach, CA, 91932</small>
+          </h6>
+        </div>
+      </div>
+      <h5>Send Us a Message</h5>
+      <%= form_with url: '#' do |f| %>
+        <div class="form-group row">
+          <div class="col">
+            <%= f.text_field :first_name, class: 'form-control', placeholder: 'First Name*' %>
+          </div>
+          <div class="col">
+            <%= f.text_field :last_name, class: 'form-control', placeholder: 'Last Name*' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <%= f.email_field :email, class: 'form-control', placeholder: 'Email*' %>
+        </div>
+        <div class="form-group">
+          <%= f.text_area :message, class: 'form-control', placeholder: 'Message*' %>
+        </div>
+        <%= f.submit :send, class: 'btn btn-brown text-uppercase font-family-montserrat', style: 'padding: 0.375rem 5rem;' %>
+      <% end %>
+      <%= link_to "#", class: 'btn btn-outline-dark font-family-montserrat mt-3' do %>
+        <i class="fa fa-download chocolate-font-color"></i> Download Yiddish Brochure
+      <% end %>
+    </div>
+  </div>
+  <div class="half_banner_bg" style="background-image: url('<%= asset_pack_path 'packs/images/contact_bg.jpg' %>');">
+    <div class="fishnet"></div>
+  </div>
+</div>

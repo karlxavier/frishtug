@@ -1,31 +1,34 @@
 
-<%= full_width_jumbotron do %>
-  <div class="row justify-content-center">
-    <div class="col-4 col-md-4 col-lg-3">
-      <h1 class="text-center">Log In</h1>
+<div class="fullwidth-bg" style="background-image: url('<%= asset_pack_path "packs/images/login_bg.jpg" %>')">
+  <div class="fishnet"></div>
+  <div class="login-form">
+    <div class="row align-items-center justify-content-center mx-0">
+      <div class="col-6">
+        <h4 class="text-center text-uppercase font-family-montserrat">Log In</h4>
 
-      <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-        <div class="field">
-          <%= f.email_field :email, autofocus: true, class: 'form-control rounded-0 mb-3', placeholder: 'Email' %>
-        </div>
-
-        <div class="field">
-          <%= f.password_field :password, autocomplete: "off", class: 'form-control rounded-0 mb-3', placeholder: 'password' %>
-        </div>
-
-        <% if devise_mapping.rememberable? -%>
+        <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
           <div class="field">
-            <%= f.check_box :remember_me %>
-            <%= f.label :remember_me %>
+            <%= f.email_field :email, autofocus: true, class: 'form-control rounded-0 mb-3 login-control', placeholder: 'Email' %>
           </div>
-        <% end -%>
 
-        <div class="actions mx-auto col-6">
-          <%= f.submit "Log in", class: 'text-uppercase btn btn-brown px-4' %>
-        </div>
-      <% end %>
+          <div class="field">
+            <%= f.password_field :password, autocomplete: "off", class: 'form-control rounded-0 mb-3 login-control', placeholder: 'password' %>
+          </div>
 
-      <%# render "users/shared/links" %>
+          <% if devise_mapping.rememberable? -%>
+            <div class="field">
+              <%= f.check_box :remember_me %>
+              <%= f.label :remember_me %>
+            </div>
+          <% end -%>
+
+          <div class="actions mx-auto col-6">
+            <%= f.submit "Log in", class: 'text-uppercase btn btn-brown px-4' %>
+          </div>
+        <% end %>
+
+        <%# render "users/shared/links" %>
+      </div>
     </div>
   </div>
-<% end %>
+</div>

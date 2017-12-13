@@ -7,8 +7,9 @@ module BootstrapHelper
     end
   end
 
-  def full_width_jumbotron(klass = nil, &block)
-    content_tag :div, class: "jumbotron jumbotron-fluid #{klass}" do
+  def full_width_jumbotron(option = {}, &block)
+    option[:class] = "#{option[:class]} jumbotron jumbotron-fluid"
+    content_tag :div, option do
       content_tag :div, class: 'container-fluid' do
         yield block if block_given?
       end
