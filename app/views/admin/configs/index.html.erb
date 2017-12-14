@@ -41,22 +41,14 @@
     <div class="col-md-8">
       <div class="form-group">
         <label for="">Home Page Images</label>
-        <div class="dropzone">
-          <% if @store_config.home_page_images? %>
-            <div>
-              <%- @store_config.home_page_images.each_with_index do |image, index| %>
-                <%= image_tag image.url, height: '100', class: 'rounded raised-1' %>
-              <% end %>
-            </div>
-          <% else %>
-            <span>Drag your image's here</span>
-            <span>or</span>
-            <%= f.label :home_page_images, 'Browse', class: 'btn btn-outline-secondary' %>
-          <% end %>
-        </div>
-        <%= f.file_field :home_page_images, 
-              class: 'd-none dropzone_file only_image', 
-              multiple: true, id: 'store_home_page_images' %>
+        <% if @store_config.home_page_images? %>
+          <div>
+            <%- @store_config.home_page_images.urls(preview: '200x200', quality: 'best').each do |url| %>
+              <%= image_tag url, height: '100', class: 'rounded raised-1' %>
+            <% end %>
+          </div>
+        <% end %>
+        <%= f.uploadcare_uploader :home_page_images, uploadcare: { multiple: true } %>
       </div>
     </div>
     <div class="col-md-4">
@@ -65,7 +57,4 @@
       } %>
     </div>
   <% end %>
-<% end %>
-<%- content_for :footer_js do %>
-  <%= javascript_pack_tag 'admin/simple_dropzone' %>
 <% end %>

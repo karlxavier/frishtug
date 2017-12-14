@@ -4,7 +4,7 @@
 %>
 <div class="card col-md-3 px-0 border-0 mb-4 mt-1 mx-3" data-meal-id="<%= menu.id %>" data-meal-price="<%= menu.price %>" data-meal-name="<%= menu.name %>">
   <img class="card-img-top"
-    src="<%= menu.image_url(:medium) if menu.image? %>"
+    src="<%= menu.image.url(quality: 'better', progressive: 'yes', preview: '200x200') if menu.image? %>"
     alt="<%= menu.name.titleize %>"
     height="175">
   <div class="card-body px-0 py-1">

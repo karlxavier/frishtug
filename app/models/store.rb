@@ -17,7 +17,7 @@ class Store < ApplicationRecord
 
   accepts_nested_attributes_for :tax
 
-  mount_uploaders :home_page_images, ImageUploader
+  has_uploadcare_group :home_page_images
 
   def save_zip(zipcodes)
     self.allowed_zip_code_ids = create_zip_from(zipcodes)

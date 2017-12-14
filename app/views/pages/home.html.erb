@@ -1,4 +1,4 @@
-<%- image_url = Store.first.home_page_images.collect { |i| i.background.url }.sample(1)%>
+<%- image_url = Store.first.home_page_images.urls(quality: 'normal', progressive: 'yes').sample(1) %>
 <div class="row mx-0 justify-content-center align-items-center home-banner"
   style="background-image: url('<%=  image_url[0] %>');">
   <div class="text-center pt-4" style="background: rgba(255,255,255,.9); height: 254px; width: 790px; z-index: 1">

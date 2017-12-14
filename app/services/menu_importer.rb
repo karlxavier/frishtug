@@ -128,7 +128,7 @@ class MenuImporter
   end
 
   def upload_images(menu, image_urls)
-    ImageWorker.perform_async(menu.ids, image_urls)
+    FileWorker.perform_async(menu.ids, image_urls)
   end
 
   def menu_import(menus)

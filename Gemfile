@@ -55,6 +55,8 @@ gem 'roo', '~> 2.7', '>= 2.7.1'
 gem 'sidekiq'
 gem 'stripe'
 gem 'trix'
+gem 'uploadcare-rails', '~> 1.1'
+gem 'virtus'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

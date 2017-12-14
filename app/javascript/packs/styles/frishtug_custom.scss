@@ -197,6 +197,21 @@ label,
     justify-content: center;
     flex-direction: column;
     font-size: 14px;
+
+    & .uploadcare--widget {
+        padding: 5rem 13.5rem;
+    }
+
+    & .uploadcare--widget__button_type_open {
+        background-color: transparent;
+        border: 1px solid #868e96;
+        color: #868e96;
+        &:hover,
+        &:focus {
+            background-color: #868e96;
+            color: $pure-white;
+        }
+    }
 }
 
 .is_dragging {
@@ -632,6 +647,9 @@ table.table {
 }
 
 .fishnet {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAALklEQVQYlWNgYGBIYyAM0jAY+BThU4zTgDRiFCErIMbdxCkkymqiPENU8BAV4ABXmAf59Sd8AAAAAABJRU5ErkJggg==') repeat;
 }
 
@@ -1002,7 +1020,6 @@ table.table {
     display: flex;
     width: 33.75rem;
     height: 17.19rem;
-    position: absolute;
     background: $pure-white;
 
     & > div {

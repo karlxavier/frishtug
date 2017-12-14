@@ -2,12 +2,10 @@ module Inventoriable
   extend ActiveSupport::Concern
 
   included do
-    before_create :create_inventory
+    after_create :create_inventory_entry
   end
 
-  private
-
-  def create_inventory
+  def create_inventory_entry
     self.create_inventory!(inventory_id: SecureRandom.urlsafe_base64(10))
   end
 end

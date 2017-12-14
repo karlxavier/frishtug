@@ -20,11 +20,12 @@
 #
 
 class Menu < ApplicationRecord
-  includes Inventoriable
+  include Inventoriable
+  #include FileDeletable
   belongs_to  :unit
   belongs_to  :menu_category
   belongs_to  :diet_category, optional: true
-  has_one     :inventory
+  has_one     :inventory, dependent: :destroy
   
   has_and_belongs_to_many :add_ons
   has_and_belongs_to_many :orders
@@ -34,7 +35,7 @@ class Menu < ApplicationRecord
   validates :name, uniqueness: true
   validate :sanitize_price
 
-  mount_uploader :image, ImageUploader
+  has_uploadcare_file :image
   before_save :generate_item_number_from_first_letters_of_name
 
   scope :filter_by_category, -> (category_id) { where(menu_category_id: category_id) }

@@ -1,7 +1,8 @@
 <div class="col-12 col-sm-4 col-md-4 col-xl-3" id="<%= menu.name.parameterize %>">
   <div class="card border-0 <%= 'draft-card' if !menu.published? %>">
     <%= link_to edit_admin_menu_path(menu.id, format: :js), class: "#{menu.name.parameterize}", remote: true do %>
-      <img class="card-img-top rounded raised-1 no-hover-raised" src="<%= menu.image_url(:medium) if menu.image? %>" alt="Card image cap" height="175">
+      <img class="card-img-top rounded raised-1 no-hover-raised" 
+        src="<%= menu.image.url(quality: 'better', progressive: 'yes', preview: '200x200') if menu.image? %>" alt="Card image cap" height="175">
     <% end %>
     <div class="card-body px-0 py-0 pt-3">
       <h5 class="card-title font-family-montserrat">

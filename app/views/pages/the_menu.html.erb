@@ -12,7 +12,7 @@
 </div>
 
 <%
-  category_id = params[:category] || MenuCategory.first.id
+  category_id = params[:category] || MenuCategory.published_menus.first.id
 %>
 <ul class="nav nav-pills justify-content-center mt-4" id="category_navs">
   <% MenuCategory.published_menus.each do |category| %>
@@ -45,7 +45,6 @@
     May Contain Allergens
   </li>
 </ul>
-
 
 <% MenuCategory.where(id: category_id).each do |category| %>
   <div class="row mt-4 mx-0" id="<%= category.name.parameterize %>">

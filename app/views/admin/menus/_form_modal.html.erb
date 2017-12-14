@@ -38,15 +38,8 @@
   <%= f.label :photo %>
   <div class="form-group">
     <div class="dropzone">
-      <% if menu.image? %>
-        <%= image_tag menu.image_url, height: '100', class: 'rounded raised-1' %>
-      <% else %>
-        <span>Drag your image here</span>
-        <span>or</span>
-        <%= f.label :image, 'Browse', class: 'btn btn-outline-secondary' %>
-      <% end %>
+      <%= f.uploadcare_field :image %>
     </div>
-    <%= f.file_field :image, class: 'd-none dropzone_file single_file only_image' %>
   </div>
   <%= f.submit 'Save as Draft', class: 'btn btn-outline-secondary float-right ml-3' %>
   <%= f.submit 'Publish', class: 'btn btn-brown float-right' %>
