@@ -133,7 +133,7 @@ h {
     background: $chocolate!important;
     border-color: $chocolate;
     color: $pure-white !important;
-    
+
     &:hover,
     &:focus {
         background: lighten( $chocolate, 5%);
@@ -161,7 +161,7 @@ h {
         color: $chocolate!important;
         border-radius: 3px!important;
         padding-left: 1.5rem!important;
-        padding-right: 1.5rem!important; 
+        padding-right: 1.5rem!important;
         &:hover,
         &:focus {
             background: $chocolate;
@@ -718,14 +718,14 @@ table.table {
   }
 
   &-nav {
-    
+
     &__ul {
       list-style: none;
     }
-  
+
     &__items {
       display: inline-flex;
-      
+
       &:after {
         content: '|';
         display: inline-flex;
@@ -782,7 +782,7 @@ table.table {
     &.sugar-free path {
         fill: burlywood;
     }
-    
+
     &.gluten-free path {
         fill: rgb(224,143,88);
     }
@@ -977,7 +977,7 @@ table.table {
             width: 1.3em;
             font-size: 22px;
         }
-        
+
     }
 }
 
@@ -1001,7 +1001,7 @@ table.table {
 .fullwidth-bg {
     display: flex;
     width: 100%;
-    height: calc(100vh - 6.25rem);
+    height: 100vh;
     position: relative;
     background: gray;
     background-position: center;
@@ -1048,8 +1048,21 @@ table.table {
     display: flex;
     width: 100%;
     height: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
     & > div {
         width: inherit;
         height: inherit;
     }
+}
+
+
+.notifications {
+    width: 30rem;
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    margin-bottom: 0;
+    z-index: 1031;
 }

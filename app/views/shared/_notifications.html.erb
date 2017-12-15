@@ -1,4 +1,2 @@
-<% if notice || alert %>
-  <p class="notice"><%= notice %></p>
-  <p class="alert"><%= alert %></p>
-<% end %>
+<%= devise_notifications(notification: notice, type: :notice) %>
+<%= devise_notifications(notification: alert, type: :alert) %>

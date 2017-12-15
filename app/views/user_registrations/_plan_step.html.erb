@@ -20,16 +20,16 @@
           <% end %>
         </p>
         <p class="card-text text-upcase">Note:</p>
-        <small class="card-text">
+        <small class="card-text text-left">
           <%= p.description.html_safe %>
         </small>
       </div>
       <div class="card-footer">
         <label for="<%= "#{p.name.parameterize}-#{p.id}" %>" class="btn btn-brown plan--btns">
-          <input type="radio" 
-          name="registration_form[plan_id]" 
-          value="<%= p.id %>" 
-          id="<%= "#{p.name.parameterize}-#{p.id}" %>" 
+          <input type="radio"
+          name="registration_form[plan_id]"
+          value="<%= p.id %>"
+          id="<%= "#{p.name.parameterize}-#{p.id}" %>"
           class="d-none"
           @click="setInterVal('<%= p.interval || 'single_order' %>')">
           Choose <%= p.name %>

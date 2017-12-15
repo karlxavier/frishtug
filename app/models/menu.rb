@@ -21,12 +21,10 @@
 
 class Menu < ApplicationRecord
   include Inventoriable
-  #include FileDeletable
   belongs_to  :unit
   belongs_to  :menu_category
   belongs_to  :diet_category, optional: true
   has_one     :inventory, dependent: :destroy
-  
   has_and_belongs_to_many :add_ons
   has_and_belongs_to_many :orders
   has_and_belongs_to_many :temp_orders
@@ -41,7 +39,7 @@ class Menu < ApplicationRecord
   scope :filter_by_category, -> (category_id) { where(menu_category_id: category_id) }
 
   def sanitize_price
-    errors.add(:price, 'should be atleast 0.01') if price.nil? || price < 0.01
+    errors.add(:price, 'should be atleast 0.01') if price || price < 0.01
   end
 
   def category

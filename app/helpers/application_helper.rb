@@ -88,7 +88,7 @@ module ApplicationHelper
 
   def disabled_text
     '<i class="fa fa-spinner fa-spin"></i> Processing...'
-  end 
+  end
 
   def print_btn(options = {})
     options[:onclick] = 'window.print()'
@@ -101,5 +101,23 @@ module ApplicationHelper
     link_to path, options do
       "<i class='fa fa-download burlywood-font-color mr-1'></i> #{name}".html_safe
     end
+  end
+
+  def devise_notifications(notification:, type:)
+    return if notification.nil?
+    alert_class = {
+      notice: 'alert-success',
+      alert: 'alert-danger'
+    }
+
+    html = <<-HTML
+      <div class=\"alert #{alert_class[type]} notifications alert-dismissible fade show\">
+        #{notification}
+        <button type='button' class='close' data-dismiss='alert' aria-label='Close'>
+          <span aria-hidden='true'>&times;</span>
+        </button>
+      </div>
+    HTML
+    html.html_safe
   end
 end

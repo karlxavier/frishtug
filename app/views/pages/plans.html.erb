@@ -12,7 +12,7 @@
 <div class="container mt-48px">
   <div class="card-deck">
     <% Plan.all.sort.each do |p| %>
-      <div class="card text-center <%= p.name.parameterize %>"
+      <div class="card <%= p.name.parameterize %>"
         data-plan-name="<%= p.name %>"
         data-plan-price="<%= p.price %>"
         data-plan-interval="<%= p.interval || 'single_order' %>"
@@ -24,7 +24,7 @@
           <p class="card-text plan--description">
             <%= p.short_description.html_safe %>
           </p>
-          <p class="card-text">
+        <p class="card-text">
             <% if p.free? %>
               FREE DELIVERY!
             <% else %>
@@ -55,13 +55,23 @@
 <div class="footer-banner height-390px mt-48px"
   style="background-image: url('<%= asset_pack_path "packs/images/plan_footer_banner_bg.jpg" %>');">
   <div class="footer-banner__header mt-48px">
-    <h4 class="text-center text-uppercase">Notes to remember:</h4>
+    <div class="container">
+      <div class="row mx-0 justify-content-center">
+        <div class="col-6">
+          <h4 class="text-uppercase">Notes to remember:</h4>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="footer-banner__body container text-center">
-    <p>If you select Option 3 ($10/day $200/month), you will be charged</p>
-    <p>for the full monthly delivery fee of $40, regardless of whether or not</p>
-    <p>your add-ons for some meals take you above the amount that would</p>
-    <p>normally benefit from free delivery.</p>
+  <div class="footer-banner__body container">
+    <div class="row mx-0 justify-content-center">
+      <div class="col-6">
+        <p>If you select Option 3 ($10/day $200/month), you will be charged</p>
+        <p>for the full monthly delivery fee of $40, regardless of whether or not</p>
+        <p>your add-ons for some meals take you above the amount that would</p>
+        <p>normally benefit from free delivery.</p>
+      </div>
+    </div>
   </div>
   <div class="footer-banner__footer container mb-4">
   </div>
