@@ -57,12 +57,12 @@ gem 'stripe'
 gem 'trix'
 gem 'uploadcare-rails', '~> 1.1'
 gem 'virtus'
+gem 'dotenv-rails', groups: [:development, :test, :production]
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'database_cleaner'
-  gem 'dotenv-rails'
   gem 'factory_girl_rails'
   gem 'faker'
   gem 'fuubar'

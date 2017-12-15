@@ -6,8 +6,6 @@
 <div class="row mx-0">
   <div class="col text-center">
     <h3 class="text-uppercase font-family-montserrat">Plan Options</h3>
-    <p class="mb-0 font-size-18">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent justo urna, finibus sit amet</p>
-    <p class="font-size-18">tempor vitae, facilisis quis neque</p>
   </div>
 </div>
 
@@ -24,18 +22,18 @@
             <%= p.name %>
           </h4>
           <p class="card-text plan--description">
-            <%= p.description.html_safe %>
+            <%= p.short_description.html_safe %>
           </p>
           <p class="card-text">
             <% if p.free? %>
-              Free Deliver
+              FREE DELIVERY!
             <% else %>
               <%= p.shipping_note %>
             <% end %>
           </p>
           <p class="card-text text-upcase">Note:</p>
           <small class="card-text">
-            <%= p.note %>
+            <%= p.description.html_safe %>
           </small>
         </div>
         <div class="card-footer">
@@ -60,17 +58,10 @@
     <h4 class="text-center text-uppercase">Notes to remember:</h4>
   </div>
   <div class="footer-banner__body container text-center">
-    <p>Notes that the users should know could be listed here.</p>
-    <p>if some one selects the $10 pkg and adds to it after sign up extra items they will not get free shipping.</p>
-    <p>Option 2 is for Office Groups, and will have 1 delivery point. (No multiple drop off locations)</p>
-    <p>Customer has to log in before 11am in order to change tomorrow's menu.</p>
-    <p>
-      Option to select multiple delivery locations for service type worker, like contractors, customer needs to change the <br>
-      address a day before 11 am for the change of address delivery.
-    </p>
-    <p>
-      Etcetera
-    </p>
+    <p>If you select Option 3 ($10/day $200/month), you will be charged</p>
+    <p>for the full monthly delivery fee of $40, regardless of whether or not</p>
+    <p>your add-ons for some meals take you above the amount that would</p>
+    <p>normally benefit from free delivery.</p>
   </div>
   <div class="footer-banner__footer container mb-4">
   </div>

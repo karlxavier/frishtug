@@ -60,7 +60,16 @@ class Admin::PlansController < Admin::BaseController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def plan_params
-    params.require(:plan).permit(:name, 
-      :description, :price, :shipping, :shipping_fee, :interval, :for_type)
+    params.require(:plan).permit(
+      :name,
+      :description,
+      :price,
+      :shipping,
+      :shipping_fee,
+      :interval,
+      :for_type,
+      :short_description,
+      :shipping_note
+    )
   end
 end

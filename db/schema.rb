@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171213072049) do
+ActiveRecord::Schema.define(version: 20171215010621) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -232,6 +232,7 @@ ActiveRecord::Schema.define(version: 20171213072049) do
     t.string "interval"
     t.integer "users_count", default: 0
     t.string "for_type"
+    t.string "short_description", limit: 150
     t.index ["stripe_plan_id"], name: "index_plans_on_stripe_plan_id"
   end
 
