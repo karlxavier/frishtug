@@ -10,18 +10,18 @@
           <%= p.name %>
         </h4>
         <p class="card-text plan--description">
-          <%= p.description.html_safe %>
+          <%= p.short_description.html_safe %>
         </p>
         <p class="card-text">
           <% if p.free? %>
-            Free Deliver
+            FREE DELIVERY!
           <% else %>
             <%= p.shipping_note %>
           <% end %>
         </p>
         <p class="card-text text-upcase">Note:</p>
         <small class="card-text">
-          <%= p.note %>
+          <%= p.description.html_safe %>
         </small>
       </div>
       <div class="card-footer">

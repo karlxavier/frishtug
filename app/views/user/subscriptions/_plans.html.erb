@@ -3,13 +3,13 @@
     <div class="card text-center <%= p.name.parameterize %>"
       data-plan-name="<%= p.name %>"
       data-plan-price="<%= p.price %>"
-        data-plan-shipping-fee="<%= p.shipping_fee? ? p.shipping_fee : 0 %>">
+      data-plan-shipping-fee="<%= p.shipping_fee? ? p.shipping_fee : 0 %>">
       <div class="card-body">
         <h4 class="card-title">
           <%= p.name %>
         </h4>
         <p class="card-text plan--description">
-          <%= p.description.html_safe %>
+          <%= p.short_description.html_safe %>
         </p>
         <p class="card-text">
           <% if p.free? %>
@@ -20,7 +20,7 @@
         </p>
         <p class="card-text text-upcase">Note:</p>
         <small class="card-text">
-          <%= p.note %>
+          <%= p.description.html_safe %>
         </small>
       </div>
       <div class="card-footer">
