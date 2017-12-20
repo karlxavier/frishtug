@@ -7,9 +7,7 @@
           <div class="row" id="<%= category.name.parameterize %>">
             <div class="container-fluid">
               <div class="row">
-                <% category.menus.each do |menu| %>
-                  <%= render 'shared/menus/products', { menu: menu, control: true, fmodel: fmodel } %>
-                <% end %>
+                <%= render partial: 'menus/menu_with_controls', collection: category.menus, as: :menu, locals: {type: type} %>
               </div>
             </div>
           </div>

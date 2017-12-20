@@ -1,5 +1,9 @@
 <%# render 'shared/menus/products', menu: menu, control: true  %>
-<div class="card col-12 col-custom-255 px-0 border-0 mb-4 mt-1 mr-4" data-meal-id="<%= menu.id %>" data-meal-price="<%= menu.price %>" data-meal-name="<%= menu.name %>">
+<div
+  class="card col-12 col-custom-255 px-0 border-0 mb-4 mt-1 mr-4"
+  data-meal-id="<%= menu.id %>"
+  data-meal-price="<%= menu.price %>"
+  data-meal-name="<%= menu.name %>">
   <img class="card-img-top"
     src="<%= menu.image.url(quality: 'better', preview: '200x200') if menu.image? %>"
     alt="<%= menu.name.titleize %>"

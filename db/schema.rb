@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171215010621) do
+ActiveRecord::Schema.define(version: 20171220061901) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -146,6 +146,7 @@ ActiveRecord::Schema.define(version: 20171215010621) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "inventory_id"
+    t.integer "quantity"
     t.index ["inventory_id"], name: "index_inventories_on_inventory_id"
     t.index ["menu_id"], name: "index_inventories_on_menu_id"
   end
@@ -191,6 +192,7 @@ ActiveRecord::Schema.define(version: 20171215010621) do
     t.bigint "order_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "quantity"
     t.index ["menu_id"], name: "index_menus_orders_on_menu_id"
     t.index ["order_id"], name: "index_menus_orders_on_order_id"
   end

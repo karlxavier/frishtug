@@ -26,7 +26,8 @@ class Menu < ApplicationRecord
   belongs_to  :diet_category, optional: true
   has_one     :inventory, dependent: :destroy
   has_and_belongs_to_many :add_ons
-  has_and_belongs_to_many :orders
+  has_many :menus_orders
+  has_many :orders, through: :menus_orders
   has_and_belongs_to_many :temp_orders
 
   validates :name, :unit_id, :menu_category_id, :price, presence: true
@@ -37,10 +38,6 @@ class Menu < ApplicationRecord
   before_save :generate_item_number_from_first_letters_of_name
 
   scope :filter_by_category, -> (category_id) { where(menu_category_id: category_id) }
-
-  def sanitize_price
-    errors.add(:price, 'should be atleast 0.01') if price || price < 0.01
-  end
 
   def category
     self.menu_category
@@ -58,10 +55,14 @@ class Menu < ApplicationRecord
   end
 
   def to_json_for_cart(options = {})
-    self.as_json(options).merge({quantity: 1}).to_json
+    self.as_json(options).merge({quantity: 1, _delete: nil}).to_json
   end
 
   private
+
+  def sanitize_price
+    errors.add(:price, 'should be atleast 0.01') if price && price < 0.01
+  end
 
   def generate_item_number_from_first_letters_of_name
     return if self[:item_number].present?

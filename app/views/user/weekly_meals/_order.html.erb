@@ -10,12 +10,12 @@
     </div>
   </div>
   <div class="row">
-    <% order[:menus].each do |category_name, meals| %>
+    <% order[:menus_orders].each do |category_name, meals| %>
       <div class="col-6">
         <h6 class="text-uppercase"><%= category_name %></h6>
         <ul class="list-unstyled">
-        <% meals.group_by(&:name).each do |name, items| %>
-          <li><%= name %> <%= "x #{items.length}" %></li>
+        <% meals.each do |meal| %>
+          <li><%= meal.menu.name %> <%= "x #{meal.quantity}" %></li>
         <% end %>
         </ul>
       </div>

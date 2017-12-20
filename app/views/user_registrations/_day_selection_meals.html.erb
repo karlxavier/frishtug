@@ -1,10 +1,10 @@
 <div class="row">
-  <div class="col-md-9" v-if="interval === 'month'">
+  <div class="col-md-9 menu-items__container_for_five_days" v-if="interval === 'month'">
     <vue-tabs>
       <% (1..5).each do |n| %>
         <v-tab :title="date_names[<%= n - 1 %>]">
           <div id="day-<%= n %>" class="tab_pane mt-3">
-            <%= render 'meals', { categorized_menus: categorized_menus, fmodel: "day_#{n}" } %>
+            <%= render 'meals', { categorized_menus: categorized_menus, type: "day_#{n}" } %>
           </div>
         </v-tab>
       <% end %>
@@ -12,8 +12,8 @@
   </div>
 
   <div class="col-md-9" v-else>
-    <div id="single_order" class="mt-3">
-      <%= render 'meals', { categorized_menus: categorized_menus, fmodel: "single_order" } %>
+    <div id="single_order" class="mt-3 menu-item__container">
+      <%= render 'meals', { categorized_menus: categorized_menus, type: "single" } %>
     </div>
   </div>
 
@@ -30,45 +30,100 @@
     <hr>
     <div class="row order-field">
       <div class="col">
-        <div class="order-list"></div>
-      </div>
-      <script id="order-template" type="text/x-template">
-        <h6 class="text-upperclass order-title"></h6>
-        <table class="order-table table table-sm">
-          <tbody></tbody>
-        </table>
-        <hr>
-        <div>
-          <h6 class="font-weight-bold">Total <span class="meal-total float-right"></span></h6>
-        </div>
-      </script>
+        <div class="order-list">
+          <div v-if="interval !== 'month'">
+            <table class="order-table table table-sm">
+              <tbody>
+                <tr class="order-list-items" v-for="order in cart">
+                  <td class="meal-name border-0 text-left">{{ order.name }}</td>
+                  <td class="meal-counter border-0 text-center">
+                    <a href="javascript:void(0)"
+                      class="remove-meal mx-1 chocolate-font-color"
+                      :data-value="newItemJson(order)"
+                      data-control-type="single"
+                      data-control="remove" @click="removeToCart($event)">
+                      <i class="fa fa-minus-square-o" :data-value="newItemJson(order)"
+                      data-control-type="single"
+                      data-control="remove"></i>
+                    </a>
+                    <span class="meal-count">{{ order.quantity }}</span>
+                    <a href="javascript:void(0)"
+                      class="add-meal mx-1 chocolate-font-color"
+                      :data-value="newItemJson(order)"
+                      data-control-type="single"
+                      data-control="add" @click="addToCart($event)">
+                      <i class="fa fa-plus-square-o" :data-value="newItemJson(order)"
+                      data-control-type="single"
+                      data-control="add"></i>
+                    </a>
+                  </td>
+                  <td class="meal-price border-0 text-right">
+                    {{ order.price | to_currency }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <hr>
+            <div>
+              <h6 class="font-weight-bold">
+                Total <span class="meal-total float-right"> {{ cart | total_price | to_currency }}</span>
+              </h6>
+            </div>
+          </div>
 
-      <script type="text/x-template" id="order-list-template">
-        <table class="table table-sm">
-          <tbody>
-            <tr class="order-list-items">
-              <td class="meal-name border-0 text-left"></td>
-              <td class="meal-counter border-0 text-center">
-                <a href="javascript:void(0)" class="remove-meal mx-1 chocolate-font-color">
-                  <i class="fa fa-minus-square-o"></i>
-                </a>
-                <span class="meal-count"></span>
-                <a href="javascript:void(0)" class="add-meal mx-1 chocolate-font-color">
-                  <i class="fa fa-plus-square-o"></i>
-                </a>
-              </td>
-              <td class="meal-price border-0 text-right"></td>
-            </tr>
-          </tbody>
-        </table>
-      </script>
+          <div v-else>
+            <div v-for="orders in cart">
+              <div v-for="(day, index) in orders">
+                <h6 class="text-upperclass order-title mb-0">{{ index | get_num | get_date_name }}</h6>
+                <table class="order-table table table-sm">
+                  <tbody>
+                    <tr class="order-list-items" v-for="item in day">
+                      <td class="meal-name border-0 text-left">{{ item.name }}</td>
+                      <td class="meal-counter border-0 text-center">
+                        <a href="javascript:void(0)"
+                          class="remove-meal mx-1 chocolate-font-color"
+                          :data-value="newItemJson(item)"
+                          :data-control-type="index"
+                          data-control="remove" @click="removeToCart($event)">
+                          <i class="fa fa-minus-square-o" :data-value="newItemJson(item)"
+                          :data-control-type="index"
+                          data-control="remove"></i>
+                        </a>
+                        <span class="meal-count">{{ item.quantity }}</span>
+                        <a href="javascript:void(0)"
+                          class="add-meal mx-1 chocolate-font-color"
+                          :data-value="newItemJson(item)"
+                          :data-control-type="index"
+                          data-control="add" @click="addToCart($event)">
+                          <i class="fa fa-plus-square-o" :data-value="newItemJson(item)"
+                          :data-control-type="index"
+                          data-control="add"></i>
+                        </a>
+                      </td>
+                      <td class="meal-price border-0 text-right">
+                        {{ item.price | to_currency }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <hr>
+                <div>
+                  <h6 class="font-weight-bold">
+                    Total <span class="meal-total float-right mb-4"> {{ day | total_price | to_currency }} </span>
+                  </h6>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <hr>
     <div class="row justify-content-center">
       <div class="col">
-        <a href="javascript:void(0)" class="btn btn-brown disabled btn--save-meal-plan btn-block" @click="showCongrats">
-        Save Meal Plan
-      </a>
+        <a href="javascript:void(0)" class="btn btn-brown btn--save-meal-plan btn-block" @click="showCongrats">
+          Save Meal Plan
+        </a>
       </div>
     </div>
   </div>

@@ -8,16 +8,16 @@ module InventoryAccounting
   private
 
   def create_inventory_transactions!
-    return unless self.completed?
-    
-    self.menu_ids.each { |menu_id| create_transactions(menu_id) }
+    return unless completed?
+
+    menu_ids.each { |menu_id| create_transactions(menu_id) }
   end
 
   def create_transactions(menu_id)
-    inventory = Inventory.find_by_menu_id(menu_id)
-    transaction = 
+    inventory = Inventory.where(menu_id: menu_id).last
+    transaction =
       inventory.inventory_transactions.between_transaction_date?(range)
-        .first_or_create!(transaction_date: time_today, quantity_sold: 0)
+               .first_or_create!(transaction_date: time_today, quantity_sold: 0)
 
     transaction.quantity_sold += 1
     transaction.save!

@@ -91,7 +91,11 @@ h {
     }
 
     &-14 {
-        font-size: 0.875!important;
+        font-size: 0.875rem!important;
+    }
+
+    &-15 {
+        font-size: 0.9375rem!important;
     }
 
     &-16 {
@@ -176,7 +180,7 @@ h {
 label,
 .text-muted-frish,
 .nav-tabs a.nav-link {
-    color: $muted-color!important;
+    color: #898989!important;
     &:hover,
     &:focus {
         color: $base-dark;
@@ -669,11 +673,17 @@ table.table {
 
 .navbar-frishtug {
     & li.nav-item {
-        &.active>a {
+        &.active> a.nav-link {
+            color: #403936!important;
             font-weight: 700;
         }
-        &>a {
-            letter-spacing: 0.4px;
+
+        &>a.nav-link {
+            color: #898989!important;
+            letter-spacing: 0.2px;
+            padding-left: 1.063rem!important;
+            padding-right: 1.063rem!important;
+            font-weight: 500;
         }
     }
 }

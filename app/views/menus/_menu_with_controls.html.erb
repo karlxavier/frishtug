@@ -1,0 +1,50 @@
+<%# render 'shared/menus/products', menu: menu, control: true  %>
+<%
+  target_class = "meal-counter__#{menu.name.parameterize.underscore}"
+  target_class += "__day__#{day}" if !defined?(day).nil?
+%>
+<%= content_tag :div,
+  class: 'card col-12 col-custom-255 px-0 border-0 mb-4 mt-1 mr-4' do %>
+  <img class="card-img-top"
+    src="<%= menu.image.url(quality: 'better', preview: '200x200') if menu.image? %>"
+    alt="<%= menu.name.titleize %>"
+    height="175">
+  <div class="card-body px-0 py-1">
+    <h5 class="card-title mb-0 font-family-montserrat">
+      <%= menu.name.titleize %>
+      <span class="fa fa-star diet-icons <%= menu.diet_category&.name&.parameterize %>">&nbsp;</span>
+    </h5>
+    <div class="row">
+      <div class="col-5">
+        <p class="card-text">
+          <small class="text-muted">
+            <%= to_currency(menu.price) %> / <%= menu.unit.name.capitalize %>
+          </small>
+        </p>
+      </div>
+      <div class="col cart-controls">
+        <%= link_to '-', 'javascript:void(0)',
+          class: 'ctrl-btns btn btn-brown meal-ctrl-btns-minus rounded-0 disabled cart-controls__remove',
+          data: {
+            value: menu.to_json_for_cart(only: %i[id name price]),
+            control: 'remove',
+            control_target: ".#{target_class}__#{type}",
+            control_type: "#{type}"
+          }
+        %>
+        <span class="meal-counter <%= "#{target_class}__#{type}"  %>">
+          0
+        </span>
+        <%= link_to '+', 'javascript:void(0)',
+          class: 'ctrl-btns btn btn-brown meal-ctrl-btns-plus rounded-0',
+          data: {
+            value: menu.to_json_for_cart(only: %i[id name price]),
+            control: 'add',
+            control_target: ".#{target_class}__#{type}",
+            control_type: "#{type}"
+          }
+        %>
+      </div>
+    </div>
+  </div>
+<% end %>

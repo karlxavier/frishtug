@@ -8,6 +8,7 @@
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  inventory_id :string
+#  quantity     :integer
 #
 
 class Inventory < ApplicationRecord

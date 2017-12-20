@@ -41,13 +41,25 @@
       </div>
       <div class="form-group row">
         <div class="col">
-          <%= form.text_field :zip_code,  name: 'registration_form[addresses][][zip_code]', class: 'form-control', placeholder: 'Zipcode', 'v-model': 'address.address_zip', 'v-on:blur': 'validateZip($event, "billing_address", index)', 'v-on:keyup': 'limitInput($event, 5) + onlyNumber($event)' %>
+          <%= form.text_field :zip_code,
+              name: 'registration_form[addresses][][zip_code]',
+              class: 'form-control',
+              placeholder: 'Zipcode',
+              'v-model': 'address.address_zip',
+              'v-on:blur': 'validateZip($event, "billing_address", index)',
+              'v-on:keyup': 'limitInput($event, 5) + onlyNumber($event)',
+              pattern: '(\d{5}([\-]\d{4})?)',
+              title: 'Format should be in the form of 12345' %>
           <div class="invalid-feedback">
             Zipcode is required and must be a US zip.
           </div>
         </div>
         <div class="col" v-if="index === 0">
-          <%= form.text_field :phone_number, class: 'form-control', placeholder: 'Phone Number' %>
+          <%= form.text_field :phone_number,
+            class: 'form-control',
+            placeholder: 'Phone Number',
+            pattern: '\d{3}[\-]\d{3}[\-]\d{4}',
+            title: 'Phone Number must be in the format of: 123-456-7890' %>
           <div class="invalid-feedback">
             Phone Number is required
           </div>

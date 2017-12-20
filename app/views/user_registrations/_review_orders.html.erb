@@ -14,19 +14,23 @@
       <tbody>
         <tr>
           <td>Choosen Plan</td>
-          <td class="choosen_plan text-right"></td>
+          <td class="choosen_plan text-right">{{ plan.name }}</td>
         </tr>
-        <tr>
+        <tr v-if="interval === 'month'">
           <td class="meals__text">5 meals per week</td>
-          <td class="price text-right"></td>
+          <td class="price text-right">{{ plan.price | to_currency }}</td>
+        </tr>
+        <tr v-else>
+          <td class="meals__text">Price</td>
+          <td class="price text-right">{{ totalCartPrice() | to_currency }}</td>
         </tr>
         <tr>
           <td>Shipping</td>
-          <td class="shipping text-right"></td>
+          <td class="shipping text-right">{{ plan.shipping_fee | to_currency }}</td>
         </tr>
       </tbody>
     </table>
-    
+
     <h4>Delivery Summary</h4>
     <table class="table">
       <tbody>
@@ -36,7 +40,7 @@
         </tr>
         <tr>
           <td>First Delivery Date</td>
-          <td class="first_delivery_date text-right"></td>
+          <td class="first_delivery_date text-right">{{ first_delivery_date }}</td>
         </tr>
       </tbody>
     </table>
@@ -46,7 +50,7 @@
         <strong>TOTAL</strong>
       </div>
       <div class="col">
-        <strong class="total_price_summary float-right"></strong>
+        <strong class="total_price_summary float-right">{{ totalCartPricePlusShippingFee() | to_currency }}</strong>
       </div>
     </div>
     <hr>

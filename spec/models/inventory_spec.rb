@@ -8,6 +8,7 @@
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  inventory_id :string
+#  quantity     :integer
 #
 
 RSpec.describe Inventory, type: :model do

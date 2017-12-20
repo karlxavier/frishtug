@@ -12,7 +12,7 @@ class Admin::ImportMenusController < Admin::BaseController
   def import
     @menu_importer = MenuImporter.new(params[:file])
     if @menu_importer.run
-      flash[:success] = successfull_message
+      successfull_message
     else
       flash[:error] = @menu_importer.errors.full_messages.join(', ')
     end
@@ -22,6 +22,6 @@ class Admin::ImportMenusController < Admin::BaseController
   private
 
   def successfull_message
-    "Successfully imported #{@menu_importer.size} #{'row'.pluralize(@menu_importer.size)}"
+    flash[:success] = "Successfully imported #{@menu_importer.size} #{'row'.pluralize(@menu_importer.size)}"
   end
 end

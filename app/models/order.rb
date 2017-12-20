@@ -20,7 +20,8 @@ class Order < ApplicationRecord
   include InventoryAccounting
   enum status: %i[in_transit completed]
   belongs_to :user
-  has_and_belongs_to_many :menus
+  has_many :menus_orders
+  has_many :menus, through: :menus_orders
   scope :completed, -> { where.not(delivered_at: nil) }
 
   def sub_total
@@ -39,8 +40,8 @@ class Order < ApplicationRecord
     where(delivered_at: nil).limit(5).includes(menus: [:menu_category]).map do |o|
       {
         placed_on: o.placed_on,
-        menus: o.menus.group_by do |m|
-          m.category.name
+        menus_orders: o.menus_orders.group_by do |m|
+          m.menu.category.name
         end
       }
     end

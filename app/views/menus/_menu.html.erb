@@ -1,0 +1,18 @@
+<%# render 'shared/menus/products', menu: menu, control: true  %>
+<div class="card col-12 col-custom-255 px-0 border-0 mb-4 mt-1 mr-4">
+  <img class="card-img-top"
+    src="<%= menu.image.url(quality: 'better', preview: '200x200') if menu.image? %>"
+    alt="<%= menu.name.titleize %>"
+    height="175">
+  <div class="card-body px-0 py-1">
+    <h5 class="card-title mb-0 font-family-montserrat">
+      <%= menu.name.titleize %>
+      <span class="fa fa-star diet-icons <%= menu.diet_category&.name&.parameterize %>">&nbsp;</span>
+    </h5>
+    <p class="card-text">
+      <small class="text-muted">
+        <%= to_currency(menu.price) %> / <%= menu.unit.name.capitalize %>
+      </small>
+    </p>
+  </div>
+</div>

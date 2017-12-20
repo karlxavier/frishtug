@@ -116,7 +116,7 @@ import swal from 'sweetalert2'
       })
     }
   }
-  
+
   const mealSelectorHandler = (event) => {
     const el = event.target
     const counter = el.closest('div.col').querySelector('span.meal-counter')
@@ -131,10 +131,10 @@ import swal from 'sweetalert2'
     if (el.classList.contains('meal-ctrl-btns-plus')) {
       order[param].meal_ids.push(mealId)
       addMeals(
-        param, 
-        mealName, 
-        mealId, 
-        mealPrice, 
+        param,
+        mealName,
+        mealId,
+        mealPrice,
         mealImage)
       order.total_count += 1
       order.total_price += parseFloat(mealPrice)
@@ -145,10 +145,10 @@ import swal from 'sweetalert2'
         const index = order[param].meal_ids.indexOf(mealId.toString())
         order[param].meal_ids.splice(index, 1)
         removeMeals(
-          param, 
-          mealName, 
-          mealId.toString(), 
-          mealPrice.toString(), 
+          param,
+          mealName,
+          mealId.toString(),
+          mealPrice.toString(),
           mealImage
         )
         order.total_count -= 1
@@ -218,7 +218,7 @@ import swal from 'sweetalert2'
       renderOrders()
     }
   }
-  
+
   const renderOrders = () => {
     const template = document.querySelector('#order-template').innerHTML
     const listTemplate = document.querySelector('#order-list-template').innerHTML
@@ -397,20 +397,20 @@ import swal from 'sweetalert2'
       if (plan_price > amount) { amount = plan_price }
       total = amount
       if (order.shipping_fee !== 0) { total = total + parseInt(order.shipping_fee) }
-      populateSched({ 
-        sched: 'Single Order', 
-        price: toCurrency(amount), 
-        text: 'Single Order', 
+      populateSched({
+        sched: 'Single Order',
+        price: toCurrency(amount),
+        text: 'Single Order',
         total: toCurrency(total),
         first_delivery: order.single_order.date
       })
     } else {
       plan_price = parseInt(extract_number(order.plan_price)[0])
       if (order.shipping_fee !== 0) { total = plan_price + parseInt(order.shipping_fee) }
-      populateSched({ 
-        sched: schedules, 
-        price: order.plan_price, 
-        text: '5 Meals per week', 
+      populateSched({
+        sched: schedules,
+        price: order.plan_price,
+        text: '5 Meals per week',
         total: order.plan_price,
         first_delivery: order.day_1.date
       })
@@ -445,7 +445,7 @@ import swal from 'sweetalert2'
       formData.append('registration_form[orders][][order_date]', order.single_order.date)
       formData.append('registration_form[orders][][menu_ids][]', order.single_order.meal_ids)
     }
-    
+
 
     formData.append('registration_form[stripe_token]', token)
     formData.append('registration_form[card_brand]', brand)

@@ -16,8 +16,8 @@
 <ul class="nav nav-pills justify-content-center mt-4" id="category_navs">
   <% MenuCategory.published_menus.each do |category| %>
     <li class="nav-item">
-      <%= link_to category.name.titleize, 
-                  page_path(id: 'the_menu', category: category.id), 
+      <%= link_to category.name.titleize,
+                  page_path(id: 'the_menu', category: category.id),
                   class: "nav-link btn btn-brown-outline mx-2 rounded-0 #{'active-btn' if category.id == category_id.to_i}" %>
     </li>
   <% end %>
@@ -48,10 +48,8 @@
 <% MenuCategory.where(id: category_id).each do |category| %>
   <div class="row mt-4 mx-0" id="<%= category.name.parameterize %>">
     <div class="container">
-      <div class="row justify-content-center">
-        <% category.menus.each do |menu| %>
-          <%= render 'shared/menus/products', { menu: menu } %>
-        <% end %>
+      <div class="row justify-content-center menu-items__container_for_five_days">
+        <%= render partial: 'menus/menu', collection: category.menus, as: :menu %>
       </div>
     </div>
   </div>

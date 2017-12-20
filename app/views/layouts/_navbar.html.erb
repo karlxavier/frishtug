@@ -7,27 +7,27 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav ml-auto">
         <li class="nav-item <%= active?('/') %>">
-          <%= nav_link 'Home', home_path, class: 'nav-link font-size-14 font-family-montserrat' %>
+          <%= nav_link 'Home', home_path, class: 'nav-link font-size-15 font-family-montserrat' %>
         </li>
         <li class="nav-item <%= active?(page_path(id: 'how_it_works')) %>">
-          <%= nav_link 'How It Works', page_path(id: 'how_it_works'), class: 'nav-link font-size-14 font-family-montserrat' %>
+          <%= nav_link 'How It Works', page_path(id: 'how_it_works'), class: 'nav-link font-size-15 font-family-montserrat' %>
         </li>
         <li class="nav-item <%= active?(page_path(id: 'plans')) %>">
-          <%= nav_link 'Plans', page_path(id: 'plans'), class: 'nav-link font-size-14 font-family-montserrat' %>
+          <%= nav_link 'Plans', page_path(id: 'plans'), class: 'nav-link font-size-15 font-family-montserrat' %>
         </li>
         <li class="nav-item <%= active?(page_path(id: 'the_menu')) %>">
-          <%= nav_link 'The Menu', page_path(id: 'the_menu'), class: 'nav-link font-size-14 font-family-montserrat' %>
+          <%= nav_link 'The Menu', page_path(id: 'the_menu'), class: 'nav-link font-size-15 font-family-montserrat' %>
         </li>
         <li class="nav-item <%= active?(page_path(id: 'contact_us')) %>">
-          <%= nav_link 'Contact Us', page_path(id: 'contact_us'), class: 'nav-link font-size-14 font-family-montserrat' %>
+          <%= nav_link 'Contact Us', page_path(id: 'contact_us'), class: 'nav-link font-size-15 font-family-montserrat' %>
         </li>
         <li class="nav-item <%= active?( new_user_session_path) %>">
           <% text = current_user ? 'Settings' : 'Log In' %>
-          <%= nav_link text, new_user_session_path, class: 'nav-link font-size-14 font-family-montserrat' %>
+          <%= nav_link text, new_user_session_path, class: 'nav-link font-size-15 font-family-montserrat' %>
         </li>
         <% unless current_user %>
           <li class="nav-item <%= active?(user_registrations_path) %>">
-            <%= nav_link 'Sign Up', user_registrations_path, class: 'nav-link btn btn-brown-outline-rounded font-family-montserrat-semi-bold text-uppercase' %>
+            <%= nav_link 'Sign Up', user_registrations_path, class: 'btn btn-brown-outline-rounded font-family-montserrat-semi-bold text-uppercase font-size-15' %>
           </li>
         <% end %>
       </ul>

@@ -2,7 +2,14 @@ class MenuImporter
   include ActiveModel::Validations
   require 'roo'
   validates :file, presence: true
-  REQUIRED_KEYS = %i[name price unit category].freeze
+  REQUIRED_KEYS = %i[
+    name
+    price
+    unit
+    category
+    quantity
+  ].freeze
+
   UPDATABLE_KEYS = %i[
     description
     price
@@ -21,16 +28,23 @@ class MenuImporter
   end
 
   def run
+    menus = []
+    image_urls = []
+    quantities = []
     ActiveRecord::Base.transaction do
-      menus = []
-      image_urls = []
       (2..spreadsheet.last_row).each do |i|
         row = to_hash(i)
         validate_keys(row, i)
         image_urls << row[:image]
+        quantities << row[:quantity]
         menus << create_menu_entry(row, i)
       end
-      upload_images(menu_import(menus), image_urls)
+      menus.first.save!
+      persisted_menus = Menu.import menus, on_duplicate_key_update: {
+        conflict_target: [:name], columns: UPDATABLE_KEYS
+      }
+      upload_images(persisted_menus.ids, image_urls)
+      update_inventory(persisted_menus.ids, quantities)
     end
     true
   rescue ActiveRecord::StatementInvalid => e
@@ -127,8 +141,12 @@ class MenuImporter
     spreadsheet.row(1).map(&:downcase)
   end
 
-  def upload_images(menu, image_urls)
-    FileWorker.perform_async(menu.ids, image_urls)
+  def update_inventory(menu_ids, quantities)
+    InventoryQtyWorker.perform_async(menu_ids, quantities)
+  end
+
+  def upload_images(menu_ids, image_urls)
+    FileWorker.perform_async(menu_ids, image_urls)
   end
 
   def menu_import(menus)

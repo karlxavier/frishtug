@@ -1,10 +1,9 @@
 <div class="card-deck">
   <% Plan.all.sort.each do |p| %>
-    <div class="card text-center <%= p.name.parameterize %>"
-      data-plan-name="<%= p.name %>"
-      data-plan-price="<%= p.price %>"
-      data-plan-interval="<%= p.interval || 'single_order' %>"
-      data-plan-shipping-fee="<%= p.shipping_fee? ? p.shipping_fee : 0 %>">
+    <%
+     shipping_fee =  p.shipping_fee? ? p.shipping_fee : 0
+    %>
+    <div class="card text-center <%= p.name.parameterize %>">
       <div class="card-body">
         <h4 class="card-title">
           <%= p.name %>
@@ -31,7 +30,7 @@
           value="<%= p.id %>"
           id="<%= "#{p.name.parameterize}-#{p.id}" %>"
           class="d-none"
-          @click="setInterVal('<%= p.interval || 'single_order' %>')">
+          @click="setInterVal('<%= p.interval || 'single_order' %>', <%= p.price %>, '<%= shipping_fee %>', '<%= p.name %>')">
           Choose <%= p.name %>
         </label>
       </div>
