@@ -17,14 +17,16 @@ class User::SubscriptionsController < User::BaseController
     end
   end
 
-  def choose_plans; end
+  def choose_plans
+    @plans = Plan.subscriptions.sort
+  end
 
   def subscribe
     subscribe_to_plan
     @subscription = StripeSubscriptioner.new(current_user)
     if @subscription.run
       redirect_to user_subscriptions_path, notice: 'Subscription successful'
-    else 
+    else
       flash[:error] = @subscription.errors.full_messages.join(', ')
       redirect_back fallback_location: :back
     end

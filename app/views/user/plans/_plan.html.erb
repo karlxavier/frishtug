@@ -1,0 +1,27 @@
+<div class="card text-center <%= plan.name.parameterize %>">
+  <img class="card-img-top card__plan_image"
+      src="<%= asset_pack_path "packs/images/#{plan.name.downcase.split(' ').join}.png" %>"
+      alt="Card image cap">
+  <div class="card-body card__plan_body">
+    <h4 class="card-title">
+      <%= plan.name %>
+    </h4>
+    <p class="card-text plan--description">
+      <%= plan.short_description.html_safe %>
+    </p>
+    <p class="card-text">
+      <% if plan.free? %>
+        Free Deliver
+      <% else %>
+        <%= plan.shipping_note %>
+      <% end %>
+    </p>
+    <p class="card-text text-upcase">Note:</p>
+    <small class="card-text text-left card__plan_note_text">
+      <%= plan.description.html_safe %>
+    </small>
+  </div>
+  <div class="card-footer card__plan_footer">
+    <%= link_to_btn "Choose #{plan.name}", subscribe_user_subscriptions_path(id: plan.id), 'btn-brown plan--btns' %>
+  </div>
+</div>

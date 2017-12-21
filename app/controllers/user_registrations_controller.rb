@@ -1,6 +1,6 @@
 class UserRegistrationsController < ApplicationController
   before_action :user_exists?
-  before_action :set_allowed_zip, only: :index
+  before_action :set_allowed_zip, :set_tax, only: :index
   require 'date_helpers/weeks'
   respond_to :js, except: :index
   SATURDAY = 6
@@ -8,6 +8,7 @@ class UserRegistrationsController < ApplicationController
   def index
     @registration = RegistrationForm.new
     @categorized_menus = MenuCategory.published_menus
+    @plans = Plan.all.sort
   end
 
   def create
@@ -81,5 +82,9 @@ class UserRegistrationsController < ApplicationController
     if current_user
       redirect_to root_url, notice: 'Already signed up'
     end
+  end
+
+  def set_tax
+    @tax_rate = Store.first.tax.rate
   end
 end

@@ -19,8 +19,11 @@
           <%= render 'payment_step', form: form %>
         </tab-content>
         <tab-content title="Meals">
-          <div class="container-fluid">
-            <%= render 'day_selection_meals', categorized_menus: @categorized_menus %>
+          <div style="position: relative">
+            <div class="container">
+              <%= render 'day_selection_meals', categorized_menus: @categorized_menus %>
+            </div>
+            <%= render 'cart' %>
           </div>
         </tab-content>
         <tab-content title="Review Order">
@@ -44,6 +47,7 @@
   <%= javascript_tag do %>
     localStorage.setItem('allowed_zip_codes', '<%= raw @allowed_zip_codes.to_json %>');
     localStorage.setItem('current_date_est', '<%= Date.current %>');
+    localStorage.setItem('tax_rate', <%= @tax_rate %>)
   <% end %>
 <% end %>
 

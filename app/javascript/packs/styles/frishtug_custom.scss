@@ -1097,6 +1097,9 @@ table.table {
             font-family: $montserrat;
             font-weight: 600;
             font-style: normal!important;
+            &.fa {
+                font-family: 'FontAwesome';
+            }
         }
     }
 
@@ -1105,5 +1108,105 @@ table.table {
         font-size: 0.875rem;
         font-weight: normal;
         margin-top: 6px;
+    }
+
+    input::placeholder {
+        font-style: italic;
+        color: #252525;
+    }
+
+    .width-185 {
+        width: 185px;
+    }
+
+    .meal-sidebar {
+        display: flex;
+        width: 23.13rem;
+        height: calc(100% + 3rem);
+        position: absolute;
+        top: -0.9rem;
+        right: -1.25rem;
+        flex-direction: column;
+        border-left: 1px solid #e1e1e1;
+        padding: 1rem 2rem;
+        overflow: hidden;
+
+        &__header {
+            display: flex;
+            flex-direction: row;
+            width: calc(100% + 4rem);
+            height: 6.0625rem;
+            margin: -1rem -2rem 0rem -2rem;
+            border-bottom: 1px solid #e1e1e1;
+            align-items: center;
+        }
+
+        &__body {
+            display: flex;
+            width: calc(100% + 4rem);
+            margin: 0rem -2rem 0rem -2rem;
+            border-bottom: 1px solid #e1e1e1;
+            max-height: 500px;
+            overflow-y: auto;
+
+            & .col {
+                padding-right: 2rem;
+                padding-left: 2rem;
+                padding-bottom: 2rem;
+            }
+
+            hr {
+                border-top: 2px solid #b4b4b4;
+            }
+        }
+
+        &__bottom_addon {
+            display: flex;
+            width: calc(100% + 4rem);
+            height: 4.8125rem;
+            margin: 0 -2rem 1.75rem -2rem;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 1px solid #e1e1e1;
+
+            & p {
+                margin-bottom: 0;
+            }
+        }
+
+        &__footer {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            justify-content: center;
+        }
+    }
+}
+
+.card__ {
+
+    &plan_image {
+        width: 189px;
+        height: 117px;
+        margin: 0 auto;
+    }
+
+    &plan_body {
+        width: 195px;
+        margin: 0 auto;
+        padding: 1.25rem 0;
+    }
+
+    &plan_note_text {
+        font-size: 12px;
+        font-style: italic;
+    }
+
+    &plan_footer {
+        border-top: 0;
+        text-align: center;
+        & .btn {
+            width: 195px;
+        }
     }
 }

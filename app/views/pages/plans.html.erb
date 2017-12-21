@@ -17,14 +17,17 @@
         data-plan-price="<%= p.price %>"
         data-plan-interval="<%= p.interval || 'single_order' %>"
         data-plan-shipping-fee="<%= p.shipping_fee? ? p.shipping_fee : 0 %>">
-        <div class="card-body">
+        <img class="card-img-top card__plan_image"
+          src="<%= asset_pack_path "packs/images/#{p.name.downcase.split(' ').join}.png" %>"
+          alt="Card image cap">
+        <div class="card-body card__plan_body">
           <h4 class="card-title">
             <%= p.name %>
           </h4>
           <p class="card-text plan--description">
             <%= p.short_description.html_safe %>
           </p>
-        <p class="card-text">
+          <p class="card-text">
             <% if p.free? %>
               FREE DELIVERY!
             <% else %>
@@ -32,11 +35,11 @@
             <% end %>
           </p>
           <p class="card-text text-upcase">Note:</p>
-          <small class="card-text text-left">
+          <small class="card-text text-left card__plan_note_text">
             <%= p.description.html_safe %>
           </small>
         </div>
-        <div class="card-footer">
+        <div class="card-footer card__plan_footer">
           <label for="<%= "#{p.name.parameterize}-#{p.id}" %>" class="btn btn-brown plan--btns">
             <input type="radio"
             name="registration_form[plan_id]"

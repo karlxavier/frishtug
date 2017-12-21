@@ -76,13 +76,48 @@ const registrationForm = new Vue({
     current_date: new Date(localStorage.getItem('current_date_est')),
     cart: [],
     plan_minimum: 0,
-    shopping_cart_shown: true
+    shopping_cart_shown: true,
+    tax_rate: parseFloat(localStorage.getItem('tax_rate'))
   },
   filters: {
     get_num: (val) => parseInt(val.match(/\d+/)[0]) - 1,
     get_date_name: (val) => registrationForm.date_names[val]
   },
   methods: {
+    totalTaxableItemsPrice: function(itemsCollection) {
+      const self = this
+      const filterTaxableItems = (item) => {
+        return item.tax
+      }
+
+
+      if (itemsCollection) {
+        const items = itemsCollection.filter(filterTaxableItems)
+        return items.map( item => item.price).reduce((sum, price) => {
+          return sum += price * (self.tax_rate/100)
+        }, 0)
+      } else {
+        const items = self.cart.filter(filterTaxableItems)
+        return items.map( item => item.price).reduce((sum, price) => {
+          return sum += price * (self.tax_rate/100)
+        }, 0)
+      }
+    },
+    cartHasTaxableItems: function(itemsCollection) {
+      const self = this
+      let items
+      const filterTaxableItems = (item) => {
+        return item.tax
+      }
+
+      if (itemsCollection) {
+        items = itemsCollection.filter(filterTaxableItems)
+      } else {
+        items = self.cart.filter(filterTaxableItems)
+      }
+      return items.length > 0
+    },
+    removeTaxFromPrice: function(price) { return price / ((this.tax_rate / 100) + 1)  },
     showShoppingCart: function() { this.shopping_cart_shown = true },
     hideShoppingCart: function() { this.shopping_cart_shown = false },
     totalCartPricePlusShippingFee: function(){
@@ -91,7 +126,8 @@ const registrationForm = new Vue({
         return self.plan.price + parseFloat(self.plan.shipping_fee)
       } else {
         const total = self.cart.reduce( (sum, item) => { return sum += parseFloat(item.price) }, 0)
-        return total + parseFloat(self.plan.shipping_fee)
+        const finalTotal = total > parseFloat(self.plan.price) ? total : self.plan.price
+        return finalTotal + parseFloat(self.plan.shipping_fee)
       }
     },
     totalCartPrice: function() {
@@ -99,7 +135,8 @@ const registrationForm = new Vue({
       if (self.interval === 'month') {
         return self.plan.price
       } else {
-        return self.cart.reduce( (sum, item) => { return sum += parseFloat(item.price) }, 0)
+        const total = self.cart.reduce( (sum, item) => { return sum += parseFloat(item.price) }, 0)
+        return total > parseFloat(self.plan.price) ? total : self.plan.price
       }
     },
     addToCart: (event) => {
@@ -394,26 +431,25 @@ const registrationForm = new Vue({
       const self = this
       let enable = false
 
-      const checkPrices = (item) => {
-        return item.price >= self.plan_minimum
+      const checkPrices = (price) => {
+        return price >= self.plan_minimum
       }
 
-      const checkIfAlltrue = (arr) => {
-        return arr === true
-      }
-
-      if (self.interval === 'month' && self.cart[0] !== undefined) {
+      if (self.interval === 'month') {
         let i
         let values = []
         for (i=0; i <= 4; i++) {
           const currentCartItems = self.cart[0][`day_${i+1}`]
-          values.push(currentCartItems.every(checkPrices))
+          values.push(
+            currentCartItems
+              .map( item => item.price)
+              .reduce( (sum, price) => {
+                return sum += parseFloat(price)
+              }, 0)
+          )
         }
 
-        console.log(values)
-        if (values.every(checkIfAlltrue)) {
-          enable = true
-        }
+        enable = values.every(checkPrices)
       }
 
       if (self.interval !== 'month') {
@@ -508,13 +544,21 @@ const completeAction = (token, brand) => {
   })
 }
 
+const disableBtnHandler = (btn) => {
+  const temp = btn.innerHTML
+  btn.innerHTML = "Complete Sign Up"
+  btn.dataset.disableWith = temp
+  btn.classList.remove('disable')
+}
+
 const stripeResponseHandler = (status, response) => {
   const form = document.querySelector('form#sign_up_form')
   const btn = form.querySelector('.complete-orders-btn')
+  let tempBtnContents
 
   if (response.error) {
-    const paymentError = form.querySelector('payment_errors')
     registrationForm.error_messages = response.error.message
+    disableBtnHandler(btn)
   } else {
     const token = response.id
     const brand = response.card.brand

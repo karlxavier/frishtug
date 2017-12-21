@@ -55,7 +55,7 @@ class Menu < ApplicationRecord
   end
 
   def to_json_for_cart(options = {})
-    self.as_json(options).merge({quantity: 1, _delete: nil}).to_json
+    self.as_json(options).merge({quantity: 1}).to_json
   end
 
   private

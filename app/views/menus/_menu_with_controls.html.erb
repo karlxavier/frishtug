@@ -26,7 +26,7 @@
         <%= link_to '-', 'javascript:void(0)',
           class: 'ctrl-btns btn btn-brown meal-ctrl-btns-minus rounded-0 disabled cart-controls__remove',
           data: {
-            value: menu.to_json_for_cart(only: %i[id name price]),
+            value: menu.to_json_for_cart(only: %i[id name price tax]),
             control: 'remove',
             control_target: ".#{target_class}__#{type}",
             control_type: "#{type}"
@@ -38,7 +38,7 @@
         <%= link_to '+', 'javascript:void(0)',
           class: 'ctrl-btns btn btn-brown meal-ctrl-btns-plus rounded-0',
           data: {
-            value: menu.to_json_for_cart(only: %i[id name price]),
+            value: menu.to_json_for_cart(only: %i[id name price tax]),
             control: 'add',
             control_target: ".#{target_class}__#{type}",
             control_type: "#{type}"

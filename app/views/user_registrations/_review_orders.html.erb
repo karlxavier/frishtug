@@ -6,51 +6,44 @@
         {{ error_messages }}
       </div>
     </div>
-    <h1>Review Order</h1>
+    <h3 class="text-uppercase text-center font-family-montserrat-medium font-size-24">
+      Review Order
+    </h3>
+    <span class="font-family-montserrat font-size-18 mb-2">Order Summary</span>
+    <div class="row mt-1">
+      <div class="col-5 font-family-lato-bold font-size-14">Choosen Plan</div>
+      <div class="col-7">{{ plan.name }}</div>
+    </div>
 
-    <h4>Order Summary</h4>
+    <div class="row mt-1" v-if="interval === 'month'">
+      <div class="col-5 font-family-lato-bold font-size-14">5 meals per week</div>
+      <div class="col-7">{{ plan.price | to_currency }}</div>
+    </div>
+    <div class="row mt-1" v-else>
+      <div class="col-5 font-family-lato-bold font-size-14">Total meals price</div>
+      <div class="col-7">{{ totalCartPrice() | to_currency }}</div>
+    </div>
 
-    <table class="table">
-      <tbody>
-        <tr>
-          <td>Choosen Plan</td>
-          <td class="choosen_plan text-right">{{ plan.name }}</td>
-        </tr>
-        <tr v-if="interval === 'month'">
-          <td class="meals__text">5 meals per week</td>
-          <td class="price text-right">{{ plan.price | to_currency }}</td>
-        </tr>
-        <tr v-else>
-          <td class="meals__text">Price</td>
-          <td class="price text-right">{{ totalCartPrice() | to_currency }}</td>
-        </tr>
-        <tr>
-          <td>Shipping</td>
-          <td class="shipping text-right">{{ plan.shipping_fee | to_currency }}</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <h4>Delivery Summary</h4>
-    <table class="table">
-      <tbody>
-        <tr class="d-none">
-          <td>Delivery Schedule</td>
-          <td class="delivery_schedule text-right"></td>
-        </tr>
-        <tr>
-          <td>First Delivery Date</td>
-          <td class="first_delivery_date text-right">{{ first_delivery_date }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="row mt-1">
+      <div class="col-5 font-family-lato-bold font-size-14">Shipping</div>
+      <div class="col-7">{{ plan.shipping_fee | to_currency }}</div>
+    </div>
     <hr>
-    <div class="row clearfix">
-      <div class="col">
-        <strong>TOTAL</strong>
+    <span class="font-family-montserrat font-size-18 mb-2">Delivery Summary</span>
+    <div class="row mt-1">
+      <div class="col-5 font-family-lato-bold font-size-14" v-if="interval === 'month'">First Delivery Date</div>
+      <div class="col-5 font-family-lato-bold font-size-14" v-else>Delivery Date</div>
+      <div class="col-7">{{ first_delivery_date }}</div>
+    </div>
+    <hr>
+    <div class="row mt-1 clearfix">
+      <div class="col-5">
+        <strong class="font-family-montserrat font-size-18">TOTAL</strong>
       </div>
-      <div class="col">
-        <strong class="total_price_summary float-right">{{ totalCartPricePlusShippingFee() | to_currency }}</strong>
+      <div class="col-7">
+        <strong class="font-size-18 font-family-lato-bold" style="color: #9bc634;">
+          {{ totalCartPricePlusShippingFee() | to_currency }}
+        </strong>
       </div>
     </div>
     <hr>

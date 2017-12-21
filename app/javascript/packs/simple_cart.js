@@ -30,13 +30,13 @@ const updateListeners = () => {
 const setCurrentActiveCart = (option) => {
   if (option === 'single') {
     currentActiveCart = shoppingCart
-    return
+  } else  {
+    currentActiveCart = shoppingCart[0][option]
   }
-
-  currentActiveCart = shoppingCart[0][option]
 }
 
 const setUpShoppingCartForFiveDays = () => {
+  shoppingCart = []
   const cartObject = {
     day_1: [],
     day_2: [],
