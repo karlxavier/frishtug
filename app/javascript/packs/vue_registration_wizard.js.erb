@@ -75,13 +75,16 @@ const registrationForm = new Vue({
     calendar: '',
     current_date: new Date(localStorage.getItem('current_date_est')),
     cart: [],
-    plan_minimum: 0
+    plan_minimum: 0,
+    shopping_cart_shown: true
   },
   filters: {
     get_num: (val) => parseInt(val.match(/\d+/)[0]) - 1,
     get_date_name: (val) => registrationForm.date_names[val]
   },
   methods: {
+    showShoppingCart: function() { this.shopping_cart_shown = true },
+    hideShoppingCart: function() { this.shopping_cart_shown = false },
     totalCartPricePlusShippingFee: function(){
       const self = this
       if (self.interval === 'month') {
@@ -174,6 +177,7 @@ const registrationForm = new Vue({
       this.plan.price = planPrice
 
       this.interval = interval
+      this.cart = []
       this.populateCalendar()
       this.nextTab()
     },
@@ -237,7 +241,8 @@ const registrationForm = new Vue({
         "[name='registration_form[line1]']",
         "[name='registration_form[city]']",
         "[name='registration_form[state]']",
-        "[name='registration_form[zip_code]']"
+        "[name='registration_form[zip_code]']",
+        "[name='registration_form[phone_number]']"
       ]
 
       return multiplePresenceValidator(inputs)

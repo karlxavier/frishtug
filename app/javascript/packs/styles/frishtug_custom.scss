@@ -1076,3 +1076,34 @@ table.table {
     margin-bottom: 0;
     z-index: 1031;
 }
+
+
+.shopping-cart__shown_btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+
+#registration-form {
+    .wizard-header {
+        padding: 5px;
+    }
+    .wizard-icon-circle {
+        width: 30px;
+        height: 30px;
+
+        & i.wizard-icon{
+            font-family: $montserrat;
+            font-weight: 600;
+            font-style: normal!important;
+        }
+    }
+
+    .stepTitle {
+        font-family: $lato;
+        font-size: 0.875rem;
+        font-weight: normal;
+        margin-top: 6px;
+    }
+}
