@@ -11,12 +11,8 @@
 
 <div class="container mt-48px">
   <div class="card-deck">
-    <% Plan.all.sort.each do |p| %>
-      <div class="card <%= p.name.parameterize %>"
-        data-plan-name="<%= p.name %>"
-        data-plan-price="<%= p.price %>"
-        data-plan-interval="<%= p.interval || 'single_order' %>"
-        data-plan-shipping-fee="<%= p.shipping_fee? ? p.shipping_fee : 0 %>">
+    <% @plans.each do |p| %>
+      <div class="card <%= p.name.parameterize %>">
         <img class="card-img-top card__plan_image"
           src="<%= asset_pack_path "packs/images/#{p.name.downcase.split(' ').join}.png" %>"
           alt="Card image cap">
@@ -40,15 +36,7 @@
           </small>
         </div>
         <div class="card-footer card__plan_footer">
-          <label for="<%= "#{p.name.parameterize}-#{p.id}" %>" class="btn btn-brown plan--btns">
-            <input type="radio"
-            name="registration_form[plan_id]"
-            value="<%= p.id %>"
-            id="<%= "#{p.name.parameterize}-#{p.id}" %>"
-            class="d-none"
-            @click="setInterVal('<%= p.interval || 'single_order' %>')">
-            Choose <%= p.name %>
-          </label>
+          <%= link_to "Choose #{p.name}", user_registrations_path(plan_name: p.name) ,class: 'btn btn-brown plan--btns' %>
         </div>
       </div>
     <% end %>

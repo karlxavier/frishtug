@@ -1,5 +1,6 @@
 class CalendarsController < ApplicationController
   before_action :set_date
+  require 'date_helpers/weeks'
   def index
     render json: {
       month: @date.strftime('%B %Y'),

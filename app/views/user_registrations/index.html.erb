@@ -1,7 +1,7 @@
 <%= form_with model: @registration, url: user_registrations_path(format: :js), id: 'sign_up_form' do |form| %>
   <div class="container-fluid px-0">
     <div id="registration-form">
-      <form-wizard @on-complete="onComplete" step-size="xs" color="#562d07">
+      <form-wizard @on-complete="onComplete" step-size="xs" color="#562d07" ref="wizard">
         <h2 slot="title"></h2>
         <tab-content title="Create Account" :before-change="accountValidations">
           <%= render 'sign_up_step', form: form %>
@@ -48,6 +48,7 @@
     localStorage.setItem('allowed_zip_codes', '<%= raw @allowed_zip_codes.to_json %>');
     localStorage.setItem('current_date_est', '<%= Date.current %>');
     localStorage.setItem('tax_rate', <%= @tax_rate %>)
+    localStorage.setItem('plans', '<%= raw @plan.to_json(only: %i[id name price shipping_fee interval]) %>');
   <% end %>
 <% end %>
 

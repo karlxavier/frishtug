@@ -1,22 +1,28 @@
-<div class="row justify-content-center align-items-center">
-  <div class="col-12 col-md-6 payment-method-options">
-    <h4 class="text-center text-uppercase">Payment</h4>
-    <% @registration.payment_methods.each do |payment_method| %>
-      <div class="form-check form-check-inline payment_methods">
-        <label for="<%= payment_method %>" class="form-check-label">
+<div class="row justify-content-center payment-step__container">
+  <div class="payment-step__body">
+    <div class="row justify-content-center align-items-center">
+      <div class="col payment-method-options">
+        <h4 class="text-center text-uppercase">Payment</h4>
+        <i class="font-family-lato font-size-16 text-center d-flex payment-step__gateway_text">
+          We use <a href="https://stripe.com">Stripe</a> for payment lorem ipsum dolor sit amet tin consecitur lorem<br>
+          uipsum dolor site sephi reyur ale dolorem.
+        </i>
+        <% @registration.payment_methods.each do |payment_method| %>
+          <div class="form-check form-check-inline payment_methods">
+            <label for="<%= payment_method %>" class="form-check-label payment-step__control_label">
 
-          <input type="radio" name="registration_form[payment_method]" class="form-check-input" value="<%= payment_method %>" id="<%= payment_method %>" v-model="payment_method">
-          Pay by <%= payment_method.to_s.humanize.titleize %>
-        </label>
+              <input type="radio" name="registration_form[payment_method]" class="form-check-input" value="<%= payment_method %>" id="<%= payment_method %>" v-model="payment_method">
+              Pay by <%= payment_method.to_s.humanize.titleize %>
+            </label>
+          </div>
+        <% end %>
+        <div class="col px-0 payment-method-container" v-if="payment_method === 'credit_card'">
+          <%= render 'credit_card' %>
+        </div>
+        <div class="col px-0 payment-method-container" v-else>
+          <%= render 'checking' %>
+        </div>
       </div>
-    <% end %>
-  </div>
-</div>
-<div class="row justify-content-center align-items-center">
-  <div class="col-12 col-md-6 payment-method-container" v-if="payment_method === 'credit_card'">
-    <%= render 'credit_card' %>
-  </div>
-  <div class="col-12 col-md-6 payment-method-container" v-else>
-    <%= render 'checking' %>
+    </div>
   </div>
 </div>

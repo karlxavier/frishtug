@@ -6,8 +6,8 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav ml-auto">
-        <li class="nav-item <%= active?('/') %>">
-          <%= nav_link 'Home', home_path, class: 'nav-link font-size-15 font-family-montserrat' %>
+        <li class="nav-item <%= active?(root_path) %>">
+          <%= nav_link 'Home', root_path, class: 'nav-link font-size-15 font-family-montserrat' %>
         </li>
         <li class="nav-item <%= active?(page_path(id: 'how_it_works')) %>">
           <%= nav_link 'How It Works', page_path(id: 'how_it_works'), class: 'nav-link font-size-15 font-family-montserrat' %>

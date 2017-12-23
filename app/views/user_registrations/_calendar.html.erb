@@ -1,5 +1,5 @@
-<div class="row justify-content-center">
-  <div class="col-8">
+<div class="row justify-content-center mb-3">
+  <div class="col-8 text-center">
     <a href="javascript:void(0)" v-on:click="changeCalendar(calendar.prev_month)">
       <i class="fa fa-angle-left" aria-hidden="true"></i>
     </a>
@@ -12,13 +12,13 @@
 
 <table class="calendar table table-bordered table-sm">
   <thead>
-    <th>S</th>
-    <th>M</th>
-    <th>T</th>
-    <th>W</th>
-    <th>T</th>
-    <th>F</th>
-    <th>S</th>
+    <th class="text-center">S</th>
+    <th class="text-center">M</th>
+    <th class="text-center">T</th>
+    <th class="text-center">W</th>
+    <th class="text-center">T</th>
+    <th class="text-center">F</th>
+    <th class="text-center">S</th>
   </thead>
   <tbody>
     <tr v-for="days in calendar.days">
@@ -26,8 +26,8 @@
         <span v-if="isDisabledDate(date)" class="disabled">
           {{ showDate(date) }}
         </span>
-        <a 
-        href="javascript:void(0)" 
+        <a
+        href="javascript:void(0)"
         v-on:click="selectDay(date)"
         :class="`date-${date}`"
         v-else>

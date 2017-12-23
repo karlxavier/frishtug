@@ -7,6 +7,8 @@ Rails.application.routes.draw do
   resources :calendars, only: :index
   resources :selected_dates, only: :index
   resources :past_noons, only: :index
+  resources :pages, only: :show, path: '/', as: :page, format: :false
+  root to: 'pages#show', id: 'home'
 
   require 'sidekiq/web'
 

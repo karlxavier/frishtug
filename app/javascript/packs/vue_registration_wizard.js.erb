@@ -20,15 +20,27 @@ Vue.use(VueTabs)
 // Days
 const mondayToFriday = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
 const sundayToThursday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"]
-
+const UserSelectedPlans = localStorage.getItem('plans')
+let planObj
+if (UserSelectedPlans !== 'null') {
+  const plan = JSON.parse(UserSelectedPlans)
+  planObj = plan
+  if (plan.interval == 'month') {
+    planObj.plan_minimum = parseFloat(plan.price) / 20
+  }
+  if (planObj.shipping_fee == null) { planObj.shipping_fee = 0 }
+} else {
+  planObj = { id: 0, name: '', price: 0, shipping_fee: 0, interval: '', plan_minimum: 0}
+}
 
 const registrationForm = new Vue({
   el: '#registration-form',
   data: {
     plan: {
-      name: '',
-      price: 0,
-      shipping_fee: 0
+      id: planObj.id,
+      name: planObj.name,
+      price: planObj.price,
+      shipping_fee: planObj.shipping_fee
     },
     first_delivery_date: '',
     payment_method: 'credit_card',
@@ -69,21 +81,46 @@ const registrationForm = new Vue({
     error_messages: '',
     tab_titles: mondayToFriday,
     allowed_zip_codes: JSON.parse(localStorage.getItem('allowed_zip_codes')),
-    interval: '',
+    interval: planObj.interval,
     delivery_dates: [],
     date_names: mondayToFriday,
     calendar: '',
     current_date: new Date(localStorage.getItem('current_date_est')),
     cart: [],
-    plan_minimum: 0,
+    plan_minimum: planObj.plan_minimum,
     shopping_cart_shown: true,
     tax_rate: parseFloat(localStorage.getItem('tax_rate'))
   },
   filters: {
     get_num: (val) => parseInt(val.match(/\d+/)[0]) - 1,
-    get_date_name: (val) => registrationForm.date_names[val]
+    get_date_name: (val) => registrationForm.date_names[val],
+    get_shipping_fee: (shippingFee) => {
+      if (shippingFee > 0) {
+        return toCurrency(shippingFee)
+      } else {
+        return 'Free'
+      }
+    }
   },
   methods: {
+    changeAddressType: (location) => {
+      if (location !== 'multiple_workplaces') {
+        registrationForm.billing_address = [registrationForm.billing_address[0]]
+      }
+    },
+    nextTabOrSkipTab: function() {
+      if (this.plan.id > 0) {
+        const div = document.querySelector('[aria-controls="Plan"]')
+        div.classList.add('checked')
+        div.closest('a').classList.remove('disabled')
+        this.populateCalendar()
+        this.cart = []
+        this.$refs.wizard.changeTab(1, 3)
+        setTimeout(changeCheckedTabs, 300)
+      } else {
+        this.$refs.wizard.nextTab()
+      }
+    },
     totalTaxableItemsPrice: function(itemsCollection) {
       const self = this
       const filterTaxableItems = (item) => {
@@ -197,7 +234,6 @@ const registrationForm = new Vue({
       const _this = registrationForm
       if (_this.interval === 'month') {
         getSchedule(date, _this)
-        _this.first_delivery_date = _this.delivery_dates[0]
       } else {
         _this.delivery_date = date
         _this.first_delivery_date = date
@@ -210,7 +246,11 @@ const registrationForm = new Vue({
       }
 
       this.plan.name = name
-      this.plan.shipping_fee = shipping_fee
+      if (shipping_fee !== null) {
+        this.plan.shipping_fee = shipping_fee
+      } else {
+        this.plan.shipping_fee = 0
+      }
       this.plan.price = planPrice
 
       this.interval = interval
@@ -242,9 +282,7 @@ const registrationForm = new Vue({
     onComplete: function() {
     },
     nextTab: function() {
-      const btn = document.querySelector('.wizard-btn')
-      const click = new Event('click')
-      btn.dispatchEvent(click)
+      this.$refs.wizard.nextTab()
       setTimeout(changeCheckedTabs, 300)
     },
     isActiveDeliveryDate: function(date) {
@@ -281,7 +319,6 @@ const registrationForm = new Vue({
         "[name='registration_form[zip_code]']",
         "[name='registration_form[phone_number]']"
       ]
-
       return multiplePresenceValidator(inputs)
     },
     paymentValidations: function() {
@@ -474,6 +511,7 @@ const getSchedule = (date, vueModel) => {
       _this.delivery_dates = res.dates
       _this.date_names = res.names
       _this.populateCalendar()
+      _this.first_delivery_date = res.dates[0]
     } else {
       errorEl.innerHTML = ''
       const div = document.createElement('div')
@@ -548,7 +586,7 @@ const disableBtnHandler = (btn) => {
   const temp = btn.innerHTML
   btn.innerHTML = "Complete Sign Up"
   btn.dataset.disableWith = temp
-  btn.classList.remove('disable')
+  btn.classList.remove('disabled')
 }
 
 const stripeResponseHandler = (status, response) => {

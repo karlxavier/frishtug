@@ -820,7 +820,11 @@ table.table {
     &-570px {
         width: 570px;
     }
+    &-540px {
+        width: 540px;
+    }
 }
+
 
 .wizard-tab-content {
     position: relative;
@@ -843,6 +847,15 @@ table.table {
 }
 
 .mb {
+
+    &-25px {
+        margin-bottom: 1.5625rem;
+    }
+
+    &-30px {
+        margin-bottom: 2rem;
+    }
+
     &-42px {
         margin-bottom: 2.625rem;
     }
@@ -857,12 +870,32 @@ table.table {
 }
 
 .mt {
+    &-25px {
+        margin-bottom: 1.5625rem;
+    }
+
+    &-30px {
+        margin-bottom: 2rem;
+    }
+
     &-48px {
         margin-top: 3rem;
     }
 
     &-60px {
         margin-top: 3.75rem;
+    }
+}
+
+.review-step {
+    &__margin {
+        &-b25 {
+            margin-bottom: 0.763rem;
+        }
+
+        &-t30 {
+            margin-top: 1rem;
+        }
     }
 }
 
@@ -1006,6 +1039,9 @@ table.table {
     &-390px {
         height: 24.38rem;
     }
+    &-650px {
+        height: 40.63rem;
+    }
 }
 
 .fullwidth-bg {
@@ -1130,6 +1166,7 @@ table.table {
         border-left: 1px solid #e1e1e1;
         padding: 1rem 2rem;
         overflow: hidden;
+        background: $pure-white;
 
         &__header {
             display: flex;
@@ -1207,6 +1244,99 @@ table.table {
         text-align: center;
         & .btn {
             width: 195px;
+        }
+    }
+}
+
+
+.payment-step {
+    &__container {
+        height: 34.63rem;
+    }
+
+    &__body {
+        width: 33.75rem;
+        margin-top: 1.813rem;
+    }
+
+    &__gateway_text {
+        margin-top: 1.25rem;
+        margin-bottom: 2.3125rem;
+    }
+
+    &__control_label {
+        color: #191919!important;
+        font-size: 0.875rem!important;
+    }
+
+    &__btn {
+        width: 19.3125rem;
+    }
+}
+
+.delivery-info-step {
+    &__control_label {
+        font-size: 1rem!important;
+        color: #191919!important;
+    }
+}
+
+
+.sign-up-step {
+    &__container {
+        height: 32.1875rem;
+    }
+
+    &__body {
+        margin-top: 5.625rem;
+    }
+}
+
+
+.menu-items__container_for_five_days {
+    & .nav-tabs-navigation:first-of-type {
+        position: relative;
+        margin-top: -0.9375rem;
+
+        &::before {
+            content: '';
+            display: block;
+            width: calc(100vw + -0.2rem);
+            position: absolute;
+            bottom: 0;
+            border-bottom: 1px solid #e1e1e1;
+            left: 0;
+            margin: 0 -8rem;
+        }
+
+        & ul.nav-tabs {
+
+            & li.tab {
+                margin-left: -3px;
+
+                & >  a {
+                    border-radius: 0!important;
+                    border: 1px solid #e1e1e1;
+                    text-transform: uppercase;
+                    line-height: 1.830!important;
+
+                    &.active_tab {
+                        border-radius: 0;
+                        border-bottom-color: transparent;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.meals__container {
+    & .nav-tabs-navigation {
+        margin-top: 2rem!important;
+
+        &::before {
+            display: none!important;
+            content: '';
         }
     }
 }

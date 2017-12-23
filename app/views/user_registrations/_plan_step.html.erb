@@ -1,10 +1,14 @@
 <div class="container">
-  <div class="card-deck">
+  <h3 class="text-uppercase text-center font-family-montserrat-medium font-size-24"
+    style="margin-top: 2.3rem; margin-bottom: 2.2rem;">
+    Choose A Plan
+  </h3>
+  <div class="card-deck" style="margin-bottom: 1.7rem;">
     <% @plans.each do |p| %>
       <%
       shipping_fee =  p.shipping_fee? ? p.shipping_fee : 0
       %>
-      <div class="card text-center <%= p.name.parameterize %>">
+      <div class="card rounded-0 text-center <%= p.name.parameterize %>">
         <img class="card-img-top card__plan_image" src="<%= asset_pack_path "packs/images/#{p.name.downcase.split(' ').join}.png" %>" alt="Card image cap">
         <div class="card-body card__plan_body">
           <h4 class="card-title">
@@ -32,6 +36,7 @@
             value="<%= p.id %>"
             id="<%= "#{p.name.parameterize}-#{p.id}" %>"
             class="d-none"
+            v-model="plan.id"
             @click="setInterVal('<%= p.interval || 'single_order' %>', <%= p.price %>, '<%= shipping_fee %>', '<%= p.name %>')">
             Choose <%= p.name %>
           </label>
