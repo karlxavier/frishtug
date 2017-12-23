@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# script to deploy to heroku
+# to use just run bin/deploy heroku
+
+set -e
+
+branch="$(git symbolic-ref HEAD --short)"
+target="${1:-staging}"
+
+git push "$target" "$branch:master"
+heroku run rails db:migrate --exit-code --remote "$target"
+heroku restart --remote "$target"

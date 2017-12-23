@@ -13,21 +13,23 @@ btn.innerHTML = 'Complete Sign Up';
       html: `
         <div class="row">
           <div class="col text-left">
-            <h5 class="mb-3">Here Is Your Group Code</h5>
+            <h5 class="mb-3 font-family-montserrat font-size-20">Here Is Your Group Code</h5>
             <h1 class="dashed-box text-center">
               <%= current_user.referrer.group_code %>
             </h1>
-            <p>
-              <small>In order to avail of the Group Plan discount, you'll need to share the Group</small><br>
-              <small>Code to atleast 2 other people. Deliveries will be made to only one location.</small>
-            </p>
+            <i class="font-family-lato font-size-14">
+              In order to avail of the Group Plan discount, you'll need to share the Group
+              Code to at least 2 other people. Deliveries will be made to only one location.
+            </i>
             <ul class="list-inline">
-              <li class="list-inline-item">Share:</li>
+              <li class="list-inline-item" style="margin-right: 23px;">Share:</li>
               <li class="list-inline-item">
-                <span class="chocolate-font-color"><i class="fa fa-envelope"></i>Email Code</span>
+                <span class="chocolate-font-color">
+                <i class="fa fa-envelope" style="margin-right: 12px; font-size: 21px;"></i>Email Code</span>
               </li>
               <li class="list-inline-item">
-                <span class="chocolate-font-color"><i class="fa fa-mobile"></i>Text Code</span>
+                <span class="chocolate-font-color">
+                <i class="fa fa-mobile" style="margin-right: 12px; font-size: 30px; position: relative: bottom: -4px;"></i>Text Code</span>
               </li>
             </ul>
           </div>

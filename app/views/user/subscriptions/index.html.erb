@@ -2,13 +2,13 @@
   <div class="row">
     <div class="col-6 col-md-6">
       <h4 class="text-uppercase">Subscriptions</h4>
-      
+
       <% if @plan.present? && !@plan.interval.nil? %>
         <div class="card-container" style='width: 18rem;'>
           <div class="card mb-4 user-plan-card">
             <div class="card-body">
               <span>PLAN: <%= @plan.name %></span>
-              <%= @plan.description.html_safe %>
+              <%= @plan.short_description.html_safe %>
               <p>Renewal on <%= time_at(@subscription.current_period_end, '%B %d, %Y') %></p>
             </div>
           </div>
@@ -18,7 +18,6 @@
         <h6>You are not subscribe to a plan.</h6>
         <%= link_to_btn 'Choose plans', choose_plans_user_subscriptions_path %>
       <% end %>
-      
     </div>
   </div>
 </div>
