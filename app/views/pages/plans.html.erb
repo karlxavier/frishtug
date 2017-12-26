@@ -12,7 +12,7 @@
 <div class="container mt-48px">
   <div class="card-deck">
     <% @plans.each do |p| %>
-      <div class="card <%= p.name.parameterize %>">
+      <div class="card <%= p.name.parameterize %> card__plan">
         <img class="card-img-top card__plan_image"
           src="<%= asset_pack_path "packs/images/#{p.name.downcase.split(' ').join}.png" %>"
           alt="Card image cap">

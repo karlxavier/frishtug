@@ -1222,10 +1222,15 @@ table.table {
 
 .card__ {
 
+    &plan {
+        border-radius: 3px;
+    }
+
     &plan_image {
         width: 189px;
         height: 117px;
         margin: 0 auto;
+        margin-top: 0.9rem;
     }
 
     &plan_body {
@@ -1242,8 +1247,11 @@ table.table {
     &plan_footer {
         border-top: 0;
         text-align: center;
+        padding-bottom: 1.8rem;
         & .btn {
             width: 195px;
+            text-transform: uppercase;
+            font-size: 15px;
         }
     }
 }
@@ -1337,6 +1345,21 @@ table.table {
         &::before {
             display: none!important;
             content: '';
+        }
+    }
+}
+
+
+.admin-card {
+    &__header {
+        & #title,
+        & h1 {
+            line-height: 3.4rem;
+            margin-bottom: 0;
+        }
+
+        & .header-add-btn {
+            line-height: 3.4rem;
         }
     }
 }
