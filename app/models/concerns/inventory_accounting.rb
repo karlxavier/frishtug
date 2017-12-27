@@ -10,16 +10,16 @@ module InventoryAccounting
   def create_inventory_transactions!
     return unless completed?
 
-    menu_ids.each { |menu_id| create_transactions(menu_id) }
+    menus_orders.each { |menu_order| create_transactions(menu_order) }
   end
 
-  def create_transactions(menu_id)
-    inventory = Inventory.where(menu_id: menu_id).last
+  def create_transactions(menu_order)
+    inventory = Inventory.where(menu_id: menu_order.menu_id).last
     transaction =
       inventory.inventory_transactions.between_transaction_date?(range)
                .first_or_create!(transaction_date: time_today, quantity_sold: 0)
 
-    transaction.quantity_sold += 1
+    transaction.quantity_sold += menu_order.quantity
     transaction.save!
   end
 

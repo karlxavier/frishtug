@@ -1,5 +1,6 @@
 class Scanovator
   include Virtus.model
+  include ActiveModel::Naming
 
   class DataAttribute < Virtus::Attribute
     def coerce values

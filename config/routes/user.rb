@@ -34,4 +34,6 @@ namespace :user do
     end
   end
   resources :set_default_payments, only: :create
+  resources :scanovators, only: :index
+  resources :complaints, only: :create
 end

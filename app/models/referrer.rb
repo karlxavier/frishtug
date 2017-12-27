@@ -10,6 +10,7 @@
 #
 
 class Referrer < ApplicationRecord
+  include UserDelegator
   belongs_to :user
   has_many :candidates, dependent: :destroy
   validates :group_code, presence: true

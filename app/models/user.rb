@@ -44,9 +44,13 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable,
          :recoverable, :rememberable, :trackable, :validatable
-  
+
   accepts_nested_attributes_for :contact_number
-  
+
+  def active_address
+    addresses.active
+  end
+
   def full_name
     "#{first_name} #{last_name}".titleize
   end
@@ -58,13 +62,13 @@ class User < ApplicationRecord
         entries.push c
       end
     end
-    
+
     if credit_cards.present?
       credit_cards.each do |cc|
         entries.push cc
       end
     end
-    
+
     entries
   end
 
@@ -76,6 +80,10 @@ class User < ApplicationRecord
       #{addresses.first.state}
       #{addresses.first.zip_code}
     EOT
+  end
+
+  def street_address
+    [addresses.active.line1, addresses.active.line2].reject(&:blank?).join(', ').strip
   end
 
   def set_default_source(source)

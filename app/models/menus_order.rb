@@ -11,7 +11,7 @@
 #
 
 class MenusOrder < ApplicationRecord
-  include InventoryAccounting
   belongs_to :menu
   belongs_to :order
+  delegate :id, :name, to: :menu, prefix: true, allow_nil: true
 end

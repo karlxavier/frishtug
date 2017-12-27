@@ -1,0 +1,25 @@
+<div class="row">
+  <div class="col">
+    <span class="font-family-montserrat-medium">
+      <%= order.id %>
+    </span>
+    <p class="mb-1 font-size-14">
+      <%= order.user.plan.name %> (<%= order.menus.map(&:name).join(', ') %>)
+    </p>
+    <p class="font-size-14">
+      Placed on <%= order.placed_on.strftime('%B %d') %>
+      @ <%= order.order_date.strftime('%I:%M%P') %>
+    </p>
+  </div>
+  <div class="col">
+    <span class="font-family-montserrat-medium">
+      ETA - <span class="eta-container"><%= @scanovator.data.first.eta.to_date.strftime('%I:%M%P') %></span>
+    </span>
+    <p class="mb-1 font-size-14"><%= order.user.street_address %></p>
+    <p class="font-size-14">
+      <%= order.user.active_address.city %>,
+      <%= order.user.active_address.state %>
+      <%= order.user.active_address.zip_code %>
+    </p>
+  </div>
+</div>

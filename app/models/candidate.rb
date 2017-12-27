@@ -10,6 +10,7 @@
 #
 
 class Candidate < ApplicationRecord
+  include UserDelegator
   belongs_to :user
   belongs_to :referrer
 end

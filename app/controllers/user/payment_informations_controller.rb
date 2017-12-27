@@ -1,6 +1,6 @@
 class User::PaymentInformationsController < User::BaseController
   def index
-    @payment_informations = StripeCustomer.new(current_user)
+    @payment_informations ||= StripeCustomer.new(current_user)
   end
 
   def new; end

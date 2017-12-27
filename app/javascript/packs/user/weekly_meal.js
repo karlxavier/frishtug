@@ -4,7 +4,7 @@ const mealSidebarCtrl = document.querySelector('.sidebar-controls')
 const mealFormWrapper = document.querySelector('#meal-form__wrapper')
 const mealSideBar = document.querySelector('#sidebar')
 const mealFormContainer = document.querySelector('#meal-form__container')
-sidebar.style.display = 'none'
+sidebar.parentNode.removeChild(sidebar)
 mealSidebarCtrl.classList.add('d-none')
 mainContainer.className = 'col-12 col-md-12 col-lg-12'
 
@@ -48,6 +48,8 @@ mealFormWrapper.addEventListener('click', (e)=> {
 (function(){
   const mainContainer = document.querySelector('#root-container')
   mainContainer.classList.remove('pt-4')
+  mainContainer.classList.remove('container')
+  mainContainer.classList.add('container-fluid')
   if (localStorage.getItem('sidebar_state') === 'shown') {
     showSideBar();
   } else {

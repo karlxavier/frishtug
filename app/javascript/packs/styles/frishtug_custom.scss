@@ -540,7 +540,7 @@ table.table {
         top: -2rem;
         left: 0;
         border-left: 1px solid #e1e1e1;
-        height: 100vh;
+        height: calc(100% + 20rem);
         z-index: -1;
     }
 }

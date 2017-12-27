@@ -7,6 +7,7 @@ import {get} from './lib/ajax_lib'
 import {shoppingCart, shoppingCartInit, registerShoppingCartListener, addToShoppingCart, removeFromShoppingCart} from './simple_cart'
 import toCurrency from './lib/to_currency'
 import totalPrice from './filters/total_price'
+import toFixed from './lib/to_fixed'
 
 
 // filters
@@ -131,12 +132,12 @@ const registrationForm = new Vue({
       if (itemsCollection) {
         const items = itemsCollection.filter(filterTaxableItems)
         return items.map( item => item.price).reduce((sum, price) => {
-          return sum += price * (self.tax_rate/100)
+          return sum += toFixed(getTax(price, self.tax_rate), 2)
         }, 0)
       } else {
         const items = self.cart.filter(filterTaxableItems)
         return items.map( item => item.price).reduce((sum, price) => {
-          return sum += price * (self.tax_rate/100)
+          return sum += toFixed(getTax(price, self.tax_rate), 2)
         }, 0)
       }
     },
@@ -154,7 +155,9 @@ const registrationForm = new Vue({
       }
       return items.length > 0
     },
-    removeTaxFromPrice: function(price) { return price / ((this.tax_rate / 100) + 1)  },
+    removeTaxFromPrice: function(price) {
+      return toFixed((price - getTax(price, this.tax_rate)), 2)
+    },
     showShoppingCart: function() { this.shopping_cart_shown = true },
     hideShoppingCart: function() { this.shopping_cart_shown = false },
     totalCartPricePlusShippingFee: function(){
@@ -497,6 +500,12 @@ const registrationForm = new Vue({
     }
   }
 })
+
+const getTax = (price, tax_rate) => {
+  const tax = tax_rate/100
+  const totalTaxRemove = price * tax
+  return toFixed(totalTaxRemove, 2)
+}
 
 
 const getSchedule = (date, vueModel) => {

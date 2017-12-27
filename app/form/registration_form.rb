@@ -32,7 +32,7 @@ class RegistrationForm
 
   validates :first_name, :last_name, :email, :password, presence: true
   validates :phone_number, presence: true
-  validate :user_email_unique?
+  validate  :user_email_unique?
   validates :bank_name, :account_number, :routing_number, presence: true, if: :checking?
   validates :card_number, :month, :year, :cvc, presence: true, if: :credit_card?
   validates :stripe_token, presence: true
@@ -91,9 +91,12 @@ class RegistrationForm
   end
 
   def create_user_info(user)
-    addresses.each do |a|
-      user.addresses.create!(address_params(a))
+    addresses.each_with_index do |address, index|
+      add_params = address_params(address)
+      add_params = add_params.merge!(status: :active) if index == 0
+      user.addresses.create!(add_params)
     end
+
     user.create_contact_number!(phone_number: phone_number)
     if user.plan.for_type == 'group'
       create_referrer(user) unless group_code.present?

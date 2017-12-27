@@ -1,2 +1,41 @@
-<h1>User::Dashboard#index</h1>
-<p>Find me in app/views/user/dashboard/index.html.erb</p>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col">
+      <h4 class="font-size-18 font-family-montserrat text-uppercase">
+        ETA for today's deliver
+        <%= link_to user_scanovators_path(order_id: @todays_order.first&.id, format: :js),
+            class: 'dark-font-color ml-4',
+            remote: true,
+            data: { disable_with: "<i class='fa fa-refresh fa-spin'></i>" } do %>
+          <i class="fa fa-refresh"></i>
+        <% end %>
+      </h4>
+    </div>
+  </div>
+  <% if @todays_order.present? %>
+    <div class="row">
+      <div class="col">
+        <%= render partial: 'user/orders/order_with_eta', collection: @todays_order, as: :order %>
+      </div>
+    </div>
+
+    <div class="row mt-4">
+      <div class="col-8">
+        <h4 class="font-size-18 font-family-montserrat text-uppercase mb-4">
+          Order Complaint
+        </h4>
+        <%= form_with url: user_complaints_path(order_id: @todays_order.first.id), local: true do |f| %>
+          <%= f.label :body, 'Complaint' %>
+          <%= f.text_area :body, rows: 5, class: 'form-control', value: @todays_order.first.comment.body %>
+          <%= f.submit 'Send',
+            class: 'btn btn-brown text-uppercase font-family-montserrat-medium mt-2',
+            style: 'width: 160px; font-size: 15px;' %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<%= content_for :footer_js do %>
+  <%= javascript_pack_tag 'link_disabler' %>
+<% end %>

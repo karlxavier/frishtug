@@ -18,22 +18,19 @@
 # id user_id placed_on:timestamp eta:timestamp delivered_at:timestamp status:integer
 class Order < ApplicationRecord
   include InventoryAccounting
+  include Computable
+  include UserDelegator
   enum status: %i[in_transit completed]
   belongs_to :user
-  has_many :menus_orders
+  has_many :menus_orders, dependent: :destroy
   has_many :menus, through: :menus_orders
+  has_one :comment, as: :commentable, dependent: :destroy
   scope :completed, -> { where.not(delivered_at: nil) }
 
-  def sub_total
-    menus.map(&:price).reduce(:+)
-  end
-
-  def shipping_fee
-    user.plan.shipping_fee || 0
-  end
-
-  def total
-    sub_total + shipping_fee.to_f
+  def menu_quantity(menu)
+    item =
+      menus_orders.where(menu_id: menu.id).first || NullMenuOrders.new(menu)
+    item.quantity
   end
 
   def self.pending_deliveries

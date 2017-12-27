@@ -50,7 +50,12 @@ class User::WeeklyMealsController < User::BaseController
     if current_order.present?
       remove_previous_temp_order unless params[:category].present?
       @order = current_user.temp_orders.where(order_date: order_date).first_or_create
-      @order.menu_ids = current_order.menu_ids
+      unless params[:category].present?
+        current_order.menus_orders.each do |menu_order|
+          @order.menus_temp_orders
+            .create!(menu_id: menu_order.menu_id, quantity: menu_order.quantity)
+        end
+      end
     end
   end
 

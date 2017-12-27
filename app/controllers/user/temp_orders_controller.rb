@@ -4,12 +4,12 @@ class User::TempOrdersController < User::BaseController
   respond_to :js, only: [:store, :remove, :persist]
 
   def store
-    @temp_order.menus << @menu
+    @temp_order.store(@menu, quantity)
     respond_with(@temp_order, @menu, menu_size)
   end
 
   def remove
-    @temp_order.remove_item(@menu)
+    @temp_order.remove_item(@menu, quantity)
     respond_with(@temp_order, @menu, menu_size)
   end
 
@@ -19,6 +19,10 @@ class User::TempOrdersController < User::BaseController
   end
 
   private
+
+  def quantity
+    params[:quantity]
+  end
 
   def order_date
     Time.zone.parse(params[:date])
@@ -33,6 +37,7 @@ class User::TempOrdersController < User::BaseController
   end
 
   def menu_size
-    @menu_size = @temp_order.menus.where(id: params[:menu_id]).size
+    menu = @temp_order.menus_temp_orders.where(menu_id: @menu.id).first || NullMenuOrders.new(@menu)
+    @menu_size = menu.quantity
   end
 end

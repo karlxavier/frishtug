@@ -1,5 +1,5 @@
 <%
-  store_url = "store_user_#{order.class.name.underscore.pluralize}_path" 
+  store_url = "store_user_#{order.class.name.underscore.pluralize}_path"
   remove_url = "remove_user_#{order.class.name.underscore.pluralize}_path"
 %>
 <div class="card col-md-3 px-0 border-0 mb-4 mt-1 mx-3" data-meal-id="<%= menu.id %>" data-meal-price="<%= menu.price %>" data-meal-name="<%= menu.name %>">
@@ -25,18 +25,18 @@
       </div>
       <div class="col">
         <div class="float-right">
-          <%= link_to '-', 
-            public_send(remove_url, menu_id: menu.id, date: params[:date]), 
-            class:'btn btn-brown ctrl-btns rounded-0', 
-            remote: true 
+          <%= link_to '-',
+            public_send(remove_url, menu_id: menu.id, date: params[:date], quantity: 1),
+            class:'btn btn-brown ctrl-btns rounded-0',
+            remote: true
           %>
           <span class="counter-for--<%= menu.name.parameterize %> meal-counter">
-            <%= order.menus.where(id: menu.id).size || 0 %>
+            <%= order.menu_quantity(menu) %>
           </span>
-          <%= link_to '+', 
-            public_send(store_url, menu_id: menu.id, date: params[:date]), 
-            class:'btn btn-brown ctrl-btns rounded-0', 
-            remote: true 
+          <%= link_to '+',
+            public_send(store_url, menu_id: menu.id, date: params[:date], quantity: 1),
+            class:'btn btn-brown ctrl-btns rounded-0',
+            remote: true
           %>
         </div>
       </div>
