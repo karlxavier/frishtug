@@ -18,7 +18,7 @@ module DateTimeHelper
     date.to_date.strftime('%^a, %^b %d')
   end
 
-  def current_sale_date
-    Date.current.strftime('%B %d')
+  def current_sale_date(date)
+    date.strftime('%B %d')
   end
 end

@@ -1,0 +1,4 @@
+(function() {
+  var el = document.querySelector('.admin-dashboard__calendar_container');
+  el.innerHTML = '<%= j render 'admin/calendars/calendar', date: @calendar_date, selected_date: @date %>';
+}())

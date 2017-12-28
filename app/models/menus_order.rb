@@ -13,5 +13,5 @@
 class MenusOrder < ApplicationRecord
   belongs_to :menu
   belongs_to :order
-  delegate :id, :name, to: :menu, prefix: true, allow_nil: true
+  delegate :id, :name, :price, to: :menu, prefix: true, allow_nil: true
 end

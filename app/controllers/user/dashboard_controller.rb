@@ -13,9 +13,11 @@ class User::DashboardController < User::BaseController
   end
 
   def set_scanovator
-    @scanovator = NullScanovator.new
     if @todays_order.present?
       @scanovator = ScanovatorApi.fetch @todays_order.first.id
+      @scanovator = NullScanovator.new if @scanovator.state == 'fail'
+    else
+      @scanovator = NullScanovator.new
     end
   end
 end

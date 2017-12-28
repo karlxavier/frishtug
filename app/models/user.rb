@@ -48,7 +48,7 @@ class User < ApplicationRecord
   accepts_nested_attributes_for :contact_number
 
   def active_address
-    addresses.active
+    addresses.active.first
   end
 
   def full_name
@@ -83,7 +83,7 @@ class User < ApplicationRecord
   end
 
   def street_address
-    [addresses.active.line1, addresses.active.line2].reject(&:blank?).join(', ').strip
+    [active_address.line1, active_address.line2].reject(&:blank?).join(', ').strip
   end
 
   def set_default_source(source)

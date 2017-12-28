@@ -2,7 +2,7 @@ module Computable
   extend ActiveSupport::Concern
 
   def sub_total
-    menus.map(&:price).inject(:+)
+    menus_orders.map{ |m| m.menu_price * m.quantity }.inject(:+)
   end
 
   def shipping_fee

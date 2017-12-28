@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   resources :selected_dates, only: :index
   resources :past_noons, only: :index
   resources :pages, only: :show, path: '/', as: :page, format: :false
+  resources :contact_us, only: :create
   root to: 'pages#show', id: 'home'
 
   require 'sidekiq/web'

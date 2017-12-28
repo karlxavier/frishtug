@@ -26,7 +26,11 @@
         </h4>
         <%= form_with url: user_complaints_path(order_id: @todays_order.first.id), local: true do |f| %>
           <%= f.label :body, 'Complaint' %>
-          <%= f.text_area :body, rows: 5, class: 'form-control', value: @todays_order.first.comment.body %>
+          <%= f.text_area :body,
+              rows: 5,
+              class: 'form-control',
+              value: @todays_order.first.comment.body,
+              placeholder: 'Write your message here' %>
           <%= f.submit 'Send',
             class: 'btn btn-brown text-uppercase font-family-montserrat-medium mt-2',
             style: 'width: 160px; font-size: 15px;' %>

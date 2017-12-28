@@ -154,7 +154,8 @@ h {
           color: $pure-white!important;
       }
 
-      &.active-btn {
+      &.active-btn,
+      &.active {
           color: $pure-white!important;
           background: $chocolate;
       }
@@ -167,7 +168,23 @@ h {
         padding-left: 1.5rem!important;
         padding-right: 1.5rem!important;
         &:hover,
-        &:focus {
+        &:focus,
+        &.active {
+            background: $chocolate;
+            color: $pure-white!important;
+        }
+      }
+
+      &-circled {
+        background: transparent;
+        border-color: $chocolate;
+        color: $chocolate!important;
+        border-radius: 100px!important;
+        padding-left: 1.5rem!important;
+        padding-right: 1.5rem!important;
+        &:hover,
+        &:focus,
+        &.active {
             background: $chocolate;
             color: $pure-white!important;
         }
@@ -1360,6 +1377,46 @@ table.table {
 
         & .header-add-btn {
             line-height: 3.4rem;
+        }
+    }
+}
+
+
+.admin-dashboard__calendar {
+    & table.calendar {
+        border: 0;
+
+        & td,
+        & th {
+            padding: 0.1rem;
+            border: 0;
+        }
+
+        & td {
+            &.not-month {
+                & a {
+                    display: none!important;
+                }
+            }
+            & a {
+                color: $base-darker;
+              &:hover,
+              &:focus {
+                text-decoration: none;
+                width: 35px;
+                height: 35px;
+                background: $light-chocolate;
+                border-radius: 50%;
+                color: $pure-white;
+              }
+            }
+            & a.active {
+                width: 35px;
+                height: 35px;
+                background: $chocolate;
+                border-radius: 50%;
+                color: $pure-white;
+            }
         }
     }
 }

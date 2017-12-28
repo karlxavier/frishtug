@@ -1,0 +1,28 @@
+<div class="row mx-0">
+  <div class="col text-center">
+    <%= link_to admin_calendars_path(calendar_date: date.prev_month, selected_date: selected_date, format: :js),
+      class: 'float-left', remote: true do %>
+      <i class="fa fa-chevron-left burlywood-font-color"></i>
+    <% end %>
+    <span class="font-size-18 font-family-lato"><%= date.strftime('%B %Y') %></span>
+    <%= link_to admin_calendars_path(calendar_date: date.next_month, selected_date: selected_date, format: :js),
+      class: 'float-right', remote: true do %>
+      <i class="fa fa-chevron-right burlywood-font-color"></i>
+    <% end %>
+    <hr>
+  </div>
+</div>
+<%= calendar date do |day| %>
+  <div class="row justify-content-center align-items-center" style="height: 100%;">
+    <a href="javascript:void(0)"
+      class="
+        calendar-links
+        d-flex
+        justify-content-center
+        align-items-center
+        <%= "active" if day == selected_date %>"
+      data-date="<%= day %>" data-target="#filter-date-btn">
+      <%= day.strftime('%d') %>
+    </a>
+  </div>
+<% end %>
