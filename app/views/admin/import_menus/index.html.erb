@@ -1,5 +1,5 @@
 <%= card_container do %>
-  <%= form_with url: import_admin_import_menus_path, multipart: true do |f| %>
+  <%= form_with url: import_admin_import_menus_path, multipart: true, local: true do |f| %>
     <%= render 'shared/flash' %>
     <div class="row">
       <div class="col-8">

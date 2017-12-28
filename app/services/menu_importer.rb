@@ -39,10 +39,7 @@ class MenuImporter
         quantities << row[:quantity]
         menus << create_menu_entry(row, i)
       end
-      menus.first.save!
-      persisted_menus = Menu.import menus, on_duplicate_key_update: {
-        conflict_target: [:name], columns: UPDATABLE_KEYS
-      }
+      persisted_menus = menu_import(menus)
       upload_images(persisted_menus.ids, image_urls)
       update_inventory(persisted_menus.ids, quantities)
     end
