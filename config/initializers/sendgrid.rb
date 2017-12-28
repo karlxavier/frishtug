@@ -1,4 +1,4 @@
-return unless Rails.env.production?
+return false unless Rails.env.production?
 
 ActionMailer::Base.smtp_settings = {
   :user_name => ENV["SENDGRID_USERNAME"],
