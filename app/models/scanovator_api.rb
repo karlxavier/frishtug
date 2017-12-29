@@ -76,10 +76,10 @@ class ScanovatorApi
         store_code: STORE_CODE,
         fname: order.user.first_name,
         lname: order.user.last_name,
-        street_address: street_address(order),
-        city: order.user.addresses.first.city,
-        state: order.user.addresses.first.state,
-        zip: order.user.addresses.first.zip_code,
+        street_address: order.user.street_address,
+        city: order.user.active_address.city,
+        state: order.user.active_address.state,
+        zip: order.user.active_address.zip_code,
         numofboxes: 1,
         phone: order.user.contact_number.phone_number,
         cell1: nil,
@@ -88,11 +88,6 @@ class ScanovatorApi
         order_id: order.id,
         notes: nil
       })
-    end
-
-    def street_address order
-      address = order.user.addresses.first
-      [address.line1, address.line2].reject(&:blank?).join(', ').strip
     end
   end
 end

@@ -15,4 +15,5 @@ namespace :admin do
   resources :configs
   resources :inventory, only: :index
   resources :calendars, only: :index
+  resources :scanovators, only: :create
 end

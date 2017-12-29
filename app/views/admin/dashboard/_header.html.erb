@@ -1,32 +1,35 @@
 <div class="row">
-  <div class="col">
+  <div class="col-4">
     <h1 id="title">
       <%= link_to "Orders", admin_dashboard_index_path %>
     </h1>
   </div>
-  <div class="col">
+  <div class="col-8">
     <ul class="list-inline list-unstyled float-right nav nav-pills" role="tablist">
       <li class="list-inline-item">Filter by:</li>
       <li class="list-inline-item">
-        <a class="btn btn-brown-outline-circled font-size-14"
+        <a class="btn btn-sm btn-brown-outline-circled font-size-14"
           data-toggle="tab" role="tab"
           aria-controls="meal-plan" aria-selected="false"
           id="meal-plan-tab-item"
           href="#meal-plan-filter-tab">Meal Plan</a>
       </li>
       <li class="list-inline-item">
-        <a class="btn btn-brown-outline-circled font-size-14"
+        <a class="btn btn-sm btn-brown-outline-circled font-size-14"
           data-toggle="tab" role="tab"
           aria-controls="location" aria-selected="false"
           id="location-tab-item"
           href="#location-filter-tab">Location</a>
       </li>
       <li class="list-inline-item">
-        <a class="btn btn-brown-outline-circled font-size-14"
+        <a class="btn btn-sm btn-brown-outline-circled font-size-14"
           data-toggle="tab" role="tab"
           aria-controls="date-filter-tab" aria-selected="false"
           id="date-tab-item"
           href="#date-filter-tab">Date</a>
+      </li>
+      <li class="list-inline-item">
+        <%= rollover_orders_to_scanovator_api_btn %>
       </li>
     </ul>
   </div>

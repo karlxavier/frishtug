@@ -15,6 +15,7 @@ class Admin::MenuCategoriesController < Admin::BaseController
   # GET /menu_categories/new
   def new
     @menu_category = MenuCategory.new
+    @menu_category.add_ons.build
   end
 
   # GET /menu_categories/1/edit
@@ -63,6 +64,7 @@ class Admin::MenuCategoriesController < Admin::BaseController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def menu_category_params
-    params.fetch(:menu_category, {}).permit(:name, addons_attributes: %i[id name _destroy])
+    params.require(:menu_category)
+      .permit(:name, add_ons_attributes: [:id, :name, :price, :_destroy])
   end
 end

@@ -1,7 +1,7 @@
 <%= form_for [:admin, menu_category],
   html: {
     id: 'new-menu-category',
-    class: 'col-12 col-md-4 col-lg-4'
+    class: 'col-12'
   },
   remote: true,
   format: :js,
@@ -15,17 +15,37 @@
     <input type="text" id="menu_category_name" name="menu_category[name]" v-model="menu_category.name" class="form-control">
   </div>
   <h5>
-    Add-ons 
+    Add-ons
     <a href="javascript:void(0)" @click="addAddons" class="chocolate-font-color">
       <i class="fa fa-plus"></i>
     </a>
   </h5>
   <div v-for="(addons, index) in menu_category.add_ons_attributes">
-    <div :class="addons._delete !== 1 ? 'form-group' : 'd-none'" >
+    <div :class="addons._destroy !== 1 ? 'form-group' : 'd-none'" >
       <label :for="'menu_category_addons_name' + (index !== 0 ? `_${index}` : '')">Name</label>
-      <input type="text" name="'menu_category[add_ons_attributes][name]'" v-model="addons.name" class="form-control" :id="'menu_category_addons_name' + (index !== 0 ? `_${index}` : '')">
-      <input type="hidden" name="menu_category[add_ons_attributes][id]" v-model="addons.id" class="form-control">
-      <input type="hidden" name="menu_category[add_ons_attributes][_delete]" v-model="addons._delete" class="form-control">
+      <input type="text"
+        :name="`menu_category[add_ons_attributes][${index}][name]`"
+        v-model="addons.name"
+        class="form-control"
+        :id="'menu_category_addons_name' + (index !== 0 ? `_${index}` : '')">
+
+      <label :for="'menu_category_addons_price' + (index !== 0 ? `_${index}` : '')">Price</label>
+      <input type="number"
+        :name="`menu_category[add_ons_attributes][${index}][price]`"
+        v-model="addons.price"
+        class="form-control"
+        :id="'menu_category_addons_price' + (index !== 0 ? `_${index}` : '')"
+        step="0.01"
+        >
+
+      <input type="hidden"
+        :name="`menu_category[add_ons_attributes][${index}][_destroy]`"
+        v-model="addons._destroy"
+        class="form-control">
+      <input type="hidden"
+        :name="`menu_category[add_ons_attributes][${index}][id]`"
+        v-model="addons.id"
+        class="form-control">
       <a href="javascript:void(0)" @click="hideAddons(index)">- Delete</a>
     </div>
   </div>

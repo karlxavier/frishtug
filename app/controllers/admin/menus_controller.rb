@@ -19,6 +19,7 @@ class Admin::MenusController < Admin::BaseController
   def new
     @menu_category = MenuCategory.find(params[:category])
     @menu = Menu.new
+    @menu.build_inventory
     respond_with(@menu)
   end
 

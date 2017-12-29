@@ -39,6 +39,9 @@ class Menu < ApplicationRecord
 
   scope :filter_by_category, -> (category_id) { where(menu_category_id: category_id) }
 
+
+  accepts_nested_attributes_for :inventory, reject_if: ->(attributes){ attributes['quantity'].blank? }, allow_destroy: true
+
   def category
     self.menu_category
   end

@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   var el = document.querySelector('#new-menu-category')
   var menu_category = JSON.parse(el.dataset.menuCategory)
   var add_ons_attributes = JSON.parse(el.dataset.addOnsAttributes)
-  add_ons_attributes.forEach( addon => { addon._delete = null })
+  add_ons_attributes.forEach( addon => { addon._destroy = null })
   menu_category.add_ons_attributes = add_ons_attributes
   var form = new Vue({
     el: el,
@@ -19,14 +19,14 @@ document.addEventListener('DOMContentLoaded', () => {
         this.menu_category.add_ons_attributes.push({
           id: null,
           name: null,
-          _delete: null
+          price: null,
+          _destroy: null
         })
       },
       hideAddons: function(index) {
         let addons = this.menu_category.add_ons_attributes
-        addons[index].id === 'null' ? addons[index]._delete = 1 : addons.splice(index, 1)
+        addons[index].id === 'null' ? addons[index]._destroy = 1 : addons.splice(index, 1)
       }
     }
   })
-  window.form
 })

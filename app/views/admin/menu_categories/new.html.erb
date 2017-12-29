@@ -1,3 +1,7 @@
 <%= card_container do %>
-  <%= render 'form', menu_category: @menu_category %>
+  <div class="row">
+    <div class="col-4">
+      <%= render 'form', menu_category: @menu_category %>
+    </div>
+  </div>
 <% end %>

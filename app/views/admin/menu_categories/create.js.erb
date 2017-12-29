@@ -5,5 +5,5 @@ if (modal.length) {
   flash.innerHTML = '<%= j render 'shared/flash' %>';
 } else {
   <%= render 'admin/shared/response', object: @menu_category %>
+  $("html, body").animate({ scrollTop: 0 }, "slow");
 }
-

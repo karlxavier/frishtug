@@ -5,7 +5,11 @@
     <%= f.label :name %>
     <%= f.text_field :name, class: 'form-control' %>
   </div>
-  <div class="row">
+  <div class="form-group">
+    <%= f.label :description %>
+    <%= f.text_field :description, class: 'form-control' %>
+  </div>
+  <div class="form-group row mb-4">
     <div class="col">
       <%= f.label :price %>
       <div class="input-group">
@@ -14,11 +18,36 @@
       </div>
     </div>
     <div class="col">
+      <%= f.label :unit_size %>
+      <%= f.number_field :unit_size, class: 'form-control', novalidate: true %>
+    </div>
+    <div class="col">
       <%= f.label :unit %>
       <%= f.select :unit_id, Unit.all.collect { |u| [u.name, u.id]}, {}, { class: 'form-control', id: 'menu_unit_selection' } %>
     </div>
   </div>
-  <br>
+  <div class="form-group row mb-4">
+    <div class="col">
+      <%= f.fields_for :inventory do |inventory_form| %>
+        <%= inventory_form.label :quantity %>
+        <%= inventory_form.number_field :quantity, class: 'form-control' %>
+      <% end %>
+    </div>
+    <div class="col">
+      <%= f.label :item_number %>
+      <%= f.text_field :item_number, class: 'form-control' %>
+    </div>
+  </div>
+  <div class="row mb-4">
+    <div class="col">
+      <div class="form-check form-check-inline">
+        <label for="menu_tax" class="form-check-label">
+          <%= f.check_box :tax, class: 'form-check-input' %>
+          Tax
+        </label>
+      </div>
+    </div>
+  </div>
   <%= f.label :categories %>
   <div class="col category-collection-checkboxes px-0">
     <%= f.collection_check_boxes :diet_category_id, DietCategory.all, :id, :name do |r| %>
