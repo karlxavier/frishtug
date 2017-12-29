@@ -1,6 +1,6 @@
 class ItemSaver
-  def initialize(params)
-    @menu = Menu.new(params)
+  def initialize(menu, params = nil)
+    @menu = menu
     @menu_params = params
   end
 
@@ -14,11 +14,9 @@ class ItemSaver
     @menu.save
   end
 
-  def update(id, commit_params = nil)
+  def update(commit_params)
     set_published(commit_params)
-    menu = Menu.find(id)
-    menu.update(new_menu_params)
-    @menu = menu
+    @menu.update(new_menu_params)
   end
 
   def published?

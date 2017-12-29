@@ -31,7 +31,7 @@ class Admin::MenusController < Admin::BaseController
   # POST /menus
   # POST /menus.json
   def create
-    @menu = ItemSaver.new(menu_params)
+    @menu = ItemSaver.new(Menu.new(menu_params))
     if @menu.save(params[:commit])
       message = @menu.published? ? 'publish' : 'save as draft'
       flash[:success] = "Menu successfully #{message}."
@@ -44,8 +44,8 @@ class Admin::MenusController < Admin::BaseController
   # PATCH/PUT /menus/1
   # PATCH/PUT /menus/1.json
   def update
-    @menu = ItemSaver.new(menu_params)
-    if @menu.update(params[:id], params[:commit])
+    @menu = ItemSaver.new(@menu, menu_params)
+    if @menu.update(params[:commit])
       flash[:success] = 'Menu item successfully updated.'
     else
       flash[:error] = @menu.errors.full_messages
@@ -73,6 +73,19 @@ class Admin::MenusController < Admin::BaseController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def menu_params
-    params.fetch(:menu, {}).permit(:name, :image, :price, :unit_id, :menu_category_id, :diet_category_id, add_on_ids: [] )
+    params.fetch(:menu, {})
+      .permit(
+        :name,
+        :image,
+        :price,
+        :unit_id,
+        :menu_category_id,
+        :diet_category_id,
+        add_on_ids: [],
+        inventory_attributes: [
+          :id,
+          :quantity
+        ]
+      )
   end
 end
