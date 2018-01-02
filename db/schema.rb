@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171229054254) do
+ActiveRecord::Schema.define(version: 20180102084230) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -194,6 +194,7 @@ ActiveRecord::Schema.define(version: 20171229054254) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "quantity"
+    t.string "add_ons", default: [], array: true
     t.index ["menu_id"], name: "index_menus_orders_on_menu_id"
     t.index ["order_id"], name: "index_menus_orders_on_order_id"
   end
@@ -204,6 +205,7 @@ ActiveRecord::Schema.define(version: 20171229054254) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "quantity", default: 0
+    t.string "add_ons", default: [], array: true
     t.index ["menu_id"], name: "index_menus_temp_orders_on_menu_id"
     t.index ["temp_order_id"], name: "index_menus_temp_orders_on_temp_order_id"
   end

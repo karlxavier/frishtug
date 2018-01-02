@@ -104,6 +104,18 @@ const registrationForm = new Vue({
     }
   },
   methods: {
+    totalPlusAddOn: (items) => {
+      const self = registrationForm
+      return items.reduce( (sum, item) => {
+        return sum += self.pricePlusAddOn(item.price, item.add_ons, item.quantity)
+      }, 0)
+    },
+    pricePlusAddOn: (price, addOns, quantity) => {
+      const addOnsTotalPrice = addOns.reduce( (sum, addOn) => {
+        return sum += parseFloatingNumber(addOn.price)
+      }, 0)
+      return parseFloatingNumber(price) + (addOnsTotalPrice * parseInt(quantity))
+    },
     changeAddressType: (location) => {
       if (location !== 'multiple_workplaces') {
         registrationForm.billing_address = [registrationForm.billing_address[0]]
@@ -343,7 +355,6 @@ const registrationForm = new Vue({
     },
     showCongrats: function() {
       const _this = this
-      console.log(_this.enableIfMealComplete())
       if (_this.enableIfMealComplete()) {
         swal({
           title: 'Congratulations!',
@@ -472,7 +483,7 @@ const registrationForm = new Vue({
       let enable = false
 
       const checkPrices = (price) => {
-        return price >= self.plan_minimum
+        return price <= self.plan_minimum
       }
 
       if (self.interval === 'month') {
@@ -558,6 +569,16 @@ const extractValue = (obj, valueToExtract) => {
   return obj.map( item => item[valueToExtract])
 }
 
+const extractAddOns = (item) => {
+  return item.add_ons.map( add_on => add_on.id)
+}
+
+const addAddOnsToForm = (form, form_name, items) => {
+  items.forEach( (item, index) => {
+    form.append(`${form_name}[add_ons][${index}][ids]`, extractAddOns(item))
+  })
+}
+
 const completeAction = (token, brand) => {
   const vForm = registrationForm
   const cart = vForm.cart
@@ -567,14 +588,19 @@ const completeAction = (token, brand) => {
   if (vForm.interval === 'month') {
     let i
     for (i = 0; i <= 4; i++) {
-      formData.append('registration_form[orders][][order_date]', vForm.delivery_dates[i])
-      formData.append('registration_form[orders][][menu_ids][]', extractValue(cart[0][`day_${i + 1}`], 'id'))
-      formData.append('registration_form[orders][][quantities][]', extractValue(cart[0][`day_${i + 1}`], 'quantity'))
+      let form_name = `registration_form[orders][${i}]`
+      let current_cart = cart[0][`day_${i + 1}`]
+      formData.append(`${form_name}[order_date]`, vForm.delivery_dates[i])
+      formData.append(`${form_name}[menu_ids][]`, extractValue(current_cart, 'id'))
+      formData.append(`${form_name}[quantities][]`, extractValue(current_cart, 'quantity'))
+      addAddOnsToForm(formData, form_name, current_cart)
     }
   } else {
-    formData.append('registration_form[orders][][order_date]', vForm.delivery_date)
-    formData.append('registration_form[orders][][menu_ids][]', extractValue(cart, 'id'))
-    formData.append('registration_form[orders][][quantities][]', extractValue(cart, 'quantity'))
+    let form_name = 'registration_form[orders][0]'
+    formData.append(`${form_name}[order_date]`, vForm.delivery_date)
+    formData.append(`${form_name}[menu_ids][]`, extractValue(cart, 'id'))
+    formData.append(`${form_name}[quantities][]`, extractValue(cart, 'quantity'))
+    addAddOnsToForm(formData, form_name, cart)
   }
 
 
@@ -679,3 +705,9 @@ const changeCheckedTabs = () => {
   const el = document.querySelector('ul.wizard-nav-pills')
   el.classList.add('container');
 }())
+
+
+const parseFloatingNumber = (num) => {
+  const val = parseFloat(num)
+  return isNaN(val) ? 0 : val
+}

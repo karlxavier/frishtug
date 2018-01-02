@@ -38,10 +38,10 @@
               </a>
             </div>
             <div class="col-2 px-0 text-right" v-if="order.tax">
-              {{ removeTaxFromPrice(order.price) | to_currency }}
+              {{ pricePlusAddOn(removeTaxFromPrice(order.price), order.add_ons, order.quantity) | to_currency }}
             </div>
             <div class="col-2 px-0 text-right" v-else>
-              {{ order.price | to_currency }}
+              {{ pricePlusAddOn(order.price, order.add_ons, order.quantity) | to_currency }}
             </div>
           </div>
           <div class="row order-list-items px-3" v-if="cartHasTaxableItems()">
@@ -55,7 +55,7 @@
           <hr>
           <div>
             <h6 class="font-weight-bold">
-              Total <span class="meal-total float-right"> {{ cart | total_price | to_currency }}</span>
+              Total <span class="meal-total float-right"> {{ totalPlusAddOn(cart) | to_currency }}</span>
             </h6>
           </div>
         </div>
@@ -90,10 +90,10 @@
                   </a>
                 </div>
                 <div class="col-2 px-0 text-right" v-if="item.tax">
-                  {{ removeTaxFromPrice(item.price) | to_currency }}
+                  {{ pricePlusAddOn(removeTaxFromPrice(item.price), item.add_ons, item.quantity) | to_currency }}
                 </div>
                 <div class="col-2 px-0 text-right" v-else>
-                  {{ item.price | to_currency }}
+                  {{ pricePlusAddOn(item.price, item.add_ons, item.quantity) | to_currency }}
                 </div>
               </div>
               <div class="row order-list-items px-3" v-if="cartHasTaxableItems(day)">
@@ -107,7 +107,7 @@
               <hr>
               <div>
                 <h6 class="font-weight-bold">
-                  Total <span class="meal-total float-right mb-4"> {{ day | total_price | to_currency }} </span>
+                  Total <span class="meal-total float-right mb-4"> {{ totalPlusAddOn(day) | to_currency }} </span>
                 </h6>
               </div>
             </div>

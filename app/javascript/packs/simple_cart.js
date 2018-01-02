@@ -64,6 +64,45 @@ const parseValue = (value) => JSON.parse(value)
 
 const toFloat = (value) => parseFloat(value)
 
+const hasAddOnsArray = (cart) => {
+  if (cart.hasOwnProperty('add_ons')) {
+    return true
+  } else {
+    cart.add_ons = []
+    return true
+  }
+}
+
+const findAddOnFromShoppingCartAddOns = (cart, addOn) => {
+  const findAddOn = (addOnInCart) => {
+    return addOnInCart.id === addOn.id
+  }
+
+  return cart.add_ons.findIndex(findAddOn)
+}
+const pushAddOn = (cart, addOn, el) => {
+  const hasAddOn = findAddOnFromShoppingCartAddOns(cart, addOn)
+  if (hasAddOn <= -1) {
+    cart.add_ons.push(addOn)
+  }
+
+  if (el.checked === false) {
+    cart.add_ons = cart.add_ons.filter( add_on => add_on.id !== addOn.id )
+  }
+}
+
+const toggleAddOns = (el) => {
+  const addOn = parseValue(el.dataset.value)
+  const targetMenu = el.dataset.addOnFor
+  const item = { id: parseInt(targetMenu) }
+  const itemInCartIndex = findItemFromShoppingCart(item)
+
+  if (itemInCartIndex >= 0) {
+    const cart = currentActiveCart[itemInCartIndex]
+    pushAddOn(cart, addOn, el)
+  }
+}
+
 const addToShoppingCart = (el) => {
   const item = parseValue(el.dataset.value)
   item.price = toFloat(item.price)
@@ -119,11 +158,27 @@ const shoppingCartHandler = (el) => {
   if (el.dataset.control === 'add') {
       addToShoppingCart(el)
   }
+
+  if (el.dataset.type === 'add_ons') {
+    toggleAddOns(el)
+  }
+}
+
+const enableOrDisableAddOns = (counter_name, quantity) => {
+  const addOns = document.querySelector(`${counter_name}__add_ons`)
+  if (addOns && quantity > 0) {
+    addOns.classList.remove('d-none')
+    return
+  } else {
+    addOns.classList.add('d-none')
+    return
+  }
 }
 
 const updateCounterHandler = (counterName, quantity) => {
   const counter = document.querySelector(counterListeners[counterName])
   counter.innerHTML = quantity
+  enableOrDisableAddOns(counterListeners[counterName], quantity)
 }
 
 const getRemoveBtn = (counterName) => {

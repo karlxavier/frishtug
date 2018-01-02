@@ -57,7 +57,7 @@ class UserRegistrationsController < ApplicationController
             :billing_phone_number,
             :stripe_token,
             :card_brand,
-            orders: [:order_date, menu_ids: [], quantities: []],
+            orders: [:order_date, menu_ids: [], quantities: [], add_ons: [ :ids ]],
             addresses: %i[
               line1
               line2

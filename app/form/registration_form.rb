@@ -119,13 +119,17 @@ class RegistrationForm
   end
 
   def create_orders(user)
-    orders.each do |o|
+    orders.each do |key, o|
       if o[:order_date].present?
+        add_ons = o[:add_ons]
         order = user.orders.create!(order_date: Time.current, placed_on: o[:order_date])
         menu_ids_array = o[:menu_ids][0].split(',')
         quantities_array = o[:quantities][0].split(',')
         menu_ids_array.each_with_index do |id, index|
-          order.menus_orders.create!(menu_id: id, quantity: quantities_array[index])
+          add_on_ids = []
+          add_on_ids = add_ons[index.to_s][:ids].split(',') if add_ons.present?
+          order.menus_orders
+            .create!(menu_id: id, quantity: quantities_array[index], add_ons: add_on_ids )
         end
       else
         errors.add(:base, 'Order place on is blank')
