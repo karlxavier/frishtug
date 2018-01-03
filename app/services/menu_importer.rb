@@ -19,28 +19,29 @@ class MenuImporter
     tax
     menu_category_id
     diet_category_id
+    asset_id
   ].freeze
 
   def initialize(file)
     @file = file
     @diet_category = diet_category_hash
+    @units_hash = unit_hash
+    @menu_categories_hash = menu_category_hash
     valid?
   end
 
   def run
     menus = []
-    image_urls = []
     quantities = []
     ActiveRecord::Base.transaction do
       (2..spreadsheet.last_row).each do |i|
         row = to_hash(i)
         validate_keys(row, i)
-        image_urls << row[:image]
         quantities << row[:quantity]
         menus << create_menu_entry(row, i)
       end
       persisted_menus = menu_import(menus)
-      upload_images(persisted_menus.ids, image_urls)
+      # upload_images(persisted_menus.ids, image_urls)
       update_inventory(persisted_menus.ids, quantities)
     end
     true
@@ -58,10 +59,18 @@ class MenuImporter
 
   private
 
-  attr_accessor :file, :diet_category
+  attr_accessor :file, :diet_category, :units_hash, :menu_categories_hash
 
   def diet_category_hash
     DietCategory.pluck(:name, :id).to_h
+  end
+
+  def menu_category_hash
+    MenuCategory.pluck(:name, :id).to_h
+  end
+
+  def unit_hash
+    Unit.pluck(:name, :id).to_h
   end
 
   def validate_keys(row, i)
@@ -107,27 +116,27 @@ class MenuImporter
   def create_menu_entry(row, _i)
     Menu.new(
       name: row[:name],
-      unit_id: unit(row[:unit]).id,
+      unit_id: unit(row[:unit]),
       price: row[:price],
-      menu_category_id: category(row[:category]).id,
+      menu_category_id: category(row[:category]),
       diet_category_id: diet_category[row[:diet_category]],
       published: true,
       published_at: Time.current,
       tax: row[:tax],
       item_number: row[:item_number],
       unit_size: row[:unit_size],
-      description: row[:description]
+      description: row[:description],
+      asset_id: row[:asset_id]
     )
   end
 
   def category(name)
-    MenuCategory.name_exists?(name.strip.downcase)
-                .first_or_create!(name: name.strip)
+    menu_categories_hash[name].present? ?
+      menu_categories_hash[name] : MenuCategory.create(name: name.strip).id
   end
 
   def unit(name)
-    Unit.name_exists?(name.strip.downcase)
-        .first_or_create!(name: name.strip)
+    units_hash[name].present? ? units_hash[name] : Unit.create(name: name.strip).id
   end
 
   def spreadsheet
@@ -135,15 +144,15 @@ class MenuImporter
   end
 
   def header
-    spreadsheet.row(1).map(&:downcase)
+    spreadsheet.row(1).map do |column|
+      unless column.blank?
+        column.downcase
+      end
+    end
   end
 
   def update_inventory(menu_ids, quantities)
     InventoryQtyWorker.perform_async(menu_ids, quantities)
-  end
-
-  def upload_images(menu_ids, image_urls)
-    FileWorker.perform_async(menu_ids, image_urls)
   end
 
   def menu_import(menus)

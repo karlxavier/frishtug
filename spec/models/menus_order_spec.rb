@@ -8,6 +8,7 @@
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  quantity   :integer
+#  add_ons    :string           default([]), is an Array
 #
 
 require 'rails_helper'

@@ -1,0 +1,22 @@
+<%= card_container do %>
+  <%= form_for [:admin, @asset] do |f| %>
+    <div class="form-group">
+      <div class="dropzone-area dropzone">
+        <div class="preview-image"></div>
+        <div class="fallback">
+          <%= f.file_field :image %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <%= paginate @assets %>
+  <div class="card-columns asset-container">
+    <%= render @assets %>
+  </div>
+  <%= paginate @assets %>
+
+  <%= content_for :footer_js  do %>
+    <%= javascript_pack_tag 'admin/image' %>
+  <% end %>
+<% end %>

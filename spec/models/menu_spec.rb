@@ -12,7 +12,6 @@
 #  published        :boolean
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
-#  image            :string
 #  unit_size        :integer
 #  item_number      :string
 #  tax              :boolean          default(FALSE)

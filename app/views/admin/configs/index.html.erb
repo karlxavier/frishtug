@@ -3,7 +3,7 @@
   url = admin_config_path(@store_config) if @store_config.id.present?
 %>
 <%= card_container do %>
-  <%= form_with model: @store_config, 
+  <%= form_with model: @store_config,
                 url: url do |f| %>
     <div class="col-md-4">
       <%= render 'shared/flash' %>
@@ -39,16 +39,21 @@
       </div>
     </div>
     <div class="col-md-8">
-      <div class="form-group">
+      <div>
         <label for="">Home Page Images</label>
-        <% if @store_config.home_page_images? %>
-          <div>
-            <%- @store_config.home_page_images.urls(preview: '200x200', quality: 'best').each do |url| %>
-              <%= image_tag url, height: '100', class: 'rounded raised-1' %>
-            <% end %>
+        <div class="form-group">
+          <div class="dropzone-area dropzone">
+            <div class="preview-image">
+              <% @store_config.assets.each do |asset| %>
+                <%= cl_image_tag asset.image, height: 100 %>
+              <% end %>
+            </div>
+            <div class="fallback">
+              <%= file_field_tag :image %>
+            </div>
           </div>
-        <% end %>
-        <%= f.uploadcare_uploader :home_page_images, uploadcare: { multiple: true } %>
+        </div>
+        <div class="store_asset_ids"></div>
       </div>
     </div>
     <div class="col-md-4">
@@ -57,4 +62,8 @@
       } %>
     </div>
   <% end %>
+<% end %>
+
+<%= content_for :footer_js  do %>
+  <%= javascript_pack_tag 'admin/config' %>
 <% end %>

@@ -76,7 +76,7 @@ class Admin::MenusController < Admin::BaseController
     params.fetch(:menu, {})
       .permit(
         :name,
-        :image,
+        :asset_id,
         :price,
         :unit_id,
         :menu_category_id,

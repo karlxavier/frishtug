@@ -7,7 +7,8 @@
 #  temp_order_id :integer
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
-#  quantity      :integer
+#  quantity      :integer          default(0)
+#  add_ons       :string           default([]), is an Array
 #
 
 class MenusTempOrder < ApplicationRecord

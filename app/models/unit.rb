@@ -11,8 +11,7 @@
 # Class names
 # id name
 class Unit < ApplicationRecord
-  validates :name, presence: true
-  validates :name, uniqueness: true
+  validates :name, presence: true, uniqueness: true
   has_many :menus
   include NameSearchable
 end

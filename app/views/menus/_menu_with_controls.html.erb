@@ -5,10 +5,7 @@
 %>
 <%= content_tag :div,
   class: 'card col-12 col-custom-255 px-0 border-0 mb-4 mt-1 mr-4' do %>
-  <img class="card-img-top"
-    src="<%= menu.image.url(quality: 'better', preview: '200x200') if menu.image? %>"
-    alt="<%= menu.name.titleize %>"
-    height="175">
+  <%= image_asset(menu, class: 'card-img-top', height: 175) %>
   <div class="card-body px-0 py-1">
     <h5 class="card-title mb-0 font-family-montserrat">
       <%= menu.name.titleize %>

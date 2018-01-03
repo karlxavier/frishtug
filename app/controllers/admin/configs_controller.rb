@@ -22,6 +22,7 @@ class Admin::ConfigsController < Admin::BaseController
   def update
     if @store_config.update(store_config_params)
       @store_config.save_zip(@zipcodes)
+      @store_config.asset_ids = params[:store][:asset_ids]
       flash[:success] = 'Store config successfully save.'
     else
       flash[:error] = @store_config.errors.full_messages.join(', ')
@@ -40,6 +41,6 @@ class Admin::ConfigsController < Admin::BaseController
   end
 
   def store_config_params
-    params.require(:store).permit(:_id, :_code, :home_page_images, tax_attributes: [ :rate ])
+    params.require(:store).permit(:_id, :_code, tax_attributes: [ :rate ])
   end
 end

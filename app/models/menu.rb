@@ -12,7 +12,6 @@
 #  published        :boolean
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
-#  image            :string
 #  unit_size        :integer
 #  item_number      :string
 #  tax              :boolean          default(FALSE)
@@ -21,6 +20,7 @@
 
 class Menu < ApplicationRecord
   include Inventoriable
+  belongs_to  :asset
   belongs_to  :unit
   belongs_to  :menu_category
   belongs_to  :diet_category, optional: true
@@ -33,8 +33,6 @@ class Menu < ApplicationRecord
   validates :name, :unit_id, :menu_category_id, :price, presence: true
   validates :name, uniqueness: true
   validate :sanitize_price
-
-  has_uploadcare_file :image
   before_save :generate_item_number_from_first_letters_of_name
 
   scope :filter_by_category, -> (category_id) { where(menu_category_id: category_id) }

@@ -16,4 +16,5 @@ namespace :admin do
   resources :inventory, only: :index
   resources :calendars, only: :index
   resources :scanovators, only: :create
+  resources :assets, only: %i[index create destroy]
 end

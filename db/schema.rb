@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180102084230) do
+ActiveRecord::Schema.define(version: 20180103073109) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -74,6 +74,21 @@ ActiveRecord::Schema.define(version: 20180102084230) do
     t.bigint "store_id"
     t.index ["store_id"], name: "index_allowed_zip_codes_on_store_id"
     t.index ["zip"], name: "index_allowed_zip_codes_on_zip"
+  end
+
+  create_table "assets", force: :cascade do |t|
+    t.string "image"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "assets_stores", force: :cascade do |t|
+    t.bigint "store_id"
+    t.bigint "asset_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["asset_id"], name: "index_assets_stores_on_asset_id"
+    t.index ["store_id"], name: "index_assets_stores_on_store_id"
   end
 
   create_table "candidates", force: :cascade do |t|
@@ -177,11 +192,12 @@ ActiveRecord::Schema.define(version: 20180102084230) do
     t.boolean "published"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "image"
     t.integer "unit_size"
     t.string "item_number"
     t.boolean "tax", default: false
     t.text "description"
+    t.bigint "asset_id"
+    t.index ["asset_id"], name: "index_menus_on_asset_id"
     t.index ["diet_category_id"], name: "index_menus_on_diet_category_id"
     t.index ["menu_category_id"], name: "index_menus_on_menu_category_id"
     t.index ["name"], name: "index_menus_on_name", unique: true
@@ -329,6 +345,8 @@ ActiveRecord::Schema.define(version: 20180102084230) do
   add_foreign_key "add_ons_menus", "add_ons"
   add_foreign_key "add_ons_menus", "menus"
   add_foreign_key "allowed_zip_codes", "stores"
+  add_foreign_key "assets_stores", "assets"
+  add_foreign_key "assets_stores", "stores"
   add_foreign_key "candidates", "referrers"
   add_foreign_key "candidates", "users"
   add_foreign_key "checkings", "users"
@@ -337,6 +355,7 @@ ActiveRecord::Schema.define(version: 20180102084230) do
   add_foreign_key "credit_cards", "users"
   add_foreign_key "inventories", "menus"
   add_foreign_key "inventory_transactions", "inventories"
+  add_foreign_key "menus", "assets"
   add_foreign_key "menus", "diet_categories"
   add_foreign_key "menus", "menu_categories"
   add_foreign_key "menus", "units"

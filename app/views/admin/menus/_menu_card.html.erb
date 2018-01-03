@@ -1,15 +1,16 @@
 <div class="col-12 col-sm-4 col-md-4 col-xl-3" id="<%= menu.name.parameterize %>">
   <div class="card border-0 <%= 'draft-card' if !menu.published? %>">
     <%= link_to edit_admin_menu_path(menu.id, format: :js), class: "#{menu.name.parameterize}", remote: true do %>
-      <img class="card-img-top rounded raised-1 no-hover-raised" 
-        src="<%= menu.image.url(quality: 'better', progressive: 'yes', preview: '200x200') if menu.image? %>" alt="Card image cap" height="175">
+        <%= cl_image_tag menu.asset.image.medium,
+         class: 'card-img-top rounded raised-1 no-hover-raised', height: 175 %>
     <% end %>
     <div class="card-body px-0 py-0 pt-3">
       <h5 class="card-title font-family-montserrat">
         <%= link_to menu.name, edit_admin_menu_path(menu.id, format: :js), class: 'dark-font-color', remote: true %>
+        - <%= "#{menu.unit_size} #{menu.unit.name}" %>
       </h5>
       <a class="card-text card-link">
-        <%= number_to_currency(menu.price, unit: '$') %>/<%= menu.unit.name %>
+        <%= number_to_currency(menu.price, unit: '$') %>
         <% unless menu.published? %>
           <span class="badge badge-secondary">Draft</span>
         <% end %>

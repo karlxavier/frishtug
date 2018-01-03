@@ -8,6 +8,6 @@
       const label = document.querySelector('#menu-item-modal').querySelector('label[for="menu_diet_category_id_<%= @menu.diet_category_id %>"]');
       label.classList.add('inverse');
   <% end %>
-  // dropzone_init();
   diet_category_init();
+  init_dropzone();
 }())

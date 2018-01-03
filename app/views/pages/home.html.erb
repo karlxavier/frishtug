@@ -1,12 +1,5 @@
-<%-
-  image_url = nil
-  if Store.first
-    image_url = Store.first.home_page_images
-                      .urls(quality: 'normal', progressive: 'yes').sample(1).first
-  end
- %>
 <div class="row mx-0 justify-content-center align-items-center home-banner"
-  style="background-image: url('<%=  image_url %>');">
+  style="background-image: url('<%= random_background %>');">
   <div class="text-center pt-4" style="background: rgba(255,255,255,.9); height: 254px; width: 790px; z-index: 1">
     <h2 class="text-uppercase font-family-montserrat-semi-bold">A Fresh Day Starts Here!</h2>
     <p class="mb-0 font-size-18">Begin your day with a fresh and healthy kosher meal from Frishtug!</p>

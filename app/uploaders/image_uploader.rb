@@ -2,12 +2,12 @@ class ImageUploader < CarrierWave::Uploader::Base
   # Include RMagick or MiniMagick support:
   # include CarrierWave::RMagick
   include CarrierWave::MiniMagick
+  include Cloudinary::CarrierWave
   include Piet::CarrierWaveExtension
 
   process optimize: [{quality: 90, level: 7}]
 
   # Choose what kind of storage to use for this uploader:
-  storage :file
   # storage :fog
 
   # Override the directory where uploaded files will be stored.
@@ -38,18 +38,22 @@ class ImageUploader < CarrierWave::Uploader::Base
 
   version :medium do
     process resize_to_fit: [300, 300]
+    cloudinary_transformation :quality => 80
   end
 
   version :large do
     process resize_to_fit: [600, 600]
+    cloudinary_transformation :quality => 80
   end
 
   version :header do
     process resize_to_fit: [1000, 200]
+    cloudinary_transformation :quality => 80
   end
 
   version :background do
     process resize_to_fit: [1920, 1080]
+    cloudinary_transformation :quality => 80
   end
 
   # Add a white list of extensions which are allowed to be uploaded.

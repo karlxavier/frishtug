@@ -14,11 +14,10 @@
 class Store < ApplicationRecord
   validates :_id, presence: true
   has_many :allowed_zip_codes, dependent: :destroy
+  has_and_belongs_to_many :assets
   has_one :tax, dependent: :destroy
 
   accepts_nested_attributes_for :tax
-
-  has_uploadcare_group :home_page_images
 
   def save_zip(zipcodes)
     self.allowed_zip_code_ids = create_zip_from(zipcodes)

@@ -7,6 +7,7 @@
 #  menu_category_id :integer
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
+#  price            :decimal(8, 2)
 #
 
 RSpec.describe AddOn, type: :model do

@@ -1,5 +1,40 @@
+import Dropzone from 'dropzone'
+
 document.addEventListener('DOMContentLoaded', ()=>{
   (function(win) {
+
+    const initDropzone = () => {
+      const publishBtn = document.querySelector('.publish-btn')
+      const draftBtn = document.querySelector('.draft-btn')
+      const dropzone = new Dropzone(document.querySelector('.dropzone-area'), {
+        uploadMultiple: false,
+        paramName: 'asset[image]',
+        acceptedFiles: '.jpg,.png,.jpeg,.gif',
+        parallelUploads: 6,
+        maxFiles: 1,
+        url: '/admin/assets'
+      })
+
+      const disableBtns = () => {
+        publishBtn.classList.add('disabled')
+        draftBtn.classList.add('disabled')
+      }
+
+      const enableBtns = () => {
+        publishBtn.classList.remove('disabled')
+        draftBtn.classList.remove('disabled')
+      }
+
+      dropzone.on('addedfile', function(file) {
+        disableBtns()
+      })
+
+      dropzone.on('success', function(file, response) {
+        const target = document.querySelector('input.asset_id')
+        target.value = response.asset_id
+        enableBtns()
+      })
+    }
 
     const addInverseClass = ({el, type}) => {
       const labelIcon = el.closest('.icon-label')
@@ -61,5 +96,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
     }
 
     win.diet_category_init = init
+    win.init_dropzone = initDropzone
   }(window))
 })

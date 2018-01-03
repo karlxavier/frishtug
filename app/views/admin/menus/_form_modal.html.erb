@@ -66,12 +66,18 @@
   </div>
   <%= f.label :photo %>
   <div class="form-group">
-    <div class="dropzone">
-      <%= f.uploadcare_field :image %>
+    <div class="dropzone-area dropzone">
+      <div class="preview-image">
+        <%= menu_asset_image(menu) %>
+      </div>
+      <div class="fallback">
+        <input type="file" name="image">
+      </div>
     </div>
   </div>
-  <%= f.submit 'Save as Draft', class: 'btn btn-outline-secondary float-right ml-3' %>
-  <%= f.submit 'Publish', class: 'btn btn-brown float-right' %>
+  <%= f.hidden_field :asset_id, class: 'asset_id' %>
+  <%= f.submit 'Save as Draft', class: 'btn btn-outline-secondary float-right ml-3 draft-btn' %>
+  <%= f.submit 'Publish', class: 'btn btn-brown float-right publish-btn' %>
   <% if menu.id? %>
     <%= link_to 'Delete' , admin_menu_path(menu.id), method: :delete, class: 'btn btn-danger float-right mr-3', remote: true, data: { confirmswt: 'Are you sure?' } %>
   <% end %>
