@@ -32,7 +32,11 @@ class Admin::AssetsController < Admin::BaseController
     @asset = Asset.find(params[:id])
   end
 
+  def file_name_params
+    params[:asset][:image].original_filename
+  end
+
   def asset_params
-    params.require(:asset).permit(:image)
+    params.require(:asset).permit(:image).merge(file_name: file_name_params)
   end
 end

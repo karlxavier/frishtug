@@ -3,7 +3,7 @@
   remove_url = "remove_user_#{order.class.name.underscore.pluralize}_path"
 %>
 <div class="card col-md-3 px-0 border-0 mb-4 mt-1 mx-3" data-meal-id="<%= menu.id %>" data-meal-price="<%= menu.price %>" data-meal-name="<%= menu.name %>">
-  <%= image_asset(menu, class: 'card-img-top', height: 175) %>
+  <%= image_asset(menu, class: 'card-img-top', width: 255, height: 175) %>
   <div class="card-body px-0 py-1">
     <h4 class="card-title mb-0">
       <%= menu.name.titleize %>

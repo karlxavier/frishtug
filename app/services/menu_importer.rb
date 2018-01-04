@@ -24,9 +24,10 @@ class MenuImporter
 
   def initialize(file)
     @file = file
-    @diet_category = diet_category_hash
-    @units_hash = unit_hash
-    @menu_categories_hash = menu_category_hash
+    @diet_category = diet_category_to_hash
+    @units_hash = unit_to_hash
+    @menu_categories_hash = menu_category_to_hash
+    @asset_hash = asset_to_hash
     valid?
   end
 
@@ -59,17 +60,21 @@ class MenuImporter
 
   private
 
-  attr_accessor :file, :diet_category, :units_hash, :menu_categories_hash
+  attr_accessor :file, :diet_category, :units_hash, :menu_categories_hash, :asset_hash
 
-  def diet_category_hash
+  def asset_to_hash
+    Asset.pluck(:file_name, :id).to_h
+  end
+
+  def diet_category_to_hash
     DietCategory.pluck(:name, :id).to_h
   end
 
-  def menu_category_hash
+  def menu_category_to_hash
     MenuCategory.pluck(:name, :id).to_h
   end
 
-  def unit_hash
+  def unit_to_hash
     Unit.pluck(:name, :id).to_h
   end
 
@@ -126,7 +131,7 @@ class MenuImporter
       item_number: row[:item_number],
       unit_size: row[:unit_size],
       description: row[:description],
-      asset_id: row[:asset_id]
+      asset_id: asset_hash[row[:image]]
     )
   end
 

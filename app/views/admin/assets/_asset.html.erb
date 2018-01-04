@@ -2,6 +2,7 @@
   <%= cl_image_tag asset.image, class: 'card-img-top'%>
   <div class="card-body">
     <p class="mb-0">Asset Id: <%= asset.id %></p>
+    <p class="mb-0">Filename: <%= asset.file_name %></p>
     <p class="mb-0">Format: <%= asset.image.format %></p>
   </div>
   <div class="card-footer">

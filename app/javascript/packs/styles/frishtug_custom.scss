@@ -208,7 +208,7 @@ label,
     color: $chocolate;
 }
 
-.dropzone {
+.dropzone-area {
     display: flex;
     width: 100%;
     min-height: 180px;
@@ -233,6 +233,15 @@ label,
             color: $pure-white;
         }
     }
+
+    .add-file-btn {
+        position: absolute;
+        top: 200px;
+    }
+}
+
+.dz-preview .dz-error-message {
+    top: 150px!important;
 }
 
 .is_dragging {

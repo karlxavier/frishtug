@@ -14,4 +14,6 @@ class Asset < ApplicationRecord
   has_many :menus
   has_and_belongs_to_many :stores
   mount_uploader :image, ImageUploader
+
+  validates :file_name, presence: true, uniqueness: true
 end
