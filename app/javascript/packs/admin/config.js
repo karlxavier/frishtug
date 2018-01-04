@@ -1,4 +1,5 @@
 import Dropzone from 'dropzone'
+Dropzone.autoDiscover = false;
 
 const el = document.querySelector('.dropzone-area')
 

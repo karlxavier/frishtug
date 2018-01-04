@@ -1,4 +1,5 @@
 import Dropzone from 'dropzone'
+Dropzone.autoDiscover = false;
 
 const el = document.querySelector('.dropzone-area')
 const browseBtn = el.querySelector('.add-file-btn')
@@ -24,9 +25,12 @@ dropzone.on('addedfile', function(file) {
   browseBtn.classList.add('d-none')
 })
 
+dropzone.on('queuecomplete', function() {
+  browseBtn.classList.remove('d-none')
+})
+
 dropzone.on('success', function(file, response) {
   this.removeFile(file)
-  browseBtn.classList.remove('d-none')
   Rails.ajax({
     url: '/admin/assets',
     type: 'GET',
