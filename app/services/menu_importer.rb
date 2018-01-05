@@ -24,26 +24,25 @@ class MenuImporter
 
   def initialize(file)
     @file = file
-    @diet_category = diet_category_to_hash
-    @units_hash = unit_to_hash
-    @menu_categories_hash = menu_category_to_hash
-    @asset_hash = asset_to_hash
+    @diet_category = DietCategory.pluck(:name, :id).to_h.freeze
+    @units_hash = Unit.pluck(:name, :id).to_h.freeze
+    @menu_categories_hash = MenuCategory.pluck(:name, :id).to_h.freeze
+    @asset_hash = Asset.pluck(:file_name, :id).to_h.freeze
+    @menus = []
+    @quantities = []
     valid?
   end
 
   def run
-    menus = []
-    quantities = []
     ActiveRecord::Base.transaction do
       (2..spreadsheet.last_row).each do |i|
         row = to_hash(i)
         validate_keys(row, i)
-        quantities << row[:quantity]
-        menus << create_menu_entry(row, i)
+        @quantities << row[:quantity]
+        @menus << create_menu_entry(row)
       end
-      persisted_menus = menu_import(menus)
-      # upload_images(persisted_menus.ids, image_urls)
-      update_inventory(persisted_menus.ids, quantities)
+      persisted_menus = menu_import
+      update_inventory(persisted_menus.ids)
     end
     true
   rescue ActiveRecord::StatementInvalid => e
@@ -60,23 +59,13 @@ class MenuImporter
 
   private
 
-  attr_accessor :file, :diet_category, :units_hash, :menu_categories_hash, :asset_hash
-
-  def asset_to_hash
-    Asset.pluck(:file_name, :id).to_h
-  end
-
-  def diet_category_to_hash
-    DietCategory.pluck(:name, :id).to_h
-  end
-
-  def menu_category_to_hash
-    MenuCategory.pluck(:name, :id).to_h
-  end
-
-  def unit_to_hash
-    Unit.pluck(:name, :id).to_h
-  end
+  attr_accessor :file,
+                :diet_category,
+                :units_hash,
+                :menu_categories_hash,
+                :asset_hash,
+                :menus,
+                :quantities
 
   def validate_keys(row, i)
     validates_required_keys(row, i)
@@ -118,7 +107,7 @@ class MenuImporter
     end
   end
 
-  def create_menu_entry(row, _i)
+  def create_menu_entry(row)
     Menu.new(
       name: row[:name],
       unit_id: unit(row[:unit]),
@@ -156,11 +145,11 @@ class MenuImporter
     end
   end
 
-  def update_inventory(menu_ids, quantities)
+  def update_inventory(menu_ids)
     InventoryQtyWorker.perform_async(menu_ids, quantities)
   end
 
-  def menu_import(menus)
+  def menu_import
     Menu.import menus, on_duplicate_key_update: {
       conflict_target: [:name], columns: UPDATABLE_KEYS
     }

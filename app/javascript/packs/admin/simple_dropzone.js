@@ -102,11 +102,11 @@ document.addEventListener('DOMContentLoaded', ()=>{
     div.className = 'dropzone_uploaded_files'
 
     const is_spreedsheet = (file) => {
-      return /\.(csv|xls|xlsx|xlsm)$/i.test(file.name) 
+      return /\.(csv|xls|xlsx|xlsm)$/i.test(file.name)
     }
 
     const displayFileIcon = (file) => {
-      if (file.type.match(textFile)) {
+      if (is_spreedsheet(file)) {
         const img = new Image()
         const p = document.createElement('p')
         const text = document.createTextNode(file.type)

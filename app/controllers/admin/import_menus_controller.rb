@@ -10,18 +10,13 @@ class Admin::ImportMenusController < Admin::BaseController
   end
 
   def import
-    @menu_importer = MenuImporter.new(params[:file])
-    if @menu_importer.run
-      message = successfull_message
+    @document = Document.new(file: params[:file])
+    if @document.save
+      ImportWorker.perform_async(@document.id)
+      message = "File successfully uploaded and will be processed in the background"
     else
       message = @menu_importer.errors.full_messages.join(', ')
     end
     redirect_back fallback_location: :back, notice: message
-  end
-
-  private
-
-  def successfull_message
-    "Successfully imported #{@menu_importer.size} #{'row'.pluralize(@menu_importer.size)}"
   end
 end

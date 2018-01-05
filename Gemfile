@@ -53,11 +53,15 @@ gem 'piet'
 gem 'popper_js', '~> 1.12.1'
 gem 'rack-mini-profiler'
 gem 'roo', '~> 2.7', '>= 2.7.1'
+gem 'roo-google'
+gem 'roo-xls'
 gem 'sidekiq'
 gem 'stripe'
 gem 'trix'
 gem 'uploadcare-rails', '~> 1.1'
 gem 'virtus'
+gem 'connection_pool'
+gem 'dalli'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
