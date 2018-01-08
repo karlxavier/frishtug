@@ -1,16 +1,37 @@
-<div class="container-fluid">
-  <div class="row">
+<div class="container-fluid" style="margin-bottom: 10rem">
+  <div class="row dashboard__displays">
     <div class="col">
-      Active Orders
-      <h2><%= @order_query.active_orders.size %></h2>
+      <div class="row">
+        <div class="col-3">
+          <%= image_tag asset_pack_path('packs/images/cart.svg') %>
+        </div>
+        <div class="col pl-0">
+          Active Orders
+          <h2><%= @order_query.active_orders.size %></h2>
+        </div>
+      </div>
     </div>
     <div class="col">
-      Total Sales
-      <h2><%= to_currency(@order_query.total_sales) %></h2>
+      <div class="row">
+        <div class="col-3">
+          <%= image_tag asset_pack_path('packs/images/wallet.svg') %>
+        </div>
+        <div class="col pl-0">
+          Total Sales
+          <h2><%= to_currency(@order_query.total_sales) %></h2>
+        </div>
+      </div>
     </div>
     <div class="col">
-      Best Seller
-      <h2><%= @order_query.best_seller[:name] %></h2>
+      <div class="row">
+        <div class="col-3">
+            <%= image_tag asset_pack_path('packs/images/thumbs-up.svg') %>
+        </div>
+        <div class="col pl-0">
+            Best Seller
+            <h2><%= @order_query.best_seller[:name] %></h2>
+        </div>
+      </div>
     </div>
   </div>
 </div>

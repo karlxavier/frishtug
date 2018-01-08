@@ -1,4 +1,10 @@
 module SvgHelper
+  def svg_image_tag(file_path, options = {})
+    file_name = extract_filename(file_path)
+    file = File.read(Rails.root.join('public', 'packs', 'packs/images', file_name))
+    file.html_safe
+  end
+
   def svg_tag(file_path, options = {})
     options[:width], options[:height] = extract_dimensions(options[:size]) if options[:size]
 
@@ -6,7 +12,7 @@ module SvgHelper
     file = File.read(Rails.root.join('public', 'packs', 'packs/images', file_name))
     document = Nokogiri::HTML::DocumentFragment.parse file
     svg = document.at_css 'svg'
-    
+
     svg['class']  = options[:class] if options[:class]
     svg['id']     = options[:id] if options[:id]
     svg['width']  = options[:width] if options[:width]

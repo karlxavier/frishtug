@@ -20,7 +20,12 @@ class MenuCategory < ApplicationRecord
   accepts_nested_attributes_for :add_ons, allow_destroy: true
 
   def self.published_menus
-    includes(:menus).where.not(menus: { published_at: nil }).sort
+    includes(
+      menus: [
+        :asset,
+        :diet_category,
+        :unit, :add_ons,
+        :menus_add_ons]).where.not(menus: { published_at: nil }).sort
   end
 
   def self.find_all_menus_by(category_id)

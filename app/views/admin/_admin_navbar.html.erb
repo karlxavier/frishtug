@@ -1,17 +1,19 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <%= logo('170x41') %>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form>
-    <ul class="navbar-nav ml-auto">
-      <li class="nav-item">
-        <%= admin_signout_link %>
-      </li>
-    </ul>
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top" style="height: 70px; box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.25);">
+  <div class="container container-1325">
+    <%= logo('170x41') %>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <form class="form-inline my-2 my-lg-0">
+        <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+      </form>
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <%= admin_signout_link %>
+        </li>
+      </ul>
+    </div>
   </div>
 </nav>

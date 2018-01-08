@@ -21,15 +21,10 @@
         <li class="nav-item <%= active?(page_path(id: 'contact_us')) %>">
           <%= nav_link 'Contact Us', page_path(id: 'contact_us'), class: 'nav-link font-size-15 font-family-montserrat' %>
         </li>
-        <li class="nav-item <%= active?( new_user_session_path) %>">
-          <% text = current_user ? 'Settings' : 'Log In' %>
-          <%= nav_link text, new_user_session_path, class: 'nav-link font-size-15 font-family-montserrat' %>
-        </li>
-        <% unless current_user %>
-          <li class="nav-item <%= active?(user_registrations_path) %>">
-            <%= nav_link 'Sign Up', user_registrations_path, class: 'btn btn-brown-outline-rounded font-family-montserrat-semi-bold text-uppercase font-size-15' %>
-          </li>
-        <% end %>
+        <%= login_link %>
+        <%= sign_up_link %>
+        <%= admin_dashboard_link %>
+        <%= user_dashboard_link %>
       </ul>
     </div>
   </div>

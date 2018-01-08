@@ -1429,3 +1429,14 @@ table.table {
         }
     }
 }
+
+
+.dashboard__displays {
+    display: flex;
+    height: 12.5rem;
+    background: #DFB676;
+    color: #fff;
+    padding: 2.5rem;
+    position: absolute;
+    width: calc(100% + 0.4rem);
+}

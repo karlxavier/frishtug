@@ -6,7 +6,7 @@ class Admin::MenusController < Admin::BaseController
   # GET /menus
   # GET /menus.json
   def index
-    @menus = MenuCategory.all.includes(menus: [:unit])
+    @menus = MenuCategory.all.includes(menus: [:unit, :asset])
     @menu_category = MenuCategory.new
     @menu_category.add_ons.build
   end
