@@ -27,7 +27,7 @@ class MenuImporter
     @diet_category = DietCategory.pluck(:name, :id).to_h.freeze
     @units_hash = Unit.pluck(:name, :id).to_h.freeze
     @menu_categories_hash = MenuCategory.pluck(:name, :id).to_h.freeze
-    @asset_hash = Asset.pluck(:file_name, :id).to_h.freeze
+    @asset_hash = Asset.where.not(file_name: nil).pluck(:file_name, :id).to_h.freeze
     @menus = []
     @quantities = []
     valid?
@@ -120,7 +120,7 @@ class MenuImporter
       item_number: row[:item_number],
       unit_size: row[:unit_size],
       description: row[:description],
-      asset_id: asset_hash[row[:image]]
+      asset_id: asset_hash[row[:image]] || row[:asset_id]
     )
   end
 

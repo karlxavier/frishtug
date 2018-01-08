@@ -1,4 +1,4 @@
-import fileIcon from '../images/file-icon.svg'
+import fileIcon from '../images/file.svg'
 document.addEventListener('DOMContentLoaded', ()=>{
   let dropzone = document.querySelector('.dropzone')
   let dropzoneFile = document.querySelector('.dropzone_file')
@@ -164,6 +164,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
   const readFile = (e) => {
     readImage(e.target.files)
+    readDocs(e.target.files)
   }
 
   const init = () => {

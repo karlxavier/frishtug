@@ -15,7 +15,7 @@ class Admin::ImportMenusController < Admin::BaseController
       ImportWorker.perform_async(@document.id)
       message = "File successfully uploaded and will be processed in the background"
     else
-      message = @menu_importer.errors.full_messages.join(', ')
+      message = @document.errors.full_messages.join(', ')
     end
     redirect_back fallback_location: :back, notice: message
   end
