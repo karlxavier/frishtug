@@ -2,20 +2,23 @@ class MenuImporter
   include ActiveModel::Validations
   require 'roo'
   validates :file, presence: true
+  UNIQUE_KEY = :item_number
   REQUIRED_KEYS = %i[
     name
     price
     unit
     category
     quantity
+    item_number
+    tax
   ].freeze
 
   UPDATABLE_KEYS = %i[
+    name
     description
     price
     unit_id
     unit_size
-    item_number
     tax
     menu_category_id
     diet_category_id
@@ -30,6 +33,8 @@ class MenuImporter
     @asset_hash = Asset.where.not(file_name: nil).pluck(:file_name, :id).to_h.freeze
     @menus = []
     @quantities = []
+    @menu_ids = []
+    @add_ons = []
     valid?
   end
 
@@ -39,10 +44,12 @@ class MenuImporter
         row = to_hash(i)
         validate_keys(row, i)
         @quantities << row[:quantity]
+        @add_ons << row[:add_ons]
         @menus << create_menu_entry(row)
       end
-      persisted_menus = menu_import
-      update_inventory(persisted_menus.ids)
+      @menu_ids = menu_import.ids
+      update_inventory
+      update_add_ons
     end
     true
   rescue ActiveRecord::StatementInvalid => e
@@ -65,7 +72,9 @@ class MenuImporter
                 :menu_categories_hash,
                 :asset_hash,
                 :menus,
-                :quantities
+                :quantities,
+                :menu_ids,
+                :add_ons
 
   def validate_keys(row, i)
     validates_required_keys(row, i)
@@ -145,13 +154,17 @@ class MenuImporter
     end
   end
 
-  def update_inventory(menu_ids)
+  def update_inventory
     InventoryQtyWorker.perform_async(menu_ids, quantities)
+  end
+
+  def update_add_ons
+    AddOnsWorker.perform_async(menu_ids, add_ons)
   end
 
   def menu_import
     Menu.import menus, on_duplicate_key_update: {
-      conflict_target: [:name], columns: UPDATABLE_KEYS
+      conflict_target: [UNIQUE_KEY], columns: UPDATABLE_KEYS
     }
   end
 end

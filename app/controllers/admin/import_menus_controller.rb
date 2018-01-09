@@ -14,9 +14,11 @@ class Admin::ImportMenusController < Admin::BaseController
     if @document.save
       ImportWorker.perform_async(@document.id)
       message = "File successfully uploaded and will be processed in the background"
+      flash[:success] = message
     else
-      message = @document.errors.full_messages.join(', ')
+      flash[:error] = @document.errors.full_messages.join(', ')
     end
-    redirect_back fallback_location: :back, notice: message
+
+    redirect_back fallback_location: :back
   end
 end

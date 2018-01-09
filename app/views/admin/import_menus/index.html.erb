@@ -6,19 +6,19 @@
         <h5 class="text-uppercase mb-0 text-muted-frish">Arguments</h5>
         <hr class="mt-1">
         <dl class="row">
-          <dt class="col-sm-3">name(Required and must be unique)</dt>
+          <dt class="col-sm-3">name <small>(Required)</small></dt>
           <dd class="col-sm-9">
             <p>A string by which the menu is known. It is also use to updated existing record.</p>
           </dd>
-          <dt class="col-sm-3">price(Required)</dt>
+          <dt class="col-sm-3">price <small>(Required)</small></dt>
           <dd class="col-sm-9">
             <p>A positive float number (e.g 2.99 to charge $2.99).</p>
           </dd>
-          <dt class="col-sm-3">category(Required)</dt>
+          <dt class="col-sm-3">category <small>(Required)</small></dt>
           <dd class="col-sm-9">
             <p>A string to classify menu's (e.g 'Bread rolls')</p>
           </dd>
-          <dt class="col-sm-3">unit(Required)</dt>
+          <dt class="col-sm-3">unit <small>(Required)</small></dt>
           <dd class="col-sm-9">
             <p>A string for weights and measure (e.g oz for ounce).</p>
           </dd>
@@ -30,7 +30,7 @@
           <dd class="col-sm-9">
             <p>A text describing the menu.</p>
           </dd>
-          <dt class="col-sm-3">tax</dt>
+          <dt class="col-sm-3">tax <small>(Required)</small></dt>
           <dd class="col-sm-9">
             <p>A true/false value field that indicates a taxable menu.</p>
           </dd>
@@ -42,13 +42,18 @@
           <dd class="col-sm-9">
             <p>A string containing either "Sugar Free, Gluten Free, Carb Free and May Contain Allergens".</p>
           </dd>
-          <dt class="col-sm-3">item_number</dt>
+          <dt class="col-sm-3">item_number <small>(Required and must be Unique)</small></dt>
           <dd class="col-sm-9">
-            <p>A string to tag menu (e.g TB123 for Tuna Bread).</p>
+            <p>A string to tag menu (e.g TB123 for Tuna Bread). And item_number is use for updating the item</p>
           </dd>
-          <dt class="col-sm-3">quantity(Required)</dt>
+          <dt class="col-sm-3">quantity <small>(Required)</small></dt>
           <dd class="col-sm-9">
             <p>An integer field describing the amount or number of menus</p>
+          </dd>
+          <dt class="col-sm-3">add_ons</dt>
+          <dd class="col-sm-9">
+            <p>A list of options separated by "|", and price is separated by ":".
+              (e.g "I need it hot|Toasted|Cheese:0.75|Cream Cheese:1.00") </p>
           </dd>
         </dl>
       </div>

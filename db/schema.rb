@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180104084101) do
+ActiveRecord::Schema.define(version: 20180109054201) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,9 +45,9 @@ ActiveRecord::Schema.define(version: 20180104084101) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "location_at"
+    t.integer "status"
     t.float "latitude"
     t.float "longitude"
-    t.integer "status"
     t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable_type_and_addressable_id"
   end
 
@@ -207,8 +207,8 @@ ActiveRecord::Schema.define(version: 20180104084101) do
     t.bigint "asset_id"
     t.index ["asset_id"], name: "index_menus_on_asset_id"
     t.index ["diet_category_id"], name: "index_menus_on_diet_category_id"
+    t.index ["item_number"], name: "index_menus_on_item_number", unique: true
     t.index ["menu_category_id"], name: "index_menus_on_menu_category_id"
-    t.index ["name"], name: "index_menus_on_name", unique: true
     t.index ["unit_id"], name: "index_menus_on_unit_id"
   end
 

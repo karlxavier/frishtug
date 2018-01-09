@@ -1,6 +1,7 @@
 module SvgHelper
-  def svg_image_tag(file_path, options = {})
-    file_name = extract_filename(file_path)
+  def svg_image_tag(filename, options = {})
+    assets = Rails.application.assets
+    raise assets.find_asset(filename).source.force_encoding("UTF-8").inspect
     file = File.read(Rails.root.join('public', 'packs', 'packs/images', file_name))
     file.html_safe
   end
@@ -9,7 +10,7 @@ module SvgHelper
     options[:width], options[:height] = extract_dimensions(options[:size]) if options[:size]
 
     file_name = extract_filename(file_path)
-    file = File.read(Rails.root.join('public', 'packs', 'packs/images', file_name))
+    file = File.read(Rails.root.join('public', 'packs', 'packs/images', file_name)).force_encoding("UTF-8")
     document = Nokogiri::HTML::DocumentFragment.parse file
     svg = document.at_css 'svg'
 
@@ -18,7 +19,7 @@ module SvgHelper
     svg['width']  = options[:width] if options[:width]
     svg['height'] = options[:height] if options[:height]
 
-    document.to_html.html_safe
+    raw document
   end
 
   private
