@@ -4,6 +4,8 @@ const mealSidebarCtrl = document.querySelector('.sidebar-controls')
 const mealFormWrapper = document.querySelector('#meal-form__wrapper')
 const mealSideBar = document.querySelector('#sidebar')
 const mealFormContainer = document.querySelector('#meal-form__container')
+const addOns = document.querySelectorAll('.menu_add_ons')
+
 sidebar.parentNode.removeChild(sidebar)
 mealSidebarCtrl.classList.add('d-none')
 mainContainer.className = 'col-12 col-md-12 col-lg-12'
@@ -45,6 +47,17 @@ mealFormWrapper.addEventListener('click', (e)=> {
   }
 })
 
+const addOnsHandler = (e) => {
+  const date = e.target.dataset.date
+  const menuId = e.target.dataset.menuId
+  const url = `/user/temp_orders/store?date=${date}&menu_id=${menuId}&add_on_id=${e.target.value}`
+  Rails.ajax({
+    url: url,
+    type: 'GET',
+  })
+}
+
+
 (function(){
   const mainContainer = document.querySelector('#root-container')
   mainContainer.classList.remove('pt-4')
@@ -55,4 +68,7 @@ mealFormWrapper.addEventListener('click', (e)=> {
   } else {
     hideSidebar()
   }
+  Array.from(addOns).forEach( addOn => {
+    addOn.addEventListener('click', addOnsHandler)
+  })
 }())

@@ -16,4 +16,8 @@ class MenusTempOrder < ApplicationRecord
   belongs_to :temp_order
 
   delegate :name, :id, :price, to: :menu, prefix: true, allow_nil: true
+
+  def add_ons_list
+    "<small>(#{self.add_ons.map { |a| AddOn.find(a).name }.join(', ')})</small>".html_safe
+  end
 end

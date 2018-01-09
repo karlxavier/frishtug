@@ -12,4 +12,23 @@ module User::WeeklyMealsHelper
             public_send(url, date: date, category: category.id),
             class: "nav-link btn btn-outline--category mx-2 #{is_active}"
   end
+
+  def add_on_input_list_weekly(add_on, menu, date)
+    id = "#{menu.name}__#{add_on.name.underscore}__#{date.split('-').join}"
+    klass = 'menu_add_ons'
+    content_tag :li do
+      content_tag :label, for: id do
+        check_box_tag(
+          add_on.name,
+          add_on.id,
+          false,
+          id: id,
+          class: klass,
+          data: {
+            date: date,
+            menu_id: menu.id
+          }) + " #{add_on.name_with_price}"
+      end
+    end
+  end
 end

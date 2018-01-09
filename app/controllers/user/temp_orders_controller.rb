@@ -4,12 +4,12 @@ class User::TempOrdersController < User::BaseController
   respond_to :js, only: [:store, :remove, :persist]
 
   def store
-    @temp_order.store(@menu, quantity)
+    @temp_order.store(@menu, quantity, add_on)
     respond_with(@temp_order, @menu, menu_size)
   end
 
   def remove
-    @temp_order.remove_item(@menu, quantity)
+    @temp_order.remove_item(@menu, quantity, add_on)
     respond_with(@temp_order, @menu, menu_size)
   end
 
@@ -19,6 +19,10 @@ class User::TempOrdersController < User::BaseController
   end
 
   private
+
+  def add_on
+    params[:add_on_id]
+  end
 
   def quantity
     params[:quantity]

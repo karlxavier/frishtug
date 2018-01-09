@@ -3,7 +3,7 @@
     <div class="row header py-4 meal-form__header border-bottom-grey mb-4">
       <div class="col">
         <%= back_to_index_link('', 'fa fa-angle-left') %>
-        <%= "#{action_name.upcase} MEAL PLAN" %>  
+        <%= "#{action_name.upcase} MEAL PLAN" %>
       </div>
       <div class="col">
         <div class="sidebar-controls float-right ml-4">
@@ -17,9 +17,9 @@
     <div class="row">
       <div class="col">
         <ul class="nav nav-pills justify-content-center" id="category_navs">
-          <% categories.each do |category| %>
+          <% categories.published_menus.each do |category| %>
             <li class="nav-item">
-              <%= 
+              <%=
                 category_link(params[:date], category, category_id)
               %>
             </li>

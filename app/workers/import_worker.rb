@@ -6,8 +6,13 @@ class ImportWorker
   def perform(doc_id)
     @doc = Document.find(doc_id)
     file = write_to_tmp_file
-    MenuImporter.new(file.path).run
-    @doc.destroy
+    @menu_importer = MenuImporter.new(file.path)
+    if @menu_importer.run
+      @doc.destroy
+    else
+      raise @menu_importer.errors.full_messages.join(', ')
+      @doc.destroy
+    end
   end
 
   private

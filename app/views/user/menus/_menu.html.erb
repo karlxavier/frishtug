@@ -24,7 +24,7 @@
         <div class="float-right">
           <%= link_to '-',
             public_send(remove_url, menu_id: menu.id, date: params[:date], quantity: 1),
-            class:'btn btn-brown ctrl-btns rounded-0',
+            class:"btn btn-brown ctrl-btns rounded-0 menu-#{menu.id}-remove",
             remote: true
           %>
           <span class="counter-for--<%= menu.name.parameterize %> meal-counter">
@@ -32,11 +32,20 @@
           </span>
           <%= link_to '+',
             public_send(store_url, menu_id: menu.id, date: params[:date], quantity: 1),
-            class:'btn btn-brown ctrl-btns rounded-0',
+            class:"btn btn-brown ctrl-btns rounded-0 menu-#{menu.id}-add",
             remote: true
           %>
         </div>
       </div>
     </div>
+    <div class="row">
+        <div class="col">
+          <ul class="list-unstyled">
+            <% menu.add_ons.each do |add_on| %>
+              <%= add_on_input_list_weekly(add_on, menu, params[:date]) %>
+            <% end %>
+          </ul>
+        </div>
+      </div>
   </div>
 </div>

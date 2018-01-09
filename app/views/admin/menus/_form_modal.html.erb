@@ -58,7 +58,7 @@
     <%= f.label :add_ons %>
     <div class="row">
       <div class="col">
-        <%= f.collection_check_boxes :add_on_ids, @menu_category.add_ons, :id, :name do |c| %>
+        <%= f.collection_check_boxes :add_on_ids, @menu_category.add_ons, :id, :name_with_price do |c| %>
           <%= render 'addons_checkboxes', c: c %>
         <% end %>
       </div>

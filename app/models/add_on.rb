@@ -16,4 +16,8 @@ class AddOn < ApplicationRecord
   has_and_belongs_to_many :menus
   belongs_to :menu_category
   validates :name, :menu_category_id, presence: true
+
+  def name_with_price
+    "#{self.name} #{ "($ #{self.price})" if self.price > 0}".strip
+  end
 end

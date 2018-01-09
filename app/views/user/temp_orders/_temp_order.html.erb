@@ -6,7 +6,7 @@
 <% temp_order.menus_temp_orders.each do |order| %>
   <div class="row clearfix">
     <div class="col-8">
-      <%= order.menu_name %>
+      <%= order.menu_name %><%= order.add_ons_list %>
       <span class="float-right row">
         <div class="col">
           <%= link_to public_send(remove_url, menu_id: order.menu_id, date: params[:date], quantity: 1),

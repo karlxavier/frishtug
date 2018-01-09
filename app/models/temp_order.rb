@@ -32,13 +32,17 @@ class TempOrder < ApplicationRecord
     menus.group_by(&:name).sort
   end
 
-  def store(menu, quantity)
+  def store(menu, quantity, add_on)
     menu = menus_temp_orders.where(menu_id: menu.id).first_or_create!
     menu.quantity += quantity.to_i
+    if add_on.present?
+      menu.add_ons << add_on
+      menu.add_ons = menu.add_ons.uniq!
+    end
     menu.save
   end
 
-  def remove_item(menu, quantity)
+  def remove_item(menu, quantity, add_on)
     menu = menus_temp_orders.where(menu_id: menu.id).first
     menu.quantity -= quantity.to_i
     return menu.save if menu.quantity > 0

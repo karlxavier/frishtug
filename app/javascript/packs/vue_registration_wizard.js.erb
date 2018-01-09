@@ -369,7 +369,8 @@ const registrationForm = new Vue({
       } else {
         swal(
           'Opps...',
-          `Please complete your meals for each day.`,
+          `Please complete your meals for each day.
+          Your minimum per day is ${toCurrency(_this.plan_minimum)}`,
           'error'
         )
       }
@@ -483,7 +484,7 @@ const registrationForm = new Vue({
       let enable = false
 
       const checkPrices = (price) => {
-        return price <= self.plan_minimum
+        return price >= self.plan_minimum
       }
 
       if (self.interval === 'month') {
@@ -491,13 +492,17 @@ const registrationForm = new Vue({
         let values = []
         for (i=0; i <= 4; i++) {
           const currentCartItems = self.cart[0][`day_${i+1}`]
-          values.push(
-            currentCartItems
-              .map( item => item.price)
-              .reduce( (sum, price) => {
-                return sum += parseFloat(price)
-              }, 0)
-          )
+          const total_prices = currentCartItems.map( item => item.price)
+                                            .reduce( (sum, price) => {
+                                              return sum += parseFloat(price)
+                                            }, 0)
+
+
+          const add_ons_price = currentCartItems.map( i => {
+            return i.add_ons.map( a => a.price).reduce( (sum, d) => sum += parseFloat(d), 0)
+          }).reduce( (sum, a) => sum += a)
+
+          values.push(total_prices + add_ons_price)
         }
 
         enable = values.every(checkPrices)
