@@ -17,8 +17,8 @@
           <%= svg_tag 'packs/images/wallet.svg' %>
         </div>
         <div class="col pl-0">
-          Total Sales
-          <h2><%= to_currency(@order_query.total_sales) %></h2>
+          Daily Sales
+          <h2><%= to_currency(@order_query.current_sales) %></h2>
         </div>
       </div>
     </div>

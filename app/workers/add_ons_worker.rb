@@ -23,11 +23,20 @@ class AddOnsWorker
     menu_category = menu.menu_category
     add_on_ids = []
     add_ons.split('|').each do |add_on|
-      entries = add_on.split(':')
-      add_on_ids << menu_category.add_ons
-                      .find_or_create_by(name: entries[0].titleize,
-                                        price: entries[1].to_f).id
+      query = add_on_query(split_add_on_with_price(add_on))
+      add_on_ids << menu_category.add_ons.where(query).first_or_create(query).id
     end
     add_on_ids
+  end
+
+  def split_add_on_with_price(add_on)
+    add_on.split(':')
+  end
+
+  def add_on_query(entry)
+    {
+      name: entry[0].titleize,
+      price: entry[1].to_d
+    }
   end
 end

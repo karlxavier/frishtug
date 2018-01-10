@@ -60,7 +60,7 @@
                   placeholder: 'Zipcode',
                   'v-model': 'address.address_zip',
                   'v-on:blur': 'validateZip($event, "billing_address", index)',
-                  'v-on:keyup': 'limitInput($event, 5) + onlyNumber($event)',
+                  'v-mask': "'#####'",
                   pattern: '(\d{5}([\-]\d{4})?)',
                   title: 'Format should be in the form of 12345' %>
               <div class="invalid-feedback">
@@ -72,7 +72,9 @@
                 class: 'form-control',
                 placeholder: 'Phone Number',
                 pattern: '\d{3}[\-]\d{3}[\-]\d{4}',
-                title: 'Phone Number must be in the format of: 123-456-7890' %>
+                title: 'Phone Number must be in the format of: 123-456-7890',
+                'v-model': 'phone_number',
+                'v-mask': "'###-###-####'" %>
               <div class="invalid-feedback">
                 Phone Number is required
               </div>

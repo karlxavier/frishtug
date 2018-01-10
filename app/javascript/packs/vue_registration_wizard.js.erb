@@ -1,5 +1,6 @@
 import VueFormWizard from 'vue-form-wizard'
 import VueTabs from 'vue-nav-tabs'
+import VueMask from 'v-mask'
 import Vue from 'vue/dist/vue.esm'
 import swal from 'sweetalert2'
 import {pulse_loader} from './lib/loaders'
@@ -17,6 +18,7 @@ Vue.filter('total_price', totalPrice)
 // Components
 Vue.use(VueFormWizard)
 Vue.use(VueTabs)
+Vue.use(VueMask)
 
 // Days
 const mondayToFriday = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
@@ -90,7 +92,8 @@ const registrationForm = new Vue({
     cart: [],
     plan_minimum: planObj.plan_minimum,
     shopping_cart_shown: true,
-    tax_rate: parseFloat(localStorage.getItem('tax_rate'))
+    tax_rate: parseFloat(localStorage.getItem('tax_rate')),
+    phone_number: null
   },
   filters: {
     get_num: (val) => parseInt(val.match(/\d+/)[0]) - 1,
@@ -283,16 +286,6 @@ const registrationForm = new Vue({
         zip_code: null,
         location_at: 'multiple_workplaces'
       })
-    },
-    formatCardNumber: () => {
-      const _this = registrationForm
-      _this.credit_card.number = _this.credit_card.number.replace(/[^\d]/g, '')
-      _this.credit_card.number = _this.credit_card.number.substring(0, 16)
-
-      const numberSections = _this.credit_card.number.match(/\d{1,4}/g)
-      if (numberSections !== null) {
-        _this.credit_card.number = numberSections.join(' ')
-      }
     },
     onComplete: function() {
     },

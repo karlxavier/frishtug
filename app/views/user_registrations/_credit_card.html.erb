@@ -6,7 +6,7 @@
     placeholder="Credit Card Number"
     data-stripe="number"
     v-model="credit_card.number"
-    v-on:keyup="formatCardNumber()">
+    v-mask="'#### #### #### ####'">
   <div class="invalid-feedback">
     Credit Card is required
   </div>
