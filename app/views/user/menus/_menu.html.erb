@@ -42,7 +42,7 @@
         <div class="col">
           <ul class="list-unstyled">
             <% menu.add_ons.each do |add_on| %>
-              <%= add_on_input_list_weekly(add_on, menu, params[:date]) %>
+              <%= add_on_input_list_weekly(add_on, menu, params[:date], order) %>
             <% end %>
           </ul>
         </div>

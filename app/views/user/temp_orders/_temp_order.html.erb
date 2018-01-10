@@ -29,7 +29,7 @@
     </div>
     <div class="col-4">
       <span class="float-right">
-        <%= to_currency(order.menu_price * order.quantity) %>
+        <%= to_currency(total_menu_price(order)) %>
       </span>
     </div>
   </div>

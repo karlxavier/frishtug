@@ -18,6 +18,7 @@ class MenusTempOrder < ApplicationRecord
   delegate :name, :id, :price, to: :menu, prefix: true, allow_nil: true
 
   def add_ons_list
-    "<small>(#{self.add_ons.map { |a| AddOn.find(a).name }.join(', ')})</small>".html_safe
+    return nil if self.add_ons.blank?
+    "<small>(#{self.add_ons.map { |a| AddOn.where(id: a).first&.name }.join(', ')})</small>".html_safe
   end
 end

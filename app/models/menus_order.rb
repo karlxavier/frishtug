@@ -15,4 +15,9 @@ class MenusOrder < ApplicationRecord
   belongs_to :menu
   belongs_to :order
   delegate :id, :name, :price, to: :menu, prefix: true, allow_nil: true
+
+  def add_ons_list
+    return nil if add_ons.blank?
+    "(#{AddOn.where(id: add_ons).map(&:name).join(', ')})"
+  end
 end

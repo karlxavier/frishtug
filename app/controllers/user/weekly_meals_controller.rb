@@ -53,7 +53,11 @@ class User::WeeklyMealsController < User::BaseController
       unless params[:category].present?
         current_order.menus_orders.each do |menu_order|
           @order.menus_temp_orders
-            .create!(menu_id: menu_order.menu_id, quantity: menu_order.quantity)
+            .create!(
+              menu_id: menu_order.menu_id,
+              quantity: menu_order.quantity,
+              add_ons: menu_order.add_ons
+            )
         end
       end
     end
