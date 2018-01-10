@@ -348,7 +348,7 @@ const registrationForm = new Vue({
     },
     showCongrats: function() {
       const _this = this
-      if (_this.enableIfMealComplete()) {
+      if (_this.isMealComplete()) {
         swal({
           title: 'Congratulations!',
           text: "You have made your first meal plan.",
@@ -362,8 +362,7 @@ const registrationForm = new Vue({
       } else {
         swal(
           'Opps...',
-          `Please complete your meals for each day.
-          Your minimum per day is ${toCurrency(_this.plan_minimum)}`,
+          'Please complete your meals for each day.',
           'error'
         )
       }
@@ -414,16 +413,6 @@ const registrationForm = new Vue({
         event.target.classList.add('is-invalid')
       }
     },
-    onlyNumber: function(event) {
-      if (event.target.tagName === 'INPUT' && event.target.type === 'text') {
-        event.target.value = event.target.value.replace(/[^\d]/g, '')
-      }
-    },
-    limitInput: function(event, limit) {
-      if (event.target.tagName === 'INPUT' && event.target.type === 'text') {
-        event.target.value = event.target.value.substring(0, limit)
-      }
-    },
     enableMealSelector: function() {
       shoppingCartInit()
       registerShoppingCartListener(registrationForm)
@@ -472,7 +461,7 @@ const registrationForm = new Vue({
     },
     handleTabChange: function(tabIndex, newTab, oldTab) {
     },
-    enableIfMealComplete: function() {
+    isMealComplete: function() {
       const self = this
       let enable = false
 
@@ -493,9 +482,11 @@ const registrationForm = new Vue({
 
           const add_ons_price = currentCartItems.map( i => {
             return i.add_ons.map( a => a.price).reduce( (sum, d) => sum += parseFloat(d), 0)
-          }).reduce( (sum, a) => sum += a)
+          })
 
-          values.push(total_prices + add_ons_price)
+          const add_ons_total_price = add_ons_price.length > 0 ? add_ons_price.reduce( (sum, a) => sum + a) : 0
+
+          values.push(total_prices + add_ons_total_price)
         }
 
         enable = values.every(checkPrices)

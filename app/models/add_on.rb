@@ -18,6 +18,6 @@ class AddOn < ApplicationRecord
   validates :name, :menu_category_id, presence: true
 
   def name_with_price
-    "#{self.name} #{ "($ #{self.price})" if self.price > 0}".strip
+    "#{self.name} #{ "($ #{ '%.2f' % self.price})" if self.price > 0}".strip
   end
 end
