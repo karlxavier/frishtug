@@ -36,7 +36,12 @@ class AddOnsWorker
   def add_on_query(entry)
     {
       name: entry[0].titleize,
-      price: entry[1].to_d
+      price: convert_to_bigdecimal(entry[1])
     }
+  end
+
+  def convert_to_bigdecimal(num)
+    return 0 if num.blank?
+    num.to_d
   end
 end
