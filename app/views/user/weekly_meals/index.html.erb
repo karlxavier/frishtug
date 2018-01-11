@@ -1,10 +1,20 @@
 <div class="row">
   <div class="col-4">
     <%= render partial: 'user/weekly_meals/calendar', locals: {
-          active_this_week: @active_this_week,
-          not_this_week: @not_this_week,
-          calendar_date: @date
-        } %>
+      active_this_week: @active_this_week,
+      not_this_week: @not_this_week,
+      calendar_date: @date,
+      disable_right_control: true,
+      disable_left_control: false
+    } %>
+
+    <%= render partial: 'user/weekly_meals/calendar', locals: {
+      active_this_week: @active_this_week,
+      not_this_week: @not_this_week,
+      calendar_date: @date.next_month,
+      disable_right_control: false,
+      disable_left_control: true
+    } %>
     <div class="row">
       <div class="col">
         <div class="form-check">
