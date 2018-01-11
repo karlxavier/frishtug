@@ -401,12 +401,29 @@ a.btn-outline--category.active {
             text-align: center;
             text-decoration: none;
             &.active {
-                background: #007bff;
+                background: #355C7D;
                 color: #fff;
             }
-            &.active_not_current_week {
-                background: #49709b;
-                color: #fff;
+            &.active_not_current_{
+                &first_week {
+                    background: #F8b195;
+                    color: #fff;
+                }
+
+                &second_week {
+                    background: #F67280;
+                    color: #fff;
+                }
+
+                &third_week {
+                    background: #C06C84;
+                    color: #fff;
+                }
+
+                &fourth_week {
+                    background: #6C5B7B;
+                    color: #fff;
+                }
             }
             &.disabled {
                 background: #acacac;

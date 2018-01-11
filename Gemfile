@@ -41,6 +41,8 @@ gem 'bootsnap', '~> 1.1', '>= 1.1.3'
 gem 'bootstrap', '~> 4.0.0.beta2'
 gem 'carrierwave'
 gem 'cloudinary'
+gem 'connection_pool'
+gem 'dalli'
 gem 'devise'
 gem 'exception_handler'
 gem 'geocoder'
@@ -60,8 +62,6 @@ gem 'stripe'
 gem 'trix'
 gem 'uploadcare-rails', '~> 1.1'
 gem 'virtus'
-gem 'connection_pool'
-gem 'dalli'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -94,6 +94,8 @@ group :development do
   gem 'better_errors'
   gem 'brakeman', require: false
   gem 'bullet'
+  gem 'pry'
+  gem 'pry-nav'
   gem 'pry-rails'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'

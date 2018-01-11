@@ -1,4 +1,30 @@
 module User::WeeklyMealsHelper
+
+  def calendar_url(date, active_this_week, not_this_week)
+    url = "javascript:void(0)"
+    if date > Date.current && !date.saturday?
+      url = new_user_weekly_meal_path(date: date)
+    end
+
+    if active_this_week.include?(date.to_s) || not_this_week[0].include?(date.to_s)
+      url = edit_user_weekly_meals_path(date: date)
+    end
+  end
+
+  def calendar_classes(date, active_this_week, not_this_week)
+    classes = []
+    classes.push 'font-weight-bold' if date.today?
+    classes.push 'active' if active_this_week.include?(date.to_s)
+    classes.push 'active_not_current_first_week' if not_this_week[0].include?(date.to_s)
+    if not_this_week.length >= 4
+      classes.push 'active_not_current_second_week' if not_this_week[1].include?(date.to_s)
+      classes.push 'active_not_current_third_week' if not_this_week[2].include?(date.to_s)
+      classes.push 'active_not_current_fourth_week' if not_this_week[3].include?(date.to_s)
+    end
+    classes.push 'disabled' if date < Date.current || date.saturday?
+    classes.join(' ')
+  end
+
   def back_to_index_link(text, css_class)
     link_to text, user_weekly_meals_path, class: css_class
   end

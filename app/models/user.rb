@@ -38,6 +38,7 @@ class User < ApplicationRecord
   has_many :temp_orders, dependent: :destroy
   has_one :referrer, dependent: :destroy
   has_one :candidate, dependent: :destroy
+  has_one :order_preference, dependent: :destroy
 
   validates :first_name, :last_name, presence: true
   # Include default devise modules. Others available are:

@@ -12,6 +12,7 @@ class User::WeeklyMealsController < User::BaseController
     @not_this_week = order.not_placed_between?(@date_range).pluck_placed_on
     @completed = order.completed.pluck_placed_on
     @orders = order.pending_deliveries
+    @order_preference = current_user.order_preference
   end
 
   def new

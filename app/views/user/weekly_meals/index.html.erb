@@ -1,31 +1,20 @@
 <div class="row">
   <div class="col-4">
-    <div class="row justify-content-center">
-      <div class="col-10 text-center clearfix">
-        <%= link_to user_weekly_meals_path(date: @date.prev_month), class: 'mr-4' do %>
-          <i class="fa fa-angle-left" aria-hidden="true"></i>
-        <% end %>
-        <span><%= @date.strftime('%B %Y') %></span>
-        <%= link_to user_weekly_meals_path(date: @date.next_month), class: 'ml-4' do %>
-        <i class="fa fa-angle-right" aria-hidden="true"></i>
-        <% end %>
+    <%= render partial: 'user/weekly_meals/calendar', locals: {
+          active_this_week: @active_this_week,
+          not_this_week: @not_this_week,
+          calendar_date: @date
+        } %>
+    <div class="row">
+      <div class="col">
+        <div class="form-check">
+          <%= check_box_tag 'copy meals', true, @order_preference&.copy_menu || false, class: 'form-check-input' %>
+          <label class="form-check-label" for="copy_meals">
+            Copy Meals
+          </label>
+        </div>
       </div>
     </div>
-    <%= calendar @date do |date| %>
-      <%
-        classes = []
-        url = "javascript:void(0)"
-        classes.push 'font-weight-bold' if date.today?
-        classes.push 'active' if @active_this_week.include?(date.to_s)
-        classes.push 'active_not_current_week' if @not_this_week.include?(date.to_s)
-        classes.push 'disabled' if date < Date.current || date.saturday?
-        url = new_user_weekly_meal_path(date: date) if date > Date.current && !date.saturday?
-        url = edit_user_weekly_meals_path(date: date) if @active_this_week.include?(date.to_s) || @not_this_week.include?(date.to_s)
-      %>
-      <a href="<%= url %>" class="<%= classes.join(' ') %>">
-        <%= date.strftime('%d') %>
-      </a>
-    <% end %>
   </div>
 
   <div class="col-8 px-4">
@@ -36,3 +25,7 @@
     </div>
   </div>
 </div>
+
+<%= content_for :footer_js do %>
+  <%= javascript_pack_tag 'user/meal_copier' %>
+<% end %>
