@@ -6,14 +6,36 @@
     <p class="text-center" v-if="interval === 'single_order' ">
       Choose when you want your <strong>single breakfast order</strong> to be delivered.
     </p>
+    <p class="text-center" v-else>
+      Choose your schedule or pick a date in the calendar.
+    </p>
   </div>
 </div>
+
+<div class="row justify-content-center my-4">
+  <div class="col-4 text-center">
+    <a href="javascript:void(0)" class="btn btn-brown-outline p-4"
+      @click="selectDay('<%= @earliest_monday %>')">
+      Monday To Friday
+    </a>
+    <a href="javascript:void(0)" class="btn btn-brown-outline p-4"
+      @click="selectDay('<%= @earliest_sunday %>')">
+      Sunday To Thursday
+    </a>
+  </div>
+</div>
+
 <div class="row justify-content-center mb-4">
-  <div class="col-md-4 col-md-offset-4">
+  <div class="col-3" v-for="(calendar, index) in calendars">
     <div class="calendar-errors"></div>
     <div class="calendar-container">
-      <%= render 'calendar', month: Date.current %>
+      <%= render 'calendar' %>
     </div>
+  </div>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-4">
     <a href="javascript:void(0)" class="btn btn-brown btn-block text-uppercase" @click="nextTab">Continue To Payment</a>
   </div>
 </div>

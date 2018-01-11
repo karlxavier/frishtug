@@ -1,11 +1,12 @@
 class UserRegistrationsController < ApplicationController
   before_action :user_exists?
-  before_action :set_allowed_zip, :set_tax, :set_plan, only: :index
+  before_action :set_allowed_zip, :set_tax, :set_plan, :set_dates, only: :index
   require 'date_helpers/weeks'
   respond_to :js, except: :index
   SATURDAY = 6
 
   def index
+
     @registration = RegistrationForm.new
     @categorized_menus = MenuCategory.published_menus
     @plans = Plan.all.sort
@@ -28,6 +29,18 @@ class UserRegistrationsController < ApplicationController
   end
 
   private
+
+  def set_dates
+    @date = Date.current
+    @earliest_monday = @date.wday == 1 ? @date : @date.next_week(:monday)
+    @earliest_sunday = @date.wday.zero? ? @date : get_sunday
+  end
+
+  def get_sunday
+    days_to_add = 7 - @date.wday
+    return @date + days_to_add.days if days_to_add > 0
+    @date.next_week(:sunday)
+  end
 
   def registration_params
     params.fetch(:registration_form, {})

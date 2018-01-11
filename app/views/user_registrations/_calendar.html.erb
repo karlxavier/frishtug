@@ -1,10 +1,14 @@
 <div class="row justify-content-center mb-3">
   <div class="col-8 text-center">
-    <a href="javascript:void(0)" v-on:click="changeCalendar(calendar.prev_month)">
+    <a href="javascript:void(0)"
+      v-on:click="changeCalendar(calendar.prev_month)"
+      v-if="index === 0">
       <i class="fa fa-angle-left" aria-hidden="true"></i>
     </a>
     <span class="mx-4">{{ calendar.month }}</span>
-    <a href="javascript:void(0)"  v-on:click="changeCalendar(calendar.next_month)">
+    <a href="javascript:void(0)"
+      v-on:click="changeCalendar(calendar.next_month)"
+      v-if="index === 1">
       <i class="fa fa-angle-right" aria-hidden="true"></i>
     </a>
   </div>
@@ -29,7 +33,7 @@
         <a
         href="javascript:void(0)"
         v-on:click="selectDay(date)"
-        :class="`date-${date}`"
+        :class="`date-${date} calendar__date_item`"
         v-else>
         {{ showDate(date) }}
         </a>

@@ -87,7 +87,7 @@ const registrationForm = new Vue({
     interval: planObj.interval,
     delivery_dates: [],
     date_names: mondayToFriday,
-    calendar: '',
+    calendars: '',
     current_date: new Date(localStorage.getItem('current_date_est')),
     cart: [],
     plan_minimum: planObj.plan_minimum,
@@ -213,10 +213,10 @@ const registrationForm = new Vue({
     changeCalendar: (date) => {
       const _this = registrationForm
       get({
-        url: `/calendars?date=${date}`
+        url: `/calendars.json?date=${date}`
       }).then((response) => {
         const parsed = JSON.parse(response)
-        _this.calendar = parsed
+        _this.calendars = parsed
         setTimeout(function() {
           registrationForm.populateCalendar()
         }, 500)
@@ -242,13 +242,13 @@ const registrationForm = new Vue({
       }
     },
     unpopulateCalendar: () => {
-      const calendar = document.querySelector('.calendar')
-      const aTags = calendar.querySelectorAll('a')
+      const aTags = document.querySelectorAll('.calendar__date_item')
       aTags.forEach(aTag => {
         aTag.classList.remove('active')
       })
     },
     selectDay: (date) => {
+      console.log(date)
       const _this = registrationForm
       if (_this.interval === 'month') {
         getSchedule(date, _this)
@@ -538,7 +538,7 @@ const getCalendar = () => {
     url: `/calendars.json`
   }).then((response) => {
     const parsed = JSON.parse(response)
-    _this.calendar = parsed
+    _this.calendars = parsed
   })
 }
 getCalendar()
