@@ -1,4 +1,9 @@
 module Admin::ClientsHelper
+
+  def user_plan_details(user)
+    "Plan: #{user.plan_name} (#{to_currency(user.plan_price)})"
+  end
+
   def user_email(user)
     mail_to user.email, class: 'chocolate-font-color' do
       content_tag(:i, nil, class: 'fa fa-envelope') + " #{user.email}"

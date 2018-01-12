@@ -48,7 +48,7 @@ class User < ApplicationRecord
 
   accepts_nested_attributes_for :contact_number
 
-  delegate :name, :id, to: :plan, prefix: true, allow_nil: true
+  delegate :name, :id, :price, to: :plan, prefix: true, allow_nil: true
   delegate :phone_number, :id, to: :contact_number, prefix: true, allow_nil: true
 
   def active_address

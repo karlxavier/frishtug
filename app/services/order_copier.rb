@@ -1,31 +1,23 @@
 class OrderCopier
   include ActiveModel::Validations
-  validates :last_five_orders, presence: true
 
   attr_accessor :ids
 
   def initialize(last_five_orders, user)
     @user = user
     @last_five_orders = last_five_orders
-    @index = 1
-    @fifteen_days = 15
-    @day = 0
-    @ids = []
-    @params
-    valid?
   end
 
   def run
     return false unless @user.order_preference&.copy_menu
     placed_on_date = @last_five_orders.last.placed_on + 1.days
+    orders = @last_five_orders * 3
     ActiveRecord::Base.transaction do
-      while @index <= @fifteen_days do
+      orders.each_with_index do |order, index|
         placed_on_date = new_placed_on_date(placed_on_date)
-        user_order = @user.orders.create!(order_params(placed_on_date))
-        create_menus_orders(user_order)
-        @ids << user_order.id
-        placed_on_date += 1.days
-        @index += 1
+        user_order = @user.orders.create!(order_params(placed_on_date, order))
+        create_menus_orders(user_order, order)
+        placed_on_date += 1.day
       end
     end
     true
@@ -39,13 +31,12 @@ class OrderCopier
 
   private
 
-  attr_accessor :last_five_orders, :day
-
-  def current_order
-    last_five_orders[day - 1]
+  def set_day(day)
+    return day = 0 if day == 4
+    day += 1
   end
 
-  def order_params(placed_on_date)
+  def order_params(placed_on_date, current_order)
     {
       placed_on: placed_on_date,
       order_date: Time.current,
@@ -61,7 +52,7 @@ class OrderCopier
     end
   end
 
-  def create_menus_orders(user_order)
+  def create_menus_orders(user_order, current_order)
     current_order.menus_orders.each do |menu_order|
       user_order.menus_orders.create!(
         menu_id: menu_order.menu_id,
