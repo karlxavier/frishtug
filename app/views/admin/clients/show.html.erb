@@ -1,6 +1,6 @@
 <%= card_container do %>
-  <div class="row justify-content-center">
-    <div class="col-4 text-center">
+  <div class="row justify-content-center mx-0">
+    <div class="col text-center">
       <h4>
         <%= @user.full_name %> <br>
         <small class="text-muted font-size-14">
@@ -14,7 +14,7 @@
     </div>
   </div>
 
-  <div class="row justify-content-center">
+  <div class="row justify-content-center mx-0 mt-4">
     <div class="col">
       <table class="table table-sm">
         <thead>
@@ -29,7 +29,7 @@
           </tr>
         </thead>
         <tbody>
-          <% @user.orders.each do |order| %>
+          <% @user_orders.each do |order| %>
             <tr class="<%= "#{@user.id}__#{order.id}" %>">
               <td><%= order.id %></td>
               <td><%= order.order_date.strftime('%b %d, %Y @ %I:%M %P') %></td>
@@ -42,6 +42,7 @@
           <% end %>
         </tbody>
       </table>
+      <%= paginate @user_orders %>
     </div>
   </div>
 <% end %>

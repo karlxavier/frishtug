@@ -51,6 +51,11 @@ class User < ApplicationRecord
   delegate :name, :id, :price, to: :plan, prefix: true, allow_nil: true
   delegate :phone_number, :id, to: :contact_number, prefix: true, allow_nil: true
 
+  def self.search(search_term)
+    term = "%#{search_term}%"
+    where('last_name ILIKE ? OR first_name ILIKE ?', term, term)
+  end
+
   def active_address
     addresses.active.first
   end

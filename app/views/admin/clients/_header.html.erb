@@ -1,7 +1,20 @@
-<div class="row">
+<div class="row align-items-center mx-0">
   <div class="col">
     <h1 id="title">
       <%= link_to "Clients", admin_clients_path %>
     </h1>
   </div>
+  <% unless @hide_search_form %>
+    <div class="col">
+      <%= form_with url: @search_url,
+          class: 'form-inline float-right', local: true, method: :get do |f| %>
+        <div class="input-group">
+          <%= f.text_field :search_term, class: 'form-control', placeholder: @search_placeholder %>
+          <div class="input-group-append">
+            <%= f.submit 'Search', class: 'btn btn-primary' %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
 </div>
