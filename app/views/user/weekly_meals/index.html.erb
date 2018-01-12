@@ -4,7 +4,7 @@
       active_this_week: @active_this_week,
       not_this_week: @not_this_week,
       calendar_date: @date,
-      disable_right_control: true,
+      disable_right_control: false,
       disable_left_control: false
     } %>
 
@@ -12,14 +12,22 @@
       active_this_week: @active_this_week,
       not_this_week: @not_this_week,
       calendar_date: @date.next_month,
-      disable_right_control: false,
+      disable_right_control: true,
       disable_left_control: true
     } %>
     <div class="row">
       <div class="col">
         <div class="form-check">
-          <%= check_box_tag 'copy meals', true, @order_preference&.copy_menu || false, class: 'form-check-input' %>
-          <label class="form-check-label" for="copy_meals">
+          <%= check_box_tag 'copy_menu',
+              true,
+              @order_preference&.copy_menu || false,
+              class: 'form-check-input',
+              data: {
+                remote: true,
+                url: user_copy_meals_path,
+                method: "post"
+              } %>
+          <label class="form-check-label" for="copy_menu">
             Copy Meals
           </label>
         </div>

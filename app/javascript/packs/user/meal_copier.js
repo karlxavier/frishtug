@@ -1,20 +1,28 @@
-const input = document.querySelector('#copy_meals')
+const input = document.querySelector('#copy_menu')
 
-const copierHandler = (event) => {
-  const input = event.target
-  Rails.ajax({
-    url: `/user/copy_meals?copy_menu=${input.checked}`,
-    type: 'POST',
-    success: function(response) {
-      console.log(response)
-      window.location.reload(true)
-    },
-    error: function(response) {
-      console.log(response)
-    }
+const successHandler = (event) => {
+  const detail = event.detail
+  const data = detail[0], status = detail[1], xhr = detail[2]
+  swal(
+    'success',
+    data.message,
+    'success'
+  ).then((result) => {
+    window.location.reload()
   })
 }
 
+const errorHandler = (event) => {
+  const detail = event.detail
+  const data = detail[0], status = detail[1], xhr = detail[2]
+  swal(
+    'error',
+    status,
+    'error'
+  )
+}
+
 if (input) {
-  input.addEventListener('click', copierHandler)
+  input.addEventListener('ajax:success', successHandler)
+  input.addEventListener('ajax:error', errorHandler)
 }

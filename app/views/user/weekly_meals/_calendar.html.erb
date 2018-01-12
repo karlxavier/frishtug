@@ -10,7 +10,7 @@
     <span><%= calendar_date.strftime('%B %Y') %></span>
 
     <% unless disable_right_control %>
-      <%= link_to user_weekly_meals_path(date: calendar_date.next_month), class: 'ml-4' do %>
+      <%= link_to user_weekly_meals_path(date: calendar_date.next_month + 1.month), class: 'ml-4' do %>
         <i class="fa fa-angle-right" aria-hidden="true"></i>
       <% end %>
     <% end %>

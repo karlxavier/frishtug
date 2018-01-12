@@ -8,10 +8,7 @@ class User::CopyMealsController < User::BaseController
     if @order_copier.run
       render json: { status: 'success', message: 'Menu copied!' }, status: 200
     else
-      render json: {
-        status: 'error',
-        message: @order_copier.errors.full_messages.join(', ')
-      }, status: 400
+      render json: { status: 'success', message: 'Settings save' }, status: 200
     end
   end
 
