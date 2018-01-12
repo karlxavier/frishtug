@@ -9,7 +9,7 @@
 #  store_id   :integer
 #
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :allowed_zip_code do
     zip "MyString"
   end

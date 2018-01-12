@@ -14,7 +14,7 @@
 #  order_date   :datetime
 #
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :order do
     association :user, factory: :user
     placed_on Faker::Time.between(DateTime.now - 1, DateTime.now)

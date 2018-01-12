@@ -10,7 +10,7 @@
 #  price            :decimal(8, 2)
 #
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :add_on do
     name { Faker::Lorem.unique.word }
     menu_category nil

@@ -11,7 +11,7 @@
 #  home_page_images :text
 #
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :store do
     _id 1
     _code "MyString"

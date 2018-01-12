@@ -10,7 +10,7 @@
 #  updated_at       :datetime         not null
 #
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :inventory_transaction do
     association :inventory, factory: :inventory
     quantity_sold Faker::Number.number(3)

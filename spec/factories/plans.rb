@@ -19,7 +19,7 @@
 #  short_description :string(150)
 #
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :plan do
     name 'Option 1'
     description Faker::Lorem.sentences

@@ -17,7 +17,7 @@
 #  updated_at         :datetime         not null
 #
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :admin do
     email 'admin@frishtug.com'
     password 'frishtug2017!'

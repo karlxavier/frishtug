@@ -9,7 +9,7 @@
 #  updated_at   :datetime         not null
 #
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :contact_number do
     phone_number "MyString"
     user nil

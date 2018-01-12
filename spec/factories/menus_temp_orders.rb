@@ -11,7 +11,7 @@
 #  add_ons       :string           default([]), is an Array
 #
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :menus_temp_order do
     menu nil
     temp_order nil

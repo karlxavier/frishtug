@@ -13,7 +13,7 @@
 #  stripe_id      :string
 #
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :checking do
     bank_name "MyString"
     account_number "MyString"

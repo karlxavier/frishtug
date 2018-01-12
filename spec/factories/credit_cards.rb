@@ -16,7 +16,7 @@
 #  stripe_id  :string
 #
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :credit_card do
     number "MyString"
     month 1

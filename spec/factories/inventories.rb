@@ -11,7 +11,7 @@
 #  quantity     :integer
 #
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :inventory do
     association :menu, factory: :menu
     quantity Faker::Number.number(3)

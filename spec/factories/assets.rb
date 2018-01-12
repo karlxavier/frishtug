@@ -10,7 +10,7 @@
 #  assetable_id   :integer
 #
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :asset do
     image "MyString"
   end

@@ -18,7 +18,7 @@
 #  description      :text
 #
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :menu do
     name { Faker::Food.unique.dish }
     price Faker::Number.decimal(2)

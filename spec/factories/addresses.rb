@@ -19,7 +19,7 @@
 #  status           :integer
 #
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :address do
     line1 "MyString"
     line2 "MyString"
