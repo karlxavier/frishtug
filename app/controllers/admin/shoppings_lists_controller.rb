@@ -1,9 +1,14 @@
 class Admin::ShoppingsListsController < Admin::BaseController
-  CURRENT_DATE = Date.current
-
+  before_action :set_date
+  CURRENT_DATE = Date.current + 2.day
   def index
-    range = DateRange.new(CURRENT_DATE.beginning_of_day, CURRENT_DATE.end_of_day)
-    @date = CURRENT_DATE.strftime('%B %d')
+    range = DateRange.new(@date.beginning_of_day, @date.end_of_day)
     @shopping_lists = Menu.shopping_lists?(range)
+  end
+
+  private
+
+  def set_date
+    @date = Date.parse(params[:date]) rescue CURRENT_DATE
   end
 end

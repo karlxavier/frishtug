@@ -1,5 +1,5 @@
 <%= card_container do %>
-  <div class="row clearfix">
+  <div class="row clearfix mx-0">
     <div class="col">
       <span class="font-size-16 font-family-montserrat-semi-bold">
         <%= @date %>
@@ -29,4 +29,20 @@
       <% end %>
     </tbody>
   </table>
+<% end %>
+
+<%= content_for :footer_js do %>
+  <%= javascript_pack_tag 'admin/shopping_list_filter' %>
+  <script type="text/javascript">
+    $('a.close-active-tab').click(function (e) {
+        var tablistId = $(this).attr('data-target-tablist');
+        var tab = $(tablistId);
+        if(tab.hasClass('active')){
+            window.setTimeout(function(){
+                $(".tab-pane").removeClass('active');
+                tab.removeClass('active');
+            },1);
+        }
+    });
+  </script>
 <% end %>

@@ -1,5 +1,5 @@
 <%= card_container do %>
-  <div class="row">
+  <div class="row mx-0">
     <div class="col">
       <span class="font-family-montserrat-semi-bold font-size-16">
         <%= @date.today? ? "Today - #{@date.strftime('%B %d')}" : @date.strftime('%B %d') %>
@@ -12,7 +12,7 @@
   </div>
   <hr class="mt-2">
 
-  <div class="row">
+  <div class="row mx-0">
     <div class="col">
       <table class="table table-sm">
         <thead>

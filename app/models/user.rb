@@ -53,7 +53,8 @@ class User < ApplicationRecord
 
   def self.search(search_term)
     term = "%#{search_term}%"
-    where('last_name ILIKE ? OR first_name ILIKE ?', term, term)
+    includes(:plan, :contact_number)
+      .where('last_name ILIKE ? OR first_name ILIKE ?', term, term)
   end
 
   def active_address
