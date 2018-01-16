@@ -80,7 +80,7 @@ class Admin::MenusController < Admin::BaseController
         :price,
         :unit_id,
         :menu_category_id,
-        :diet_category_id,
+        diet_category_ids: [],
         add_on_ids: [],
         inventory_attributes: [
           :id,

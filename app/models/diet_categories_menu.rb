@@ -1,0 +1,2 @@
+class DietCategoriesMenu < ApplicationRecord
+end

@@ -23,7 +23,7 @@ class MenuCategory < ApplicationRecord
     includes(
       menus: [
         :asset,
-        :diet_category,
+        :diet_categories,
         :unit, :add_ons,
         :menus_add_ons]).where.not(menus: { published_at: nil }).sort
   end

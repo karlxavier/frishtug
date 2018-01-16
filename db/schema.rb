@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180111072454) do
+ActiveRecord::Schema.define(version: 20180116054510) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -158,6 +158,15 @@ ActiveRecord::Schema.define(version: 20180111072454) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "diet_categories_menus", force: :cascade do |t|
+    t.bigint "diet_category_id"
+    t.bigint "menu_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["diet_category_id"], name: "index_diet_categories_menus_on_diet_category_id"
+    t.index ["menu_id"], name: "index_diet_categories_menus_on_menu_id"
+  end
+
   create_table "documents", force: :cascade do |t|
     t.string "file"
     t.datetime "created_at", null: false
@@ -195,7 +204,6 @@ ActiveRecord::Schema.define(version: 20180111072454) do
     t.decimal "price", precision: 8, scale: 2
     t.bigint "unit_id"
     t.bigint "menu_category_id"
-    t.bigint "diet_category_id"
     t.datetime "published_at"
     t.boolean "published"
     t.datetime "created_at", null: false
@@ -206,7 +214,6 @@ ActiveRecord::Schema.define(version: 20180111072454) do
     t.text "description"
     t.bigint "asset_id"
     t.index ["asset_id"], name: "index_menus_on_asset_id"
-    t.index ["diet_category_id"], name: "index_menus_on_diet_category_id"
     t.index ["item_number"], name: "index_menus_on_item_number", unique: true
     t.index ["menu_category_id"], name: "index_menus_on_menu_category_id"
     t.index ["unit_id"], name: "index_menus_on_unit_id"
@@ -372,7 +379,6 @@ ActiveRecord::Schema.define(version: 20180111072454) do
   add_foreign_key "inventories", "menus"
   add_foreign_key "inventory_transactions", "inventories"
   add_foreign_key "menus", "assets"
-  add_foreign_key "menus", "diet_categories"
   add_foreign_key "menus", "menu_categories"
   add_foreign_key "menus", "units"
   add_foreign_key "menus_orders", "menus"

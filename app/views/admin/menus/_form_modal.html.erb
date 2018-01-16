@@ -50,11 +50,11 @@
   </div>
   <%= f.label :categories %>
   <div class="col category-collection-checkboxes px-0">
-    <%= f.collection_check_boxes :diet_category_id, DietCategory.all, :id, :name do |r| %>
+    <%= f.collection_check_boxes :diet_category_ids, DietCategory.all, :id, :name do |r| %>
       <%= render 'diet_category_checkboxes', r: r %>
     <% end %>
   </div>
-  <div class="autohide_by_category <%= 'd-none' if menu.diet_category_id? %>">
+  <div class="autohide_by_category <%= 'd-none' if menu.diet_categories.present? %>">
     <%= f.label :add_ons %>
     <div class="row">
       <div class="col">

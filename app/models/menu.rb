@@ -23,9 +23,9 @@ class Menu < ApplicationRecord
   belongs_to  :asset
   belongs_to  :unit
   belongs_to  :menu_category
-  belongs_to  :diet_category, optional: true
   has_one     :inventory, dependent: :destroy
   has_and_belongs_to_many :add_ons
+  has_and_belongs_to_many :diet_categories
   has_many :menus_orders, dependent: :destroy
   has_many :orders, through: :menus_orders
   has_and_belongs_to_many :temp_orders

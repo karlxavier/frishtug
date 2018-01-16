@@ -1,4 +1,12 @@
 module PagesHelper
+  def legend_marker(menu)
+    return nil unless menu.diet_categories.present?
+    klass = 'fa fa-star diet-icons'
+    menu.diet_categories.map do |d|
+      content_tag(:span, nil, class: "#{klass} #{d.name.parameterize}")
+    end.join(' ').html_safe
+  end
+
   def image_asset(obj, options = {})
     return nil unless obj.asset_id?
     options[:fetch_format] = :auto
@@ -37,13 +45,13 @@ module PagesHelper
     return nil if current_user.present?
     content_tag :li, class: 'nav-item' do
       link_to 'Sign Up', user_registrations_path,
-        class: 'btn btn-brown-outline-rounded font-family-montserrat-semi-bold text-uppercase font-size-15'
+              class: 'btn btn-brown-outline-rounded font-family-montserrat-semi-bold text-uppercase font-size-15'
     end
   end
 
   private
 
-  def link_to_custom(name, path, options= {})
+  def link_to_custom(name, path, options = {})
     options[:class] = 'nav-link font-size-15 font-family-montserrat'
     link_to name, path, options
   end
