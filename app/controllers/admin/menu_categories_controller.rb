@@ -5,7 +5,7 @@ class Admin::MenuCategoriesController < Admin::BaseController
   # GET /menu_categories
   # GET /menu_categories.json
   def index
-    @menu_categories = MenuCategory.all
+    @menu_categories = MenuCategory.includes(:add_ons)
   end
 
   # GET /menu_categories/1

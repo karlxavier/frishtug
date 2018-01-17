@@ -21,13 +21,11 @@ class MenuImporter
     unit_size
     tax
     menu_category_id
-    diet_category_id
     asset_id
   ].freeze
 
   def initialize(file)
     @file = file
-    @diet_category = DietCategory.pluck(:name, :id).to_h.freeze
     @units_hash = Unit.pluck(:name, :id).to_h.freeze
     @menu_categories_hash = MenuCategory.pluck(:name, :id).to_h.freeze
     @asset_hash = Asset.where.not(file_name: nil).pluck(:file_name, :id).to_h.freeze
@@ -35,6 +33,7 @@ class MenuImporter
     @quantities = []
     @menu_ids = []
     @add_ons = []
+    @diet_categories = []
     valid?
   end
 
@@ -45,11 +44,13 @@ class MenuImporter
         validate_keys(row, i)
         @quantities << row[:quantity]
         @add_ons << row[:add_ons]
+        @diet_categories << row[:diet_category]
         @menus << create_menu_entry(row)
       end
       @menu_ids = menu_import.ids
       update_inventory
       update_add_ons
+      update_diet_category
     end
     true
   rescue ActiveRecord::StatementInvalid => e
@@ -67,14 +68,14 @@ class MenuImporter
   private
 
   attr_accessor :file,
-                :diet_category,
                 :units_hash,
                 :menu_categories_hash,
                 :asset_hash,
                 :menus,
                 :quantities,
                 :menu_ids,
-                :add_ons
+                :add_ons,
+                :diet_categories
 
   def validate_keys(row, i)
     validates_required_keys(row, i)
@@ -122,7 +123,6 @@ class MenuImporter
       unit_id: unit(row[:unit]),
       price: row[:price],
       menu_category_id: category(row[:category]),
-      diet_category_id: diet_category[row[:diet_category]],
       published: true,
       published_at: Time.current,
       tax: row[:tax],
@@ -160,6 +160,10 @@ class MenuImporter
 
   def update_add_ons
     AddOnsWorker.perform_async(menu_ids, add_ons)
+  end
+
+  def update_diet_category
+    DietCategoryWorker.perform_async(menu_ids, diet_categories)
   end
 
   def menu_import
