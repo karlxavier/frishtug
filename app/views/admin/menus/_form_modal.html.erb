@@ -54,8 +54,9 @@
       <%= render 'diet_category_checkboxes', r: r %>
     <% end %>
   </div>
-  <div class="autohide_by_category <%= 'd-none' if menu.diet_categories.present? %>">
+  <div class="autohide_by_category">
     <%= f.label :add_ons %>
+    <%= add_add_ons_link(@menu_category) %>
     <div class="row">
       <div class="col">
         <%= f.collection_check_boxes :add_on_ids, @menu_category.add_ons, :id, :name_with_price do |c| %>
