@@ -3,7 +3,10 @@ module PagesHelper
     return nil unless menu.diet_categories.present?
     klass = 'fa fa-star diet-icons'
     menu.diet_categories.map do |d|
-      content_tag(:span, nil, class: "#{klass} #{d.name.parameterize}")
+      content_tag(:span, nil, class: "#{klass} #{d.name.parameterize}", title: d.name, data: {
+                    toggle: 'tooltip',
+                    placement: 'top'
+                  })
     end.join(' ').html_safe
   end
 
