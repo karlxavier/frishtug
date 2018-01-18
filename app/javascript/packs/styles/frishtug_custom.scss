@@ -406,6 +406,11 @@ a.btn-outline--category.active {
                 color: #fff;
             }
             &.active_not_current_{
+                &week {
+                    background: #355C7D;
+                    color: #fff;
+                }
+
                 &first_week {
                     background: #F8b195;
                     color: #fff;
