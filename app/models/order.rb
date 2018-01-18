@@ -73,6 +73,6 @@ class Order < ApplicationRecord
   end
 
   def self.pluck_placed_on
-    pluck(:placed_on).map {|p| p.strftime('%Y-%m-%d')}.in_groups_of(5)
+    order('placed_on ASC').pluck(:placed_on).map {|p| p.strftime('%Y-%m-%d')}.in_groups_of(5)
   end
 end
