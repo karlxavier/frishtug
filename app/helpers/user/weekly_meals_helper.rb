@@ -9,6 +9,8 @@ module User::WeeklyMealsHelper
     if active_this_week.include?(date.to_s) || not_this_week[0].include?(date.to_s)
       url = edit_user_weekly_meals_path(date: date)
     end
+
+    url
   end
 
   def calendar_classes(date, active_this_week, not_this_week)
