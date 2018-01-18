@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -e
+
+read -r -p "Enter local database name: " local_db
+read -r -p "Enter heroku remote: " heroku_remote
+read -r -p "Delete downloaded backup? [y/N]: " response
+
+
+heroku pg:backups:capture --remote "$heroku_remote"
+heroku pg:backups:download --remote "$heroku_remote"
+
+pg_restore --verbose --clean --no-acl --no-owner -h localhost -d "$local_db" latest.dump
+
+if [["$response" =~ ^(yes|y)]]; then
+  rm latest.dump
+fi

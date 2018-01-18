@@ -18,18 +18,7 @@
     <div class="row">
       <div class="col">
         <div class="form-check">
-          <%= check_box_tag 'copy_menu',
-              true,
-              @order_preference&.copy_menu || false,
-              class: 'form-check-input',
-              data: {
-                remote: true,
-                url: user_copy_meals_path,
-                method: "post"
-              } %>
-          <label class="form-check-label" for="copy_menu">
-            Copy Meals
-          </label>
+          <%= copy_menu_checkbox(@order_preferences) %>
         </div>
       </div>
     </div>

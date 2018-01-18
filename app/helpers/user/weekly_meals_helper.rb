@@ -1,5 +1,20 @@
 module User::WeeklyMealsHelper
 
+  def copy_menu_checkbox(order_preference)
+    return nil if current_user.plan.interval != 'month'
+    check_box_tag(
+      'copy_menu',
+      true,
+      order_preference&.copy_menu || false,
+      class: 'form-check-input',
+      data: {
+        remote: true,
+        url: user_copy_meals_path,
+        method: "post"
+      }
+    ) + label_tag("copy_menu", "Copy Meals", class: 'form-check-label')
+  end
+
   def calendar_url(date, active_this_week, not_this_week)
     url = "javascript:void(0)"
     if date > Date.current && !date.saturday?
