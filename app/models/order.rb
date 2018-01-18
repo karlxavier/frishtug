@@ -2,16 +2,17 @@
 #
 # Table name: orders
 #
-#  id           :integer          not null, primary key
-#  user_id      :integer
-#  placed_on    :datetime
-#  eta          :datetime
-#  delivered_at :datetime
-#  status       :integer
-#  remarks      :string
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
-#  order_date   :datetime
+#  id            :integer          not null, primary key
+#  user_id       :integer
+#  placed_on     :datetime
+#  eta           :datetime
+#  delivered_at  :datetime
+#  status        :integer
+#  remarks       :string
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  order_date    :datetime
+#  series_number :integer
 #
 
 # Column names
@@ -26,6 +27,15 @@ class Order < ApplicationRecord
   has_many :menus, through: :menus_orders
   has_one :comment, as: :commentable, dependent: :destroy
   scope :completed, -> { where.not(delivered_at: nil) }
+
+  before_create :set_series_number
+
+  def set_series_number
+    placed_time = self[:placed_at]
+    last_series_number = where(placed_at: placed_time.beginning_of_day..placed_time.end_of_day)
+      .order(:id).last&.series_number || 0
+    self[:series_number] = last_series_number + 1
+  end
 
   def menu_quantity(menu)
     item =

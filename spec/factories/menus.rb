@@ -7,7 +7,6 @@
 #  price            :decimal(8, 2)
 #  unit_id          :integer
 #  menu_category_id :integer
-#  diet_category_id :integer
 #  published_at     :datetime
 #  published        :boolean
 #  created_at       :datetime         not null
@@ -16,6 +15,7 @@
 #  item_number      :string
 #  tax              :boolean          default(FALSE)
 #  description      :text
+#  asset_id         :integer
 #
 
 FactoryBot.define do

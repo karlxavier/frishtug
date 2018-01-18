@@ -2,12 +2,11 @@
 #
 # Table name: assets
 #
-#  id             :integer          not null, primary key
-#  image          :string
-#  created_at     :datetime         not null
-#  updated_at     :datetime         not null
-#  assetable_type :string
-#  assetable_id   :integer
+#  id         :integer          not null, primary key
+#  image      :string
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  file_name  :string
 #
 
 require 'rails_helper'

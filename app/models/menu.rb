@@ -7,7 +7,6 @@
 #  price            :decimal(8, 2)
 #  unit_id          :integer
 #  menu_category_id :integer
-#  diet_category_id :integer
 #  published_at     :datetime
 #  published        :boolean
 #  created_at       :datetime         not null
@@ -16,6 +15,7 @@
 #  item_number      :string
 #  tax              :boolean          default(FALSE)
 #  description      :text
+#  asset_id         :integer
 #
 
 class Menu < ApplicationRecord
@@ -50,7 +50,7 @@ class Menu < ApplicationRecord
       next unless list_by_range.present?
       {
         menu: m,
-        order_ids: list_by_range.pluck(:id)
+        order_ids: list_by_range.pluck(:series_number)
       }
     end.compact
   end
