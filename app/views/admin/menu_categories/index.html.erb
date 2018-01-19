@@ -6,6 +6,7 @@
         <th>Name</th>
         <th>Menus</th>
         <th>Add-Ons</th>
+        <th>Display Order</th>
         <th></th>
       </tr>
     </thead>
@@ -15,3 +16,32 @@
     </tbody>
   </table>
 <% end %>
+
+<script type="text/javascript">
+  const responseHandler = (response) => {
+    swal(response.status, response.message, response.status)
+  }
+  const update_display_order = (id, display_order) => {
+    url = `<%= admin_display_orders_path %>?id=${id}&display_order=${display_order}`
+
+    Rails.ajax({
+      url: url,
+      type: 'POST',
+      success: function(response) {
+        responseHandler(response);
+      },
+      error: function(response) {
+        responseHandler(response);
+      }
+    });
+  };
+
+  const changeHandler = (event) => {
+    const id = event.target.dataset.id;
+    const display_order = event.target.value;
+    update_display_order(id, display_order);
+  };
+
+  const els = document.querySelectorAll('.display_order_selection');
+  els.forEach( el => el.addEventListener('change', changeHandler) );
+</script>
