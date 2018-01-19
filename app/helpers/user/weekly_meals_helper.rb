@@ -12,7 +12,7 @@ module User::WeeklyMealsHelper
         url: user_copy_meals_path,
         method: "post"
       }
-    ) + label_tag("copy_menu", "Copy Meals", class: 'form-check-label')
+    ) + label_tag("copy_menu", "Copy Meal", class: 'form-check-label')
   end
 
   def calendar_url(date, active_this_week, not_this_week)
