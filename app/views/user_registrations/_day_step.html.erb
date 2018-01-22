@@ -12,18 +12,19 @@
   </div>
 </div>
 
-<div class="row justify-content-center my-4">
+<div class="row justify-content-center my-4" v-if="interval === 'month' ">
   <div class="col-4 text-center">
-    <a href="javascript:void(0)" class="btn btn-brown-outline p-4"
-      @click="selectDay('<%= @earliest_monday %>')">
+    <a href="javascript:void(0)" class="btn btn-brown-outline p-4 schedule-btns"
+      @click="setSchedule('<%= @earliest_monday %>', 'monday_to_friday', $event)">
       Monday To Friday
     </a>
-    <a href="javascript:void(0)" class="btn btn-brown-outline p-4"
-      @click="selectDay('<%= @earliest_sunday %>')">
+    <a href="javascript:void(0)" class="btn btn-brown-outline p-4 schedule-btns"
+      @click="setSchedule('<%= @earliest_sunday %>', 'sunday_to_thursday', $event)">
       Sunday To Thursday
     </a>
   </div>
 </div>
+<input type="hidden" name="registration_form[schedule]" v-model="schedule">
 
 <div class="row justify-content-center mb-4">
   <div class="col-3" v-for="(calendar, index) in calendars">

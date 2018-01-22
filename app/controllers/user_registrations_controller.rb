@@ -6,7 +6,6 @@ class UserRegistrationsController < ApplicationController
   SATURDAY = 6
 
   def index
-
     @registration = RegistrationForm.new
     @categorized_menus = MenuCategory.published_menus
     @plans = Plan.all.sort
@@ -31,12 +30,17 @@ class UserRegistrationsController < ApplicationController
   private
 
   def set_dates
-    @date = Date.current
+    @date = Time.current
     @earliest_monday = @date.wday == 1 ? @date : @date.next_week(:monday)
-    @earliest_sunday = @date.wday.zero? ? @date : get_sunday
+    @earliest_sunday = @date.wday.zero? ? next_sunday_if_past_noon : next_sunday
   end
 
-  def get_sunday
+  def next_sunday_if_past_noon
+    closed_time = Time.zone.parse '11:00 am'
+    @date >= closed_time ? @date + 7.days : @date
+  end
+
+  def next_sunday
     days_to_add = 7 - @date.wday
     return @date + days_to_add.days if days_to_add > 0
     @date.next_week(:sunday)
