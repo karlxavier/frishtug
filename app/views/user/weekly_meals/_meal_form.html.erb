@@ -9,6 +9,23 @@
         <div class="sidebar-controls float-right ml-4">
           <a href="javascript:void(0)" class="btn btn-outline-dark show-sidebar">Show Meals</a>
         </div>
+        <div class="float-right ml-4">
+          <%= form_with url: '#', class: 'form-inline' do |f| %>
+            <div class="input-group">
+              <%= f.select :order_id,
+                @user_order_options,
+                {}, class: 'form-control' %>
+              <div class="input-group-append">
+                <%= f.button class: 'btn btn-brown', data: {
+                  toggle: 'tooltip',
+                  placement: 'top'
+                }, title: 'Duplicate Meal' do %>
+                  <i class="fa fa-copy"></i>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
         <div class="float-right">
           <%= format_date_AABBDD(params[:date]) %>
         </div>

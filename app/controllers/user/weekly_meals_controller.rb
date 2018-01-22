@@ -1,7 +1,7 @@
 class User::WeeklyMealsController < User::BaseController
   before_action :set_temp_order, only: :new
   before_action :set_order_for_edit, :editable?, only: :edit
-  before_action :set_category_and_menus, only: %i[new edit]
+  before_action :set_category_and_menus, :set_orders_for_option_select, only: %i[new edit]
   before_action :set_date_range, :set_date, only: :index
   respond_to :js, only: :category
   START_DATE = Date.current.beginning_of_week(:sunday)
@@ -103,5 +103,11 @@ class User::WeeklyMealsController < User::BaseController
     @category = params[:category] || MenuCategory.first.id
     @categories = MenuCategory.all
     @menus = Menu.filter_by_category(@category)
+  end
+
+  def set_orders_for_option_select
+    @user_order_options = current_user.orders.map do |o|
+      [ o.placed_on.strftime('%^a, %^b %d'), o.id ]
+    end.unshift(["Select a date to copy", nil])
   end
 end
