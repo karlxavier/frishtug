@@ -31,7 +31,7 @@ module User::WeeklyMealsHelper
   def calendar_classes(date, active_this_week, not_this_week)
     classes = []
     classes.push 'font-weight-bold' if date.today?
-    classes.push 'active' if active_this_week.include?(date.to_s)
+    classes.push 'active' if active_this_week[0].include?(date.to_s)
     multiple_colored_weeks(classes, not_this_week, date) if current_user.plan.interval == 'month'
     single_colored_weeks(classes, not_this_week, date) if current_user.plan.interval != 'month'
     classes.push 'disabled' if date < Date.current || date.saturday?
@@ -86,12 +86,10 @@ module User::WeeklyMealsHelper
   end
 
   def multiple_colored_weeks(classes, not_this_week, date)
-    classes.push 'active_not_current_first_week' if not_this_week[0].include?(date.to_s)
-    if not_this_week.length >= 4
-      classes.push 'active_not_current_second_week' if not_this_week[1].include?(date.to_s)
-      classes.push 'active_not_current_third_week' if not_this_week[2].include?(date.to_s)
-      classes.push 'active_not_current_fourth_week' if not_this_week[3].include?(date.to_s)
-    end
+    classes.push 'active_not_current_first_week' if not_this_week[0]&.include?(date.to_s)
+    classes.push 'active_not_current_second_week' if not_this_week[1]&.include?(date.to_s)
+    classes.push 'active_not_current_third_week' if not_this_week[2]&.include?(date.to_s)
+    classes.push 'active_not_current_fourth_week' if not_this_week[3]&.include?(date.to_s)
   end
 
   def is_checked?(order, menu_id, add_on_id)

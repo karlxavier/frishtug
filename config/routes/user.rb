@@ -37,4 +37,5 @@ namespace :user do
   resources :scanovators, only: :index
   resources :complaints, only: :create
   resources :copy_meals, only: :create
+  resources :duplicate_meals, only: :create
 end

@@ -31,9 +31,9 @@ class Order < ApplicationRecord
   before_create :set_series_number
 
   def set_series_number
-    placed_time = self[:placed_at]
-    last_series_number = where(placed_at: placed_time.beginning_of_day..placed_time.end_of_day)
-      .order(:id).last&.series_number || 0
+    placed_time = self[:placed_on]
+    last_series_number = Order.where(placed_on: placed_time.beginning_of_day..placed_time.end_of_day)
+      .order(id: :asc).last&.series_number || 0
     self[:series_number] = last_series_number + 1
   end
 

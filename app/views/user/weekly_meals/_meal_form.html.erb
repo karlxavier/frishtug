@@ -10,7 +10,8 @@
           <a href="javascript:void(0)" class="btn btn-outline-dark show-sidebar">Show Meals</a>
         </div>
         <div class="float-right ml-4">
-          <%= form_with url: '#', class: 'form-inline' do |f| %>
+          <%= form_with url: user_duplicate_meals_path(date: params[:date]),
+            class: 'form-inline', local: true do |f| %>
             <div class="input-group">
               <%= f.select :order_id,
                 @user_order_options,
