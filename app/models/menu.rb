@@ -44,13 +44,18 @@ class Menu < ApplicationRecord
     self.menu_category
   end
 
+  def self.all_published
+    where(published: true)
+  end
+
   def self.shopping_lists?(range)
     where(published: true).includes(:orders).map do |m|
       list_by_range = m.orders.placed_between?(range)
       next unless list_by_range.present?
       {
         menu: m,
-        order_ids: list_by_range.pluck(:series_number)
+        order_ids: list_by_range.pluck(:series_number),
+        quantity: MenusOrder.where(order_id: list_by_range.pluck(:id)).map(&:quantity).inject(:+)
       }
     end.compact
   end

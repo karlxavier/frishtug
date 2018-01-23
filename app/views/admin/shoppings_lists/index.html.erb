@@ -2,7 +2,7 @@
   <div class="row clearfix mx-0">
     <div class="col">
       <span class="font-size-16 font-family-montserrat-semi-bold">
-        <%= @date %>
+        <%= @date.strftime('%B %d') %>
         <% items = @shopping_lists.map { |m| m[:menu].id }.count %>
         <%= "- #{pluralize(items, 'item')}" %>
       </span>
@@ -13,6 +13,12 @@
   </div>
   <hr>
   <table class="table table-md">
+    <thead>
+      <tr>
+        <th>Item Name</th>
+        <th>QTY</th>
+      </tr>
+    </thead>
     <tbody>
       <% @shopping_lists.each do |list| %>
         <tr class="<%= list[:menu].id %>">
@@ -23,7 +29,7 @@
             <span class="font-size-14">Order # <%= list[:order_ids].join(', ') %></span>
           </td>
           <td>
-            <span><%= list[:order_ids].length %></span>
+            <span><%= list[:quantity] %></span>
           </td>
         </tr>
       <% end %>
