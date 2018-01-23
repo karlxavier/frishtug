@@ -12,6 +12,6 @@ heroku pg:backups:download --remote "$heroku_remote"
 
 pg_restore --verbose --clean --no-acl --no-owner -h localhost -d "$local_db" latest.dump
 
-if [["$response" =~ ^(yes|y)]]; then
+if [[ "$response" == 'y' ]]; then
   rm latest.dump
 fi

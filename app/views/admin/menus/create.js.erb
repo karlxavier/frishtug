@@ -1,6 +1,10 @@
-var form = document.getElementById('new-menu-item')
-var flash = form.querySelector('#form-flash-messages');
-flash.innerHTML = '<%= escape_javascript render "shared/flash" %>';
-$('.modal').animate({ scrollTop: 0 }, 'slow');
-$('.<%= @menu.menu_category.name.parameterize %>-items').append('<%= j render 'menu_card', menu: @menu %>');
-$('.<%= @menu.menu_category.name.parameterize %>-size').html('(<%= @menu.menu_category.menus.size %>)')
+<% if @menu.errors.any? %>
+  swal('error', '<%= @menu.errors.full_messages.join(', ') %>', 'error');
+<% else %>
+  var form = document.getElementById('new-menu-item')
+  var flash = form.querySelector('#form-flash-messages');
+  flash.innerHTML = '<%= escape_javascript render "shared/flash" %>';
+  $('.modal').animate({ scrollTop: 0 }, 'slow');
+  $('.<%= @menu.menu_category.name.parameterize %>-items').append('<%= j render 'menu_card', menu: @menu %>');
+  $('.<%= @menu.menu_category.name.parameterize %>-size').html('(<%= @menu.menu_category.menus.size %>)')
+<% end %>

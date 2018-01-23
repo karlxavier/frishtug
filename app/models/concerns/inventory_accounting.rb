@@ -17,9 +17,13 @@ module InventoryAccounting
     inventory = Inventory.where(menu_id: menu_order.menu_id).last
     transaction =
       inventory.inventory_transactions.between_transaction_date?(range)
-               .first_or_create!(transaction_date: time_today, quantity_sold: 0)
+               .first_or_create!(
+                 transaction_date: time_today,
+                 quantity_sold: 0,
+                 quantity_on_hand: inventory.quantity)
 
     transaction.quantity_sold += menu_order.quantity
+    transaction.quantity_on_hand -= menu_order.quantity
     transaction.save!
   end
 
