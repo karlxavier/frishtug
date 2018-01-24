@@ -20,7 +20,7 @@ class MenuCategory < ApplicationRecord
   validates :name, presence: true, uniqueness: true
   validates :display_order, uniqueness: true
 
-  accepts_nested_attributes_for :add_ons, allow_destroy: true
+  accepts_nested_attributes_for :add_ons, allow_destroy: true, reject_if: :all_blank
 
 
   def self.published_menus
