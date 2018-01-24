@@ -21,4 +21,10 @@ class Admin::ImportMenusController < Admin::BaseController
 
     redirect_back fallback_location: :back
   end
+
+  private
+
+  def file
+    params[:file]
+  end
 end

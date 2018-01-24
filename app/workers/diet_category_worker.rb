@@ -23,6 +23,6 @@ class DietCategoryWorker
   end
 
   def to_array(diet_categories)
-    diet_categories.split('|')
+    diet_categories.split('|') unless diet_categories.nil?
   end
 end
