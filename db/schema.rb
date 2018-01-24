@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180123024740) do
+ActiveRecord::Schema.define(version: 20180124022212) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -199,7 +199,9 @@ ActiveRecord::Schema.define(version: 20180123024740) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "display_order"
+    t.boolean "part_of_plan", default: true
     t.index ["display_order"], name: "index_menu_categories_on_display_order"
+    t.index ["part_of_plan"], name: "index_menu_categories_on_part_of_plan"
   end
 
   create_table "menus", force: :cascade do |t|

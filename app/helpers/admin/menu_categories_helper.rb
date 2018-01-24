@@ -1,4 +1,12 @@
 module Admin::MenuCategoriesHelper
+  def is_part_of_plan?(menu_category)
+    if menu_category.part_of_plan
+      content_tag :i, nil, class: 'fa fa-check text-success'
+    else
+      content_tag :i, nil, class: 'fa fa-times text-danger'
+    end
+  end
+
   def display_ordering_checkbox(menu_category)
     category_size = MenuCategory.count
     select_tag "display_order",
