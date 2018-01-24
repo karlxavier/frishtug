@@ -22,9 +22,10 @@ class TempOrder < ApplicationRecord
 
   def total
     total_prices = []
+    add_on_price = AddOn.pluck(:id, :price).to_h
     menus_temp_orders.each do |order|
       total_prices << order.menu_price * order.quantity
-      add_on_price = AddOn.where(id: order.add_ons).map(&:price).inject(:+) || 0
+      add_on_price = order.add_ons.map { |a| add_on_price[a.to_i] }.inject(:+) || 0
       total_prices << add_on_price * order.quantity
     end
     total_prices.compact.inject(:+)

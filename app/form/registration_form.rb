@@ -150,7 +150,7 @@ class RegistrationForm
   end
 
   def create_a_charge(user)
-    amount_to_pay = user.orders.first.menus.map(&:price).inject(:+)
+    amount_to_pay = OrderCalculator.new(user.orders.first).total
     charge = StripeCharger.new(user, amount_to_pay)
     charge.run
     unless charge.errors.empty?
