@@ -7,7 +7,7 @@
           <div class="row" id="<%= category.name.parameterize %>">
             <div class="container-fluid">
               <div class="row">
-                <%= render partial: 'menus/menu_with_controls', collection: category.menus, as: :menu, locals: {type: type} %>
+                <%= render partial: 'menus/menu_with_controls', collection: category.menus.has_stock, as: :menu, locals: {type: type} %>
               </div>
             </div>
           </div>

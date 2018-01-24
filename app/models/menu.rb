@@ -44,6 +44,10 @@ class Menu < ApplicationRecord
     self.menu_category
   end
 
+  def self.has_stock
+    includes(:inventory).where.not(inventories: { quantity: 0 })
+  end
+
   def self.all_published
     where(published: true)
   end

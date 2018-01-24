@@ -102,7 +102,7 @@ class User::WeeklyMealsController < User::BaseController
   def set_category_and_menus
     @category = params[:category] || MenuCategory.first.id
     @categories = MenuCategory.all
-    @menus = Menu.filter_by_category(@category)
+    @menus = Menu.filter_by_category(@category).has_stock
   end
 
   def set_orders_for_option_select
