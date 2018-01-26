@@ -18,10 +18,10 @@
 # Column names
 # id user_id placed_on:timestamp eta:timestamp delivered_at:timestamp status:integer
 class Order < ApplicationRecord
-  include InventoryAccounting
+  # include InventoryAccounting
   include Computable
   include UserDelegator
-  enum status: %i[in_transit completed]
+  enum status: %i[in_transit completed failed]
   belongs_to :user
   has_many :menus_orders, dependent: :destroy
   has_many :menus, through: :menus_orders
@@ -29,6 +29,11 @@ class Order < ApplicationRecord
   scope :completed, -> { where.not(delivered_at: nil) }
 
   before_create :set_series_number
+  after_commit :run_inventory_accounter, on: [:create, :update]
+
+  def run_inventory_accounter
+    InventoryAccounter.new(self).run
+  end
 
   def set_series_number
     placed_time = self[:placed_on]

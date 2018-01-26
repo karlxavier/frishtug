@@ -45,6 +45,7 @@
 
 <%= content_for :header do %>
   <%= javascript_tag do %>
+    localStorage.clear()
     localStorage.setItem('allowed_zip_codes', '<%= raw @allowed_zip_codes.to_json %>');
     localStorage.setItem('current_date_est', '<%= Date.current %>');
     localStorage.setItem('tax_rate', <%= @tax_rate %>)
