@@ -45,7 +45,13 @@ class Menu < ApplicationRecord
   end
 
   def self.has_stock
-    includes(:inventory).where.not(inventories: { quantity: 0 })
+    includes(:inventory, :asset, :diet_categories, :unit, :add_ons)
+      .where.not(inventories: { quantity: 0 })
+  end
+
+  def self.group_by_category_names
+    menu_category_names = MenuCategory.pluck(:id, :name).to_h
+    has_stock.group_by { |m| menu_category_names[m.menu_category_id] }
   end
 
   def self.all_published

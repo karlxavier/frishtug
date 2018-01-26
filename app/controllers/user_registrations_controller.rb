@@ -8,6 +8,7 @@ class UserRegistrationsController < ApplicationController
   def index
     @registration = RegistrationForm.new
     @categorized_menus = MenuCategory.published_menus
+    @menus_with_category = Menu.has_stock.group_by_category_names
     @plans = Plan.all.sort
   end
 

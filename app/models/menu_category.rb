@@ -24,12 +24,7 @@ class MenuCategory < ApplicationRecord
 
 
   def self.published_menus
-    includes(
-      menus: [
-        :asset,
-        :diet_categories,
-        :unit, :add_ons,
-        :menus_add_ons]).where.not(menus: { published_at: nil })
+    includes(:menus).where.not(menus: { published_at: nil })
   end
 
   def self.find_all_menus_by(category_id)

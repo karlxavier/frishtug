@@ -1,13 +1,13 @@
 <div class="row">
   <div class="col meals__container" id="meals-tab-container">
     <vue-tabs type="pills" @tab-change="handleTabChange">
-      <% categorized_menus.each_with_index do |category, index| %>
-        <v-tab title="<%= category.name.titleize %>">
+      <% menus_with_category.each do |category_name, menus| %>
+        <v-tab title="<%= category_name %>">
           <%= render 'legends' %>
-          <div class="row" id="<%= category.name.parameterize %>">
+          <div class="row" id="<%= category_name.parameterize %>">
             <div class="container-fluid">
               <div class="row">
-                <%= render partial: 'menus/menu_with_controls', collection: category.menus.has_stock, as: :menu, locals: {type: type} %>
+                <%= render partial: 'menus/menu_with_controls', collection: menus, as: :menu, locals: {type: type} %>
               </div>
             </div>
           </div>

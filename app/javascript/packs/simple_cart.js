@@ -1,7 +1,7 @@
-let shoppingCart = []
+let shoppingCart          = []
 let currentActiveCart
-const listeners = []
-const counterListeners = {}
+const listeners           = []
+const counterListeners    = {}
 
 const getCounterName = (el) => {
   const item = parseValue(el.dataset.value)
@@ -112,15 +112,33 @@ const addToShoppingCart = (el) => {
 
   if (itemInCartIndex >= 0) {
     const cart = currentActiveCart[itemInCartIndex]
-    cart.price += item.price
-    cart.quantity += item.quantity
-    quantity = cart.quantity
-  } else {currentActiveCart.push(item)
-    quantity = item.quantity
+    const total_cart_quantity = parseInt(localStorage.getItem(item.id)) + 1
+    checkInventory(item.id, total_cart_quantity, function(response) {
+      if (response.status === 'success') {
+        cart.price += item.price
+        cart.quantity += item.quantity
+        localStorage.setItem(item.id, total_cart_quantity)
+        enableRemoveFromCart(getCounterName(el))
+        updateCounterHandler(getCounterName(el), cart.quantity)
+        updateListeners()
+      } else {
+        outOfStockHandler(response)
+      }
+    })
+  } else {
+    const quantity_to_send = localStorage.getItem(item.id) || item.quantity
+    checkInventory(item.id, quantity_to_send, function(response) {
+      if(response.status === 'success') {
+        currentActiveCart.push(item)
+        enableRemoveFromCart(getCounterName(el))
+        updateCounterHandler(getCounterName(el), item.quantity)
+        updateListeners()
+        localStorage.setItem(item.id, item.quantity)
+      } else {
+        outOfStockHandler(response)
+      }
+    })
   }
-  enableRemoveFromCart(getCounterName(el))
-  updateCounterHandler(getCounterName(el), quantity)
-  updateListeners()
 }
 
 const removeFromShoppingCart = (el) => {
@@ -135,10 +153,12 @@ const removeFromShoppingCart = (el) => {
     cart.price -= item.price
     cart.quantity -= item.quantity
     quantity = cart.quantity
+    localStorage.setItem(item.id, cart.quantity)
   }
 
   if (quantity === 0) {
     currentActiveCart.splice(itemInCartIndex, 1)
+    localStorage.removeItem(item.id)
     disableRemoveFromCart(getCounterName(el))
   }
   updateCounterHandler(getCounterName(el), quantity)
@@ -220,6 +240,19 @@ const initialize = () => {
     setUpShoppingCartForFiveDays()
     elFiveDays.addEventListener('click', eventDelegator)
   }
+}
+
+const checkInventory = (id, quantity, callback) => {
+  Rails.ajax({
+    url: `/inventories?menu_id=${id}&quantity=${quantity}`,
+    type: 'GET',
+    success: callback,
+    error: callback
+  })
+}
+
+const outOfStockHandler = (response) => {
+  swal(response.status, response.message, response.status)
 }
 
 module.exports = {
