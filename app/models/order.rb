@@ -18,7 +18,6 @@
 # Column names
 # id user_id placed_on:timestamp eta:timestamp delivered_at:timestamp status:integer
 class Order < ApplicationRecord
-  # include InventoryAccounting
   include Computable
   include UserDelegator
   enum status: %i[in_transit completed failed]

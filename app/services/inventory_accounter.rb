@@ -1,8 +1,8 @@
 class InventoryAccounter
-  CURRENT_TIME = Time.current
 
   def initialize(order)
     @order = order
+    @date = order.placed_on
   end
 
   def run
@@ -11,7 +11,7 @@ class InventoryAccounter
 
   private
 
-  attr_accessor :order
+  attr_accessor :order, :date
 
   def update_inventory_and_create_transactions
     order.menus_orders.each do |menu_order|
@@ -25,13 +25,13 @@ class InventoryAccounter
   def create_inventory_transaction(inventory, remaining_quantity, sold_quantity)
     inventory.inventory_transactions.between_transaction_date?(range)
              .first_or_create(
-               transaction_date: CURRENT_TIME,
+               transaction_date: date,
                quantity_sold: sold_quantity,
                quantity_on_hand: remaining_quantity
              )
   end
 
   def range
-    DateRange.new(CURRENT_TIME.beginning_of_day, CURRENT_TIME.end_of_day)
+    DateRange.new(date.beginning_of_day, date.end_of_day)
   end
 end
