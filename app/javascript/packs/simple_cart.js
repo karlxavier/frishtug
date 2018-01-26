@@ -126,7 +126,12 @@ const addToShoppingCart = (el) => {
       }
     })
   } else {
-    const quantity_to_send = localStorage.getItem(item.id) || item.quantity
+    let quantity_to_send = item.quantity
+    const hasItemStored = localStorage.getItem(item.id)
+    if (hasItemStored) {
+      quantity_to_send = parseInt(hasItemStored) + 1
+    }
+
     checkInventory(item.id, quantity_to_send, function(response) {
       if(response.status === 'success') {
         currentActiveCart.push(item)
