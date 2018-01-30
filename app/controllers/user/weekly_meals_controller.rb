@@ -30,7 +30,7 @@ class User::WeeklyMealsController < User::BaseController
   end
 
   def set_date_range
-    @date_range = DateRange.new(START_DATE, START_DATE.end_of_week(:sunday))
+    @date_range = DateRange.new(START_DATE, START_DATE.end_of_week(:saturday))
   end
 
   def parsed_date(date)
