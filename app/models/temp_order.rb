@@ -15,8 +15,7 @@ class TempOrder < ApplicationRecord
   has_many :menus, through: :menus_temp_orders
 
   def menu_quantity(menu)
-    item =
-      menus_temp_orders.where(menu_id: menu.id).first || NullMenuOrders.new(menu)
+    item = menus_temp_orders.where(menu_id: menu.id).first || NullMenuOrders.new(menu)
     item.quantity
   end
 

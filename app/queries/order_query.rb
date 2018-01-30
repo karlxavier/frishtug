@@ -1,11 +1,13 @@
 class OrderQuery
-  def initialize(date_range)
+  def initialize(date_range, location = nil, meal_plan_ids = nil)
     @date_range = date_range
     @orders = Order.includes(:menus)
+    @location = location
+    @meal_plan_ids = meal_plan_ids
   end
 
   def active_orders
-    results = orders.placed_between?(date_range)
+    results = filtered_orders.placed_between?(@date_range)
 
     class << self
       def size
@@ -36,8 +38,28 @@ class OrderQuery
   end
 
   private
-  
-  attr_accessor :date_range, :orders
+
+  attr_accessor :date_range, :orders, :meal_plan_ids, :location
+
+  def filtered_orders
+    return orders_by_meal_plan if meal_plan_ids.present?
+    return orders_by_location if location.present?
+    orders
+  end
+
+  def orders_by_meal_plan
+    order_ids = MenusOrder.where(menu_id: menu_ids).map(&:order_id)
+    orders.where(id: order_ids)
+  end
+
+  def orders_by_location
+    user_ids = Address.where(addressable_type: 'User', city: location).map(&:addressable_id)
+    orders.where(user_id: user_ids)
+  end
+
+  def menu_ids
+    Menu.where(id: meal_plan_ids).map(&:id)
+  end
 
   def total(orders)
     sales = []
