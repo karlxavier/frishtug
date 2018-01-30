@@ -36,13 +36,20 @@ class TempOrder < ApplicationRecord
   end
 
   def store(menu, quantity, add_on_id)
-    menu = menus_temp_orders.where(menu_id: menu.id).first_or_create!
-    menu.quantity += quantity.to_i
+    menu_temp_order = menus_temp_orders.where(menu_id: menu.id).first_or_create!
+    inventory = Inventory.find_by_menu_id(menu.id)
+    new_quantity = menu_temp_order.quantity + quantity.to_i
+    current_stocks = inventory.quantity - new_quantity
     if add_on_id.present?
-      return if menu.add_ons.include?(add_on_id)
-      menu.add_ons << AddOn.where(id: add_on_id).first&.id
+      return if menu_temp_order.add_ons.include?(add_on_id)
+      menu_temp_order.add_ons << AddOn.where(id: add_on_id).first&.id
     end
-    menu.save
+    if current_stocks <= 0
+      errors.add(:base, 'Out of stocks')
+      false
+    else
+      menu_temp_order.save
+    end
   end
 
   def remove_item(menu, quantity, add_on_id)

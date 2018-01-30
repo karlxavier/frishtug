@@ -32,13 +32,20 @@ class UserRegistrationsController < ApplicationController
 
   def set_dates
     @date = Time.current
-    @earliest_monday = @date.wday == 1 ? @date : @date.next_week(:monday)
+    @earliest_monday = @date.wday == 1 ? next_monday_if_past_noon : @date.next_week(:monday)
     @earliest_sunday = @date.wday.zero? ? next_sunday_if_past_noon : next_sunday
   end
 
+  def next_monday_if_past_noon
+    @date >= closed_time ? @date.next_week(:monday) : @date
+  end
+
   def next_sunday_if_past_noon
-    closed_time = Time.zone.parse '11:00 am'
     @date >= closed_time ? @date + 7.days : @date
+  end
+
+  def closed_time
+    Time.zone.parse '11:00 am'
   end
 
   def next_sunday
