@@ -1,5 +1,5 @@
 class User::WeeklyMealsController < User::BaseController
-  before_action :set_temp_order, only: :new
+  before_action :set_new_order, only: :new
   before_action :set_order_for_edit, :editable?, only: :edit
   before_action :set_category_and_menus, :set_orders_for_option_select, only: %i[new edit]
   before_action :set_date_range, :set_date, only: :index
@@ -17,11 +17,9 @@ class User::WeeklyMealsController < User::BaseController
   end
 
   def new
-    @orders = @temp_order
   end
 
   def edit
-    @orders = @order
   end
 
   private
@@ -43,31 +41,12 @@ class User::WeeklyMealsController < User::BaseController
     Time.zone.parse(params[:date])
   end
 
-  def set_temp_order
-    @temp_order = current_user.temp_orders.where(order_date: order_date).first_or_create
+  def set_new_order
+    @orders = current_user.orders.where(order_date: order_date).first_or_create
   end
 
   def set_order_for_edit
-    current_order = current_user.orders.find_by_placed_on(order_date)
-    if current_order.present?
-      remove_previous_temp_order unless params[:category].present?
-      @order = current_user.temp_orders.where(order_date: order_date).first_or_create
-      unless params[:category].present?
-        current_order.menus_orders.each do |menu_order|
-          @order.menus_temp_orders
-            .create!(
-              menu_id: menu_order.menu_id,
-              quantity: menu_order.quantity,
-              add_ons: menu_order.add_ons
-            )
-        end
-      end
-    end
-  end
-
-  def remove_previous_temp_order
-    order = current_user.temp_orders.find_by_order_date(order_date)
-    order.destroy if order
+    @orders = current_user.orders.find_by_placed_on(order_date)
   end
 
   def is_past_noon?

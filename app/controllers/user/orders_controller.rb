@@ -1,25 +1,28 @@
 class User::OrdersController < User::BaseController
-  before_action :set_order, only: [:store, :remove]
-  before_action :set_menu, only: [:store, :remove]
+  before_action :set_order, :set_menu, :set_cart, only: [:store, :remove]
   respond_to :js, only: [:store, :remove]
 
   def store
-    @order.menus << @menu
-    @order.save
-    respond_with(@order, @menu, menu_size)
+    if @cart.place_order(@menu, quantity, add_on_id)
+      respond_with(@order, @menu, menu_size)
+    end
   end
 
   def remove
-    menus = @order.menus.where(id: params[:menu_id])
-    size = menus.size
-    @order.menus.delete(@menu)
-    if size > 1
-      (size - 1).times { @order.menus << @menu }
+    if @cart.remove_order(@menu, quantity, add_on_id)
+      respond_with(@order, @menu, menu_size)
     end
-    respond_with(@order, @menu, menu_size)
   end
 
   private
+
+  def add_on_id
+    params[:add_on_id]
+  end
+
+  def quantity
+    params[:quantity]
+  end
 
   def placed_on
     Time.zone.parse(params[:date])
@@ -33,7 +36,12 @@ class User::OrdersController < User::BaseController
     @menu = Menu.find(params[:menu_id])
   end
 
+  def set_cart
+    @cart = ShoppingCart.new(@order)
+  end
+
   def menu_size
-    @menu_size = @order.menus.where(id: params[:menu_id]).size
+    menu = @order.menus_orders.where(menu_id: @menu.id).first || NullMenuOrders.new(@menu)
+    @menu_size = menu.quantity
   end
 end

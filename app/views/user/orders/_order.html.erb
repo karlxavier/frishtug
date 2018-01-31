@@ -1,15 +1,35 @@
-<h4><%= order.placed_on.strftime('%B') %></h4>
-<% order.grouped_menus.each do |name, menus| %>
+<%
+  store_url = "store_user_#{order.class.name.underscore.pluralize}_path"
+  remove_url = "remove_user_#{order.class.name.underscore.pluralize}_path"
+%>
+<h5><%= order.order_date.strftime('%A') %></h5>
+<% order.menus_orders.each do |order| %>
   <div class="row clearfix">
     <div class="col-8">
-      <%= name %>
-      <span class="float-right">
-        <%= menus.size %>
+      <%= order.menu_name %><%= order.add_ons_list %>
+      <span class="float-right row">
+        <div class="col">
+          <%= link_to public_send(remove_url, menu_id: order.menu_id, date: params[:date], quantity: 1),
+            class:'',
+            remote: true do %>
+            <i class="fa fa-minus-square-o chocolate-font-color" aria-hidden="true"></i>
+          <% end %>
+        </div>
+        <div class="col">
+          <%= order.quantity %>
+        </div>
+        <div class="col">
+          <%= link_to public_send(store_url, menu_id: order.menu_id, date: params[:date], quantity: 1),
+            class:'',
+            remote: true do %>
+            <i class="fa fa-plus-square-o chocolate-font-color" aria-hidden="true"></i>
+          <% end%>
+        </div>
       </span>
     </div>
     <div class="col-4">
       <span class="float-right">
-        <%= to_currency(menus.map(&:price).inject(:+)) %>
+        <%= to_currency(total_menu_price(order)) %>
       </span>
     </div>
   </div>
@@ -21,13 +41,17 @@
   </div>
   <div class="col">
     <strong class="float-right">
-      <%= to_currency(order.menus.map(&:price).inject(:+)) %>
+      <%= to_currency(order.total) %>
     </strong>
   </div>
 </div>
 
 <div class="row mt-4">
   <div class="col">
-    <%= link_to 'Save Meal Plan', "#", class: 'btn btn-brown text-uppercase btn-block' %>
+    <% is_disabled = "disabled" unless order.menus.present? %>
+    <%= link_to 'Save Meal Plan',
+      '#',
+      class: "btn btn-brown text-uppercase btn-block #{is_disabled}",
+      remote: true %>
   </div>
 </div>

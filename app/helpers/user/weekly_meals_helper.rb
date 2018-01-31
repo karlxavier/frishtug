@@ -93,7 +93,7 @@ module User::WeeklyMealsHelper
   end
 
   def is_checked?(order, menu_id, add_on_id)
-    order.menus_temp_orders.where(menu_id: menu_id)
+    order.menus_orders.where(menu_id: menu_id)
       .first&.add_ons&.include?(add_on_id.to_s)
   end
 
