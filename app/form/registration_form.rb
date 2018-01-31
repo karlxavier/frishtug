@@ -102,6 +102,8 @@ class RegistrationForm
       create_referrer(user) unless group_code.present?
       create_candidate(user) if group_code.present?
     end
+
+    user.create_schedule!(schedule_params)
   end
 
   def create_candidate(user)
@@ -144,6 +146,7 @@ class RegistrationForm
     )
     if user.plan.interval == 'month'
       create_subscription(user)
+      check_limit_and_charge(user)
     else
       create_a_charge(user)
     end
@@ -166,6 +169,17 @@ class RegistrationForm
       user.save
     else
       errors.add(:base, stripe_subscription.errors.full_messages.join(', '))
+      raise ActiveRecord::StatementInvalid
+    end
+  end
+
+  def check_limit_and_charge(user)
+    plan_limit = user.plan.limit
+    excess_amount = OrderCalculator.new(user.orders).get_excess(plan_limit)
+    charge = StripeCharger.new(user, excess_amount)
+    charge.charge_excess!
+    unless charge.errors.empty?
+      errors.add(:base, charge.errors.full_message.join(', '))
       raise ActiveRecord::StatementInvalid
     end
   end
