@@ -14,6 +14,9 @@ class User::OrdersController < User::BaseController
     end
   end
 
+  def persist
+  end
+
   private
 
   def add_on_id

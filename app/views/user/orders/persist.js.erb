@@ -1,0 +1,11 @@
+swal({
+  title: 'Success',
+  text: "Youre order is complete",
+  type: 'success',
+  confirmButtonColor: '#3085d6',
+  confirmButtonText: 'Done'
+}).then(function (result) {
+  if (result) {
+    window.location = '<%= user_weekly_meals_path %>';
+  }
+});

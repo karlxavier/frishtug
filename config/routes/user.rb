@@ -31,6 +31,7 @@ namespace :user do
     collection do
       get :store
       get :remove
+      get :persist
     end
   end
   resources :set_default_payments, only: :create

@@ -46,11 +46,15 @@
   </div>
 </div>
 
+<div class="warnings">
+  <%= display_warning(order.total) %>
+</div>
+
 <div class="row mt-4">
   <div class="col">
     <% is_disabled = "disabled" unless order.menus.present? %>
     <%= link_to 'Save Meal Plan',
-      '#',
+      persist_user_orders_path(format: :js),
       class: "btn btn-brown text-uppercase btn-block #{is_disabled}",
       remote: true %>
   </div>

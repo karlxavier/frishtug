@@ -26,7 +26,7 @@ class ShoppingCart
         errors.add(:base, 'Out of stocks!')
         false
       else
-        menus_order.quantity += quantity.to_i
+        menus_order.quantity = menus_order.quantity.to_i + quantity.to_i
         menus_order.save
       end
     end
@@ -58,7 +58,7 @@ class ShoppingCart
 
     def subtract_quantity_or_delete(menus_order, quantity)
       menus_order.quantity -= quantity.to_i
-      menus_order.save if menus_order.quantity > 0
+      return menus_order.save if menus_order.quantity > 0
       menus_order.destroy
     end
 end

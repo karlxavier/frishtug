@@ -78,6 +78,18 @@ module User::WeeklyMealsHelper
     price += add_on_price * order.quantity
   end
 
+  def display_warning(total)
+    plan_limit = current_user.plan.limit
+    if total > plan_limit
+      content_tag :small, class: 'alert alert-warning d-flex', style: 'font-size: 9px; width: 100%' do
+        content_tag(:i, nil, class: 'fa fa-exclamation-circle font-size-24 pr-1') + <<-EOF
+          You have exceeded your plan limit of $ #{plan_limit}.
+          Any excess will be charge directly to your account.
+        EOF
+      end
+    end
+  end
+
   private
 
   def single_colored_weeks(classes, not_this_week, date)
