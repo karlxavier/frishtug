@@ -99,4 +99,12 @@ class User < ApplicationRecord
   def set_default_source(source)
     StripeCustomer.new(self).set_default_source(source)
   end
+
+  def subscribed?
+    plan.interval == 'month'
+  end
+
+  def orders_completed?
+    orders.count % 20 == 0
+  end
 end

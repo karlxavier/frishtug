@@ -17,6 +17,6 @@ class Admin::DashboardController < Admin::BaseController
   end
 
   def meal_plan_ids
-    params[:meal_plan_ids]
+    params[:meal]
   end
 end

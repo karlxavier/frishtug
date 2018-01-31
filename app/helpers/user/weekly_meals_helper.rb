@@ -21,7 +21,7 @@ module User::WeeklyMealsHelper
       url = new_user_weekly_meal_path(date: date)
     end
 
-    if active_this_week.include?(date.to_s) || not_this_week[0].include?(date.to_s)
+    if active_this_week.flatten.include?(date.to_s) || not_this_week.flatten.include?(date.to_s)
       url = edit_user_weekly_meals_path(date: date)
     end
 

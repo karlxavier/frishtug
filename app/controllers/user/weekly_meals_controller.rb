@@ -3,6 +3,7 @@ class User::WeeklyMealsController < User::BaseController
   before_action :set_order_for_edit, :editable?, only: :edit
   before_action :set_category_and_menus, :set_orders_for_option_select, only: %i[new edit]
   before_action :set_date_range, :set_date, only: :index
+  before_action :user_can_order?, only: :new
   respond_to :js, only: :category
   START_DATE = Date.current.beginning_of_week(:sunday)
 
@@ -97,6 +98,17 @@ class User::WeeklyMealsController < User::BaseController
       flash[:error] = 'Too late to edit your delivered meal.'
       redirect_back fallback_location: :user_weekly_meals
     end
+  end
+
+  def user_can_order?
+    if user_has_completed_the_plan?
+      flash[:error] = 'You have reach your plan limit of 20 days of orders'
+      redirect_back fallback_location: :user_weekly_meals
+    end
+  end
+
+  def user_has_completed_the_plan?
+    current_user.subscribed? && current_user.orders_completed?
   end
 
   def set_category_and_menus
