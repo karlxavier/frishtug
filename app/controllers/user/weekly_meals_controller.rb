@@ -33,8 +33,15 @@ class User::WeeklyMealsController < User::BaseController
   end
 
   def parsed_date(date)
-    return Date.current unless date
+    return first_current_order_date unless date
     Date.parse(date)
+  end
+
+  def first_current_order_date
+    start_date = Date.current.beginning_of_month
+    end_date = current_user.orders.last.placed_on.to_date
+    range = DateRange.new(start_date, end_date)
+    current_user.orders.placed_between?(range).first&.placed_on&.to_date
   end
 
   def order_date
@@ -46,7 +53,7 @@ class User::WeeklyMealsController < User::BaseController
   end
 
   def set_order_for_edit
-    @orders = current_user.orders.find_by_placed_on(order_date)
+    @orders = current_user.orders.includes(menus_orders: :menu).find_by_placed_on(order_date)
   end
 
   def is_past_noon?
@@ -93,7 +100,8 @@ class User::WeeklyMealsController < User::BaseController
   def set_category_and_menus
     @category = params[:category] || MenuCategory.first.id
     @categories = MenuCategory.all
-    @menus = Menu.filter_by_category(@category).has_stock
+    @menus = Menu.includes(:menus_add_ons, :menus_diet_categories)
+      .filter_by_category(@category).has_stock
   end
 
   def set_orders_for_option_select
