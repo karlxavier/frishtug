@@ -29,10 +29,9 @@ class User::CopyMealsController < User::BaseController
   private
 
   def check_if_orders_complete!
-    if current_user.orders_completed?
-      flash[:notice] = 'Cant copy! You have already completed your whole month'
-      redirect_back fallback_location: :user_weekly_meals
-    end
+    return unless current_user.orders_completed?
+    flash[:error] = 'Can\'t copy! You have completed your plan'
+    redirect_back fallback_location: :user_weekly_meals
   end
 
   def save_preference
