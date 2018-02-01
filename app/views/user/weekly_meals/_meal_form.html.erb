@@ -1,27 +1,27 @@
 <div class="row" id="meal-form__wrapper">
   <div class="col-9 col-md-9 col-lg-9" role="main" id="meal-form__container">
     <div class="row header py-4 meal-form__header border-bottom-grey mb-4">
-      <div class="col">
+      <div class="col-3">
         <%= back_to_index_link('', 'fa fa-angle-left') %>
         <%= "#{action_name.upcase} MEAL PLAN" %>
       </div>
-      <div class="col">
+      <div class="col-9">
         <div class="sidebar-controls float-right ml-4">
           <a href="javascript:void(0)" class="btn btn-outline-dark show-sidebar">Show Meals</a>
         </div>
-        <div class="float-right ml-4">
+        <div class="float-right ml-4 col-6">
           <%= form_with url: user_duplicate_meals_path(date: params[:date]),
             class: 'form-inline', local: true do |f| %>
             <div class="input-group">
               <%= f.select :order_id,
                 @user_order_options,
-                {}, class: 'form-control' %>
+                {}, class: 'form-control font-size-14' %>
               <div class="input-group-append">
                 <%= f.button class: 'btn btn-brown', data: {
                   toggle: 'tooltip',
                   placement: 'top'
                 }, title: 'Duplicate Meal' do %>
-                  <i class="fa fa-copy"></i>
+                  <i class="fa fa-copy"></i> Duplicate Meal
                 <% end %>
               </div>
             </div>

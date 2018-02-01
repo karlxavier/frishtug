@@ -106,8 +106,23 @@ class User::WeeklyMealsController < User::BaseController
   end
 
   def set_orders_for_option_select
-    @user_order_options = current_user.orders.map do |o|
-      [ o.placed_on.strftime('%^a, %^b %d'), o.id ]
-    end.unshift(["Select a date to copy", nil])
+    encountered_dupes = {}
+    @user_order_options = []
+
+    options = current_user.orders.map do |o|
+      [
+        o.menus_orders.map { |i| "#{i.menu_name} x #{i.quantity}"}.join(', '),
+        o.id
+      ]
+    end.unshift(["Select meal to copy", nil])
+
+    options.each do |i|
+      unless encountered_dupes[i[0]]
+        encountered_dupes[i[0]] = 1
+        @user_order_options << i
+      end
+    end
+
+    @user_order_options
   end
 end
