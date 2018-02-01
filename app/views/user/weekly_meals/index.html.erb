@@ -15,12 +15,24 @@
       disable_right_control: true,
       disable_left_control: true
     } %>
+
+    <h6>Copy Week</h6>
     <div class="row">
-      <div class="col">
-        <div class="form-check">
-          <%= copy_menu_checkbox(@order_preferences) %>
+      <%= form_with url: user_copy_meals_path, local: true do |f| %>
+        <div class="col">
+          <div class="form-group row">
+            <div class="col">
+              <%= f.select :from, options_for_select(@from_options), {}, class: 'form-control' %>
+            </div>
+            <div class="col">
+              <%= f.select :to, options_for_select(@to_options), {}, class: 'form-control' %>
+            </div>
+          </div>
         </div>
-      </div>
+        <div class="col">
+          <%= f.submit 'Copy', class: 'btn btn-brown' %>
+        </div>
+      <% end %>
     </div>
   </div>
 

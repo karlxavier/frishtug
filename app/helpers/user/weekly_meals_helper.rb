@@ -25,6 +25,11 @@ module User::WeeklyMealsHelper
       url = edit_user_weekly_meals_path(date: date)
     end
 
+    if current_user.schedule.present?
+      return "javascript:void(0)" if date.sunday? && current_user.schedule.monday_to_friday?
+      return "javascript:void(0)" if date.friday? && current_user.schedule.sunday_to_thursday?
+    end
+
     url
   end
 
@@ -35,6 +40,10 @@ module User::WeeklyMealsHelper
     multiple_colored_weeks(classes, not_this_week, date) if current_user.plan.interval == 'month'
     single_colored_weeks(classes, not_this_week, date) if current_user.plan.interval != 'month'
     classes.push 'disabled' if date < Date.current || date.saturday?
+    if current_user.schedule.present?
+      return "disabled" if date.sunday? && current_user.schedule.monday_to_friday?
+      return "disabled" if date.friday? && current_user.schedule.sunday_to_thursday?
+    end
     classes.join(' ')
   end
 

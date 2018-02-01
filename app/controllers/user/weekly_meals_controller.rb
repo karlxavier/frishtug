@@ -14,6 +14,8 @@ class User::WeeklyMealsController < User::BaseController
     @completed = order.completed.pluck_placed_on
     @orders = order.pending_deliveries
     @order_preference = current_user.order_preference
+    @from_options = current_user.orders.selection_dates
+    @to_options = current_user.orders.available_dates(current_user.schedule.option)
   end
 
   def new
