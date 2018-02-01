@@ -7,6 +7,12 @@ class OrderCalculator
     sum_of(total_item_price, total_add_ons_price)
   end
 
+  def total_excess(plan_limit)
+    total = sum_of(total_item_price, total_add_ons_price)
+    total - plan_limit
+  end
+
+
   def get_excess(plan_limit)
     orders = @order
     excess = []

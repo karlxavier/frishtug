@@ -1,6 +1,6 @@
 class User::OrdersController < User::BaseController
   before_action :set_order, :set_menu, :set_cart, only: [:store, :remove]
-  respond_to :js, only: [:store, :remove]
+  respond_to :js
 
   def store
     if @cart.place_order(@menu, quantity, add_on_id)
@@ -15,9 +15,32 @@ class User::OrdersController < User::BaseController
   end
 
   def persist
+    @order = Order.find(order_id)
+    if current_user.subscribed?
+      plan_limit = current_user.plan.limit
+      amount_to_pay = OrderCalculator.new(@order).total_excess(plan_limit)
+      create_excess_charge!(amount_to_pay) if amount_to_pay > 0
+    else
+      amount_to_pay = OrderCalculator.new(@order).total
+      create_charge!(amount_to_pay)
+    end
+    @order.order_date = Time.current
+    @order.save
   end
 
   private
+
+  def create_excess_charge!(amount_to_pay)
+    StripeCharger.new(current_user, amount_to_pay).charge_excess!
+  end
+
+  def create_charge!(amount_to_pay)
+    StripeCharger.new(current_user, amount_to_pay).run
+  end
+
+  def order_id
+    params[:order_id]
+  end
 
   def add_on_id
     params[:add_on_id]

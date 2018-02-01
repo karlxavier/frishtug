@@ -2,7 +2,7 @@
   store_url = "store_user_#{order.class.name.underscore.pluralize}_path"
   remove_url = "remove_user_#{order.class.name.underscore.pluralize}_path"
 %>
-<h5><%= order.order_date.strftime('%A') %></h5>
+<h5><%= order.placed_on.strftime('%A') %></h5>
 <% order.menus_orders.each do |order| %>
   <div class="row clearfix">
     <div class="col-8">
@@ -54,7 +54,7 @@
   <div class="col">
     <% is_disabled = "disabled" unless order.menus.present? %>
     <%= link_to 'Save Meal Plan',
-      persist_user_orders_path(format: :js),
+      persist_user_orders_path(order_id: order.id, format: :js),
       class: "btn btn-brown text-uppercase btn-block #{is_disabled}",
       remote: true %>
   </div>

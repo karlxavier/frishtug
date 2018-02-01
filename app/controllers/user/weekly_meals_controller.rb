@@ -44,29 +44,30 @@ class User::WeeklyMealsController < User::BaseController
     current_user.orders.placed_between?(range).first&.placed_on&.to_date || Date.current
   end
 
-  def order_date
+  def placed_on
     Time.zone.parse(params[:date])
   end
 
   def set_new_order
-    @orders = current_user.orders.where(order_date: order_date).first_or_create
+    @orders = current_user.orders
+      .where(placed_on: placed_on).first_or_create
   end
 
   def set_order_for_edit
-    @orders = current_user.orders.includes(menus_orders: :menu).find_by_placed_on(order_date)
+    @orders = current_user.orders.includes(menus_orders: :menu).find_by_placed_on(placed_on)
   end
 
   def is_past_noon?
     closed_time = Time.zone.parse '11:00 am'
-    order_date.to_date == Date.current.tomorrow && Time.current >= closed_time
+    placed_on.to_date == Date.current.tomorrow && Time.current >= closed_time
   end
 
   def is_yesterday?
-    order_date.to_date < Date.current
+    placed_on.to_date < Date.current
   end
 
   def is_today?
-    order_date.to_date == Date.current
+    placed_on.to_date == Date.current
   end
 
   def editable?
