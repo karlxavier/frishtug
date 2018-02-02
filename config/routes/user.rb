@@ -39,4 +39,5 @@ namespace :user do
   resources :complaints, only: :create
   resources :copy_meals, only: :create
   resources :duplicate_meals, only: :create
+  resources :schedules, only: %i[index create]
 end

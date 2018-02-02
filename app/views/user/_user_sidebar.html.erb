@@ -8,6 +8,11 @@
       <li class="nav-item <%= active?(user_weekly_meals_path) %>">
         <%= nav_link 'Weekly Meals', user_weekly_meals_path %>
       </li>
+      <% if current_user.schedule.present? %>
+        <li class="nav-item <%= active?(user_schedules_path) %>">
+          <%= nav_link 'Schedule Information', user_schedules_path %>
+        </li>
+      <% end %>
       <li class="nav-item <%= active?(user_user_information_index_path) %>">
         <%= nav_link 'User Information', user_user_information_index_path %>
       </li>
