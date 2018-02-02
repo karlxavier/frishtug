@@ -1,37 +1,23 @@
 class OrderDuplicator
   include ActiveModel::Validations
 
-  validates :order, :date, presence: true
-  def initialize(order, date)
-    @order = order
+  def initialize(order_to_copy, date, order)
+    @order_to_copy = order_to_copy
     @date = date
-    valid?
+    @order = order
   end
 
   def run
-    copy_values_to(create_order_from_date)
+    copy_values_to(@order)
     true
   end
 
   private
 
-  attr_accessor :date, :order
-
-  def create_order_from_date
-    Order.create!(order_params)
-  end
-
-  def order_params
-    {
-      user_id: order.user_id,
-      placed_on: date,
-      order_date: Time.current,
-      remarks: order.remarks
-    }
-  end
+  attr_accessor :date, :order_to_copy
 
   def copy_values_to(new_order)
-    order.menus_orders.each do |menu_order|
+    order_to_copy.menus_orders.each do |menu_order|
       new_order.menus_orders.create!(
         menu_id: menu_order.menu_id,
         quantity: menu_order.quantity,

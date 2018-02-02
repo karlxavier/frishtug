@@ -30,8 +30,6 @@ class Order < ApplicationRecord
   before_create :set_series_number
   after_commit :run_inventory_accounter, on: [:create, :update]
 
-  validates :placed_on, uniqueness: { scope: :user_id }
-
   def run_inventory_accounter
     InventoryAccounter.new(self).run
   end
