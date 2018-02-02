@@ -18,7 +18,7 @@
 
       <div class="row review-step__margin-b25" v-if="interval === 'month'">
         <div class="col-5 font-family-lato-bold font-size-14">5 meals per week</div>
-        <div class="col-7">{{ plan.price | to_currency }}</div>
+        <div class="col-7">{{ totalCartPrice() | to_currency }}</div>
       </div>
       <div class="row review-step__margin-b25" v-else>
         <div class="col-5 font-family-lato-bold font-size-14">Total meals price</div>

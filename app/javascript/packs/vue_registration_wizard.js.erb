@@ -190,7 +190,29 @@ const registrationForm = new Vue({
     totalCartPrice: function() {
       const self = this
       if (self.interval === 'month') {
-        return self.plan.price
+        let price = 0
+        if (self.cart[0]) {
+          let i
+          for (i=0; i <= 4; i++) {
+            const currentCartItems = self.cart[0][`day_${i+1}`]
+            const total_prices = currentCartItems.map( item => item.price)
+                                              .reduce( (sum, price) => {
+                                                return sum += parseFloat(price)
+                                              }, 0)
+
+
+            const add_ons_price = currentCartItems.map( i => {
+              return i.add_ons.map( a => a.price).reduce( (sum, d) => sum += parseFloat(d), 0)
+            })
+
+            const add_ons_total_price = add_ons_price.length > 0 ? add_ons_price.reduce( (sum, a) => sum + a) : 0
+
+            const totalItemPrice = total_prices + add_ons_total_price
+            price += (totalItemPrice - self.plan_minimum) > 0 ? (totalItemPrice - self.plan_minimum) : 0
+          }
+        }
+
+        return self.plan.price + price
       } else {
         const total = self.cart.reduce( (sum, item) => { return sum += parseFloat(item.price) }, 0)
         return total > parseFloat(self.plan.price) ? total : self.plan.price
