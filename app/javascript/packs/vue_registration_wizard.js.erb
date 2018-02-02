@@ -9,6 +9,7 @@ import {shoppingCart, shoppingCartInit, registerShoppingCartListener, addToShopp
 import toCurrency from './lib/to_currency'
 import totalPrice from './filters/total_price'
 import toFixed from './lib/to_fixed'
+import moment from 'moment'
 
 
 // filters
@@ -88,7 +89,7 @@ const registrationForm = new Vue({
     delivery_dates: [],
     date_names: mondayToFriday,
     calendars: '',
-    current_date: new Date(localStorage.getItem('current_date_est')),
+    current_date: moment(localStorage.getItem('current_date_est')).toDate(),
     cart: [],
     plan_minimum: planObj.plan_minimum,
     shopping_cart_shown: true,
@@ -308,7 +309,7 @@ const registrationForm = new Vue({
       return ''
     },
     formatDate: function(date) {
-      const d = new Date(date)
+      const d = moment(date).toDate()
       const days = [
         "Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"
       ];
@@ -429,17 +430,17 @@ const registrationForm = new Vue({
       return true
     },
     showDate: (date) => {
-      const newDate = new Date(date)
+      const newDate = moment(date).toDate()
       return newDate.getDate()
     },
     isNotSaturday: (date) => {
-      const newDate = new Date(date)
+      const newDate = moment(date).toDate()
       return newDate.getDay() < 6
     },
     isDisabledDate: (date) => {
       const self = registrationForm
-      const theDate = new Date(date)
-      const currentDate = new Date(registrationForm.current_date)
+      const theDate = moment(date).toDate()
+      const currentDate = moment(registrationForm.current_date).toDate()
 
       const isSunday = (date) => {
         const sunday = 0

@@ -9,7 +9,7 @@
         <div class="sidebar-controls float-right ml-4">
           <a href="javascript:void(0)" class="btn btn-outline-dark show-sidebar">Show Meals</a>
         </div>
-        <div class="float-right ml-4 col-6">
+        <div class="float-right ml-4 col-6 <%= 'd-none' if action_name == 'edit' %>">
           <%= form_with url: user_duplicate_meals_path(date: params[:date]),
             class: 'form-inline', local: true do |f| %>
             <div class="input-group">
