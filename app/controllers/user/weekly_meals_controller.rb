@@ -14,7 +14,7 @@ class User::WeeklyMealsController < User::BaseController
     @orders = order.pending_deliveries
     @order_preference = current_user.order_preference
     @from_options = current_user.orders.selection_dates
-    @to_options = current_user.orders.available_dates(current_user.schedule.option)
+    @to_options = current_user.orders.available_dates(current_user.schedule&.option)
   end
 
   def new
