@@ -47,6 +47,10 @@
   </div>
 </div>
 
+<%= content_for :header_js do %>
+  <%= stylesheet_pack_tag 'styles/weekly_meals' %>
+<% end %>
+
 <%= content_for :footer_js do %>
   <%= javascript_pack_tag 'user/meal_copier' %>
 <% end %>
