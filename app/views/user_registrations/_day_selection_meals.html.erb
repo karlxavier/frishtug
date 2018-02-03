@@ -5,7 +5,7 @@
         <% (1..5).each do |n| %>
           <v-tab :title="date_names[<%= n - 1 %>]">
             <div id="day-<%= n %>" class="tab_pane mt-3">
-              <%= render 'meals', { menus_with_category: @menus_with_category, type: "day_#{n}" } %>
+              <%= render 'meals', { menus_with_category: @menus_with_category, type: "day_#{n}" }%>
             </div>
           </v-tab>
         <% end %>

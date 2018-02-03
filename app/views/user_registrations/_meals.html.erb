@@ -1,3 +1,4 @@
+<% cache(action_suffix: 'meals') do %>
 <div class="row">
   <div class="col meals__container" id="meals-tab-container">
     <vue-tabs type="pills" @tab-change="handleTabChange">
@@ -16,3 +17,4 @@
     </vue-tabs>
   </div>
 </div>
+<% end %>

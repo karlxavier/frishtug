@@ -45,13 +45,18 @@ class Menu < ApplicationRecord
   end
 
   def self.has_stock
-    includes(:inventory, :asset, :diet_categories, :unit, :add_ons)
-      .where.not(inventories: { quantity: 0 })
+    Rails.cache.fetch([self, "has_stock"]) do
+      includes(:inventory, :asset, :diet_categories, :unit, :add_ons)
+        .where.not(inventories: { quantity: 0 })
+    end
   end
 
   def self.group_by_category_names
-    menu_category_names = MenuCategory.pluck(:id, :name).to_h
-    has_stock.group_by { |m| menu_category_names[m.menu_category_id] }
+    Rails.cache.fetch([self, "meals_group_by_categories"]) do
+      menu_category_names = MenuCategory.pluck(:id, :name).to_h
+      has_stock.includes(:menus_add_ons, :menus_diet_categories, :menu_category)
+        .group_by { |m| menu_category_names[m.menu_category_id] }
+    end
   end
 
   def self.all_published

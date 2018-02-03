@@ -24,7 +24,9 @@ class MenuCategory < ApplicationRecord
 
 
   def self.published_menus
-    includes(:menus).where.not(menus: { published_at: nil })
+    Rails.cache.fetch([self, "published_menus"]) do
+      includes(:menus).where.not(menus: { published_at: nil })
+    end
   end
 
   def self.find_all_menus_by(category_id)

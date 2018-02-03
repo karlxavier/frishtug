@@ -8,7 +8,7 @@ class UserRegistrationsController < ApplicationController
   def index
     @registration = RegistrationForm.new
     @categorized_menus = MenuCategory.published_menus
-    @menus_with_category = Menu.has_stock.group_by_category_names
+    @menus_with_category = Menu.group_by_category_names
     @plans = Plan.all.sort
   end
 
@@ -96,7 +96,7 @@ class UserRegistrationsController < ApplicationController
   end
 
   def set_allowed_zip
-    @allowed_zip_codes = AllowedZipCode.all.map(&:zip)
+    @allowed_zip_codes = AllowedZipCode.pluck(&:zip)
   end
 
   def set_date
