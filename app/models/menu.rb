@@ -22,7 +22,7 @@ class Menu < ApplicationRecord
   include Inventoriable
   belongs_to  :asset
   belongs_to  :unit
-  belongs_to  :menu_category
+  belongs_to  :menu_category, touch: true
   has_one     :inventory, dependent: :destroy
   has_and_belongs_to_many :add_ons
   has_and_belongs_to_many :diet_categories
@@ -45,14 +45,14 @@ class Menu < ApplicationRecord
   end
 
   def self.has_stock
-    Rails.cache.fetch([self, "has_stock"]) do
+    Rails.cache.fetch([self, "has_stock"], expires_in: 12.hours) do
       includes(:inventory, :asset, :diet_categories, :unit, :add_ons)
         .where.not(inventories: { quantity: 0 })
     end
   end
 
   def self.group_by_category_names
-    Rails.cache.fetch([self, "meals_group_by_categories"]) do
+    Rails.cache.fetch([self, "meals_group_by_categories"], expires_in: 12.hours) do
       menu_category_names = MenuCategory.pluck(:id, :name).to_h
       has_stock.includes(:menus_add_ons, :menus_diet_categories, :menu_category)
         .group_by { |m| menu_category_names[m.menu_category_id] }

@@ -24,7 +24,7 @@ class MenuCategory < ApplicationRecord
 
 
   def self.published_menus
-    Rails.cache.fetch([self, "published_menus"]) do
+    Rails.cache.fetch([self, "published_menus"], expires_in: 12.hours) do
       includes(:menus).where.not(menus: { published_at: nil })
     end
   end
