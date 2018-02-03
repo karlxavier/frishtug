@@ -40,4 +40,5 @@ namespace :user do
   resources :copy_meals, only: :create
   resources :duplicate_meals, only: :create
   resources :schedules, only: %i[index create]
+  resources :bill_histories, only: :index
 end
