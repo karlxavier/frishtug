@@ -10,6 +10,15 @@ class UserRegistrationsController < ApplicationController
     @categorized_menus = MenuCategory.published_menus
     @menus_with_category = Menu.group_by_category_names
     @plans = Plan.all.sort
+    fresh_when etag: [
+      @registration,
+      @menus_with_category,
+      @plans,
+      @allowed_zip_codes,
+      @tax_rate,
+      @dates,
+      @plan
+    ]
   end
 
   def create

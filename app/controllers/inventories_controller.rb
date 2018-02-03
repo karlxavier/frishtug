@@ -1,7 +1,7 @@
 class InventoriesController < ApplicationController
   before_action :set_inventory
   def index
-    if @inventory.quantity >= quantity
+    if @inventory.quantity >= quantity && stale?(@post)
       price = total_price(@inventory.menu.price, quantity)
       render json: { status: 'success', price: price, quantity: quantity}, status: 200
     else
