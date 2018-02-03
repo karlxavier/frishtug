@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/bcoia/trix.git
+  revision: 19c972e6766452bc3920fddb6beda6411d89dc92
+  specs:
+    trix (0.11.0)
+      rails (> 4.1, < 5.2)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -413,8 +420,6 @@ GEM
     thor (0.20.0)
     thread_safe (0.3.6)
     tilt (2.0.8)
-    trix (0.11.1)
-      rails (> 4.1, < 5.2)
     tzinfo (1.2.4)
       thread_safe (~> 0.1)
     uglifier (4.1.3)
@@ -514,7 +519,7 @@ DEPENDENCIES
   spring-commands-rspec
   spring-watcher-listen (~> 2.0.0)
   stripe
-  trix
+  trix!
   tzinfo-data
   uglifier (>= 1.3.0)
   uploadcare-rails (~> 1.1)
