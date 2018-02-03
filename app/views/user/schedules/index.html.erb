@@ -2,6 +2,7 @@
   monday_to_friday = "active" if @schedule.monday_to_friday?
   sunday_to_thursday = "active" if @schedule.sunday_to_thursday?
 %>
+<h4 class="text-uppercase font-size-18">Schedule Information</h4>
 <div class="row">
   <div class="col-2">
     <%= button_to user_schedules_path(option: :monday_to_friday),

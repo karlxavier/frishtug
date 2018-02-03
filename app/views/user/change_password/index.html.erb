@@ -1,8 +1,8 @@
-<%= content_tag :div, 
+<%= content_tag :div,
   id: 'change_password',
   class: 'col-md-6' do %>
 
-  <h3 class="text-uppercase">Change Password</h3>
+  <h4 class="text-uppercase font-size-18">Change Password</h4>
   <%= form_with url: user_change_password_index_path, local: true, class: 'change_password_form' do |f| %>
     <div class="form-group">
       <label for="user_password">Old Password*</label>
@@ -25,7 +25,7 @@
       </div>
     </div>
     <%= render 'shared/form/note_for_required_fields' %>
-      
+
     <div class="row">
       <div class="col">
         <%= f.submit 'Save Changes', class: 'btn btn-brown text-uppercase', 'v-on:click.prevent': 'saveChanges' %>

@@ -80,6 +80,7 @@ const findAddOnFromShoppingCartAddOns = (cart, addOn) => {
 
   return cart.add_ons.findIndex(findAddOn)
 }
+
 const pushAddOn = (cart, addOn, el) => {
   const hasAddOn = findAddOnFromShoppingCartAddOns(cart, addOn)
   if (hasAddOn <= -1) {
@@ -264,6 +265,6 @@ module.exports = {
   shoppingCart: shoppingCart,
   shoppingCartInit: initialize,
   registerShoppingCartListener: registerShoppingCartListener,
-  addToShoppingCart: addToShoppingCart,
-  removeFromShoppingCart: removeFromShoppingCart
+  addToShoppingCart: shoppingCartHandler,
+  removeFromShoppingCart: shoppingCartHandler
 }
