@@ -16,13 +16,19 @@
         <div class="col-7">{{ plan.name }}</div>
       </div>
 
-      <div class="row review-step__margin-b25" v-if="interval === 'month'">
-        <div class="col-5 font-family-lato-bold font-size-14">5 meals per week</div>
+      <div class="row review-step__margin-b25">
+        <div class="col-5 font-family-lato-bold font-size-14" v-if="interval === 'month'">5 meals per week</div>
+        <div class="col-5 font-family-lato-bold font-size-14" v-else>Total meals price</div>
         <div class="col-7">{{ totalCartPrice() | to_currency }}</div>
       </div>
-      <div class="row review-step__margin-b25" v-else>
-        <div class="col-5 font-family-lato-bold font-size-14">Total meals price</div>
-        <div class="col-7">{{ totalCartPrice() | to_currency }}</div>
+
+      <div class="row review-step__margin-b25">
+        <div class="col-5 font-family-lato-bold font-size-14">
+          Additional Charges
+        </div>
+        <div class="col-7">
+          {{ additionalCharges() | to_currency }}
+        </div>
       </div>
 
       <div class="row review-step__margin-b25">
