@@ -24,6 +24,12 @@ Vue.use(VueMask)
 // Days
 const mondayToFriday = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
 const sundayToThursday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"]
+const minimumAllowedPrice = {
+  "Option 1": 15,
+  "Option 2": 15,
+  "Option 3": 5
+}
+
 const UserSelectedPlans = localStorage.getItem('plans')
 let planObj
 if (UserSelectedPlans !== 'null') {
@@ -514,7 +520,7 @@ const registrationForm = new Vue({
       let enable = false
 
       const checkPrices = (price) => {
-        return price >= self.plan_minimum
+        return price >= minimumAllowedPrice[self.plan.name]
       }
 
       if (self.interval === 'month') {
@@ -536,7 +542,7 @@ const registrationForm = new Vue({
 
           values.push(total_prices + add_ons_total_price)
         }
-
+        console.log(values)
         enable = values.every(checkPrices)
       }
 

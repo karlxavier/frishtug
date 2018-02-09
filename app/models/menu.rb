@@ -55,7 +55,8 @@ class Menu < ApplicationRecord
     Rails.cache.fetch([self, "meals_group_by_categories"], expires_in: 12.hours) do
       menu_category_names = MenuCategory.pluck(:id, :name).to_h
       has_stock.includes(:menus_add_ons, :menus_diet_categories, :menu_category)
-        .group_by { |m| menu_category_names[m.menu_category_id] }
+        .order("menu_categories.display_order ASC")
+          .group_by { |m| menu_category_names[m.menu_category_id] }
     end
   end
 
