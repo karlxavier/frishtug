@@ -24,23 +24,51 @@ Vue.use(VueMask)
 // Days
 const mondayToFriday = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
 const sundayToThursday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"]
-const minimumAllowedPrice = {
-  "Option 1": 15,
-  "Option 2": 15,
-  "Option 3": 5
-}
 
 const UserSelectedPlans = localStorage.getItem('plans')
 let planObj
 if (UserSelectedPlans !== 'null') {
   const plan = JSON.parse(UserSelectedPlans)
   planObj = plan
-  if (plan.interval == 'month') {
-    planObj.plan_minimum = parseFloat(plan.price) / 20
-  }
+  planObj.minimum_credit_allowed = parseFloat(plan.minimum_credit_allowed)
+  planObj.limit = parseFloat(plan.limit)
   if (planObj.shipping_fee == null) { planObj.shipping_fee = 0 }
 } else {
-  planObj = { id: 0, name: '', price: 0, shipping_fee: 0, interval: '', plan_minimum: 0}
+  planObj = {
+    id: 0,
+    name: '',
+    price: 0,
+    shipping_fee: 0,
+    interval: '',
+    plan_minimum: 0,
+    limit: 0,
+    minimum_credit_allowed: 0
+  }
+}
+
+const getExcessAmount = (vm) => {
+  let price = 0
+  if (vm.cart[0]) {
+    let i
+    for (i=0; i <= 4; i++) {
+      const currentCartItems = vm.cart[0][`day_${i+1}`]
+      const total_prices = currentCartItems.map( item => item.price)
+                                        .reduce( (sum, price) => {
+                                          return sum += parseFloat(price)
+                                        }, 0)
+
+
+      const add_ons_price = currentCartItems.map( i => {
+        return i.add_ons.map( a => a.price).reduce( (sum, d) => sum += parseFloat(d), 0)
+      })
+
+      const add_ons_total_price = add_ons_price.length > 0 ? add_ons_price.reduce( (sum, a) => sum + a) : 0
+
+      const totalItemPrice = total_prices + add_ons_total_price
+      price += (totalItemPrice - vm.plan_limit) > 0 ? (totalItemPrice - vm.plan_limit) : 0
+    }
+  }
+  return price
 }
 
 const registrationForm = new Vue({
@@ -97,7 +125,8 @@ const registrationForm = new Vue({
     calendars: '',
     current_date: moment(localStorage.getItem('current_date_est')).toDate(),
     cart: [],
-    plan_minimum: planObj.plan_minimum,
+    plan_minimum: planObj.minimum_credit_allowed,
+    plan_limit: planObj.limit,
     shopping_cart_shown: true,
     tax_rate: parseFloat(localStorage.getItem('tax_rate')),
     phone_number: null,
@@ -115,9 +144,18 @@ const registrationForm = new Vue({
     }
   },
   methods: {
+    hasAvailableCredit: function(price) {
+      const self = this
+      const remainingCredit = self.plant_limit - parseFloat(price)
+      if (remainingCredit <= 0) {
+        return false
+      } else if (parseFloat(price) >= self.plan_minimum) {
+        return true
+      }
+    },
     additionalCharges: function() {
       const self = this
-      if (self.interval === 'month') {
+      if (self.interval === 'month' && self.cart) {
         return getExcessAmount(self)
       } else {
         return 0
@@ -283,11 +321,7 @@ const registrationForm = new Vue({
         _this.populateCalendar()
       }
     },
-    setInterVal: function(interval, planPrice, shipping_fee, name) {
-      if (interval === 'month') {
-        this.plan_minimum = parseFloat(planPrice) / 20
-      }
-
+    setInterVal: function(interval, planPrice, shipping_fee, name, limit, minimum_credit_allowed) {
       this.plan.name = name
       if (shipping_fee !== null) {
         this.plan.shipping_fee = shipping_fee
@@ -295,6 +329,8 @@ const registrationForm = new Vue({
         this.plan.shipping_fee = 0
       }
       this.plan.price = planPrice
+      this.plan_minimum = minimum_credit_allowed
+      this.plan_limit = limit
 
       this.interval = interval
       this.cart = []
@@ -520,7 +556,7 @@ const registrationForm = new Vue({
       let enable = false
 
       const checkPrices = (price) => {
-        return price >= minimumAllowedPrice[self.plan.name]
+        return price >= self.plan_minimum
       }
 
       if (self.interval === 'month') {
@@ -542,7 +578,7 @@ const registrationForm = new Vue({
 
           values.push(total_prices + add_ons_total_price)
         }
-        console.log(values)
+
         enable = values.every(checkPrices)
       }
 
@@ -754,29 +790,4 @@ const changeCheckedTabs = () => {
 const parseFloatingNumber = (num) => {
   const val = parseFloat(num)
   return isNaN(val) ? 0 : val
-}
-
-const getExcessAmount = (vm) => {
-  let price = 0
-  if (vm.cart[0]) {
-    let i
-    for (i=0; i <= 4; i++) {
-      const currentCartItems = vm.cart[0][`day_${i+1}`]
-      const total_prices = currentCartItems.map( item => item.price)
-                                        .reduce( (sum, price) => {
-                                          return sum += parseFloat(price)
-                                        }, 0)
-
-
-      const add_ons_price = currentCartItems.map( i => {
-        return i.add_ons.map( a => a.price).reduce( (sum, d) => sum += parseFloat(d), 0)
-      })
-
-      const add_ons_total_price = add_ons_price.length > 0 ? add_ons_price.reduce( (sum, a) => sum + a) : 0
-
-      const totalItemPrice = total_prices + add_ons_total_price
-      price += (totalItemPrice - vm.plan_minimum) > 0 ? (totalItemPrice - vm.plan_minimum) : 0
-    }
-  }
-  return price
 }

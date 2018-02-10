@@ -69,7 +69,9 @@ class Admin::PlansController < Admin::BaseController
       :interval,
       :for_type,
       :short_description,
-      :shipping_note
+      :shipping_note,
+      :limit,
+      :minimum_credit_allowed
     )
   end
 end

@@ -45,7 +45,6 @@
                 {{ order.price | to_currency }}
               </div>
             </div>
-
             <div class="row order-list-items px-3" v-for="add_on in order.add_ons">
               <div class="col-7 px-0 text-left text-truncate">
                 <strong>{{ add_on.name }}</strong>
@@ -73,7 +72,6 @@
             </h6>
           </div>
         </div>
-
         <div v-else>
           <div v-for="orders in cart">
             <div class="mt-3" v-for="(day, index) in orders">
@@ -111,7 +109,6 @@
                     {{ item.price | to_currency }}
                   </div>
                 </div>
-
                 <div class="row order-list-items px-3" v-for="add_on in item.add_ons">
                   <div class="col-7 px-0 text-left text-truncate">
                     <strong>{{ add_on.name }}</strong>
@@ -138,11 +135,18 @@
                   Total <span class="meal-total float-right mb-4"> {{ totalPlusAddOn(day) | to_currency }} </span>
                 </h6>
               </div>
-              <div v-if="totalPlusAddOn(day) > plan_minimum">
+              <div v-if="totalPlusAddOn(day) > plan_limit">
                 <small class="alert alert-warning d-flex" style="font-size: 9px; width: 100%;">
                   <i class="fa fa-exclamation-circle font-size-24 pr-1" aria-hidden="true"></i>
-                  You have exceeded your plan limit of $ {{ plan_minimum }} for {{ index | get_num | get_date_name }}.
+                  You have exceeded your plan limit of $ {{ plan_limit }} for {{ index | get_num | get_date_name }}.
                   Any excess will be charge directly to your account.
+                </small>
+              </div>
+              <div v-if="hasAvailableCredit(totalPlusAddOn(day))">
+                <small class="alert alert-info d-flex" style="font-size: 10px; width: 100%;">
+                  <i class="fa fa-info-circle font-size-24 pr-1" aria-hidden="true"></i>
+                  Order not finished, because you still have $ {{ plan_limit - totalPlusAddOn(day) }} credits available
+                  for {{ index | get_num | get_date_name }}.
                 </small>
               </div>
             </div>

@@ -38,7 +38,13 @@
               id="<%= "#{p.name.parameterize}-#{p.id}" %>"
               class="d-none"
               v-model="plan.id"
-              @click="setInterVal('<%= p.interval || 'single_order' %>', <%= p.price %>, '<%= shipping_fee %>', '<%= p.name %>')">
+              @click="setInterVal(
+                '<%= p.interval || 'single_order' %>',
+                <%= p.price %>,
+                '<%= shipping_fee %>',
+                '<%= p.name %>',
+                '<%= p.limit %>',
+                '<%= p.minimum_credit_allowed %>')">
               Choose <%= p.name %>
             </label>
           </div>
