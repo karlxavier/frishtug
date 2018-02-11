@@ -39,7 +39,7 @@ gem 'jbuilder', '~> 2.5'
 gem 'activemerchant'
 gem 'activerecord-import', '~> 0.21.0'
 gem 'barby'
-gem 'bootsnap', '~> 1.1', '>= 1.1.3'
+gem 'bootsnap', require: false
 gem 'bootstrap', '~> 4.0.0.beta2'
 gem 'carrierwave'
 gem 'cloudinary'
