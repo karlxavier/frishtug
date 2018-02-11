@@ -6,7 +6,6 @@ class InventoryAccounter
   end
 
   def run
-    return unless @order.present?
     update_inventory_and_create_transactions
   end
 
@@ -27,7 +26,7 @@ class InventoryAccounter
 
   def update_add_ons_inventory(menu_order)
     add_ons_menu_ids = AddOn.pluck(:id, :menu_id).to_h
-    menu_order.add_ons.each |add_on|
+    menu_order.add_ons.each do |add_on|
       inventory = Inventory.find_by_menu_id(add_ons_menu_ids)
       if inventory.present?
         inventory.quantity -= menu_order.quantity

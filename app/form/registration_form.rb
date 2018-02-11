@@ -133,6 +133,7 @@ class RegistrationForm
           order.menus_orders
             .create!(menu_id: id, quantity: quantities_array[index], add_ons: add_on_ids )
         end
+        order.processing!
       else
         errors.add(:base, 'Order place on is blank')
         raise ActiveRecord::StatementInvalid
