@@ -12,6 +12,7 @@
 #
 
 class MenusOrder < ApplicationRecord
+  enum status: %i[recent updated unchanged]
   belongs_to :menu
   belongs_to :order
   delegate :id, :name, :price, to: :menu, prefix: true, allow_nil: true

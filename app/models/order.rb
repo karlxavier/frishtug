@@ -20,7 +20,7 @@
 class Order < ApplicationRecord
   include Computable
   include UserDelegator
-  enum status: %i[in_transit completed failed]
+  enum status: %i[processing in_transit completed failed cancelled refunded ]
   belongs_to :user
   has_many :menus_orders, dependent: :destroy
   has_many :menus, through: :menus_orders
@@ -31,7 +31,7 @@ class Order < ApplicationRecord
   after_commit :run_inventory_accounter, on: [:create, :update]
 
   def run_inventory_accounter
-    InventoryAccounter.new(self).run
+    InventoryAccounter.new(self).run if self.processing?
   end
 
   def set_series_number
