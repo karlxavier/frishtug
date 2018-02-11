@@ -1,4 +1,4 @@
-<%= form_for [:admin, menu], html: { id: 'new-menu-item'}, remote: true do |f| %>
+<%= form_for [:admin, menu], html: { id: 'new-menu-item', novalidate: true }, remote: true do |f| %>
   <div id="form-flash-messages"></div>
   <%= f.hidden_field :menu_category_id, value: @menu_category.id %>
   <div class="form-group">

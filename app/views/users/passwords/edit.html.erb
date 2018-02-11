@@ -1,25 +1,30 @@
-<h2>Change your password</h2>
+<div class="fullwidth-bg" style="background-image: url('<%= asset_pack_path "packs/images/login_bg.jpg" %>')">
+  <div class="fishnet">
+    <div class="login-form">
+      <div class="row align-items-center justify-content-center mx-0">
+        <div class="col-6">
+          <h4 class="text-center text-uppercase font-family-montserrat">Change your password</h4>
+          <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
+            <%= devise_error_messages! %>
+            <%= f.hidden_field :reset_password_token %>
 
-<%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
-  <%= devise_error_messages! %>
-  <%= f.hidden_field :reset_password_token %>
+            <div class="field mb-3">
+              <%= f.password_field :password, autofocus: true, autocomplete: "off", placeholder: 'New Password', class: 'form-control login-control' %>
+              <% if @minimum_password_length %>
+                <em class="font-size-12 light-gray-font-color">(<%= @minimum_password_length %> characters minimum)</em><br />
+              <% end %>
+            </div>
 
-  <div class="field">
-    <%= f.label :password, "New password" %><br />
-    <% if @minimum_password_length %>
-      <em>(<%= @minimum_password_length %> characters minimum)</em><br />
-    <% end %>
-    <%= f.password_field :password, autofocus: true, autocomplete: "off" %>
+            <div class="field mb-3">
+              <%= f.password_field :password_confirmation, autocomplete: "off", placeholder: 'Confirm Password', class: 'form-control login-control' %>
+            </div>
+
+            <div class="actions col-12 text-center">
+              <%= f.submit "Change my password", class: 'text-uppercase btn btn-brown' %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
   </div>
-
-  <div class="field">
-    <%= f.label :password_confirmation, "Confirm new password" %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "off" %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit "Change my password" %>
-  </div>
-<% end %>
-
-<%= render "users/shared/links" %>
+</div>

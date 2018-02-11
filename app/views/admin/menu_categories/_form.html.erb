@@ -37,14 +37,14 @@
         class="form-control"
         :id="'menu_category_addons_name' + (index !== 0 ? `_${index}` : '')">
 
-      <label :for="'menu_category_addons_price' + (index !== 0 ? `_${index}` : '')">Price</label>
-      <input type="number"
-        :name="`menu_category[add_ons_attributes][${index}][price]`"
-        v-model="addons.price"
-        class="form-control"
-        :id="'menu_category_addons_price' + (index !== 0 ? `_${index}` : '')"
-        step="0.01"
-        >
+      <label :for="'menu_category_addons_menu_id' + (index !== 0 ? `_${index}` : '')">Item</label>
+      <%= select_tag :menu_category_addons_menu_id,
+          options_from_collection_for_select(MenuCategory.find_by_name('Add-Ons').menus, :id, :name),
+          include_blank: true,
+          class: 'form-control',
+          ":id": "'menu_category_addons_menu_id' + (index !== 0 ? `_${index}` : '')",
+          ":name": "`menu_category[add_ons_attributes][${index}][menu_id]`",
+          "v-model": "addons.menu_id" %>
 
       <input type="hidden"
         :name="`menu_category[add_ons_attributes][${index}][_destroy]`"

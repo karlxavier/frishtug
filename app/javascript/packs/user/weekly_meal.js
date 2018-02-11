@@ -50,8 +50,8 @@ mealFormWrapper.addEventListener('click', (e)=> {
 const addOnsHandler = (e) => {
   const date = e.target.dataset.date
   const menuId = e.target.dataset.menuId
-  const storeUrl = `/user/temp_orders/store?date=${date}&menu_id=${menuId}&add_on_id=${e.target.value}`
-  const removeUrl = `/user/temp_orders/remove?date=${date}&menu_id=${menuId}&add_on_id=${e.target.value}`
+  const storeUrl = `/user/orders/store?date=${date}&menu_id=${menuId}&add_on_id=${e.target.value}`
+  const removeUrl = `/user/orders/remove?date=${date}&menu_id=${menuId}&add_on_id=${e.target.value}`
   const url = e.target.checked ? storeUrl : removeUrl
   Rails.ajax({
     url: url,

@@ -20,6 +20,6 @@ module UserRegistrationsHelper
   private
 
   def add_on_json_data(add_on)
-    add_on.to_json(only: %i[id name price])
+    add_on.json_string
   end
 end

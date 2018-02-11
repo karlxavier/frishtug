@@ -65,6 +65,6 @@ class Admin::MenuCategoriesController < Admin::BaseController
   # Never trust parameters from the scary internet, only allow the white list through.
   def menu_category_params
     params.require(:menu_category)
-      .permit(:name, :display_order, :part_of_plan, add_ons_attributes: [:id, :name, :price, :_destroy])
+      .permit(:name, :display_order, :part_of_plan, add_ons_attributes: [:id, :name, :menu_id, :_destroy])
   end
 end

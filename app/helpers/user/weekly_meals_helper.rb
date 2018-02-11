@@ -83,17 +83,30 @@ module User::WeeklyMealsHelper
 
   def total_menu_price(order)
     price = order.menu_price * order.quantity
-    add_on_price = AddOn.where(id: order.add_ons).map(&:price).inject(:+) || 0
+    add_ons_prices = AddOn.pluck_prices(:id)
+    add_on_price = order.add_ons.map { |a| add_ons_prices[a.to_i] || 0 }.inject(:+) || 0
     price += add_on_price * order.quantity
   end
 
   def display_warning(total)
     plan_limit = current_user.plan.limit
+    plan_minimum = current_user.plan.minimum_credit_allowed
+    remaining_credit = plan_limit - total
+
     if total > plan_limit
-      content_tag :small, class: 'alert alert-warning d-flex', style: 'font-size: 9px; width: 100%' do
+      return content_tag :small, class: 'alert alert-warning d-flex', style: 'font-size: 9px; width: 100%' do
         content_tag(:i, nil, class: 'fa fa-exclamation-circle font-size-24 pr-1') + <<-EOF
           You have exceeded your plan limit of $ #{plan_limit}.
           Any excess will be charge directly to your account.
+        EOF
+      end
+    end
+
+    if remaining_credit > 0 && total >= plan_minimum
+      return content_tag :small, class: 'alert alert-info d-flex', style: 'font-size: 9px; width: 100%' do
+        content_tag(:i, nil, class: 'fa fa-info-circle font-size-24 pr-1') + <<-EOF
+          Order not finished, because you still have $ #{remaining_credit}
+          credits available.
         EOF
       end
     end

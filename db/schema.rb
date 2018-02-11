@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180210033729) do
+ActiveRecord::Schema.define(version: 20180210054010) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,8 +20,9 @@ ActiveRecord::Schema.define(version: 20180210033729) do
     t.bigint "menu_category_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.decimal "price", precision: 8, scale: 2
+    t.bigint "menu_id"
     t.index ["menu_category_id"], name: "index_add_ons_on_menu_category_id"
+    t.index ["menu_id"], name: "index_add_ons_on_menu_id"
   end
 
   create_table "add_ons_menus", force: :cascade do |t|
@@ -374,6 +375,7 @@ ActiveRecord::Schema.define(version: 20180210033729) do
   end
 
   add_foreign_key "add_ons", "menu_categories"
+  add_foreign_key "add_ons", "menus"
   add_foreign_key "add_ons_menus", "add_ons"
   add_foreign_key "add_ons_menus", "menus"
   add_foreign_key "allowed_zip_codes", "stores"
