@@ -1,8 +1,8 @@
 import VueFormWizard from 'vue-form-wizard'
+import vuejsStorage from 'vuejs-storage'
 import VueTabs from 'vue-nav-tabs'
 import VueMask from 'v-mask'
 import Vue from 'vue/dist/vue.esm'
-import swal from 'sweetalert2'
 import {pulse_loader} from './lib/loaders'
 import {get} from './lib/ajax_lib'
 import {shoppingCart, shoppingCartInit, registerShoppingCartListener, addToShoppingCart, removeFromShoppingCart} from './simple_cart'
@@ -20,6 +20,7 @@ Vue.filter('total_price', totalPrice)
 Vue.use(VueFormWizard)
 Vue.use(VueTabs)
 Vue.use(VueMask)
+Vue.use(vuejsStorage)
 
 // Days
 const mondayToFriday = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
@@ -71,66 +72,82 @@ const getExcessAmount = (vm) => {
   return price
 }
 
+
+const parseFloatingNumber = (num) => {
+  const val = parseFloat(num)
+  return isNaN(val) ? 0 : val
+}
+
 const registrationForm = new Vue({
   el: '#registration-form',
-  data: {
-    plan: {
-      id: planObj.id,
-      name: planObj.name,
-      price: planObj.price,
-      shipping_fee: planObj.shipping_fee
+  storage: {
+    data: {
+      user: {
+        first_name: '',
+        last_name: '',
+        email: '',
+        password: ''
+      },
+      plan: {
+        id: planObj.id,
+        name: planObj.name,
+        price: planObj.price,
+        shipping_fee: planObj.shipping_fee
+      },
+      first_delivery_date: '',
+      payment_method: 'credit_card',
+      different_billing: false,
+      delivery_date: '',
+      stripe_key: '<%= STRIPE_PUBLIC_KEY %>',
+      billing_address: [{
+        address_line1: '',
+        address_line2: '',
+        address_city: '',
+        address_state: '',
+        address_zip: '',
+        address_country: 'US',
+        address_location_at: 'at_work'
+      }],
+      credit_card_billing_address: {
+        address_line1: '',
+        address_line2: '',
+        address_city: '',
+        address_state: '',
+        address_country: 'US',
+        address_zip: ''
+      },
+      credit_card: {
+        number: null,
+        cvc: null,
+        exp_month: '',
+        exp_year: ''
+      },
+      bank_account: {
+        country: 'US',
+        currency: 'usd',
+        routing_number: null,
+        account_number: null,
+        account_holder_name: null,
+        account_holder_type: 'individual'
+      },
+      error_messages: '',
+      tab_titles: mondayToFriday,
+      allowed_zip_codes: JSON.parse(localStorage.getItem('allowed_zip_codes')),
+      interval: planObj.interval,
+      delivery_dates: [],
+      date_names: mondayToFriday,
+      calendars: '',
+      current_date: moment(localStorage.getItem('current_date_est')).toDate(),
+      cart: [],
+      plan_minimum: planObj.minimum_credit_allowed,
+      plan_limit: planObj.limit,
+      shopping_cart_shown: true,
+      tax_rate: parseFloat(localStorage.getItem('tax_rate')),
+      phone_number: null,
+      schedule: null
     },
-    first_delivery_date: '',
-    payment_method: 'credit_card',
-    different_billing: false,
-    delivery_date: '',
-    stripe_key: '<%= STRIPE_PUBLIC_KEY %>',
-    billing_address: [{
-      address_line1: '',
-      address_line2: '',
-      address_city: '',
-      address_state: '',
-      address_zip: '',
-      address_country: 'US',
-      address_location_at: 'at_work'
-    }],
-    credit_card_billing_address: {
-      address_line1: '',
-      address_line2: '',
-      address_city: '',
-      address_state: '',
-      address_country: 'US',
-      address_zip: ''
-    },
-    credit_card: {
-      number: null,
-      cvc: null,
-      exp_month: '',
-      exp_year: ''
-    },
-    bank_account: {
-      country: 'US',
-      currency: 'usd',
-      routing_number: null,
-      account_number: null,
-      account_holder_name: null,
-      account_holder_type: 'individual'
-    },
-    error_messages: '',
-    tab_titles: mondayToFriday,
-    allowed_zip_codes: JSON.parse(localStorage.getItem('allowed_zip_codes')),
-    interval: planObj.interval,
-    delivery_dates: [],
-    date_names: mondayToFriday,
-    calendars: '',
-    current_date: moment(localStorage.getItem('current_date_est')).toDate(),
-    cart: [],
-    plan_minimum: planObj.minimum_credit_allowed,
-    plan_limit: planObj.limit,
-    shopping_cart_shown: true,
-    tax_rate: parseFloat(localStorage.getItem('tax_rate')),
-    phone_number: null,
-    schedule: null
+    namespace: 'user_registrations',
+    storage: sessionStorage
   },
   filters: {
     get_num: (val) => parseInt(val.match(/\d+/)[0]) - 1,
@@ -489,8 +506,11 @@ const registrationForm = new Vue({
     },
     isDisabledDate: (date) => {
       const self = registrationForm
+      const currentDateUndefined = !self.current_date
       const theDate = moment(date).toDate()
-      const currentDate = moment(registrationForm.current_date).toDate()
+
+      if (currentDateUndefined) { return }
+      const currentDate = moment(self.current_date).toDate()
 
       const isSunday = (date) => {
         const sunday = 0
@@ -786,8 +806,3 @@ const changeCheckedTabs = () => {
   el.classList.add('container');
 }())
 
-
-const parseFloatingNumber = (num) => {
-  const val = parseFloat(num)
-  return isNaN(val) ? 0 : val
-}
