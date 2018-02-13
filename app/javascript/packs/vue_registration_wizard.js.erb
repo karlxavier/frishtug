@@ -167,7 +167,7 @@ const registrationForm = new Vue({
       const limit = parseFloatingNumber(self.plan_limit)
       const parsedPrice = parseFloatingNumber(price)
       const remainingCredit = limit - parsedPrice
-      
+
       if (remainingCredit <= 0) {
         return false
       } else if (parsedPrice >= minimum) {

@@ -46,7 +46,16 @@ class Menu < ApplicationRecord
 
   def self.has_stock
     Rails.cache.fetch([self, "has_stock"], expires_in: 12.hours) do
-      includes(:inventory, :asset, :diet_categories, :unit, :add_ons)
+      includes(
+        :inventory,
+        :asset,
+        :diet_categories,
+        :unit,
+        :add_ons,
+        :menu_category,
+        :menus_add_ons,
+        :menus_diet_categories
+        )
         .where.not(inventories: { quantity: 0 })
     end
   end
@@ -54,8 +63,8 @@ class Menu < ApplicationRecord
   def self.group_by_category_names
     Rails.cache.fetch([self, "meals_group_by_categories"], expires_in: 12.hours) do
       menu_category_names = MenuCategory.pluck(:id, :name).to_h
-      has_stock.includes(:menus_add_ons, :menus_diet_categories, :menu_category)
-        .order("menu_categories.display_order ASC")
+      has_stock.where(menu_categories: { part_of_plan: true })
+          .order("menu_categories.display_order ASC")
           .group_by { |m| menu_category_names[m.menu_category_id] }
     end
   end
