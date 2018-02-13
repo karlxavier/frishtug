@@ -1,5 +1,6 @@
 class Admin::MenuCategoriesController < Admin::BaseController
   before_action :set_menu_category, only: %i[show edit update destroy]
+  before_action :set_menu_lists, only: %i[edit new]
   respond_to :js, only: %i[create destroy update]
   respond_to :html, only: :create
   # GET /menu_categories
@@ -16,7 +17,6 @@ class Admin::MenuCategoriesController < Admin::BaseController
   def new
     @menu_category = MenuCategory.new
     @menu_category.add_ons.build
-    @menu_items = Menu.order(name: :asc)
   end
 
   # GET /menu_categories/1/edit
@@ -58,6 +58,9 @@ class Admin::MenuCategoriesController < Admin::BaseController
 
   private
 
+  def set_menu_lists
+    @menu_items = Menu.all.order(name: :asc)
+  end
   # Use callbacks to share common setup or constraints between actions.
   def set_menu_category
     @menu_category = MenuCategory.find(params[:id])
