@@ -137,7 +137,6 @@ const registrationForm = new Vue({
       delivery_dates: [],
       date_names: mondayToFriday,
       calendars: '',
-      current_date: moment(localStorage.getItem('current_date_est')).toDate(),
       cart: [],
       plan_minimum: planObj.minimum_credit_allowed,
       plan_limit: planObj.limit,
@@ -506,11 +505,8 @@ const registrationForm = new Vue({
     },
     isDisabledDate: (date) => {
       const self = registrationForm
-      const currentDateUndefined = !self.current_date
+      const currentDate = moment(localStorage.getItem('current_date_est')).toDate()
       const theDate = moment(date).toDate()
-
-      if (currentDateUndefined) { return }
-      const currentDate = moment(self.current_date).toDate()
 
       const isSunday = (date) => {
         const sunday = 0

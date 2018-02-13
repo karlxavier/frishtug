@@ -13,7 +13,6 @@
 # Class names
 # id name menu_category_id
 class AddOn < ApplicationRecord
-  attr_accessor :price
   has_and_belongs_to_many :menus
   belongs_to :menu_category
   validates :name, :menu_category_id, presence: true
@@ -23,7 +22,7 @@ class AddOn < ApplicationRecord
   end
 
   def price
-    Menu.where(id: self.menu_id).first&.price || nil
+    Menu.where(id: self.menu_id).first&.price || 0
   end
 
   def self.pluck_prices(column_name)
