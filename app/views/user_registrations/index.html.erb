@@ -1,6 +1,6 @@
 <%= form_with model: @registration, url: user_registrations_path(format: :js), id: 'sign_up_form' do |form| %>
   <div class="container-fluid px-0">
-    <div id="registration-form" class="d-none">
+    <div id="registration-form">
       <form-wizard @on-complete="onComplete" step-size="xs" color="#562d07" ref="wizard">
         <h2 slot="title"></h2>
         <tab-content title="Create Account" :before-change="accountValidations">
@@ -53,10 +53,5 @@
 <% end %>
 
 <%= content_for :footer_js do %>
-  <%= javascript_tag do %>
-    $(document).ready(function() {
-      $("div#registration-form").removeClass("d-none");
-    });
-  <% end %>
   <%= javascript_pack_tag 'vue_registration_wizard' %>
 <% end %>
