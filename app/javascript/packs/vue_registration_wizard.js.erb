@@ -49,24 +49,25 @@ if (UserSelectedPlans !== 'null') {
 
 const getExcessAmount = (vm) => {
   let price = 0
+  const limit = parseFloatingNumber(vm.plan_limit)
   if (vm.cart[0]) {
     let i
     for (i=0; i <= 4; i++) {
       const currentCartItems = vm.cart[0][`day_${i+1}`]
       const total_prices = currentCartItems.map( item => item.price)
                                         .reduce( (sum, price) => {
-                                          return sum += parseFloat(price)
+                                          return sum += parseFloatingNumber(price)
                                         }, 0)
 
 
       const add_ons_price = currentCartItems.map( i => {
-        return i.add_ons.map( a => a.price).reduce( (sum, d) => sum += parseFloat(d), 0)
+        return i.add_ons.map( a => a.price).reduce( (sum, d) => sum += parseFloatingNumber(d), 0)
       })
 
       const add_ons_total_price = add_ons_price.length > 0 ? add_ons_price.reduce( (sum, a) => sum + a) : 0
 
       const totalItemPrice = total_prices + add_ons_total_price
-      price += (totalItemPrice - vm.plan_limit) > 0 ? (totalItemPrice - vm.plan_limit) : 0
+      price += (totalItemPrice - limit) > 0 ? (totalItemPrice - limit) : 0
     }
   }
   return price
@@ -162,10 +163,14 @@ const registrationForm = new Vue({
   methods: {
     hasAvailableCredit: function(price) {
       const self = this
-      const remainingCredit = self.plant_limit - parseFloat(price)
+      const minimum = parseFloatingNumber(self.plan_minimum)
+      const limit = parseFloatingNumber(self.plan_limit)
+      const parsedPrice = parseFloatingNumber(price)
+      const remainingCredit = limit - parsedPrice
+      
       if (remainingCredit <= 0) {
         return false
-      } else if (parseFloat(price) >= self.plan_minimum) {
+      } else if (parsedPrice >= minimum) {
         return true
       }
     },

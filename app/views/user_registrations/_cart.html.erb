@@ -145,7 +145,7 @@
               <div v-if="hasAvailableCredit(totalPlusAddOn(day))">
                 <small class="alert alert-info d-flex" style="font-size: 10px; width: 100%;">
                   <i class="fa fa-info-circle font-size-24 pr-1" aria-hidden="true"></i>
-                  Order not finished, because you still have $ {{ plan_limit - totalPlusAddOn(day) }} credits available
+                  Order not finished, because you still have $ {{ (plan_limit - totalPlusAddOn(day)).toFixed(2) }} credits available
                   for {{ index | get_num | get_date_name }}.
                 </small>
               </div>
