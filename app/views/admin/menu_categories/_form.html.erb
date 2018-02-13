@@ -37,9 +37,9 @@
         class="form-control"
         :id="'menu_category_addons_name' + (index !== 0 ? `_${index}` : '')">
 
-      <label :for="'menu_category_addons_menu_id' + (index !== 0 ? `_${index}` : '')">Item</label>
+      <label :for="'menu_category_addons_menu_id' + (index !== 0 ? `_${index}` : '')">Link to an item in your menu</label>
       <%= select_tag :menu_category_addons_menu_id,
-          options_from_collection_for_select(MenuCategory.find_by_name('Add-Ons').menus, :id, :name),
+          options_from_collection_for_select(@menu_items, :id, :name),
           include_blank: true,
           class: 'form-control',
           ":id": "'menu_category_addons_menu_id' + (index !== 0 ? `_${index}` : '')",

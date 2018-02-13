@@ -9,6 +9,7 @@ class Admin::MenusController < Admin::BaseController
     @menus = MenuCategory.all.includes(menus: [:unit, :asset])
     @menu_category = MenuCategory.new
     @menu_category.add_ons.build
+    @menu_items = Menu.order(name: :asc)
   end
 
   # GET /menus/1

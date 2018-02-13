@@ -16,6 +16,7 @@ class Admin::MenuCategoriesController < Admin::BaseController
   def new
     @menu_category = MenuCategory.new
     @menu_category.add_ons.build
+    @menu_items = Menu.order(name: :asc)
   end
 
   # GET /menu_categories/1/edit
