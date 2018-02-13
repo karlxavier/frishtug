@@ -91,7 +91,7 @@ class UserRegistrationsController < ApplicationController
             :billing_phone_number,
             :stripe_token,
             :card_brand,
-            orders: [:order_date, menu_ids: [], quantities: [], add_ons: [ :ids ]],
+            orders: [:order_date, menu_ids: [], quantities: [], add_ons: [:ids]],
             addresses: %i[
               line1
               line2
@@ -113,9 +113,7 @@ class UserRegistrationsController < ApplicationController
   end
 
   def user_exists?
-    if current_user
-      redirect_to root_url, notice: 'Already signed up'
-    end
+    redirect_to root_url, notice: 'Already signed up' if current_user
   end
 
   def set_tax

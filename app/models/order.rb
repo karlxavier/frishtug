@@ -20,7 +20,7 @@
 class Order < ApplicationRecord
   include Computable
   include UserDelegator
-  enum status: %i[processing in_transit completed failed cancelled refunded ]
+  enum status: %i[processing in_transit completed failed cancelled refunded fulfilled]
   belongs_to :user
   has_many :menus_orders, dependent: :destroy
   has_many :menus, through: :menus_orders
@@ -64,6 +64,10 @@ class Order < ApplicationRecord
 
   def self.placed_between?(range)
     where(placed_on: range.start_date..range.end_date)
+  end
+
+  def self.active_orders
+    where('status != ? OR status IS NULL', Order.statuses[:fulfilled])
   end
 
   def self.not_placed_between?(range)

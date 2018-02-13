@@ -35,7 +35,7 @@ module User::WeeklyMealsHelper
 
   def calendar_classes(date, active_this_week, not_this_week)
     classes = []
-    classes.push 'font-weight-bold' if date.today?
+    classes.push 'font-weight-bold font-italic font-size-18' if date.today?
     classes.push 'active' if active_this_week.present? && active_this_week[0].include?(date.to_s)
     multiple_colored_weeks(classes, not_this_week, date) if current_user.plan.interval == 'month'
     single_colored_weeks(classes, not_this_week, date) if current_user.plan.interval != 'month'

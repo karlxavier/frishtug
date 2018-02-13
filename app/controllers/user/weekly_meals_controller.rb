@@ -9,7 +9,7 @@ class User::WeeklyMealsController < User::BaseController
   def index
     order = current_user.orders
     @active_this_week = order.placed_between?(@date_range).pluck_placed_on
-    @not_this_week = order.not_placed_between?(@date_range).pluck_placed_on
+    @not_this_week = order.active_orders.pluck_placed_on
     @completed = order.completed.pluck_placed_on
     @orders = order.pending_deliveries
     @order_preference = current_user.order_preference
