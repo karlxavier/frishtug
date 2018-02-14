@@ -513,6 +513,8 @@ const registrationForm = new Vue({
       const currentDate = moment(localStorage.getItem('current_date_est')).toDate()
       const theDate = moment(date).toDate()
 
+      if (!self) { return false }
+
       const isSunday = (date) => {
         const sunday = 0
         return date.getDay() === sunday

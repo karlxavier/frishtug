@@ -1,3 +1,5 @@
+// jshint ignore: start
+
 let shoppingCart          = []
 let currentActiveCart
 const listeners           = []
