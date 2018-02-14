@@ -1,5 +1,5 @@
 class User::WeeklyMealsController < User::BaseController
-  before_action :user_can_order?, :set_new_order, only: :new
+  before_action :user_can_order?, :set_new_order, :check_order, only: :new
   before_action :set_order_for_edit, :editable?, only: :edit
   before_action :set_category_and_menus, :set_orders_for_option_select, only: %i[new edit]
   before_action :set_date_range, :set_date, only: :index
@@ -7,23 +7,41 @@ class User::WeeklyMealsController < User::BaseController
   START_DATE = Date.current.beginning_of_week(:sunday)
 
   def index
+    weekly_scheduler = WeeklyScheduler.new(current_user)
     order = current_user.orders
     @active_this_week = order.placed_between?(@date_range).pluck_placed_on
-    @not_this_week = order.active_orders.pluck_placed_on
+    @active_orders = order.active_orders.pluck_placed_on
     @completed = order.completed.pluck_placed_on
     @orders = order.pending_deliveries
     @order_preference = current_user.order_preference
-    @from_options = current_user.orders.selection_dates
-    @to_options = current_user.orders.available_dates(current_user.schedule&.option)
+    @from_options = weekly_scheduler.get_schedules_for_selection!
+    @to_options = weekly_scheduler.create_schedule_for_selection!
+    @available_dates = weekly_scheduler.create_schedule!.in_groups_of(5)
   end
 
   def new
+    weekly_scheduler = WeeklyScheduler.new(current_user)
+    dates = weekly_scheduler.create_schedule!.in_groups_of(5)
+    @available_dates = dates.first if params[:schedule] == 'second'
+    @available_dates = dates.second if params[:schedule] == 'third'
+    @available_dates = dates.third if params[:schedule] == 'fourth'
   end
 
   def edit
   end
 
   private
+
+  def check_order
+    return unless params[:current_date].present?
+    date = parsed_date(params[:current_date])
+    range = DateRange.new(date.beginning_of_day, date.end_of_day)
+    order = current_user.orders.placed_between?(range).first
+    if order.fresh?
+      flash[:error] = "Please complete your order for #{date.strftime('%^A')}"
+      redirect_back fallback_location: :back
+    end
+  end
 
   def set_date
     @date = parsed_date(params[:date])
@@ -52,6 +70,7 @@ class User::WeeklyMealsController < User::BaseController
   def set_new_order
     @orders = current_user.orders
       .where(placed_on: placed_on).first_or_create
+    @orders.fresh!
   end
 
   def set_order_for_edit

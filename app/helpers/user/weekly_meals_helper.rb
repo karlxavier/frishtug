@@ -15,13 +15,16 @@ module User::WeeklyMealsHelper
     ) + label_tag("copy_menu", "Copy Meal", class: 'form-check-label')
   end
 
-  def calendar_url(date, active_this_week, not_this_week)
+  def calendar_url(date, active_this_week, active_orders, available_dates)
     url = "javascript:void(0)"
-    if date > Date.current && !date.saturday?
-      url = new_user_weekly_meal_path(date: date)
+    if date > Date.current && available_dates.flatten.include?(date)
+      sched = 'second' if available_dates.first.include?(date)
+      sched = 'third' if available_dates.second.include?(date)
+      sched = 'fourth' if available_dates.third.include?(date)
+      url = new_user_weekly_meal_path(date: date, schedule: sched)
     end
 
-    if active_this_week.flatten.include?(date.to_s) || not_this_week.flatten.include?(date.to_s)
+    if active_this_week.flatten.include?(date.to_s) || active_orders.flatten.include?(date.to_s)
       url = edit_user_weekly_meals_path(date: date)
     end
 
@@ -33,12 +36,12 @@ module User::WeeklyMealsHelper
     url
   end
 
-  def calendar_classes(date, active_this_week, not_this_week)
+  def calendar_classes(date, active_this_week, active_orders)
     classes = []
     classes.push 'font-weight-bold font-italic font-size-18' if date.today?
     classes.push 'active' if active_this_week.present? && active_this_week[0].include?(date.to_s)
-    multiple_colored_weeks(classes, not_this_week, date) if current_user.plan.interval == 'month'
-    single_colored_weeks(classes, not_this_week, date) if current_user.plan.interval != 'month'
+    multiple_colored_weeks(classes, active_orders, date) if current_user.plan.interval == 'month'
+    single_colored_weeks(classes, active_orders, date) if current_user.plan.interval != 'month'
     classes.push 'disabled' if date < Date.current || date.saturday?
     if current_user.schedule.present?
       return "disabled" if date.sunday? && current_user.schedule.monday_to_friday?
@@ -114,16 +117,16 @@ module User::WeeklyMealsHelper
 
   private
 
-  def single_colored_weeks(classes, not_this_week, date)
-    flattened_weeks = not_this_week.flatten
+  def single_colored_weeks(classes, active_orders, date)
+    flattened_weeks = active_orders.flatten
     classes.push 'active_not_current_week' if flattened_weeks.include?(date.to_s)
   end
 
-  def multiple_colored_weeks(classes, not_this_week, date)
-    classes.push 'active_not_current_first_week' if not_this_week[0]&.include?(date.to_s)
-    classes.push 'active_not_current_second_week' if not_this_week[1]&.include?(date.to_s)
-    classes.push 'active_not_current_third_week' if not_this_week[2]&.include?(date.to_s)
-    classes.push 'active_not_current_fourth_week' if not_this_week[3]&.include?(date.to_s)
+  def multiple_colored_weeks(classes, active_orders, date)
+    classes.push 'active_not_current_first_week' if active_orders[0]&.include?(date.to_s)
+    classes.push 'active_not_current_second_week' if active_orders[1]&.include?(date.to_s)
+    classes.push 'active_not_current_third_week' if active_orders[2]&.include?(date.to_s)
+    classes.push 'active_not_current_fourth_week' if active_orders[3]&.include?(date.to_s)
   end
 
   def is_checked?(order, menu_id, add_on_id)

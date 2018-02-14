@@ -2,16 +2,18 @@
   <div class="col-4">
     <%= render partial: 'user/weekly_meals/calendar', locals: {
       active_this_week: @active_this_week,
-      not_this_week: @not_this_week,
+      active_orders: @active_orders,
       calendar_date: @date,
+      available_dates: @available_dates,
       disable_right_control: false,
       disable_left_control: false
     } %>
 
     <%= render partial: 'user/weekly_meals/calendar', locals: {
       active_this_week: @active_this_week,
-      not_this_week: @not_this_week,
+      active_orders: @active_orders,
       calendar_date: @date.next_month,
+      available_dates: @available_dates,
       disable_right_control: true,
       disable_left_control: true
     } %>

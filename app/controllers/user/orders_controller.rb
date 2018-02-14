@@ -16,6 +16,13 @@ class User::OrdersController < User::BaseController
 
   def persist
     @order = Order.find(order_id)
+    charge_user!
+    @order.update_attributes(order_date: Time.current, status: :processing)
+  end
+
+  private
+
+  def charge_user!
     if current_user.subscribed?
       plan_limit = current_user.plan.limit
       amount_to_pay = OrderCalculator.new(@order).total_excess(plan_limit)
@@ -24,11 +31,7 @@ class User::OrdersController < User::BaseController
       amount_to_pay = OrderCalculator.new(@order).total
       create_charge!(amount_to_pay)
     end
-    @order.order_date = Time.current
-    @order.save
   end
-
-  private
 
   def create_excess_charge!(amount_to_pay)
     StripeCharger.new(current_user, amount_to_pay).charge_excess!

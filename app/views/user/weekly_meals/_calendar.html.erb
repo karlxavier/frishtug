@@ -20,8 +20,8 @@
 
 <%= calendar calendar_date do |date| %>
   <a
-    href="<%= calendar_url(date, active_this_week, not_this_week) %>"
-    class="<%= calendar_classes(date, active_this_week, not_this_week) %>">
+    href="<%= calendar_url(date, active_this_week, active_orders, available_dates) %>"
+    class="<%= calendar_classes(date, active_this_week, active_orders) %>">
     <%= date.strftime('%d') %>
   </a>
 <% end %>

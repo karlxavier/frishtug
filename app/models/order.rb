@@ -20,7 +20,7 @@
 class Order < ApplicationRecord
   include Computable
   include UserDelegator
-  enum status: %i[processing in_transit completed failed cancelled refunded fulfilled]
+  enum status: %i[processing in_transit completed failed cancelled refunded fulfilled fresh]
   belongs_to :user
   has_many :menus_orders, dependent: :destroy
   has_many :menus, through: :menus_orders
@@ -35,10 +35,7 @@ class Order < ApplicationRecord
   end
 
   def set_series_number
-    placed_time = self[:placed_on]
-    last_series_number = Order.where(placed_on: placed_time.beginning_of_day..placed_time.end_of_day)
-      .order(id: :asc).last&.series_number || 0
-    self[:series_number] = last_series_number + 1
+    self[:series_number] = SeriesCreator.new(self[:placed_on]).create
   end
 
   def menu_quantity(menu)
@@ -67,7 +64,7 @@ class Order < ApplicationRecord
   end
 
   def self.active_orders
-    where('status != ? OR status IS NULL', Order.statuses[:fulfilled])
+    where.not(status: [:fresh, :fulfilled, nil])
   end
 
   def self.not_placed_between?(range)
@@ -92,33 +89,5 @@ class Order < ApplicationRecord
 
   def self.pluck_placed_on
     order('placed_on ASC').pluck(:placed_on).map {|p| p.strftime('%Y-%m-%d')}.in_groups_of(5)
-  end
-
-  def self.selection_dates
-    all.in_groups_of(5).map do |o|
-      o = o.compact
-      if o.count == 5
-        ["#{o.first&.placed_on.strftime('%b %d')} - #{o.last&.placed_on.strftime('%b %d')}", o.map(&:id).join(',')]
-      end
-    end
-  end
-
-  def self.available_dates(schedule)
-    wdays = %w[sunday monday tuesday wednesday thursday friday]
-    last_five_orders = self.last(5)
-    last_order_date = last_five_orders.first.placed_on.to_date
-    date = last_order_date.next_week(wdays[last_order_date.wday].to_sym)
-    results = []
-    date -= 1.days
-    (0..14).map do |i|
-      date += 1.days
-      date += 1.days if date.saturday?
-      date += 1.days if date.sunday? && schedule == 'monday_to_friday'
-      date += 2.days if date.friday? && schedule == 'sunday_to_thursday'
-      results << date
-    end
-    results.in_groups_of(5).map do |r|
-      ["#{r.first.strftime('%b %d')} - #{r.last.strftime('%b %d')}", r.join(',')]
-    end
   end
 end
