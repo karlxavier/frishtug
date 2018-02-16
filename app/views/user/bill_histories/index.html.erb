@@ -9,7 +9,7 @@
     </tr>
   </thead>
   <tbody>
-    <% @bill_histories.data.each do |bill_history| %>
+    <% @bill_histories.each do |bill_history| %>
       <tr class="<%= bill_history.id %>">
         <td><%= bill_history.source.brand %> <%= "****#{bill_history.source.last4}" %></td>
         <td><%= to_currency(bill_history.amount / 100) %></td>
@@ -19,3 +19,5 @@
     <% end %>
   </tbody>
 </table>
+
+<%= paginate @bill_histories %>
