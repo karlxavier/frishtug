@@ -1,4 +1,3 @@
-const sidebar = document.querySelector('#main-sidebar')
 const mainContainer = document.querySelector('#main-container')
 const mealSidebarCtrl = document.querySelector('.sidebar-controls')
 const mealFormWrapper = document.querySelector('#meal-form__wrapper')
@@ -6,7 +5,6 @@ const mealSideBar = document.querySelector('#sidebar')
 const mealFormContainer = document.querySelector('#meal-form__container')
 const addOns = document.querySelectorAll('.menu_add_ons')
 
-sidebar.parentNode.removeChild(sidebar)
 mealSidebarCtrl.classList.add('d-none')
 mainContainer.className = 'col-12 col-md-12 col-lg-12'
 

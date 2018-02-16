@@ -17,7 +17,9 @@ class User::OrdersController < User::BaseController
   def persist
     @order = Order.find(order_id)
     charge_user!
-    @order.update_attributes(order_date: Time.current, status: :processing)
+    if @order.fresh?
+      @order.update_attributes(order_date: Time.current, status: :processing)
+    end
   end
 
   private

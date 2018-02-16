@@ -45,19 +45,17 @@ class Menu < ApplicationRecord
   end
 
   def self.has_stock
-    Rails.cache.fetch([self, "has_stock"], expires_in: 12.hours) do
-      includes(
-        :inventory,
-        :asset,
-        :diet_categories,
-        :unit,
-        :add_ons,
-        :menu_category,
-        :menus_add_ons,
-        :menus_diet_categories
-        )
-        .where.not(inventories: { quantity: 0 })
-    end
+    includes(
+      :inventory,
+      :asset,
+      :diet_categories,
+      :unit,
+      :add_ons,
+      :menu_category,
+      :menus_add_ons,
+      :menus_diet_categories
+      )
+      .where.not(inventories: { quantity: 0 })
   end
 
   def self.group_by_category_names
