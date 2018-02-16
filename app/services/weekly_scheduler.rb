@@ -16,7 +16,7 @@ class WeeklyScheduler
 	end
 
 	def get_schedules_for_selection!
-		@orders.in_groups_of(5).map do |o|
+		@orders.order(placed_on: :asc).in_groups_of(5).map do |o|
       o = o.compact
       if o.count == 5
         [

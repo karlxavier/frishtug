@@ -33,8 +33,9 @@ class User::WeeklyMealsController < User::BaseController
   private
 
   def check_schedule!
+    return unless current_user.subscribed?
     unless params[:schedule].present?
-      redirect_back fallback_location: :user_weekly_meals
+      redirect_back fallback_location: user_weekly_meals_path
     end
   end
 
@@ -99,24 +100,24 @@ class User::WeeklyMealsController < User::BaseController
   def editable?
     if is_today?
       flash[:error] = 'Too late to edit your meal for today.'
-      redirect_back fallback_location: :user_weekly_meals
+      redirect_back fallback_location: user_weekly_meals_path
     end
 
     if is_past_noon?
       flash[:error] = 'Too late for tomorrow, your meal cannot be changed after 11am.'
-      redirect_back fallback_location: :user_weekly_meals
+      redirect_back fallback_location: user_weekly_meals_path
     end
 
     if is_yesterday?
       flash[:error] = 'Too late to edit your delivered meal.'
-      redirect_back fallback_location: :user_weekly_meals
+      redirect_back fallback_location: user_weekly_meals_path
     end
   end
 
   def user_can_order?
     return unless user_has_completed_the_plan?
     flash[:error] = 'You can\'t create a new order!'
-    redirect_back fallback_location: :user_weekly_meals
+    redirect_back fallback_location: user_weekly_meals_path
   end
 
   def user_has_completed_the_plan?

@@ -21,11 +21,15 @@ module User::WeeklyMealsHelper
 
   def calendar_url(date, active_this_week, active_orders, available_dates)
     url = "javascript:void(0)"
-    if date > Date.current && available_dates.flatten.include?(date)
-      sched = 'second' if available_dates.first.include?(date)
-      sched = 'third' if available_dates.second.include?(date)
-      sched = 'fourth' if available_dates.third.include?(date)
-      url = new_user_weekly_meal_path(date: date, schedule: sched)
+    if date > Date.current && !date.saturday?
+      if current_user.subscribed?
+        sched = 'second' if available_dates.first.include?(date)
+        sched = 'third' if available_dates.second.include?(date)
+        sched = 'fourth' if available_dates.third.include?(date)
+        url = new_user_weekly_meal_path(date: date, schedule: sched)
+      else
+        url = new_user_weekly_meal_path(date: date)
+      end
     end
 
     if active_this_week.flatten.include?(date.to_s) || active_orders.flatten.include?(date.to_s)
@@ -94,6 +98,7 @@ module User::WeeklyMealsHelper
   end
 
   def display_warning(total)
+    return unless current_user.subscribed?
     plan_limit = current_user.plan.limit
     plan_minimum = current_user.plan.minimum_credit_allowed
     remaining_credit = plan_limit - total

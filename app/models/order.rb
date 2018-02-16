@@ -45,7 +45,7 @@ class Order < ApplicationRecord
   end
 
   def self.pending_deliveries
-    where(delivered_at: nil).limit(5).includes(menus: [:menu_category]).map do |o|
+    self.active_orders.order(placed_on: :asc).includes(menus: [:menu_category]).map do |o|
       {
         placed_on: o.placed_on,
         menus_orders: o.menus_orders.group_by do |m|
@@ -88,6 +88,6 @@ class Order < ApplicationRecord
   end
 
   def self.pluck_placed_on
-    order('placed_on ASC').pluck(:placed_on).map {|p| p.strftime('%Y-%m-%d')}.in_groups_of(5)
+    order(placed_on: :asc).pluck(:placed_on).map {|p| p.strftime('%Y-%m-%d')}.in_groups_of(5)
   end
 end

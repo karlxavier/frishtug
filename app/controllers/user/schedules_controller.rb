@@ -8,7 +8,7 @@ class User::SchedulesController < User::BaseController
   def create
     if current_user.schedule.update_attributes(option: option)
       flash[:success] = "Schedule successfully changed to #{option.humanize}"
-      redirect_back fallback_location: :back
+      redirect_back fallback_location: user_dashboard_index_path
     end
   end
 
@@ -19,8 +19,8 @@ class User::SchedulesController < User::BaseController
   end
 
   def user_has_schedule!
-    unless current_user.schedule.present?
-      redirect_back fallback_location: :back
+    unless current_user.schedule.present? && current_user.subscribed?
+      redirect_back fallback_location: user_dashboard_index_path
     end
   end
 end

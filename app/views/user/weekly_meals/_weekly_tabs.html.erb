@@ -1,0 +1,41 @@
+<%
+  orders_list = @orders.in_groups_of(5)
+%>
+<div class="col-8 px-4">
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id="first-week" data-toggle="tab" href="#first_week" role="tab" aria-controls="first_week" aria-selected="true">1st week</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="profile-tab" data-toggle="tab" href="#second_week" role="tab" aria-controls="profile" aria-selected="false">2nd week</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="contact-tab" data-toggle="tab" href="#third_week" role="tab" aria-controls="contact" aria-selected="false">3rd week</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="contact-tab" data-toggle="tab" href="#fourth_week" role="tab" aria-controls="contact" aria-selected="false">4th week</a>
+    </li>
+  </ul>
+  <div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="first_week" role="tabpanel" aria-labelledby="first-week-tab">
+      <% orders_list.first.each do |order| %>
+        <%= render 'order', order: order %>
+      <% end %>
+    </div>
+    <div class="tab-pane fade" id="second_week" role="tabpanel" aria-labelledby="first-week-tab">
+      <% orders_list.second.compact.each do |order| %>
+        <%= render 'order', order: order %>
+      <% end if orders_list.second.present? %>
+    </div>
+    <div class="tab-pane fade" id="third_week" role="tabpanel" aria-labelledby="first-week-tab">
+      <% orders_list.third.compact.each do |order| %>
+        <%= render 'order', order: order %>
+      <% end if orders_list.third.present? %>
+    </div>
+    <div class="tab-pane fade" id="fourth_week" role="tabpanel" aria-labelledby="first-week-tab">
+      <% orders_list.fourth.compact.each do |order| %>
+        <%= render 'order', order: order %>
+      <% end if orders_list.fourth.present? %>
+    </div>
+  </div>
+</div>

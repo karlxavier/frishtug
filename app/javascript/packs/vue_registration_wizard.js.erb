@@ -248,8 +248,14 @@ const registrationForm = new Vue({
     removeTaxFromPrice: function(price) {
       return toFixed((price - getTax(price, this.tax_rate)), 2)
     },
-    showShoppingCart: function() { this.shopping_cart_shown = true },
-    hideShoppingCart: function() { this.shopping_cart_shown = false },
+    showShoppingCart: function() {
+      setTimeout(scroller, 50)
+      this.shopping_cart_shown = true
+    },
+    hideShoppingCart: function() {
+      setTimeout(scroller, 50)
+      this.shopping_cart_shown = false
+    },
     totalCartPricePlusShippingFee: function(){
       const self = this
       if (self.interval === 'month') {
@@ -392,6 +398,7 @@ const registrationForm = new Vue({
       return `${days[d.getDay()]}, ${monthNames[d.getMonth()]} ${ d.getDate() }`
     },
     accountValidations: function() {
+      console.log('pasok')
       const inputs = [
         "[name='registration_form[first_name]']",
         "[name='registration_form[last_name]']",
@@ -399,6 +406,7 @@ const registrationForm = new Vue({
         "[name='registration_form[password]']"
       ]
 
+      console.log(multiplePresenceValidator(inputs))
       return multiplePresenceValidator(inputs)
     },
     addressValidations: function() {
@@ -808,4 +816,35 @@ const changeCheckedTabs = () => {
   const el = document.querySelector('ul.wizard-nav-pills')
   el.classList.add('container');
 }())
+
+const scroller = function() {
+  let cartSidebar = document.querySelector('.meal-sidebar')
+  let shoppingCartBtn = document.querySelector('.shopping-cart__shown_btn')
+  var y = window.pageYOffset
+
+  const positionElelement = el => {
+    if (el) {
+      el.classList.add('position-fixed')
+      el.style.marginTop = '7rem'
+    }
+  }
+
+  const removePositioning = el => {
+    if (el) {
+      el.classList.remove('position-fixed')
+      el.style.marginTop = '0'
+    }
+  }
+
+
+  if (y >= 90) {
+    positionElelement(cartSidebar)
+    positionElelement(shoppingCartBtn)
+  } else {
+    removePositioning(cartSidebar)
+    removePositioning(shoppingCartBtn)
+  }
+};
+
+window.addEventListener("scroll", scroller);
 
