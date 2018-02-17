@@ -62,21 +62,8 @@ class OrderQuery
   def total(orders)
     sales = []
     orders.each do |o|
-      o.menus_orders.each do |menu_order|
-        price = menu_order.menu_price
-        quantity = menu_order.quantity
-        add_ons_price = total_add_ons_price(menu_order.add_ons)
-        sales.push(calculate(price, quantity, add_ons_price))
-      end
+      sales << OrderCalculator.new(o).total
     end
     sales.compact.reduce(:+)
-  end
-
-  def calculate(price, quantity, add_ons_price)
-    (price * quantity) + (add_ons_price * quantity)
-  end
-
-  def total_add_ons_price(add_ons)
-    add_ons.map { |a| AddOn.find(a)&.price }.inject(:+) || 0
   end
 end

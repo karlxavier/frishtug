@@ -2,11 +2,14 @@ class Admin::DashboardController < Admin::BaseController
   before_action :set_date
 
   def index
-    date_range = DateRange.new(@date.beginning_of_day, @date.end_of_day)
-    @order_query = OrderQuery.new(date_range, location, meal_plan_ids)
+    @order_query = OrderQuery.new(range, location, meal_plan_ids)
   end
 
   private
+
+  def range
+    DateRange.new(@date.beginning_of_day, @date.end_of_day)
+  end
 
   def set_date
     @date = Date.parse(params[:date]) rescue Date.current
