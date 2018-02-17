@@ -4,7 +4,7 @@ class Admin::UnitsController < Admin::BaseController
   # GET /units
   # GET /units.json
   def index
-    @units = Unit.all.sort
+    @units = Unit.order(id: :asc).page(page).per(10)
   end
 
   # GET /units/new
@@ -50,6 +50,10 @@ class Admin::UnitsController < Admin::BaseController
   end
 
   private
+
+  def page
+    params[:page]
+  end
 
   # Use callbacks to share common setup or constraints between actions.
   def set_unit

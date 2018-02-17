@@ -6,7 +6,7 @@ class Admin::MenuCategoriesController < Admin::BaseController
   # GET /menu_categories
   # GET /menu_categories.json
   def index
-    @menu_categories = MenuCategory.includes(:add_ons)
+    @menu_categories = MenuCategory.includes(:add_ons).page(page).per(10)
   end
 
   # GET /menu_categories/1
@@ -57,6 +57,10 @@ class Admin::MenuCategoriesController < Admin::BaseController
   end
 
   private
+
+  def page
+    params[:page]
+  end
 
   def set_menu_lists
     @menu_items = Menu.all.order(name: :asc)

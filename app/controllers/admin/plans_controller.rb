@@ -6,7 +6,7 @@ class Admin::PlansController < Admin::BaseController
   # GET /plans
   # GET /plans.json
   def index
-    @plans = Plan.all.sort
+    @plans = Plan.order(id: :asc).page(page).per(10)
   end
 
   # GET /plans/1
@@ -52,6 +52,10 @@ class Admin::PlansController < Admin::BaseController
   end
 
   private
+
+  def page
+    params[:page]
+  end
 
   # Use callbacks to share common setup or constraints between actions.
   def set_plan

@@ -12,21 +12,8 @@
     </thead>
 
     <tbody>
-      <% @plans.each do |plan| %>
-        <tr class="<%= plan.name.parameterize %>">
-          <td><%= plan.id %></td>
-          <td><%= plan.name %></td>
-          <td><%= number_to_currency(plan.price, unit: '$') %></td>
-          <td><%= plan&.for_type.titleize %></td>
-          <td><%= plan.users.size %></td>
-          <td>
-            <div class="float-right">
-              <%= link_to '<i class="fa fa-edit mr-1"></i>Edit'.html_safe, edit_admin_plan_path(plan), class: 'btn chocolate-font-color btn-sm' %>
-              <%= link_to '<i class="fa fa-trash mr-1"></i>Destroy'.html_safe, admin_plan_path(plan), class: 'btn chocolate-font-color btn-sm', method: :delete, remote: true, data: { confirm: 'Are you sure?' } %>
-            </div>
-          </td>
-        </tr>
-      <% end %>
+      <%= render @plans %>
     </tbody>
   </table>
+  <%= paginate @plans %>
 <% end %>
