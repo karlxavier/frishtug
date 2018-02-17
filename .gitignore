@@ -38,3 +38,5 @@ public/uploads
 
 .tags
 .gemtags
+
+.DS_Store

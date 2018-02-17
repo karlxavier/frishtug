@@ -75,8 +75,7 @@ class User::WeeklyMealsController < User::BaseController
   end
 
   def set_new_order
-    @orders = current_user.orders
-      .where(placed_on: placed_on).first_or_create
+    @orders = current_user.orders.where(placed_on: placed_on).first_or_create
     @orders.fresh! if @orders.status.nil?
   end
 
@@ -128,7 +127,7 @@ class User::WeeklyMealsController < User::BaseController
     @category = params[:category] || MenuCategory.first.id
     @categories = MenuCategory.all
     @menus = Menu.includes(:menus_add_ons, :menus_diet_categories)
-      .filter_by_category(@category).has_stock
+    .filter_by_category(@category).has_stock
   end
 
   def set_orders_for_option_select

@@ -1,9 +1,9 @@
+/* eslint semi: ["error", "never"] */
 import VueFormWizard from 'vue-form-wizard'
 import vuejsStorage from 'vuejs-storage'
 import VueTabs from 'vue-nav-tabs'
 import VueMask from 'v-mask'
 import Vue from 'vue/dist/vue.esm'
-import {pulse_loader} from './lib/loaders'
 import {get} from './lib/ajax_lib'
 import {shoppingCart, shoppingCartInit, registerShoppingCartListener, addToShoppingCart, removeFromShoppingCart} from './simple_cart'
 import toCurrency from './lib/to_currency'
@@ -144,10 +144,10 @@ const registrationForm = new Vue({
       shopping_cart_shown: true,
       tax_rate: parseFloat(localStorage.getItem('tax_rate')),
       phone_number: null,
-      schedule: null
+      schedule: null,
     },
     namespace: 'user_registrations',
-    storage: sessionStorage
+    storage: sessionStorage,
   },
   filters: {
     get_num: (val) => parseInt(val.match(/\d+/)[0]) - 1,
@@ -398,7 +398,6 @@ const registrationForm = new Vue({
       return `${days[d.getDay()]}, ${monthNames[d.getMonth()]} ${ d.getDate() }`
     },
     accountValidations: function() {
-      console.log('pasok')
       const inputs = [
         "[name='registration_form[first_name]']",
         "[name='registration_form[last_name]']",
@@ -406,15 +405,14 @@ const registrationForm = new Vue({
         "[name='registration_form[password]']"
       ]
 
-      console.log(multiplePresenceValidator(inputs))
       return multiplePresenceValidator(inputs)
     },
     addressValidations: function() {
       const inputs = [
-        "[name='registration_form[line1]']",
-        "[name='registration_form[city]']",
-        "[name='registration_form[state]']",
-        "[name='registration_form[zip_code]']",
+        ".address-line1",
+        ".address-city",
+        ".address-state",
+        ".address-zip",
         "[name='registration_form[phone_number]']"
       ]
       return multiplePresenceValidator(inputs)
@@ -752,18 +750,44 @@ const stripeResponseHandler = (status, response) => {
 
 const multiplePresenceValidator = (inputsNameClassOrIds) => {
   let invalid = 0
+  const invalidInputs = []
+  const inputs = []
   inputsNameClassOrIds.forEach( inputsNameClassOrId => {
-    const input = document.querySelector(`${inputsNameClassOrId}`)
-    if (!input) { return }
+    const inputsList = document.querySelectorAll(`${inputsNameClassOrId}`)
+    const validator = (input) => {
+      inputs.push(input)
+      if (!input) {
+        return
+      }
 
-    if (!valueValidator(input) || !input.checkValidity()) {
-      invalid++
+      if (!valueValidator(input)) {
+        invalidInputs.push(input)
+        invalid++
+      }
+
+      if(!input.checkValidity()) {
+        invalidInputs.push(input)
+        invalid++
+      }
     }
+    Array.from(inputsList).map(validator)
   })
 
+  const addIsInvalid = (input) => {
+    input.classList.add('is-invalid')
+  }
+
+  const removeIsInvalid = (input) => {
+    if(!input.classList.contains('is-invalid')) { return }
+    input.classList.remove('is-invalid')
+    input.classList.add('is-valid')
+  }
+
   if (invalid > 0) {
+    invalidInputs.map(addIsInvalid)
     return false
   } else {
+    inputs.map(removeIsInvalid)
     return true
   }
 }
@@ -771,10 +795,8 @@ const multiplePresenceValidator = (inputsNameClassOrIds) => {
 
 const valueValidator = (input) => {
   if (input.value.trim().length === 0) {
-    input.classList.add('is-invalid')
     return false
   } else {
-    input.classList.remove('is-invalid')
     return true
   }
 }

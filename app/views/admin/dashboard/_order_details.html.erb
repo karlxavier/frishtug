@@ -8,11 +8,7 @@
   </thead>
   <tbody>
     <% o.menus_orders.each do |menu_order| %>
-      <tr id="<%= "#{o.id} - #{menu_order.menu_name}" %>">
-        <td><%= menu_order.quantity %></td>
-        <td><%= menu_order.menu_name %> <%= add_ons_list(menu_order) %></td>
-        <td><%= total_price(menu_order.menu_price, menu_order.quantity, menu_order.add_ons) %></td>
-      </tr>
+      <%= render 'menu_order', o: o, menu_order: menu_order %>
     <% end %>
     <tr>
       <td colspan="2">

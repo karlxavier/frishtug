@@ -66,8 +66,8 @@ module User::WeeklyMealsHelper
     is_active = 'active' if category_id.to_i == category.id
 
     link_to category.name.titleize,
-            request.params.merge(category: category.id),
-            class: "nav-link btn btn-outline--category mx-2 #{is_active}"
+      request.params.merge(category: category.id),
+      class: "nav-link btn btn-outline--category mx-2 #{is_active}"
   end
 
   def add_on_input_list_weekly(add_on, menu, date, order)
@@ -85,7 +85,7 @@ module User::WeeklyMealsHelper
           data: {
             date: date,
             menu_id: menu.id
-          }) + " #{add_on.name_with_price}"
+        }) + " #{add_on.name_with_price}"
       end
     end
   end
@@ -106,18 +106,18 @@ module User::WeeklyMealsHelper
     if total > plan_limit
       return content_tag :small, class: 'alert alert-warning d-flex', style: 'font-size: 9px; width: 100%' do
         content_tag(:i, nil, class: 'fa fa-exclamation-circle font-size-24 pr-1') + <<-EOF
-          You have exceeded your plan limit of $ #{plan_limit}.
-          Any excess will be charge directly to your account.
-        EOF
+        You have exceeded your plan limit of $ #{plan_limit}.
+        Any excess will be charge directly to your account.
+          EOF
       end
     end
 
     if remaining_credit > 0 && total >= plan_minimum
       return content_tag :small, class: 'alert alert-info d-flex', style: 'font-size: 9px; width: 100%' do
         content_tag(:i, nil, class: 'fa fa-info-circle font-size-24 pr-1') + <<-EOF
-          Order not finished, because you still have $ #{remaining_credit}
-          credits available.
-        EOF
+        Order not finished, because you still have $ #{remaining_credit}
+        credits available.
+          EOF
       end
     end
   end
@@ -138,7 +138,7 @@ module User::WeeklyMealsHelper
 
   def is_checked?(order, menu_id, add_on_id)
     order.menus_orders.where(menu_id: menu_id)
-      .first&.add_ons&.include?(add_on_id.to_s)
+    .first&.add_ons&.include?(add_on_id.to_s)
   end
 
   def format_id(menu, add_on, date)

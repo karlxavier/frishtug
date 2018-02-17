@@ -11,8 +11,8 @@
               pattern: '[A-Za-z]{1,32}',
               required: true,
               'v-model': 'user.first_name' %>
-            <div class="invalid-feedback">
-              First name is required
+            <div class="invalid-tooltip">
+              First name is required and should not contain any numbers or special characters
             </div>
           </div>
           <div class="col">
@@ -22,8 +22,8 @@
               pattern: '[A-Za-z]{1,32}',
               required: true,
               'v-model': 'user.last_name' %>
-            <div class="invalid-feedback">
-              Last name is required
+            <div class="invalid-tooltip">
+              Last name is required and should not contain any numbers or special characters
             </div>
           </div>
         </div>
@@ -33,7 +33,7 @@
             placeholder: 'Email*',
             required: true,
             'v-model': 'user.email' %>
-          <div class="invalid-feedback">
+          <div class="invalid-tooltip">
               Email is required
           </div>
         </div>
@@ -42,9 +42,10 @@
             class: 'form-control',
             placeholder: 'Password*',
             required: true,
+            pattern: ".{6,}",
             'v-model': 'user.password' %>
-          <div class="invalid-feedback">
-            Password is required
+          <div class="invalid-tooltip">
+            Password is required, Minimum of 6 characters
           </div>
         </div>
         <div class="text-center">
