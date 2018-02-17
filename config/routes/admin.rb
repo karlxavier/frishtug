@@ -19,4 +19,5 @@ namespace :admin do
   resources :assets, only: %i[index create destroy]
   resources :clients, only: %i[index show]
   resources :orders, only: :show
+  resources :display_orders, only: :create
 end

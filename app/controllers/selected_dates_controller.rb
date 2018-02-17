@@ -1,5 +1,5 @@
 class SelectedDatesController < ApplicationController
-  before_action :set_date
+  before_action :set_date, :set_schedule_to_skip
   SATURDAY = 6.freeze
   def index
     @date = Date.parse(@date)
@@ -14,6 +14,16 @@ class SelectedDatesController < ApplicationController
 
   private
 
+  def set_schedule_to_skip
+    hash = {
+      monday_to_friday: 0,
+      sunday_to_thursday: 5,
+      null_param: 6
+    }
+    sched = params[:schedule] || 'null_param'
+    @schedule_to_skip = hash[sched.to_sym]
+  end
+
   def set_date
     @date = params[:date]
   end
@@ -23,12 +33,27 @@ class SelectedDatesController < ApplicationController
   end
 
   def generate_dates_not_in_saturdays
-    dates = (@date..(@date + 5.days)).inject([]) do |arr, d|
-      arr << d unless d.saturday?
-      arr
+    index = 0
+    dates = []
+    current_date = @date - 1.days
+    while index <= 4 do
+      current_date += 1.days
+      current_date = skip_saturdays(current_date)
+      current_date = skip_not_in_schedule(current_date)
+      dates << current_date
+      index += 1
     end
-    dates.pop if dates.length > 5
     dates
+  end
+
+  def skip_saturdays(date)
+    date += 1 if date.saturday?
+    date
+  end
+
+  def skip_not_in_schedule(date)
+    date += 1.days if date.wday == @schedule_to_skip
+    skip_saturdays(date)
   end
 
   def verify_date

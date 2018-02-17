@@ -8,7 +8,7 @@
 -%>
 <%= paginator.render do -%>
   <nav aria-label="Page">
-    <ul class="pagination justify-content-end pagination-sm">
+    <ul class="pagination justify-content-start pagination-sm frishtug-pagination">
       <%= first_page_tag unless current_page.first? %>
       <%= prev_page_tag unless current_page.first? %>
       <% each_page do |page| -%>

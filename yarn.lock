@@ -3099,6 +3099,10 @@ mkdirp@0.5.x, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.0, mkd
   dependencies:
     minimist "0.0.8"
 
+moment@^2.20.1:
+  version "2.20.1"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.20.1.tgz#d6eb1a46cbcc14a2b2f9434112c1ff8907f313fd"
+
 ms@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
@@ -5179,6 +5183,10 @@ vue@^2.2.4, vue@^2.4.4:
 vue@^2.2.6:
   version "2.5.13"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.5.13.tgz#95bd31e20efcf7a7f39239c9aa6787ce8cf578e1"
+
+vuejs-storage@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/vuejs-storage/-/vuejs-storage-1.0.3.tgz#a8ea569a6af4122988edad532c39b33a7167e614"
 
 watchpack@^1.4.0:
   version "1.4.0"

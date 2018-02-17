@@ -6,10 +6,19 @@ class UserRegistrationsController < ApplicationController
   SATURDAY = 6
 
   def index
-
     @registration = RegistrationForm.new
     @categorized_menus = MenuCategory.published_menus
+    @menus_with_category = Menu.group_by_category_names
     @plans = Plan.all.sort
+    fresh_when etag: [
+      @registration,
+      @menus_with_category,
+      @plans,
+      @allowed_zip_codes,
+      @tax_rate,
+      @dates,
+      @plan
+    ]
   end
 
   def create
@@ -31,12 +40,24 @@ class UserRegistrationsController < ApplicationController
   private
 
   def set_dates
-    @date = Date.current
-    @earliest_monday = @date.wday == 1 ? @date : @date.next_week(:monday)
-    @earliest_sunday = @date.wday.zero? ? @date : get_sunday
+    @date = Time.current
+    @earliest_monday = @date.wday == 1 ? next_monday_if_past_noon : @date.next_week(:monday)
+    @earliest_sunday = @date.wday.zero? ? next_sunday_if_past_noon : next_sunday
   end
 
-  def get_sunday
+  def next_monday_if_past_noon
+    @date >= closed_time ? @date.next_week(:monday) : @date
+  end
+
+  def next_sunday_if_past_noon
+    @date >= closed_time ? @date + 7.days : @date
+  end
+
+  def closed_time
+    Time.zone.parse '11:00 am'
+  end
+
+  def next_sunday
     days_to_add = 7 - @date.wday
     return @date + days_to_add.days if days_to_add > 0
     @date.next_week(:sunday)
@@ -70,7 +91,7 @@ class UserRegistrationsController < ApplicationController
             :billing_phone_number,
             :stripe_token,
             :card_brand,
-            orders: [:order_date, menu_ids: [], quantities: [], add_ons: [ :ids ]],
+            orders: [:order_date, menu_ids: [], quantities: [], add_ons: [:ids]],
             addresses: %i[
               line1
               line2
@@ -84,7 +105,7 @@ class UserRegistrationsController < ApplicationController
   end
 
   def set_allowed_zip
-    @allowed_zip_codes = AllowedZipCode.all.map(&:zip)
+    @allowed_zip_codes = AllowedZipCode.pluck(&:zip)
   end
 
   def set_date
@@ -92,9 +113,7 @@ class UserRegistrationsController < ApplicationController
   end
 
   def user_exists?
-    if current_user
-      redirect_to root_url, notice: 'Already signed up'
-    end
+    redirect_to root_url, notice: 'Already signed up' if current_user
   end
 
   def set_tax

@@ -9,6 +9,7 @@ class Admin::MenusController < Admin::BaseController
     @menus = MenuCategory.all.includes(menus: [:unit, :asset])
     @menu_category = MenuCategory.new
     @menu_category.add_ons.build
+    @menu_items = Menu.order(name: :asc)
   end
 
   # GET /menus/1
@@ -77,15 +78,15 @@ class Admin::MenusController < Admin::BaseController
       .permit(
         :name,
         :asset_id,
+        :description,
+        :unit_size,
+        :item_number,
         :price,
         :unit_id,
         :menu_category_id,
-        :diet_category_id,
+        diet_category_ids: [],
         add_on_ids: [],
-        inventory_attributes: [
-          :id,
-          :quantity
-        ]
+        inventory_attributes: [ :quantity, :id ]
       )
   end
 end

@@ -86,21 +86,25 @@ option_4 = Plan.find_by_name('Option 4')
 option_1.update_attributes(
   short_description: '$20/day. $400/month',
   description: '20 daily deliveries. Just choose your start date.
-  This plan covers up to $20 of choices from our menu. 
+  This plan covers up to $20 of choices from our menu.
   Any amount above your option plan will be charged accordingly.',
 )
 
 option_2.update_attributes(
   short_description: '$14.95/day $299/month',
-  description: 'Group Plan. With a minimum of 5 orders/day, you can take advantage of our better group rate! Siimply share the given code with at least two other individuals who then place their own orders to take advantage of the discounted pricing. All orders must all be shipped to the same address. 
-  This plan covers up to $14.95 of choices from our menu. 
-  Any amount above your option plan will be charged accordingly.'
+  description: 'Group plan for 5 or more. Order food with at least 4
+  other individuals to take advantage of our better group rate.
+  Simply share the given group code with at least 4 other individuals.
+  These individuals will place their own orders and type in the group
+  code during their individual checkout process. The group code
+  must be used on all five orders, and the food must all be delivered
+  to the same address to take advantage of the discount pricing. '
 )
 
 option_3.update_attributes(
   short_description: '$10/day $200/month',
   description: '20 daily deliveries for 20 delivery days from your start date.
-  This plan covers up to $10 of choices from our menu. 
+  This plan covers up to $10 of choices from our menu.
   Any amount above your option plan will be charged accordingly.',
   shipping_fee: 40,
   shipping_note: '$40 Flat Monthly Delivery Fee.'

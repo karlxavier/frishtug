@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/bcoia/trix.git
+  revision: 19c972e6766452bc3920fddb6beda6411d89dc92
+  specs:
+    trix (0.11.0)
+      rails (> 4.1, < 5.2)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -187,7 +194,7 @@ GEM
     httparty (0.15.6)
       multi_xml (>= 0.5.2)
     httpauth (0.2.1)
-    i18n (0.9.1)
+    i18n (0.9.3)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
     io-like (0.3.0)
@@ -235,14 +242,14 @@ GEM
     mini_magick (4.8.0)
     mini_mime (1.0.0)
     mini_portile2 (2.3.0)
-    minitest (5.11.1)
+    minitest (5.11.3)
     msgpack (1.2.0)
     multi_json (1.13.1)
     multi_xml (0.6.0)
     multipart-post (2.0.0)
     netrc (0.11.0)
     nio4r (2.2.0)
-    nokogiri (1.8.1)
+    nokogiri (1.8.2)
       mini_portile2 (~> 2.3.0)
     oauth (0.5.4)
     oauth2 (0.6.1)
@@ -252,6 +259,10 @@ GEM
     orm_adapter (0.5.0)
     os (0.9.6)
     pg (0.21.0)
+    pg_search (2.1.2)
+      activerecord (>= 4.2)
+      activesupport (>= 4.2)
+      arel (>= 6)
     piet (0.2.6)
       png_quantizator
     png_quantizator (0.2.1)
@@ -270,7 +281,7 @@ GEM
       pry (>= 0.10.4)
     public_suffix (3.0.1)
     puma (3.11.0)
-    rack (2.0.3)
+    rack (2.0.4)
     rack-mini-profiler (0.10.7)
       rack (>= 1.2.0)
     rack-protection (2.0.0)
@@ -409,8 +420,6 @@ GEM
     thor (0.20.0)
     thread_safe (0.3.6)
     tilt (2.0.8)
-    trix (0.11.1)
-      rails (> 4.1, < 5.2)
     tzinfo (1.2.4)
       thread_safe (~> 0.1)
     uglifier (4.1.3)
@@ -457,7 +466,7 @@ DEPENDENCIES
   activerecord-import (~> 0.21.0)
   barby
   better_errors
-  bootsnap (~> 1.1, >= 1.1.3)
+  bootsnap
   bootstrap (~> 4.0.0.beta2)
   brakeman
   bullet
@@ -485,6 +494,7 @@ DEPENDENCIES
   listen (>= 3.0.5, < 3.2)
   mini_magick
   pg (~> 0.18)
+  pg_search
   piet
   poltergeist
   popper_js (~> 1.12.1)
@@ -509,13 +519,16 @@ DEPENDENCIES
   spring-commands-rspec
   spring-watcher-listen (~> 2.0.0)
   stripe
-  trix
+  trix!
   tzinfo-data
   uglifier (>= 1.3.0)
   uploadcare-rails (~> 1.1)
   virtus
   web-console (>= 3.3.0)
   webpacker
+
+RUBY VERSION
+   ruby 2.4.1p111
 
 BUNDLED WITH
    1.16.1

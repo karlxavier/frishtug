@@ -1,0 +1,23 @@
+<h4 class="text-uppercase font-size-18">Bill History</h4>
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <td>Source</td>
+      <td>Amount</td>
+      <td>Description</td>
+      <td>Date</td>
+    </tr>
+  </thead>
+  <tbody>
+    <% @bill_histories.each do |bill_history| %>
+      <tr class="<%= bill_history.id %>">
+        <td><%= bill_history.source.brand %> <%= "****#{bill_history.source.last4}" %></td>
+        <td><%= to_currency(bill_history.amount / 100) %></td>
+        <td><%= bill_history.description || 'Subscription charge' %></td>
+        <td><%= Time.at(bill_history.created).strftime('%b %d, %Y @ %I:%M %P') %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @bill_histories %>

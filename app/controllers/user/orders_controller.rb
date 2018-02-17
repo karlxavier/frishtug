@@ -1,25 +1,59 @@
 class User::OrdersController < User::BaseController
-  before_action :set_order, only: [:store, :remove]
-  before_action :set_menu, only: [:store, :remove]
-  respond_to :js, only: [:store, :remove]
+  before_action :set_order, :set_menu, :set_cart, only: [:store, :remove]
+  respond_to :js
 
   def store
-    @order.menus << @menu
-    @order.save
-    respond_with(@order, @menu, menu_size)
+    if @cart.place_order(@menu, quantity, add_on_id)
+      respond_with(@order, @menu, menu_size)
+    end
   end
 
   def remove
-    menus = @order.menus.where(id: params[:menu_id])
-    size = menus.size
-    @order.menus.delete(@menu)
-    if size > 1
-      (size - 1).times { @order.menus << @menu }
+    if @cart.remove_order(@menu, quantity, add_on_id)
+      respond_with(@order, @menu, menu_size)
     end
-    respond_with(@order, @menu, menu_size)
+  end
+
+  def persist
+    @order = Order.find(order_id)
+    charge_user!
+    if @order.fresh?
+      @order.update_attributes(order_date: Time.current, status: :processing)
+    end
   end
 
   private
+
+  def charge_user!
+    if current_user.subscribed?
+      plan_limit = current_user.plan.limit
+      amount_to_pay = OrderCalculator.new(@order).total_excess(plan_limit)
+      create_excess_charge!(amount_to_pay) if amount_to_pay > 0
+    else
+      amount_to_pay = OrderCalculator.new(@order).total
+      create_charge!(amount_to_pay)
+    end
+  end
+
+  def create_excess_charge!(amount_to_pay)
+    StripeCharger.new(current_user, amount_to_pay).charge_excess!
+  end
+
+  def create_charge!(amount_to_pay)
+    StripeCharger.new(current_user, amount_to_pay).run
+  end
+
+  def order_id
+    params[:order_id]
+  end
+
+  def add_on_id
+    params[:add_on_id]
+  end
+
+  def quantity
+    params[:quantity]
+  end
 
   def placed_on
     Time.zone.parse(params[:date])
@@ -33,7 +67,12 @@ class User::OrdersController < User::BaseController
     @menu = Menu.find(params[:menu_id])
   end
 
+  def set_cart
+    @cart = ShoppingCart.new(@order)
+  end
+
   def menu_size
-    @menu_size = @order.menus.where(id: params[:menu_id]).size
+    menu = @order.menus_orders.where(menu_id: @menu.id).first || NullMenuOrders.new(@menu)
+    @menu_size = menu.quantity
   end
 end

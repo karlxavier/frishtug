@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180111072454) do
+ActiveRecord::Schema.define(version: 20180210054010) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,8 +20,9 @@ ActiveRecord::Schema.define(version: 20180111072454) do
     t.bigint "menu_category_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.decimal "price", precision: 8, scale: 2
+    t.bigint "menu_id"
     t.index ["menu_category_id"], name: "index_add_ons_on_menu_category_id"
+    t.index ["menu_id"], name: "index_add_ons_on_menu_id"
   end
 
   create_table "add_ons_menus", force: :cascade do |t|
@@ -158,6 +159,15 @@ ActiveRecord::Schema.define(version: 20180111072454) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "diet_categories_menus", force: :cascade do |t|
+    t.bigint "diet_category_id"
+    t.bigint "menu_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["diet_category_id"], name: "index_diet_categories_menus_on_diet_category_id"
+    t.index ["menu_id"], name: "index_diet_categories_menus_on_menu_id"
+  end
+
   create_table "documents", force: :cascade do |t|
     t.string "file"
     t.datetime "created_at", null: false
@@ -181,6 +191,7 @@ ActiveRecord::Schema.define(version: 20180111072454) do
     t.datetime "transaction_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "quantity_on_hand"
     t.index ["inventory_id"], name: "index_inventory_transactions_on_inventory_id"
   end
 
@@ -188,6 +199,10 @@ ActiveRecord::Schema.define(version: 20180111072454) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "display_order"
+    t.boolean "part_of_plan", default: true
+    t.index ["display_order"], name: "index_menu_categories_on_display_order"
+    t.index ["part_of_plan"], name: "index_menu_categories_on_part_of_plan"
   end
 
   create_table "menus", force: :cascade do |t|
@@ -195,7 +210,6 @@ ActiveRecord::Schema.define(version: 20180111072454) do
     t.decimal "price", precision: 8, scale: 2
     t.bigint "unit_id"
     t.bigint "menu_category_id"
-    t.bigint "diet_category_id"
     t.datetime "published_at"
     t.boolean "published"
     t.datetime "created_at", null: false
@@ -206,7 +220,6 @@ ActiveRecord::Schema.define(version: 20180111072454) do
     t.text "description"
     t.bigint "asset_id"
     t.index ["asset_id"], name: "index_menus_on_asset_id"
-    t.index ["diet_category_id"], name: "index_menus_on_diet_category_id"
     t.index ["item_number"], name: "index_menus_on_item_number", unique: true
     t.index ["menu_category_id"], name: "index_menus_on_menu_category_id"
     t.index ["unit_id"], name: "index_menus_on_unit_id"
@@ -252,7 +265,9 @@ ActiveRecord::Schema.define(version: 20180111072454) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "order_date"
+    t.integer "series_number"
     t.index ["order_date"], name: "index_orders_on_order_date"
+    t.index ["series_number"], name: "index_orders_on_series_number"
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
@@ -271,6 +286,8 @@ ActiveRecord::Schema.define(version: 20180111072454) do
     t.integer "users_count", default: 0
     t.string "for_type"
     t.string "short_description", limit: 150
+    t.decimal "limit", precision: 8, scale: 2
+    t.decimal "minimum_credit_allowed", precision: 8, scale: 2
     t.index ["stripe_plan_id"], name: "index_plans_on_stripe_plan_id"
   end
 
@@ -358,6 +375,7 @@ ActiveRecord::Schema.define(version: 20180111072454) do
   end
 
   add_foreign_key "add_ons", "menu_categories"
+  add_foreign_key "add_ons", "menus"
   add_foreign_key "add_ons_menus", "add_ons"
   add_foreign_key "add_ons_menus", "menus"
   add_foreign_key "allowed_zip_codes", "stores"
@@ -372,7 +390,6 @@ ActiveRecord::Schema.define(version: 20180111072454) do
   add_foreign_key "inventories", "menus"
   add_foreign_key "inventory_transactions", "inventories"
   add_foreign_key "menus", "assets"
-  add_foreign_key "menus", "diet_categories"
   add_foreign_key "menus", "menu_categories"
   add_foreign_key "menus", "units"
   add_foreign_key "menus_orders", "menus"

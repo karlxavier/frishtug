@@ -20,9 +20,26 @@ class StripeCharger
     false
   end
 
+  def charge_excess!
+    Stripe::Charge.create(
+      amount: to_cents(amount),
+      currency: 'usd',
+      customer: @user.stripe_customer_id,
+      description: "Excess charge"
+    )
+    true
+  rescue Stripe::InvalidRequestError => e
+    errors.add(:base, e.message)
+    false
+  end
+
   private
 
   attr_accessor :amount, :user
+
+  def to_cents(amount)
+    (amount * 100).to_i
+  end
 
   def amount_to_cents
     ((amount + user.plan.shipping_fee).to_f * 100).to_i

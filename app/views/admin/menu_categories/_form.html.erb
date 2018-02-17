@@ -14,6 +14,14 @@
     <%= form.label :name %>
     <input type="text" id="menu_category_name" name="menu_category[name]" v-model="menu_category.name" class="form-control">
   </div>
+  <div class="form-group">
+    <%= form.label :part_of_plan %>
+    <%= form.select :part_of_plan, [['True', true], ['False', false]], {}, class: 'form-control' %>
+  </div>
+  <div class="form-group">
+    <%= form.label :display_order %>
+    <%= form.select :display_order, (1..MenuCategory.count).collect { |n| n }, {include_blank: true}, class: 'form-control' %>
+  </div>
   <h5>
     Add-ons
     <a href="javascript:void(0)" @click="addAddons" class="chocolate-font-color">
@@ -29,14 +37,14 @@
         class="form-control"
         :id="'menu_category_addons_name' + (index !== 0 ? `_${index}` : '')">
 
-      <label :for="'menu_category_addons_price' + (index !== 0 ? `_${index}` : '')">Price</label>
-      <input type="number"
-        :name="`menu_category[add_ons_attributes][${index}][price]`"
-        v-model="addons.price"
-        class="form-control"
-        :id="'menu_category_addons_price' + (index !== 0 ? `_${index}` : '')"
-        step="0.01"
-        >
+      <label :for="'menu_category_addons_menu_id' + (index !== 0 ? `_${index}` : '')">Link to an item in your menu</label>
+      <%= select_tag :menu_category_addons_menu_id,
+          options_from_collection_for_select(@menu_items, :id, :name),
+          include_blank: true,
+          class: 'form-control',
+          ":id": "'menu_category_addons_menu_id' + (index !== 0 ? `_${index}` : '')",
+          ":name": "`menu_category[add_ons_attributes][${index}][menu_id]`",
+          "v-model": "addons.menu_id" %>
 
       <input type="hidden"
         :name="`menu_category[add_ons_attributes][${index}][_destroy]`"

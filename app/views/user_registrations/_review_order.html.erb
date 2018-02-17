@@ -1,12 +1,6 @@
 <div class="row justify-content-center align-items-center" id="review_order" style="height: 503px; margin-bottom: 0.5rem;">
   <div class="col-md-4">
     <div class="col-12">
-      <div class="errors" v-if="error_messages.length > 0">
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-          <strong>Opps!..</strong>
-          {{ error_messages }}
-        </div>
-      </div>
       <h3 class="text-uppercase text-center font-family-montserrat-medium font-size-24 mb-30px">
         Review Order
       </h3>
@@ -15,16 +9,19 @@
         <div class="col-5 font-family-lato-bold font-size-14">Choosen Plan</div>
         <div class="col-7">{{ plan.name }}</div>
       </div>
-
-      <div class="row review-step__margin-b25" v-if="interval === 'month'">
-        <div class="col-5 font-family-lato-bold font-size-14">5 meals per week</div>
-        <div class="col-7">{{ plan.price | to_currency }}</div>
-      </div>
-      <div class="row review-step__margin-b25" v-else>
-        <div class="col-5 font-family-lato-bold font-size-14">Total meals price</div>
+      <div class="row review-step__margin-b25">
+        <div class="col-5 font-family-lato-bold font-size-14" v-if="interval === 'month'">5 meals per week</div>
+        <div class="col-5 font-family-lato-bold font-size-14" v-else>Total meals price</div>
         <div class="col-7">{{ totalCartPrice() | to_currency }}</div>
       </div>
-
+      <div class="row review-step__margin-b25">
+        <div class="col-5 font-family-lato-bold font-size-14">
+          Additional Charges
+        </div>
+        <div class="col-7">
+          {{ additionalCharges() | to_currency }}
+        </div>
+      </div>
       <div class="row review-step__margin-b25">
         <div class="col-5 font-family-lato-bold font-size-14">Shipping</div>
         <div class="col-7">{{ plan.shipping_fee | get_shipping_fee }}</div>
@@ -48,6 +45,14 @@
         </div>
       </div>
       <hr>
+    </div>
+    <div class="col-12">
+      <div class="errors" v-if="error_messages.length > 0">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <strong>Opps!..</strong>
+          {{ error_messages }}
+        </div>
+      </div>
     </div>
     <div class="col-12 text-center">
       <button

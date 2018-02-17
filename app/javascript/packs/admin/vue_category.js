@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
         this.menu_category.add_ons_attributes.push({
           id: null,
           name: null,
-          price: null,
+          menu_id: null,
           _destroy: null
         })
       },

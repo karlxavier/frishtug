@@ -1,18 +1,33 @@
 <div class="row">
-  <div class="col meals__container" id="meals-tab-container">
-    <vue-tabs type="pills" @tab-change="handleTabChange">
-      <% categorized_menus.each_with_index do |category, index| %>
-        <v-tab title="<%= category.name.titleize %>">
-          <%= render 'legends' %>
-          <div class="row" id="<%= category.name.parameterize %>">
-            <div class="container-fluid">
-              <div class="row">
-                <%= render partial: 'menus/menu_with_controls', collection: category.menus, as: :menu, locals: {type: type} %>
-              </div>
+  <div :class="shopping_cart_shown ? 'col-md-9' : 'col'" v-if="interval === 'month'">
+    <div class="menu-items__container_for_five_days">
+      <vue-tabs>
+        <% (1..5).each do |n| %>
+          <v-tab :title="date_names[<%= n - 1 %>]">
+            <div id="day-<%= n %>" class="tab_pane mt-3">
+              <%= render 'meals_lists', { menus_with_category: @menus_with_category, type: "day_#{n}" }%>
             </div>
-          </div>
-        </v-tab>
-      <% end %>
-    </vue-tabs>
+          </v-tab>
+        <% end %>
+      </vue-tabs>
+      <a href="javascript:void(0)"
+        class="btn btn-outline-dark btn-sm font-size-12 shopping-cart__shown_btn"
+        @click="showShoppingCart"
+        v-if="!shopping_cart_shown">
+        Show Meals
+      </a>
+    </div>
+  </div>
+
+  <div :class="shopping_cart_shown ? 'col-md-9' : 'col'" v-else>
+    <a href="javascript:void(0)"
+      class="btn btn-outline-dark btn-sm font-size-12 shopping-cart__shown_btn"
+      @click="showShoppingCart"
+      v-if="!shopping_cart_shown">
+      Show Meals
+    </a>
+    <div id="single_order" class="mt-3 menu-item__container">
+      <%= render 'meals_lists', { menus_with_category: @menus_with_category, type: "single" } %>
+    </div>
   </div>
 </div>

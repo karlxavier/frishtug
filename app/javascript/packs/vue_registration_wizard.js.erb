@@ -1,14 +1,15 @@
+/* eslint semi: ["error", "never"] */
 import VueFormWizard from 'vue-form-wizard'
+import vuejsStorage from 'vuejs-storage'
 import VueTabs from 'vue-nav-tabs'
 import VueMask from 'v-mask'
 import Vue from 'vue/dist/vue.esm'
-import swal from 'sweetalert2'
-import {pulse_loader} from './lib/loaders'
 import {get} from './lib/ajax_lib'
 import {shoppingCart, shoppingCartInit, registerShoppingCartListener, addToShoppingCart, removeFromShoppingCart} from './simple_cart'
 import toCurrency from './lib/to_currency'
 import totalPrice from './filters/total_price'
 import toFixed from './lib/to_fixed'
+import moment from 'moment'
 
 
 // filters
@@ -19,81 +20,134 @@ Vue.filter('total_price', totalPrice)
 Vue.use(VueFormWizard)
 Vue.use(VueTabs)
 Vue.use(VueMask)
+Vue.use(vuejsStorage)
 
 // Days
 const mondayToFriday = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
 const sundayToThursday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"]
+
 const UserSelectedPlans = localStorage.getItem('plans')
 let planObj
 if (UserSelectedPlans !== 'null') {
   const plan = JSON.parse(UserSelectedPlans)
   planObj = plan
-  if (plan.interval == 'month') {
-    planObj.plan_minimum = parseFloat(plan.price) / 20
-  }
+  planObj.minimum_credit_allowed = parseFloat(plan.minimum_credit_allowed)
+  planObj.limit = parseFloat(plan.limit)
   if (planObj.shipping_fee == null) { planObj.shipping_fee = 0 }
 } else {
-  planObj = { id: 0, name: '', price: 0, shipping_fee: 0, interval: '', plan_minimum: 0}
+  planObj = {
+    id: 0,
+    name: '',
+    price: 0,
+    shipping_fee: 0,
+    interval: '',
+    plan_minimum: 0,
+    limit: 0,
+    minimum_credit_allowed: 0
+  }
+}
+
+const getExcessAmount = (vm) => {
+  let price = 0
+  const limit = parseFloatingNumber(vm.plan_limit)
+  if (vm.cart[0]) {
+    let i
+    for (i=0; i <= 4; i++) {
+      const currentCartItems = vm.cart[0][`day_${i+1}`]
+      const total_prices = currentCartItems.map( item => item.price)
+                                        .reduce( (sum, price) => {
+                                          return sum += parseFloatingNumber(price)
+                                        }, 0)
+
+
+      const add_ons_price = currentCartItems.map( i => {
+        return i.add_ons.map( a => a.price).reduce( (sum, d) => sum += parseFloatingNumber(d), 0)
+      })
+
+      const add_ons_total_price = add_ons_price.length > 0 ? add_ons_price.reduce( (sum, a) => sum + a) : 0
+
+      const totalItemPrice = total_prices + add_ons_total_price
+      price += (totalItemPrice - limit) > 0 ? (totalItemPrice - limit) : 0
+    }
+  }
+  return price
+}
+
+
+const parseFloatingNumber = (num) => {
+  const val = parseFloat(num)
+  return isNaN(val) ? 0 : val
 }
 
 const registrationForm = new Vue({
   el: '#registration-form',
-  data: {
-    plan: {
-      id: planObj.id,
-      name: planObj.name,
-      price: planObj.price,
-      shipping_fee: planObj.shipping_fee
+  storage: {
+    data: {
+      user: {
+        first_name: '',
+        last_name: '',
+        email: '',
+        password: ''
+      },
+      plan: {
+        id: planObj.id,
+        name: planObj.name,
+        price: planObj.price,
+        shipping_fee: planObj.shipping_fee
+      },
+      first_delivery_date: '',
+      payment_method: 'credit_card',
+      different_billing: false,
+      delivery_date: '',
+      stripe_key: '<%= STRIPE_PUBLIC_KEY %>',
+      billing_address: [{
+        address_line1: '',
+        address_line2: '',
+        address_city: '',
+        address_state: '',
+        address_zip: '',
+        address_country: 'US',
+        address_location_at: 'at_work'
+      }],
+      credit_card_billing_address: {
+        address_line1: '',
+        address_line2: '',
+        address_city: '',
+        address_state: '',
+        address_country: 'US',
+        address_zip: ''
+      },
+      credit_card: {
+        number: null,
+        cvc: null,
+        exp_month: '',
+        exp_year: ''
+      },
+      bank_account: {
+        country: 'US',
+        currency: 'usd',
+        routing_number: null,
+        account_number: null,
+        account_holder_name: null,
+        account_holder_type: 'individual'
+      },
+      error_messages: '',
+      tab_titles: mondayToFriday,
+      allowed_zip_codes: JSON.parse(localStorage.getItem('allowed_zip_codes')),
+      interval: planObj.interval,
+      delivery_dates: [],
+      date_names: mondayToFriday,
+      calendars: '',
+      cart: [],
+      plan_minimum: planObj.minimum_credit_allowed,
+      plan_limit: planObj.limit,
+      shopping_cart_shown: true,
+      tax_rate: parseFloat(localStorage.getItem('tax_rate')),
+      phone_number: null,
+      schedule: null,
     },
-    first_delivery_date: '',
-    payment_method: 'credit_card',
-    different_billing: false,
-    delivery_date: '',
-    stripe_key: '<%= STRIPE_PUBLIC_KEY %>',
-    billing_address: [{
-      address_line1: '',
-      address_line2: '',
-      address_city: '',
-      address_state: '',
-      address_zip: '',
-      address_country: 'US',
-      address_location_at: 'at_work'
-    }],
-    credit_card_billing_address: {
-      address_line1: '',
-      address_line2: '',
-      address_city: '',
-      address_state: '',
-      address_country: 'US',
-      address_zip: ''
-    },
-    credit_card: {
-      number: null,
-      cvc: null,
-      exp_month: '',
-      exp_year: ''
-    },
-    bank_account: {
-      country: 'US',
-      currency: 'usd',
-      routing_number: null,
-      account_number: null,
-      account_holder_name: null,
-      account_holder_type: 'individual'
-    },
-    error_messages: '',
-    tab_titles: mondayToFriday,
-    allowed_zip_codes: JSON.parse(localStorage.getItem('allowed_zip_codes')),
-    interval: planObj.interval,
-    delivery_dates: [],
-    date_names: mondayToFriday,
-    calendars: '',
-    current_date: new Date(localStorage.getItem('current_date_est')),
-    cart: [],
-    plan_minimum: planObj.plan_minimum,
-    shopping_cart_shown: true,
-    tax_rate: parseFloat(localStorage.getItem('tax_rate')),
-    phone_number: null
+    namespace: 'user_registrations',
+    storage: sessionStorage,
   },
   filters: {
     get_num: (val) => parseInt(val.match(/\d+/)[0]) - 1,
@@ -107,6 +161,27 @@ const registrationForm = new Vue({
     }
   },
   methods: {
+    hasAvailableCredit: function(price) {
+      const self = this
+      const minimum = parseFloatingNumber(self.plan_minimum)
+      const limit = parseFloatingNumber(self.plan_limit)
+      const parsedPrice = parseFloatingNumber(price)
+      const remainingCredit = limit - parsedPrice
+
+      if (remainingCredit <= 0) {
+        return false
+      } else if (parsedPrice >= minimum) {
+        return true
+      }
+    },
+    additionalCharges: function() {
+      const self = this
+      if (self.interval === 'month' && self.cart) {
+        return getExcessAmount(self)
+      } else {
+        return 0
+      }
+    },
     totalPlusAddOn: (items) => {
       const self = registrationForm
       return items.reduce( (sum, item) => {
@@ -173,12 +248,18 @@ const registrationForm = new Vue({
     removeTaxFromPrice: function(price) {
       return toFixed((price - getTax(price, this.tax_rate)), 2)
     },
-    showShoppingCart: function() { this.shopping_cart_shown = true },
-    hideShoppingCart: function() { this.shopping_cart_shown = false },
+    showShoppingCart: function() {
+      setTimeout(scroller, 50)
+      this.shopping_cart_shown = true
+    },
+    hideShoppingCart: function() {
+      setTimeout(scroller, 50)
+      this.shopping_cart_shown = false
+    },
     totalCartPricePlusShippingFee: function(){
       const self = this
       if (self.interval === 'month') {
-        return self.plan.price + parseFloat(self.plan.shipping_fee)
+        return self.plan.price + parseFloat(self.plan.shipping_fee) + getExcessAmount(self)
       } else {
         const total = self.cart.reduce( (sum, item) => { return sum += parseFloat(item.price) }, 0)
         const finalTotal = total > parseFloat(self.plan.price) ? total : self.plan.price
@@ -247,8 +328,17 @@ const registrationForm = new Vue({
         aTag.classList.remove('active')
       })
     },
+    setSchedule: (date, schedule, event) => {
+      const _this = registrationForm
+      const els = document.querySelectorAll('.schedule-btns')
+      _this.schedule = schedule
+      _this.selectDay(date)
+      els.forEach(el => {
+        el.classList.remove('active')
+      })
+      event.target.classList.add('active')
+    },
     selectDay: (date) => {
-      console.log(date)
       const _this = registrationForm
       if (_this.interval === 'month') {
         getSchedule(date, _this)
@@ -258,11 +348,7 @@ const registrationForm = new Vue({
         _this.populateCalendar()
       }
     },
-    setInterVal: function(interval, planPrice, shipping_fee, name) {
-      if (interval === 'month') {
-        this.plan_minimum = parseFloat(planPrice) / 20
-      }
-
+    setInterVal: function(interval, planPrice, shipping_fee, name, limit, minimum_credit_allowed) {
       this.plan.name = name
       if (shipping_fee !== null) {
         this.plan.shipping_fee = shipping_fee
@@ -270,6 +356,8 @@ const registrationForm = new Vue({
         this.plan.shipping_fee = 0
       }
       this.plan.price = planPrice
+      this.plan_minimum = minimum_credit_allowed
+      this.plan_limit = limit
 
       this.interval = interval
       this.cart = []
@@ -298,7 +386,7 @@ const registrationForm = new Vue({
       return ''
     },
     formatDate: function(date) {
-      const d = new Date(date)
+      const d = moment(date).toDate()
       const days = [
         "Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"
       ];
@@ -321,10 +409,10 @@ const registrationForm = new Vue({
     },
     addressValidations: function() {
       const inputs = [
-        "[name='registration_form[line1]']",
-        "[name='registration_form[city]']",
-        "[name='registration_form[state]']",
-        "[name='registration_form[zip_code]']",
+        ".address-line1",
+        ".address-city",
+        ".address-state",
+        ".address-zip",
         "[name='registration_form[phone_number]']"
       ]
       return multiplePresenceValidator(inputs)
@@ -419,16 +507,46 @@ const registrationForm = new Vue({
       return true
     },
     showDate: (date) => {
-      const newDate = new Date(date)
+      const newDate = moment(date).toDate()
       return newDate.getDate()
     },
     isNotSaturday: (date) => {
-      const newDate = new Date(date)
+      const newDate = moment(date).toDate()
       return newDate.getDay() < 6
     },
     isDisabledDate: (date) => {
-      const theDate = new Date(date)
-      const currentDate = new Date(registrationForm.current_date)
+      const self = registrationForm
+      const currentDate = moment(localStorage.getItem('current_date_est')).toDate()
+      const theDate = moment(date).toDate()
+
+      if (!self) { return false }
+
+      const isSunday = (date) => {
+        const sunday = 0
+        return date.getDay() === sunday
+      }
+
+      const isFriday = (date) => {
+        const friday = 5
+        return date.getDay() === friday
+      }
+
+      const isMondayToFridaySchedule = () => {
+        if (self.interval !== 'month') return false
+        return self.schedule === 'monday_to_friday'
+      }
+
+      const isSundayToThursdaySchedule = () => {
+        if (self.interval !== 'month') return false
+        return self.schedule === 'sunday_to_thursday'
+      }
+
+      if (isMondayToFridaySchedule()) {
+        if(isSunday(theDate)) return true
+      } else if (isSundayToThursdaySchedule()) {
+        if(isFriday(theDate)) return true
+      }
+
       const isYesterdaysDate = theDate.getTime() < currentDate.getTime()
       if (isYesterdaysDate) {
         return true
@@ -443,6 +561,7 @@ const registrationForm = new Vue({
         date.setDate(date.getDate() + 1)
         return date.getTime()
       }
+
       const isDatePlusOne = theDate.getTime() === addOne(currentDate)
       if (isDatePlusOne) {
         return get({
@@ -510,8 +629,9 @@ const getTax = (price, tax_rate) => {
 
 const getSchedule = (date, vueModel) => {
   const _this = vueModel
+  const sched = _this.schedule
   get({
-    url: '/selected_dates?date=' + date
+    url: `/selected_dates?date=${date}&schedule=${sched}`
   }).then((response) => {
     const res = JSON.parse(response)
     const errorEl = document.querySelector('.calendar-errors')
@@ -630,18 +750,44 @@ const stripeResponseHandler = (status, response) => {
 
 const multiplePresenceValidator = (inputsNameClassOrIds) => {
   let invalid = 0
+  const invalidInputs = []
+  const inputs = []
   inputsNameClassOrIds.forEach( inputsNameClassOrId => {
-    const input = document.querySelector(`${inputsNameClassOrId}`)
-    if (!input) { return }
+    const inputsList = document.querySelectorAll(`${inputsNameClassOrId}`)
+    const validator = (input) => {
+      inputs.push(input)
+      if (!input) {
+        return
+      }
 
-    if (!valueValidator(input) || !input.checkValidity()) {
-      invalid++
+      if (!valueValidator(input)) {
+        invalidInputs.push(input)
+        invalid++
+      }
+
+      if(!input.checkValidity()) {
+        invalidInputs.push(input)
+        invalid++
+      }
     }
+    Array.from(inputsList).map(validator)
   })
 
+  const addIsInvalid = (input) => {
+    input.classList.add('is-invalid')
+  }
+
+  const removeIsInvalid = (input) => {
+    if(!input.classList.contains('is-invalid')) { return }
+    input.classList.remove('is-invalid')
+    input.classList.add('is-valid')
+  }
+
   if (invalid > 0) {
+    invalidInputs.map(addIsInvalid)
     return false
   } else {
+    inputs.map(removeIsInvalid)
     return true
   }
 }
@@ -649,10 +795,8 @@ const multiplePresenceValidator = (inputsNameClassOrIds) => {
 
 const valueValidator = (input) => {
   if (input.value.trim().length === 0) {
-    input.classList.add('is-invalid')
     return false
   } else {
-    input.classList.remove('is-invalid')
     return true
   }
 }
@@ -695,8 +839,34 @@ const changeCheckedTabs = () => {
   el.classList.add('container');
 }())
 
+const scroller = function() {
+  let cartSidebar = document.querySelector('.meal-sidebar')
+  let shoppingCartBtn = document.querySelector('.shopping-cart__shown_btn')
+  var y = window.pageYOffset
 
-const parseFloatingNumber = (num) => {
-  const val = parseFloat(num)
-  return isNaN(val) ? 0 : val
-}
+  const positionElelement = el => {
+    if (el) {
+      el.classList.add('position-fixed')
+      el.style.marginTop = '7rem'
+    }
+  }
+
+  const removePositioning = el => {
+    if (el) {
+      el.classList.remove('position-fixed')
+      el.style.marginTop = '0'
+    }
+  }
+
+
+  if (y >= 90) {
+    positionElelement(cartSidebar)
+    positionElelement(shoppingCartBtn)
+  } else {
+    removePositioning(cartSidebar)
+    removePositioning(shoppingCartBtn)
+  }
+};
+
+window.addEventListener("scroll", scroller);
+

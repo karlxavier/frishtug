@@ -2,16 +2,17 @@
 #
 # Table name: orders
 #
-#  id           :integer          not null, primary key
-#  user_id      :integer
-#  placed_on    :datetime
-#  eta          :datetime
-#  delivered_at :datetime
-#  status       :integer
-#  remarks      :string
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
-#  order_date   :datetime
+#  id            :integer          not null, primary key
+#  user_id       :integer
+#  placed_on     :datetime
+#  eta           :datetime
+#  delivered_at  :datetime
+#  status        :integer
+#  remarks       :string
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  order_date    :datetime
+#  series_number :integer
 #
 
 require 'rails_helper'

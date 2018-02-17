@@ -1,19 +1,57 @@
 <div class="row" id="meal-form__wrapper">
   <div class="col-9 col-md-9 col-lg-9" role="main" id="meal-form__container">
     <div class="row header py-4 meal-form__header border-bottom-grey mb-4">
-      <div class="col">
+      <div class="col-3">
         <%= back_to_index_link('', 'fa fa-angle-left') %>
         <%= "#{action_name.upcase} MEAL PLAN" %>
       </div>
-      <div class="col">
+      <div class="col-9">
         <div class="sidebar-controls float-right ml-4">
           <a href="javascript:void(0)" class="btn btn-outline-dark show-sidebar">Show Meals</a>
+        </div>
+        <div class="float-right ml-4 col-6 <%= 'd-none' if action_name == 'edit' %>">
+          <%= form_with url: user_duplicate_meals_path(date: params[:date], order: @orders.id),
+            class: 'form-inline', local: true do |f| %>
+            <div class="input-group">
+              <%= f.select :order_id,
+                @user_order_options,
+                {}, class: 'form-control font-size-14' %>
+              <div class="input-group-append">
+                <%= f.button class: 'btn btn-brown', data: {
+                  toggle: 'tooltip',
+                  placement: 'top'
+                }, title: 'Duplicate Meal' do %>
+                  <i class="fa fa-copy"></i> Duplicate Meal
+                <% end %>
+              </div>
+            </div>
+          <% end %>
         </div>
         <div class="float-right">
           <%= format_date_AABBDD(params[:date]) %>
         </div>
       </div>
     </div>
+
+    <% unless action_name == 'edit' || !current_user.subscribed? %>
+      <div class="row mb-3">
+        <div class="col">
+          <ul class="nav nav-tabs">
+            <% @available_dates.each do |date| %>
+              <% url = new_user_weekly_meal_path(
+                            date: date, schedule: params[:schedule], current_date: params[:date]) %>
+              <li class="nav-item">
+                <a class="nav-link <%= 'active' if params[:date] == date.to_s %>"
+                  href="<%= url if date.to_s != params[:date] %>">
+                  <%= date.to_date.strftime('%^A') %>
+                </a>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    <% end %>
+
     <div class="row">
       <div class="col">
         <ul class="nav nav-pills justify-content-center" id="category_navs">

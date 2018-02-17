@@ -4,9 +4,12 @@
   $('#menu-item-modal .modal-title')
     .html('Update <%= @menu.name.humanize.capitalize %>')
   $('#menu-item-modal').modal('show');
-  <% if @menu.diet_category_id? %>
-      const label = document.querySelector('#menu-item-modal').querySelector('label[for="menu_diet_category_id_<%= @menu.diet_category_id %>"]');
-      label.classList.add('inverse');
+  <% if @menu.diet_category_ids.present? %>
+      const dietCategoryIds = <%= raw @menu.diet_category_ids %>;
+      dietCategoryIds.forEach( id => {
+        const label = document.querySelector('#menu-item-modal').querySelector(`label[for="menu_diet_category_ids_${id}"]`);
+        label.classList.add('inverse');
+      });
   <% end %>
   diet_category_init();
   init_dropzone();

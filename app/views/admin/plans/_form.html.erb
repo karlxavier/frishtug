@@ -10,7 +10,8 @@
   </div>
   <div class="form-group">
     <%= form.label :description %>
-    <%= form.trix_editor :description %>
+    <%= form.hidden_field :description, id: 'plan_description' %>
+    <trix-editor input="plan_description"></trix-editor>
   </div>
   <div class="form-group row">
     <div class="col">
@@ -31,12 +32,38 @@
   <div class="form-group">
     <%= form.label :price %>
     <div class="input-group">
-      <span class="input-group-addon" id="basic-addon1">$</span>
+      <div class="input-group-prepend">
+        <span class="input-group-text">$</span>
+      </div>
       <%= form.number_field :price, class: 'form-control', min: 0, step: '0.01' %>
     </div>
     <small id="priceHelp" class="form-text text-muted">
       Set the price base on the interval if it's month interval set it to the total price to be charge monthly.
       Set the price to the minimum price a user can purchase when set to single interval
+    </small>
+  </div>
+  <div class="form-group">
+    <%= form.label :limit %>
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text">$</span>
+      </div>
+      <%= form.number_field :limit, class: 'form-control', min: 0, step: '0.01' %>
+    </div>
+    <small id="limitHelp" class="form-text text-muted">
+      The maximum available credit limit for an order.
+    </small>
+  </div>
+  <div class="form-group">
+    <%= form.label :minimum_credit_allowed %>
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text">$</span>
+      </div>
+      <%= form.number_field :minimum_credit_allowed, class: 'form-control', min: 0, step: '0.01' %>
+    </div>
+    <small id="minimumcreditallowedHelp" class="form-text text-muted">
+      The minimum allowed credit for an order to continue.
     </small>
   </div>
   <div class="form-group">
@@ -46,7 +73,9 @@
   <div class="form-group d-none plan-shipping-fee fadeInUp">
     <%= form.label :shipping_fee %>
     <div class="input-group">
-      <span class="input-group-addon" id="basic-addon1">$</span>
+      <div class="input-group-prepend">
+        <span class="input-group-text">$</span>
+      </div>
       <%= form.number_field :shipping_fee, class: 'form-control', min: 0, step: '0.01' %>
     </div>
   </div>

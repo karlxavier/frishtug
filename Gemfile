@@ -39,7 +39,7 @@ gem 'jbuilder', '~> 2.5'
 gem 'activemerchant'
 gem 'activerecord-import', '~> 0.21.0'
 gem 'barby'
-gem 'bootsnap', '~> 1.1', '>= 1.1.3'
+gem 'bootsnap', require: false
 gem 'bootstrap', '~> 4.0.0.beta2'
 gem 'carrierwave'
 gem 'cloudinary'
@@ -61,9 +61,10 @@ gem 'roo-google'
 gem 'roo-xls'
 gem 'sidekiq'
 gem 'stripe'
-gem 'trix'
+gem 'trix', git: 'https://github.com/bcoia/trix.git'
 gem 'uploadcare-rails', '~> 1.1'
 gem 'virtus'
+gem 'pg_search'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

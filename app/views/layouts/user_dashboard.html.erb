@@ -16,11 +16,17 @@
     <%= yield :header_js %>
   </head>
   <body>
+    <%
+      root_container_class = 'container'
+      main_container_class = 'col-12 col-md-9 col-xl-10'
+      root_container_class = 'container-fluid' if is_ordering?
+      main_container_class = 'col-12 col-md-12 col-xl-12' if is_ordering?
+    %>
     <%= render 'user/user_navbar' %>
-    <div class="container pt-4" id="root-container">
+    <div class="<%= root_container_class %> pt-4" id="root-container">
       <div class="row">
-        <%= render 'user/user_sidebar' %>
-        <div class="col-12 col-md-9 col-xl-10" id="main-container" role="main-container">
+        <%= render 'user/user_sidebar' unless is_ordering? %>
+        <div class="<%= main_container_class %>" id="main-container" role="main-container">
           <%= render 'shared/flash' %>
           <%= yield %>
         </div>

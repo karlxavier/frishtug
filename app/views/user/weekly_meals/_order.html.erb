@@ -14,13 +14,13 @@
       <div class="col-6">
         <h6 class="text-uppercase"><%= category_name %></h6>
         <ul class="list-unstyled">
-        <% meals.each do |meal| %>
-          <li>
-            <%= meal.menu.name %>
-            <%= meal.add_ons_list %>
-            <%= "x #{meal.quantity}" %>
-          </li>
-        <% end %>
+          <% meals.each do |meal| %>
+            <li>
+              <%= meal.menu.name %>
+              <%= meal.add_ons_list %>
+              <%= "x #{meal.quantity}" %>
+            </li>
+          <% end %>
         </ul>
       </div>
     <% end %>

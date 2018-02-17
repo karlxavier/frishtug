@@ -2,47 +2,43 @@
   <div class="col-4">
     <%= render partial: 'user/weekly_meals/calendar', locals: {
       active_this_week: @active_this_week,
-      not_this_week: @not_this_week,
+      active_orders: @active_orders,
       calendar_date: @date,
+      available_dates: @available_dates,
       disable_right_control: false,
       disable_left_control: false
     } %>
 
     <%= render partial: 'user/weekly_meals/calendar', locals: {
       active_this_week: @active_this_week,
-      not_this_week: @not_this_week,
+      active_orders: @active_orders,
       calendar_date: @date.next_month,
+      available_dates: @available_dates,
       disable_right_control: true,
       disable_left_control: true
     } %>
-    <div class="row">
-      <div class="col">
-        <div class="form-check">
-          <%= check_box_tag 'copy_menu',
-              true,
-              @order_preference&.copy_menu || false,
-              class: 'form-check-input',
-              data: {
-                remote: true,
-                url: user_copy_meals_path,
-                method: "post"
-              } %>
-          <label class="form-check-label" for="copy_menu">
-            Copy Meals
-          </label>
-        </div>
-      </div>
-    </div>
+
+    <% if current_user.subscribed? %>
+      <%= render 'copy_form' %>
+    <% end %>
   </div>
 
-  <div class="col-8 px-4">
-    <div class="list-group">
-      <% @orders.each do |order| %>
-        <%= render 'order', order: order %>
-      <% end %>
+  <% unless current_user.subscribed? %>
+    <div class="col-8 px-4">
+      <div class="list-group">
+        <% @orders.each do |order| %>
+          <%= render 'order', order: order %>
+        <% end %>
+      </div>
     </div>
-  </div>
+  <% else %>
+    <%= render 'weekly_tabs', orders: @orders %>
+  <% end %>
 </div>
+
+<%= content_for :header_js do %>
+  <%= stylesheet_pack_tag 'styles/weekly_meals' %>
+<% end %>
 
 <%= content_for :footer_js do %>
   <%= javascript_pack_tag 'user/meal_copier' %>

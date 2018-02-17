@@ -31,10 +31,14 @@ namespace :user do
     collection do
       get :store
       get :remove
+      get :persist
     end
   end
   resources :set_default_payments, only: :create
   resources :scanovators, only: :index
   resources :complaints, only: :create
   resources :copy_meals, only: :create
+  resources :duplicate_meals, only: :create
+  resources :schedules, only: %i[index create]
+  resources :bill_histories, only: :index
 end

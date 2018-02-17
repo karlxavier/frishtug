@@ -35,3 +35,8 @@ dump.rdb
 
 # Ignore images under public/uploads
 public/uploads
+
+.tags
+.gemtags
+
+.DS_Store
