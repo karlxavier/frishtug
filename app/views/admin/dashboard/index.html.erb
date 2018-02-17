@@ -18,7 +18,7 @@
         </div>
         <div class="col pl-0">
           Daily Sales
-          <h2><%= to_currency(@order_query.current_sales) %></h2>
+          <h2><%= to_currency(@order_query.current_sales || 0) %></h2>
         </div>
       </div>
     </div>
