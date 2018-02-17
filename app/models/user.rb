@@ -51,6 +51,10 @@ class User < ApplicationRecord
   delegate :name, :id, :price, to: :plan, prefix: true, allow_nil: true
   delegate :phone_number, :id, to: :contact_number, prefix: true, allow_nil: true
 
+  def self.in_city(city)
+    joins(:addresses).merge(Address.where(city: city))
+  end
+
   def self.search(search_term)
     term = "%#{search_term}%"
     includes(:plan, :contact_number)

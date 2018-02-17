@@ -48,13 +48,11 @@ class OrderQuery
   end
 
   def orders_by_meal_plan
-    order_ids = MenusOrder.where(menu_id: menu_ids).map(&:order_id)
-    orders.where(id: order_ids)
+    orders.joins(:menus_orders).merge(MenusOrder.where(menu_id: menu_ids))
   end
 
   def orders_by_location
-    user_ids = Address.where(addressable_type: 'User', city: location).map(&:addressable_id)
-    orders.where(user_id: user_ids)
+    orders.joins(:user).merge(User.in_city(location))
   end
 
   def menu_ids
