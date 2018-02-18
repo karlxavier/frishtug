@@ -41,8 +41,8 @@ class UserRegistrationsController < ApplicationController
 
   def set_dates
     @date = Time.current
-    @earliest_monday = @date.wday == 1 ? next_monday_if_past_noon : @date.next_week(:monday)
-    @earliest_sunday = @date.wday.zero? ? next_sunday_if_past_noon : next_sunday
+    @earliest_monday = @date.sunday? ? (@date +1.day).next_week(:monday) : @date.next_week(:monday)
+    @earliest_sunday = next_sunday
   end
 
   def next_monday_if_past_noon

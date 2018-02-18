@@ -506,9 +506,14 @@ const registrationForm = new Vue({
       registerShoppingCartListener(registrationForm)
       return true
     },
-    showDate: (date) => {
+    showDate: (date, month) => {
+      const theMonth = moment(month, 'MMMM YYYY').toDate().getMonth()
       const newDate = moment(date).toDate()
-      return newDate.getDate()
+      if (theMonth === newDate.getMonth()) {
+        return newDate.getDate()
+      } else {
+        return null
+      }
     },
     isNotSaturday: (date) => {
       const newDate = moment(date).toDate()

@@ -13,8 +13,7 @@
     </a>
   </div>
 </div>
-
-<table class="calendar table table-bordered table-sm">
+<table :class="`${calendar.month} calendar table table-bordered table-sm`">
   <thead>
     <th class="text-center">S</th>
     <th class="text-center">M</th>
@@ -28,14 +27,15 @@
     <tr v-for="days in calendar.days">
       <td v-for="date in days">
         <span v-if="isDisabledDate(date)" class="disabled">
-          {{ showDate(date) }}
+          {{ showDate(date, calendar.month) }}
         </span>
+        <span v-else-if="showDate(date, calendar.month) === null"></span>
         <a
         href="javascript:void(0)"
         v-on:click="selectDay(date)"
         :class="`date-${date} calendar__date_item`"
         v-else>
-        {{ showDate(date) }}
+          {{ showDate(date, calendar.month) }}
         </a>
       </td>
     </tr>

@@ -1,7 +1,7 @@
 class PastNoonsController < ApplicationController
   before_action :set_current_time
   def index
-    render json: { is_past: !past_noon? }
+    render json: { is_past: past_noon? }
   end
 
   private
