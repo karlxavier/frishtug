@@ -4,6 +4,10 @@ class OrderCalculator
   end
 
   def total
+    sum_of(total_item_price, total_add_ons_price, shipping_fee)
+  end
+
+  def total_without_shipping
     sum_of(total_item_price, total_add_ons_price)
   end
 
@@ -12,12 +16,11 @@ class OrderCalculator
     total - plan_limit
   end
 
-
   def get_excess(plan_limit)
     orders = @order
     excess = []
     orders.each do |order|
-      total = self.class.new(order).total
+      total = self.class.new(order).total_without_shipping
       if total > plan_limit
         excess << total - plan_limit
       end
@@ -28,6 +31,11 @@ class OrderCalculator
   private
 
   attr_accessor :order
+
+  def shipping_fee
+    fee = Plan.pluck(:id, :shipping_fee).to_h
+    fee[order.user.plan_id] || 0
+  end
 
   def sum_of(*nums)
     nums.inject(:+)

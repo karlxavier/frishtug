@@ -32,6 +32,10 @@ class Plan < ApplicationRecord
   has_many :users
   has_many :comments, as: :commentable, dependent: :destroy
 
+  def self.best_seller
+    order(users_count: :desc).limit(1).first
+  end
+
   def types
     [['Individual', 'individual'], ['Group', 'group']]
   end

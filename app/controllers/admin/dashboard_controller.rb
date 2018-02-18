@@ -2,7 +2,7 @@ class Admin::DashboardController < Admin::BaseController
   before_action :set_date
 
   def index
-    @order_query = OrderQuery.new(range, location, meal_plan_ids)
+    @order_query = OrderQuery.new(range, location, meal_ids.compact.flatten)
   end
 
   private
@@ -19,7 +19,15 @@ class Admin::DashboardController < Admin::BaseController
     params[:location]
   end
 
-  def meal_plan_ids
-    params[:meal]
+  def meal_ids
+    get_meal_ids << meal
+  end
+
+  def meal
+    params[:meal]&.split(',')
+  end
+
+  def get_meal_ids
+    Menu.where('name ILIKE ?', params[:meal_name]).map(&:id)
   end
 end

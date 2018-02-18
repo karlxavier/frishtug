@@ -37,6 +37,8 @@
 <div class="tab-content">
   <div class="tab-pane fade" id="meal-plan-filter-tab" role="tabpanel">
     <%= form_with url: admin_dashboard_index_path, method: 'GET', local: true do |f| %>
+      <%= hidden_field_tag :date, params[:date] %>
+      <%= hidden_field_tag :meal, params[:meal] %>
       <div class="input-group mb-3">
         <%= f.text_field :meal_name, class: 'form-control' %>
         <div class="input-group-append">
@@ -44,6 +46,24 @@
         </div>
       </div>
     <% end %>
+    <div class="row meal-selection filter_meals">
+      <% @order_query.top_20_menu.each do |menus| %>
+        <ul class="list-unstyled col-3">
+          <% menus.each do |menu| %>
+            <li style="line-height: 2rem">
+              <label>
+                <%= check_box_tag('menus', menu.first.second, false, data: { target: '#filter-meal-btn'}) %>
+                <%= menu.first.first %>
+              </label>
+            </li>
+          <% end %>
+        </ul>
+      <% end %>
+    </div>
+    <%= link_to 'Apply Filter', request.params.merge(meal: nil), class: 'btn btn-brown', id: 'filter-meal-btn' %>
+    <%= link_to 'Cancel', 'javascript:void(0)', class: 'close-active-tab btn btn-outline-secondary', data: {
+      target_tablist: '#meal-plan-tab-item'
+    } %>
   </div>
   <div class="tab-pane fade" id="location-filter-tab" role="tabpanel">
   </div>

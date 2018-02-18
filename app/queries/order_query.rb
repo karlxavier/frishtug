@@ -1,9 +1,9 @@
 class OrderQuery
-  def initialize(date_range, location = nil, meal_plan_ids = nil)
+  def initialize(date_range, location = nil, meal_ids = nil)
     @date_range = date_range
     @orders = Order.includes(:menus)
     @location = location
-    @meal_plan_ids = meal_plan_ids
+    @meal_ids = meal_ids
   end
 
   def active_orders
@@ -27,28 +27,25 @@ class OrderQuery
   end
 
   def best_seller
-    best = { name: nil, size: 0 }
-    Plan.all.each do |p|
-      if p.users.size > best[:size]
-        best[:name] = p.name
-        best[:size] = p.users.size
-      end
-    end
-    best
+    Plan.best_seller
+  end
+
+  def top_20_menu
+    MenusOrder.top(20).to_a.in_groups_of(5)
   end
 
   private
 
-  attr_accessor :date_range, :orders, :meal_plan_ids, :location
+  attr_accessor :date_range, :orders, :meal_ids, :location
 
   def filtered_orders
-    return orders_by_meal_plan if meal_plan_ids.present?
+    return orders_by_meal_plan if meal_ids.present?
     return orders_by_location if location.present?
     orders
   end
 
   def orders_by_meal_plan
-    orders.joins(:menus_orders).merge(MenusOrder.where(menu_id: menu_ids))
+    orders.where(id: MenusOrder.where(menu_id: menu_ids).map(&:order_id).uniq)
   end
 
   def orders_by_location
@@ -56,7 +53,7 @@ class OrderQuery
   end
 
   def menu_ids
-    Menu.where(id: meal_plan_ids).map(&:id)
+    Menu.where(id: meal_ids).map(&:id)
   end
 
   def total(orders)

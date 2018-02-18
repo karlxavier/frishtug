@@ -21,4 +21,9 @@ class MenusOrder < ApplicationRecord
     return nil if add_ons.blank?
     "(#{AddOn.where(id: add_ons).map(&:name).join(', ')})"
   end
+
+  def self.top(number)
+    return nil if number.nil?
+    joins(:menu).group(:name, :menu_id).order('count_all desc').limit(number).count
+  end
 end

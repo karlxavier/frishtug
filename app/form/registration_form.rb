@@ -111,7 +111,7 @@ class RegistrationForm
     if referrer
       user.create_candidate!(referrer_id: referrer.id)
     else
-      @errors.add(:base, "Group code does not exists for #{group_code}")
+      errors.add(:base, "Group code does not exists for #{group_code}")
       raise ActiveRecord::StatementInvalid
     end
   end
@@ -121,7 +121,7 @@ class RegistrationForm
   end
 
   def create_orders(user)
-    orders.each do |key, o|
+    orders.each do |_key, o|
       if o[:order_date].present?
         add_ons = o[:add_ons]
         order = user.orders.create!(order_date: Time.current, placed_on: o[:order_date])
@@ -131,7 +131,7 @@ class RegistrationForm
           add_on_ids = []
           add_on_ids = add_ons[index.to_s][:ids].split(',') if add_ons.present?
           order.menus_orders
-            .create!(menu_id: id, quantity: quantities_array[index], add_ons: add_on_ids )
+               .create!(menu_id: id, quantity: quantities_array[index], add_ons: add_on_ids)
         end
         order.processing!
       else

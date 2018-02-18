@@ -1,4 +1,4 @@
-<div class="container-fluid mt-4">
+<div class="container-fluid mt-4 <%= order.id %>">
   <div class="row">
     <div class="col">
       <h5>
@@ -7,7 +7,6 @@
       </h5>
     </div>
   </div>
-
   <div class="row">
     <div class="col">
       <strong><%= order.user.full_name %></strong>
@@ -20,7 +19,6 @@
       NOTES
     </div>
   </div>
-
   <div class="row fade d-none" id="<%= "order-#{order.id}" %>">
     <div class="col-6">
       <%= render 'order_details', o: order %>

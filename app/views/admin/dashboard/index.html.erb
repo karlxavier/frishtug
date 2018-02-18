@@ -25,11 +25,11 @@
     <div class="col">
       <div class="row">
         <div class="col-3">
-            <%= svg_tag 'packs/images/thumbs-up.svg' %>
+          <%= svg_tag 'packs/images/thumbs-up.svg' %>
         </div>
         <div class="col pl-0">
-            Best Seller
-            <h2><%= @order_query.best_seller[:name] %></h2>
+          Best Seller
+          <h2><%= @order_query.best_seller.name %></h2>
         </div>
       </div>
     </div>
@@ -37,23 +37,20 @@
 </div>
 <%= card_container do %>
   <div id="frishtug_orders">
-  <h5><%= current_sale_date(@date) %> - Current Sales <%= to_currency(@order_query.current_sales) %></h5>
+    <h5><%= current_sale_date(@date) %> - Current Sales <%= to_currency(@order_query.current_sales) %></h5>
     <vue-tabs>
       <v-tab title="TODAY (<%= @order_query.active_orders.size %>)">
         <%= render partial: 'orders_today', collection: @order_query.active_orders, as: :order %>
       </v-tab>
-
       <v-tab title="IN TRANSIT (0)">
         Second tab content
       </v-tab>
-
       <v-tab title="COMPLETED (0)">
         Third tab content
       </v-tab>
     </vue-tabs>
   </div>
 <% end %>
-
 <%= content_for :footer_js do %>
   <%= javascript_pack_tag 'admin/orders' %>
   <%= javascript_pack_tag 'admin/dashboard_filter' %>
