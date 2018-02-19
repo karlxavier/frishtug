@@ -8,7 +8,7 @@
     <ul class="list-inline list-unstyled float-right nav nav-pills" role="tablist">
       <li class="list-inline-item">Filter by:</li>
       <li class="list-inline-item">
-        <a class="btn btn-sm btn-brown-outline-circled font-size-14"
+        <a class="btn btn-sm btn-matterhorn-outline-circled font-size-14"
           data-toggle="tab" role="tab"
           aria-controls="date-filter-tab" aria-selected="false"
           id="date-tab-item"
@@ -24,7 +24,7 @@
           <div class="admin-dashboard__calendar_container">
               <%= render 'admin/calendars/calendar', date: Date.current, selected_date: @date  %>
           </div>
-          <%= link_to 'Apply Filter',  admin_shoppings_lists_path(date: @date), class: 'btn btn-brown', id: 'filter-date-btn' %>
+          <%= link_to 'Apply Filter',  admin_shoppings_lists_path(date: @date), class: 'btn btn-matterhorn', id: 'filter-date-btn' %>
           <%= link_to 'Cancel', 'javascript:void(0)', class: 'close-active-tab btn btn-outline-secondary', data: {
             target_tablist: '#date-tab-item'
           } %>

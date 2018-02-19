@@ -1,8 +1,8 @@
 $light-bg: #f9f9f9;
 $muted-color: #acacac;
 $green-check-bg: #37c429;
-$chocolate: #562d07;
-$light-chocolate: #8b7562;
+$jambalaya: #582D11;
+$light-chocolate: lighten(#582D11, 10%);
 $allergens-color: #43ccff;
 $carb-free-color: #8dc63f;
 $sugar-free-color: #eaaf30;
@@ -15,6 +15,9 @@ $montserrat: 'Montserrat',
 sans-serif;
 $base-dark: #252525;
 $base-darker: #191919;
+$matterhorn: #4E3C44;
+
+
 html {
     /* Adjust font size */
     font-size: 100%;
@@ -130,55 +133,83 @@ h {
     text-transform: uppercase;
 }
 
-.btn-brown {
+.btn-matterhorn {
     color: $pure-white !important;
-    border-color: $chocolate;
-    background: $chocolate !important;
+    border-color: $matterhorn;
+    background: $matterhorn;
+
     &:hover,
-    &:focus {
-        background: lighten( $chocolate, 5%);
+    &:focus{
+        background: lighten($matterhorn, 5%);
     }
+
     &-outline {
-        color: $chocolate !important;
-        border-color: $chocolate;
-        border-radius: 0 !important;
-        background: transparent;
-        &:hover,
-        &:focus {
-            color: $pure-white !important;
-            background: $chocolate;
-        }
-        &.active-btn,
-        &.active {
-            color: $pure-white !important;
-            background: $chocolate;
-        }
-        &-rounded {
-            padding-right: 1.5rem !important;
-            padding-left: 1.5rem !important;
-            color: $chocolate !important;
-            border-color: $chocolate;
-            border-radius: 3px !important;
-            background: transparent;
-            &:hover,
-            &:focus,
-            &.active {
-                color: $pure-white !important;
-                background: $chocolate;
-            }
-        }
         &-circled {
             padding-right: 1.5rem !important;
             padding-left: 1.5rem !important;
-            color: $chocolate !important;
-            border-color: $chocolate;
+            color: $matterhorn !important;
+            border-color: $matterhorn;
             border-radius: 100px !important;
             background: transparent;
             &:hover,
             &:focus,
             &.active {
                 color: $pure-white !important;
-                background: $chocolate;
+                background: $matterhorn;
+            }
+        }
+    }
+}
+
+.btn-brown {
+    color: $pure-white !important;
+    border-color: $jambalaya;
+    background: $jambalaya !important;
+    &:hover,
+    &:focus {
+        background: lighten( $jambalaya, 5%);
+    }
+    &-outline {
+        color: $jambalaya !important;
+        border-color: $jambalaya;
+        border-radius: 0 !important;
+        background: transparent;
+        &:hover,
+        &:focus {
+            color: $pure-white !important;
+            background: $jambalaya;
+        }
+        &.active-btn,
+        &.active {
+            color: $pure-white !important;
+            background: $jambalaya;
+        }
+        &-rounded {
+            padding-right: 1.5rem !important;
+            padding-left: 1.5rem !important;
+            color: $jambalaya !important;
+            border-color: $jambalaya;
+            border-radius: 3px !important;
+            background: transparent;
+            &:hover,
+            &:focus,
+            &.active {
+                color: $pure-white !important;
+                background: $jambalaya;
+            }
+        }
+        &-circled {
+            padding-right: 1.5rem !important;
+            padding-left: 1.5rem !important;
+            color: $jambalaya !important;
+            border-color: $jambalaya;
+            border-radius: 100px !important;
+            background: transparent;
+            &:hover,
+            &:focus,
+            &.active {
+                color: $pure-white !important;
+                background: $jambalaya;
             }
         }
     }
@@ -196,7 +227,7 @@ label,
 }
 
 .text-brown {
-    color: $chocolate;
+    color: $jambalaya;
 }
 
 .dropzone-area,
@@ -334,13 +365,13 @@ a.btn-outline--category {
     &:hover,
     &:focus {
         color: $pure-white;
-        background: lighten($chocolate, 10%) !important;
+        background: lighten($jambalaya, 10%) !important;
     }
 }
 
 a.btn-outline--category.active {
     color: $pure-white !important;
-    background: $chocolate !important;
+    background: $jambalaya !important;
 }
 
 .fixed-rigth {
@@ -490,7 +521,7 @@ h1#title {
 }
 
 .user-plan-card {
-    border: 2px solid $chocolate;
+    border: 2px solid $jambalaya;
     border-radius: 0;
 }
 
@@ -507,7 +538,7 @@ h1#title {
 }
 
 .chocolate-font-color {
-    color: $chocolate;
+    color: $jambalaya;
 }
 
 .light-gray-font-color {
@@ -622,20 +653,20 @@ table.table {
             margin: 0 .25rem;
             &>a {
                 padding: .5rem;
-                color: $chocolate !important;
-                border: 1px solid $chocolate;
+                color: $jambalaya !important;
+                border: 1px solid $jambalaya;
                 border-radius: 0 !important;
                 background: transparent;
                 &:hover,
                 &:focus {
                     color: $pure-white !important;
-                    background: $chocolate;
+                    background: $jambalaya;
                 }
             }
             &.active {
                 &>a {
                     color: $pure-white !important;
-                    background: $chocolate !important;
+                    background: $jambalaya !important;
                     &:hover,
                     &:focus {
                         color: $pure-white !important;
@@ -1347,7 +1378,7 @@ table.table {
                 height: 35px;
                 color: $pure-white;
                 border-radius: 50%;
-                background: $chocolate;
+                background: $matterhorn;
             }
         }
     }
@@ -1366,12 +1397,12 @@ table.table {
 .frishtug-pagination {
     & .page-item {
         &>.page-link {
-            color: $chocolate;
+            color: $jambalaya;
         }
         &.active>.page-link {
             color: $pure-white;
-            border-color: $chocolate;
-            background-color: $chocolate;
+            border-color: $jambalaya;
+            background-color: $jambalaya;
         }
     }
 }
