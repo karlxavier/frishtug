@@ -44,6 +44,11 @@ class Menu < ApplicationRecord
     self.menu_category
   end
 
+  def self.search(search_term)
+    return none if search_term.blank?
+    where('name ~* ?', search_term)
+  end
+
   def self.has_stock
     includes(
       :inventory,

@@ -51,8 +51,12 @@ class User < ApplicationRecord
   delegate :name, :id, :price, to: :plan, prefix: true, allow_nil: true
   delegate :phone_number, :id, to: :contact_number, prefix: true, allow_nil: true
 
-  def self.in_city(city)
-    joins(:addresses).merge(Address.where(city: city))
+  def self.in_locations(locations)
+    joins(:addresses).merge(Address.search_list(locations))
+  end
+
+  def self.in_location(location)
+    joins(:addresses).merge(Address.search(location))
   end
 
   def self.search(search_term)

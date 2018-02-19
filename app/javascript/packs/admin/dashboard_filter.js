@@ -1,5 +1,6 @@
 const el = document.querySelector('.filter_container')
-const meals = document.querySelector('#filter-meal-btn')
+const mealsApplyBtnFilter = document.querySelector('#filter-meal-btn')
+const locationsApplyBtnFilter = document.querySelector('#filter-location-btn')
 
 const dateHolder = { date: '' }
 
@@ -40,6 +41,24 @@ const updateUrlParameters = (uri, key, value) => {
   return `${uri}${hash}`
 }
 
+const locationHandler = (event) => {
+  event.preventDefault()
+  const inputs = document.querySelectorAll('[name=cities]')
+  const cities = []
+
+  Array.from(inputs).forEach( input => {
+    const isCheckBox = input.nodeName === 'INPUT' && input.type === 'checkbox'
+    if (isCheckBox && input.checked) {
+      cities.push(input.value)
+    }
+  })
+
+  if (cities.length > 0) {
+    const url = window.location.href
+    window.location = updateUrlParameters(url, 'location', cities.join(','))
+  }
+}
+
 const mealHandler = (event) => {
   event.preventDefault()
   const inputs = document.querySelectorAll('[name=menus]')
@@ -59,5 +78,6 @@ const mealHandler = (event) => {
 
 if (el) {
   el.addEventListener('click', calendarHandler)
-  meals.addEventListener('click', mealHandler)
+  mealsApplyBtnFilter.addEventListener('click', mealHandler)
+  locationsApplyBtnFilter.addEventListener('click', locationHandler)
 }

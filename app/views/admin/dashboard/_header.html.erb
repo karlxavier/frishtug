@@ -37,10 +37,10 @@
 <div class="tab-content">
   <div class="tab-pane fade" id="meal-plan-filter-tab" role="tabpanel">
     <%= form_with url: admin_dashboard_index_path, method: 'GET', local: true do |f| %>
-      <%= hidden_field_tag :date, params[:date] %>
-      <%= hidden_field_tag :meal, params[:meal] %>
+      <%= hidden_field_tag :date, params[:date] if params[:date].present? %>
+      <%= hidden_field_tag :meal, params[:meal] if params[:meal].present?%>
       <div class="input-group mb-3">
-        <%= f.text_field :meal_name, class: 'form-control' %>
+        <%= f.text_field :search_term_for_menus, class: 'form-control' %>
         <div class="input-group-append">
           <%= f.button :search, class: 'btn btn-outline-secondary' %>
         </div>
@@ -50,9 +50,15 @@
       <% @order_query.top_20_menu.each do |menus| %>
         <ul class="list-unstyled col-3">
           <% menus.each do |menu| %>
+            <%
+              is_checked = false
+              if params[:meal]
+                is_checked = params[:meal].split(',').include?(menu.first.second.to_s)
+              end
+            %>
             <li style="line-height: 2rem">
               <label>
-                <%= check_box_tag('menus', menu.first.second, false, data: { target: '#filter-meal-btn'}) %>
+                <%= check_box_tag('menus', menu.first.second, is_checked, data: { target: '#filter-meal-btn'}) %>
                 <%= menu.first.first %>
               </label>
             </li>
@@ -66,6 +72,34 @@
     } %>
   </div>
   <div class="tab-pane fade" id="location-filter-tab" role="tabpanel">
+    <%= form_with url: admin_dashboard_index_path, method: 'GET', local: true do |f| %>
+      <%= hidden_field_tag :date, params[:date] if params[:date].present? %>
+      <%= hidden_field_tag :meal, params[:meal] if params[:meal].present? %>
+      <div class="input-group mb-3">
+        <%= f.text_field :search_term_for_location, class: 'form-control' %>
+        <div class="input-group-append">
+          <%= f.button :search, class: 'btn btn-outline-secondary' %>
+        </div>
+      </div>
+    <% end %>
+    <div class="row filter_location">
+      <% @order_query.top_20_cities.each do |cities| %>
+        <ul class="list-unstyled col-3">
+          <% cities.each do |city| %>
+            <li style="line-height: 2rem">
+              <label>
+                <%= check_box_tag('cities', city.first, false, data: { target: '#filter-meal-btn'}) %>
+                <%= city.first %>
+              </label>
+            </li>
+          <% end %>
+        </ul>
+      <% end %>
+    </div>
+    <%= link_to 'Apply Filter', request.params, class: 'btn btn-brown', id: 'filter-location-btn' %>
+    <%= link_to 'Cancel', 'javascript:void(0)', class: 'close-active-tab btn btn-outline-secondary', data: {
+      target_tablist: '#location-tab-item'
+    } %>
   </div>
   <div class="tab-pane fade" id="date-filter-tab" role="tabpanel">
     <div class="filter_container">

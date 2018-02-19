@@ -27,6 +27,21 @@ class Address < ApplicationRecord
   belongs_to :addressable, polymorphic: true, optional: true
   geocoded_by :full_address
 
+  def self.search_list(list)
+    search_term = list.join('|')
+    where('city ~* ? OR state ~* ? OR zip_code in (?)',
+          search_term, search_term, list)
+  end
+
+  def self.search(search_term)
+    where('city ~* ? OR state ~* ? OR zip_code == ?',
+          search_term, search_term, search_term)
+  end
+
+  def self.top(number)
+    group(:city).limit(number).count
+  end
+
   def self.specified_location
     if location_ats != :multiple_workplaces
       return where(location_at: :at_work).first
