@@ -57,10 +57,13 @@
               end
             %>
             <li style="line-height: 2rem">
-              <label>
-                <%= check_box_tag('menus', menu.first.second, is_checked, data: { target: '#filter-meal-btn'}) %>
-                <%= menu.first.first %>
-              </label>
+                <%= check_box_tag('menus',
+                  menu.first.second,
+                  is_checked,
+                  data: { target: '#filter-meal-btn'},
+                  id: menu.first.first.parameterize,
+                  class: 'frishtug-checkbox-control') %>
+                <label for="<%= menu.first.first.parameterize %>"><%= menu.first.first %></label>
             </li>
           <% end %>
         </ul>
@@ -87,10 +90,13 @@
         <ul class="list-unstyled col-3">
           <% cities.each do |city| %>
             <li style="line-height: 2rem">
-              <label>
-                <%= check_box_tag('cities', city.first, false, data: { target: '#filter-meal-btn'}) %>
-                <%= city.first %>
-              </label>
+                <%= check_box_tag('cities',
+                  city.first,
+                  false,
+                  data: { target: '#filter-meal-btn'},
+                  id: city.first.parameterize,
+                  class: 'frishtug-checkbox-control') %>
+                <label for="<%= city.first.parameterize %>"><%= city.first %></label>
             </li>
           <% end %>
         </ul>

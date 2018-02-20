@@ -9,7 +9,7 @@
   </div>
   <div class="row">
     <div class="col">
-      <strong>
+      <strong class="matterhorn-font-color">
         <%= order.user.full_name %> <small class="pl-1 text-muted"><%= "< #{order.user.email} >" %></small>
       </strong>
       <p><%= order.user.full_address %></p>
@@ -18,7 +18,7 @@
       </a>
     </div>
     <div class="col">
-      NOTES
+      <strong class="matterhorn-font-color">Notes</strong>
     </div>
   </div>
   <div class="row fade d-none" id="<%= "order-#{order.id}" %>">
