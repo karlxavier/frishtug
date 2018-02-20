@@ -40,7 +40,7 @@
       <%= hidden_field_tag :date, params[:date] if params[:date].present? %>
       <%= hidden_field_tag :meal, params[:meal] if params[:meal].present?%>
       <div class="input-group mb-3">
-        <%= f.text_field :search_term_for_menus, class: 'form-control' %>
+        <%= f.text_field :search_term_for_menus, class: 'form-control', placeholder: 'Search meal plans/food items' %>
         <div class="input-group-append">
           <%= f.button :search, class: 'btn btn-outline-secondary' %>
         </div>
@@ -76,7 +76,7 @@
       <%= hidden_field_tag :date, params[:date] if params[:date].present? %>
       <%= hidden_field_tag :meal, params[:meal] if params[:meal].present? %>
       <div class="input-group mb-3">
-        <%= f.text_field :search_term_for_location, class: 'form-control' %>
+        <%= f.text_field :search_term_for_location, class: 'form-control', placeholder: 'Search by location or by zip codes' %>
         <div class="input-group-append">
           <%= f.button :search, class: 'btn btn-outline-secondary' %>
         </div>

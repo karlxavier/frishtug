@@ -29,13 +29,13 @@ class Address < ApplicationRecord
 
   def self.search_list(list)
     search_term = list.join('|')
-    where('city ~* ? OR state ~* ? OR zip_code in (?)',
-          search_term, search_term, list)
+    where('line1 ~* ? OR city ~* ? OR state ~* ? OR zip_code in (?)',
+          search_term, search_term, search_term, list)
   end
 
   def self.search(search_term)
-    where('city ~* ? OR state ~* ? OR zip_code == ?',
-          search_term, search_term, search_term)
+    where('line1 ~* ? OR city ~* ? OR state ~* ? OR zip_code == ?',
+          search_term, search_term, search_term, search_term)
   end
 
   def self.top(number)
