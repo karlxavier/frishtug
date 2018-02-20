@@ -1404,6 +1404,7 @@ table.table {
 
 .admin-card {
     &__header {
+        border-bottom: 1px solid #EBE8E8!important;
         & #title,
         & h1 {
             line-height: 3.4rem;
