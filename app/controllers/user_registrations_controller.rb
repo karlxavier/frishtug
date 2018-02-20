@@ -105,7 +105,7 @@ class UserRegistrationsController < ApplicationController
   end
 
   def set_allowed_zip
-    @allowed_zip_codes = AllowedZipCode.pluck(&:zip)
+    @allowed_zip_codes = AllowedZipCode.pluck(:zip)
   end
 
   def set_date

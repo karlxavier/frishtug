@@ -180,6 +180,15 @@ const registrationForm = new Vue({
     }
   },
   methods: {
+    isNotAllowed: function(zipCode) {
+      if(!zipCode) { return null }
+      const self = this
+      if (self.allowed_zip_codes.includes(zipCode.toString())) {
+        return false
+      } else {
+        return true
+      }
+    },
     hasAvailableCredit: function(price) {
       const self = this;
       const minimum = parseFloatingNumber(self.plan_minimum);

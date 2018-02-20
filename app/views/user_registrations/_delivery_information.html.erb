@@ -64,7 +64,7 @@
                   pattern: '(\d{5}([\-]\d{4})?)',
                   title: 'Format should be in the form of 12345' %>
               <div class="invalid-tooltip">
-                Zipcode is required and must be a US zip.
+                Zip code is required and must be a US valid zip.
               </div>
             </div>
             <div class="col" v-if="index === 0">
@@ -79,6 +79,9 @@
                 Phone Number is required
               </div>
             </div>
+          </div>
+          <div v-show="isNotAllowed(address.address_zip)" class="alert alert-info font-size-12">
+            We do not deliver to this address.
           </div>
         </div>
         <div class="form-group">
