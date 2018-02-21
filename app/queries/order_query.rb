@@ -8,6 +8,7 @@ class OrderQuery
 
   def active_orders
     results = filtered_orders.placed_between?(@date_range)
+                             .order(series_number: :asc)
 
     class << self
       def size
