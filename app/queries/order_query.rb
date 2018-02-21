@@ -1,15 +1,44 @@
 class OrderQuery
   def initialize(date_range, locations = nil, meal_ids = nil)
     @date_range = date_range
-    @orders = Order.includes(user: :plan, menus_orders: :menu)
+    @orders = Order
     @locations = locations
     @meal_ids = meal_ids
   end
 
   def active_orders
-    results = filtered_orders.placed_between?(@date_range)
+    @orders = Order.includes(user: :plan, menus_orders: :menu)
+    results = filtered_orders.where(status: :processing)
+                             .placed_between?(@date_range)
                              .order(series_number: :asc)
 
+    class << self
+      def size
+        results.count
+      end
+    end
+
+    results
+  end
+
+  def in_transit
+    @orders = Order.includes(:user)
+    results = filtered_orders.where(delivery_status: :in_transit)
+                             .placed_between?(@date_range)
+
+    class << self
+      def size
+        results.count
+      end
+    end
+
+    results
+  end
+
+  def completed
+    @orders = Order.includes(:user)
+    results = filtered_orders.where(status: :completed)
+                             .placed_between?(@date_range)
     class << self
       def size
         results.count

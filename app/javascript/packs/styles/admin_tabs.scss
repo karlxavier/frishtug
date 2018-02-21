@@ -1,0 +1,54 @@
+.admin__tabs {
+  & .nav-tabs {
+    font-size: 14px;
+    border-bottom: 0px;
+
+    & .tab {
+      & a {
+        padding-left: 0;
+        padding-right: 0;
+        padding-top: 0;
+        padding-bottom: 5px;
+        margin: 0 1rem;
+
+        &:hover, &:focus {
+          color: #E1B47E;
+          border-bottom-color: #E1B47E;
+        }
+      }
+
+      &.active {
+        & a {
+          color: #E1B47E;
+          border-top: none;
+          border-left: none;
+          border-right: none;
+          border-bottom: 1px solid #E1B47E;
+
+          &:hover, &:focus {
+            color: #E1B47E;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            border-bottom: 1px solid #E1B47E;
+          }
+        }
+      }
+    }
+  }
+}
+
+.current_sales_header {
+  width: auto;
+  border-bottom: 1px solid #EBE8E8;
+  padding-bottom: 5px;
+}
+
+.admin_dashboard {
+  &__order_list_item:after {
+    content: '';
+    display: block;
+    margin-top: 1rem;
+    border-bottom: 1px solid #EBE8E8;
+  }
+}

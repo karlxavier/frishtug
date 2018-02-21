@@ -1,0 +1,16 @@
+<div class="container-fluid mt-4 <%= order.id %> admin_dashboard__order_list_item">
+  <div class="row">
+    <div class="col">
+      <h5 class="font-size-16">
+        <%= order.sku %> - <%= order.user.full_name %>
+      </h5>
+      <h5 class="font-size-14">
+        <%= order.series_number %>
+        <small class="text-muted">(placed on <%= order.placed_on&.strftime('%I:%M %P') %>)</small>
+      </h5>
+    </div>
+    <div class="col">
+      <%= show_eta(order) %>
+    </div>
+  </div>
+</div>

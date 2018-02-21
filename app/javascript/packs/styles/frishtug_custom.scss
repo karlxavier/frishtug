@@ -201,10 +201,10 @@ h {
 
     &-outline {
         &-circled {
-            padding-right: 1.5rem !important;
-            padding-left: 1.5rem !important;
-            color: $matterhorn !important;
-            border-color: $matterhorn;
+            padding-right: 1.25rem !important;
+            padding-left: 1.25rem !important;
+            color: #9b9b9b !important;
+            border-color: #EBE8E8;
             border-radius: 100px !important;
             background: transparent;
             &:hover,
@@ -601,12 +601,17 @@ h1#title {
 }
 
 // font start
+.view__more__btn {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+}
 .burlywood-font-color {
-    color: burlywood;
+    color: #DFB676 !important;
 }
 
 .chocolate-font-color {
-    color: $jambalaya;
+    color: $jambalaya !important;
 }
 
 .light-gray-font-color {

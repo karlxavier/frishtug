@@ -2,17 +2,19 @@
 #
 # Table name: orders
 #
-#  id            :integer          not null, primary key
-#  user_id       :integer
-#  placed_on     :datetime
-#  eta           :datetime
-#  delivered_at  :datetime
-#  status        :integer
-#  remarks       :string
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
-#  order_date    :datetime
-#  series_number :integer
+#  id              :integer          not null, primary key
+#  user_id         :integer
+#  placed_on       :datetime
+#  eta             :datetime
+#  delivered_at    :datetime
+#  status          :integer
+#  remarks         :string
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  order_date      :datetime
+#  series_number   :integer
+#  sku             :string
+#  delivery_status :integer
 #
 
 # Column names
@@ -20,18 +22,24 @@
 class Order < ApplicationRecord
   include Computable
   include UserDelegator
-  enum status: %i[processing in_transit completed failed cancelled refunded fulfilled fresh]
+  enum status: %i[processing completed failed cancelled refunded fulfilled fresh]
+  enum delivery_status: %i[in_transit received address_not_found]
   belongs_to :user
   has_many :menus_orders, dependent: :destroy
   has_many :menus, through: :menus_orders
   has_one :comment, as: :commentable, dependent: :destroy
   scope :completed, -> { where.not(delivered_at: nil) }
 
-  before_create :set_series_number
-  after_commit :run_inventory_accounter, on: [:create, :update]
+  before_create :set_series_number, :set_sku
+  before_save :run_inventory_accounter
 
   def run_inventory_accounter
-    InventoryAccounter.new(self).run if self.processing?
+    InventoryAccounter.new(self).run if processing? && status_changed?
+  end
+
+  def set_sku
+    order_id = self[:id].to_s
+    self[:sku] = "SKU#{order_id.length >= 4 ? order_id : order_id.rjust(4, '0')}"
   end
 
   def set_series_number

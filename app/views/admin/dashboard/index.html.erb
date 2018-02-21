@@ -36,24 +36,36 @@
   </div>
 </div>
 <%= card_container do %>
-  <div id="frishtug_orders">
-    <h5><%= current_sale_date(@date) %> - Current Sales <%= to_currency(@order_query.current_sales) %></h5>
+  <div id="frishtug_orders" class="admin__tabs">
     <vue-tabs>
       <v-tab title="TODAY (<%= @order_query.active_orders.size %>)">
-        <%= render partial: 'orders_today', collection: @order_query.active_orders, as: :order %>
+        <h5 class="mt-3 font-size-16 mx-3 current_sales_header font-family-montserrat-medium">
+          <%= current_sale_date(@date) %> - Current Sales <%= to_currency(@order_query.current_sales) %>
+        </h5>
+        <div class="orders_today_list">
+          <%= render partial: 'orders_today', collection: @active_orders, as: :order %>
+        </div>
+        <div class="text-center view__more__btn">
+          <a href="javascript:void(0)" class="burlywood-font-color font-size-14 view__more">View more</a>
+        </div>
       </v-tab>
-      <v-tab title="IN TRANSIT (0)">
-        Second tab content
+      <v-tab title="IN TRANSIT (<%= @order_query.in_transit.size %>)">
+        <%= render partial: 'orders_in_transit', collection: @order_query.in_transit, as: :order %>
       </v-tab>
-      <v-tab title="COMPLETED (0)">
-        Third tab content
+      <v-tab title="COMPLETED (<%= @order_query.completed.size %>)">
+        <%= render partial: 'orders_completed', collection: @order_query.completed, as: :order %>
       </v-tab>
     </vue-tabs>
   </div>
 <% end %>
+
+<%= content_for :header_js do %>
+  <%= stylesheet_pack_tag 'styles/admin_tabs' %>
+<% end %>
+
 <%= content_for :footer_js do %>
   <%= javascript_pack_tag 'admin/orders' %>
-  <%= javascript_pack_tag 'admin/dashboard_filter' %>
+  <%= javascript_pack_tag 'admin/dashboard' %>
   <script type="text/javascript">
     $('a.close-active-tab').click(function (e) {
         var tablistId = $(this).attr('data-target-tablist');

@@ -1,11 +1,17 @@
 class Admin::DashboardController < Admin::BaseController
   before_action :set_date
+  respond_to :html, :js, only: :index
 
   def index
     @order_query = OrderQuery.new(range, locations, meal_ids.compact.flatten)
+    @active_orders = @order_query.active_orders.page(page).per(10)
   end
 
   private
+
+  def page
+    params[:page]
+  end
 
   def range
     DateRange.new(@date.beginning_of_day, @date.end_of_day)

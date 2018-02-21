@@ -1,8 +1,19 @@
 const el = document.querySelector('.filter_container')
 const mealsApplyBtnFilter = document.querySelector('#filter-meal-btn')
 const locationsApplyBtnFilter = document.querySelector('#filter-location-btn')
+const viewMoreBtn = document.querySelector('.view__more')
+let pageCounter = 2
 
 const dateHolder = { date: '' }
+
+const renderMore = (event) => {
+  event.preventDefault()
+  Rails.ajax({
+    url: `/admin/dashboard.js?page=${pageCounter}`,
+    type: 'GET'
+  })
+  pageCounter++
+}
 
 const removeActiveClass = () => {
   const els = document.querySelectorAll('.calendar-links')
@@ -80,4 +91,5 @@ if (el) {
   el.addEventListener('click', calendarHandler)
   mealsApplyBtnFilter.addEventListener('click', mealHandler)
   locationsApplyBtnFilter.addEventListener('click', locationHandler)
+  viewMoreBtn.addEventListener('click', renderMore)
 }
