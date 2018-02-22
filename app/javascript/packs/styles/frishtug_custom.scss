@@ -60,6 +60,8 @@ $matterhorn: #4E3C44;
         display: inline-block;
         letter-spacing: 10px;
         content: "\e900";
+        position: relative;
+        top: 2px;
     }
 
     &:checked+label:before {
@@ -562,7 +564,7 @@ a.btn-outline--category.active {
 }
 
 .form-control {
-    border-radius: 0;
+    border-radius: 0!important;
 }
 
 h1#title {

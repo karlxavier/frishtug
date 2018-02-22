@@ -18,7 +18,9 @@
       <div class="form-group">
         <%= form.label :price %>
         <div class="input-group">
-          <span class="input-group-addon" id="basic-addon1">$</span>
+          <div class="input-group-prepend">
+            <span class="input-group-text">$</span>
+          </div>
           <%= form.number_field :price, class: 'form-control' %>
         </div>
       </div>

@@ -23,25 +23,17 @@ class AddOnsWorker
     menu_category = menu.menu_category
     add_on_ids = []
     add_ons.split('|').each do |add_on|
-      query = add_on_query(split_add_on_with_price(add_on))
+      query = add_on_query(add_on)
       add_on_ids << menu_category.add_ons.where(query).first_or_create(query).id
     end
     add_on_ids
   end
 
-  def split_add_on_with_price(add_on)
-    add_on.split(':')
-  end
-
   def add_on_query(entry)
-    {
-      name: entry[0].titleize,
-      price: convert_to_bigdecimal(entry[1])
+    menu_id = Menu.where('lower(name) = lower(?)', entry.strip).first&.id
+    return {
+      name: entry.titleize,
+      menu_id: menu_id
     }
-  end
-
-  def convert_to_bigdecimal(num)
-    return 0 if num.blank?
-    num.to_d
   end
 end

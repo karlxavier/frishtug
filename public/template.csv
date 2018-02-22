@@ -1,2 +1,9 @@
 name,item_number,description,category,price,tax,unit_size,unit,quantity,image,diet_category,add_ons
-Bagels Plain,ro1,Fresh Soft Bagels,Bread,1,TRUE,1,oz,100,shutterstock_660370285.jpg,,I need it hot|Toasted|egg:0.5|cheese:0.75|Cream Cheese:0.76
+Butter,egg01,fresh eggs,Add-Ons,0.5,FALSE,1,gram,100,butter.jpg,,
+Bagels Plain,ro1,Fresh Soft Bagels,Bread,1,TRUE,1,oz,100,shutterstock_660370285.jpg,,I need it hot|Toasted|Butter
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+Note:,,,,,,,,,,,
+"To add an Add-On with price and quantity. You must place the add-on on top of the item. Like from the example above the Butter is placed on top before the Bagels Plain, And the butter is referenced in the Bagels Plain [add_ons] column.",,,,,,,,,,,

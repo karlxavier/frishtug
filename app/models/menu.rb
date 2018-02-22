@@ -20,7 +20,7 @@
 
 class Menu < ApplicationRecord
   include Inventoriable
-  belongs_to  :asset
+  belongs_to  :asset, optional: true
   belongs_to  :unit
   belongs_to  :menu_category, touch: true
   has_one     :inventory, dependent: :destroy

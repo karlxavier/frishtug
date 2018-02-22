@@ -2,7 +2,7 @@
   <div class="card border-0 <%= 'draft-card' if !menu.published? %>">
     <%= link_to edit_admin_menu_path(menu.id, format: :js), class: "#{menu.name.parameterize}", remote: true do %>
         <%= cl_image_tag menu.asset.image.medium,
-         class: 'card-img-top rounded raised-1 no-hover-raised', height: 175 %>
+         class: 'card-img-top rounded raised-1 no-hover-raised', height: 175 if menu.asset_id? %>
     <% end %>
     <div class="card-body px-0 py-0 pt-3">
       <h5 class="card-title font-family-montserrat">
