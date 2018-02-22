@@ -42,11 +42,11 @@
         <h5 class="mt-3 font-size-16 mx-3 current_sales_header font-family-montserrat-medium">
           <%= current_sale_date(@date) %> - Current Sales <%= to_currency(@order_query.current_sales) %>
         </h5>
-        <div class="orders_today_list">
+        <div class="orders_today_list mb-4">
           <%= render partial: 'orders_today', collection: @active_orders, as: :order %>
-        </div>
-        <div class="text-center view__more__btn">
-          <a href="javascript:void(0)" class="burlywood-font-color font-size-14 view__more">View more</a>
+          <div class="text-center mt-4">
+            <a href="javascript:void(0)" class="burlywood-font-color font-size-14 view__more">View more</a>
+          </div>
         </div>
       </v-tab>
       <v-tab title="IN TRANSIT (<%= @order_query.in_transit.size %>)">

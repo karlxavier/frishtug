@@ -34,6 +34,24 @@ const calendarHandler = (event) => {
   }
 }
 
+const removeUrlParameters = (key, uri) => {
+  let url = uri.split("?")[0],
+    param,
+    params_arr = [],
+    queryString = uri.indexOf("?") !== -1 ? uri.split("?")[1] : "";
+  if (queryString !== "") {
+    params_arr = queryString.split("&");
+    for (var i = params_arr.length - 1; i >= 0; i -= 1) {
+      param = params_arr[i].split("=")[0];
+      if (param === key) {
+        params_arr.splice(i, 1);
+      }
+    }
+    url = url + "?" + params_arr.join("&");
+  }
+  return url;
+}
+
 const updateUrlParameters = (uri, key, value) => {
   // remove the hash part before operating on the uri
   var i = uri.indexOf('#');
@@ -67,6 +85,9 @@ const locationHandler = (event) => {
   if (cities.length > 0) {
     const url = window.location.href
     window.location = updateUrlParameters(url, 'location', cities.join(','))
+  } else {
+    const url = window.location.href;
+    window.location = removeUrlParameters('location', url);
   }
 }
 
@@ -84,6 +105,9 @@ const mealHandler = (event) => {
   if (mealIds.length > 0) {
     const url = window.location.href
     window.location = updateUrlParameters(url, 'meal', mealIds.join(','))
+  } else {
+    const url = window.location.href;
+    window.location = removeUrlParameters('meal', url)
   }
 }
 
