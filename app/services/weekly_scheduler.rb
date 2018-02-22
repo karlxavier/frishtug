@@ -2,6 +2,7 @@ class WeeklyScheduler
   WDAYS = %w[sunday monday tuesday wednesday thursday friday].freeze
 
   def initialize(user)
+    @user = user
     @last_five_orders = user.orders.active_orders.first(5)
     @schedule = user.schedule.try(:option)
     @orders = user.orders.processing
@@ -12,6 +13,7 @@ class WeeklyScheduler
   end
 
   def create_schedule_for_selection!
+    @last_five_orders = @user.orders.active_orders.last(5)
     create_selection_from(generate_schedule)
   end
 

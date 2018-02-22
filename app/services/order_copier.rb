@@ -61,7 +61,8 @@ class OrderCopier
     {
       placed_on: placed_on_date,
       order_date: Time.current,
-      remarks: current_order.remarks
+      remarks: current_order.remarks,
+      status: :processing
     }
   end
 
