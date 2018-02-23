@@ -33,7 +33,7 @@ class Plan < ApplicationRecord
   has_many :comments, as: :commentable, dependent: :destroy
 
   def self.best_seller
-    where.not(users_count: 0).order(users_count: :desc).limit(1).first
+    where.not(users_count: 0).order(users_count: :desc).limit(1).first || NullBestSeller.new
   end
 
   def types
