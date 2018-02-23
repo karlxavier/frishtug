@@ -22,7 +22,7 @@ class InventoryTransaction < ApplicationRecord
     end
 
     def to_csv
-      attributes = %w[inventory_id item_name quantity_sold transaction_date]
+      attributes = %w[item_name quantity_sold transaction_date]
 
       CSV.generate do |csv|
         csv << attributes.map(&:humanize).map(&:titleize)
@@ -30,6 +30,8 @@ class InventoryTransaction < ApplicationRecord
           csv << attributes.map do |attr|
             if attr == 'item_name'
               i.inventory.menu.name
+            elsif attr == 'transaction_date'
+              i.transaction_date.strftime('%B %d, %Y')
             else
               i.send(attr)
             end

@@ -30,7 +30,12 @@
           </tr>
         </thead>
         <tbody>
-          <%= render @inventory_transactions %>
+          <% @inventory_transactions.group_by { |i| i.inventory.menu.name }.sort.each do |name, items| %>
+            <tr>
+              <td><%= name %></td>
+              <td><%= items.map(&:quantity_sold).inject(:+) %></td>
+            </tr>
+          <% end %>
         </tbody>
       </table>
     </div>
