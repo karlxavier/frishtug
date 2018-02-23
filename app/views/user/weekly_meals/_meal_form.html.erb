@@ -100,7 +100,7 @@
     </div>
   </div>
 
-  <div class="col-4 col-md-3 col-lg-3 weekly-meal-sidebar" role="sidebar" id="sidebar">
+  <div class="col-4 col-md-3 col-lg-3 weekly-meal-sidebar fixed-rigth" role="sidebar" id="sidebar" style="top: 5.4rem">
     <div class="row meal-form__sidebar py-1dot35rem border-bottom-grey mb-4">
       <div class="col">
         <span class="text-uppercase">Your meals</span>
@@ -114,6 +114,12 @@
     </div>
   </div>
 </div>
+
+<%= content_for :header_js do %>
+  <script type="text/javascript">
+    localStorage.setItem('sidebar_state', 'shown');
+  </script>
+<% end %>
 
 <%= content_for :footer_js do %>
   <%= javascript_pack_tag 'user/weekly_meal' %>

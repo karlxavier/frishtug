@@ -676,7 +676,7 @@ table.table {
     &:after {
         position: absolute;
         z-index: -1;
-        top: -2rem;
+        top: 0rem;
         left: 0;
         display: block;
         height: calc(100% + 20rem);
@@ -1481,4 +1481,9 @@ table.table {
             background-color: $jambalaya;
         }
     }
+}
+
+.fixed-rigth {
+    position: fixed;
+    right: 0;
 }
