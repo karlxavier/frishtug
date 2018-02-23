@@ -39,10 +39,12 @@
     <%= form_with url: admin_dashboard_index_path, method: 'GET', local: true do |f| %>
       <%= hidden_field_tag :date, params[:date] if params[:date].present? %>
       <%= hidden_field_tag :meal, params[:meal] if params[:meal].present?%>
-      <div class="input-group mb-3">
+      <div class="input-group mb-3 col-5 px-0">
         <%= f.text_field :search_term_for_menus, class: 'form-control', placeholder: 'Search meal plans/food items' %>
         <div class="input-group-append">
-          <%= f.button :search, class: 'btn btn-outline-secondary' %>
+          <%= f.button class: 'btn border-0 position-absolute', style: 'right: 0px;' do %>
+            <%= svg_tag 'packs/images/search-icon.svg', size: '18x18' %>
+          <% end %>
         </div>
       </div>
     <% end %>
@@ -78,10 +80,12 @@
     <%= form_with url: admin_dashboard_index_path, method: 'GET', local: true do |f| %>
       <%= hidden_field_tag :date, params[:date] if params[:date].present? %>
       <%= hidden_field_tag :meal, params[:meal] if params[:meal].present? %>
-      <div class="input-group mb-3">
+      <div class="input-group mb-3 col-5 px-0">
         <%= f.text_field :search_term_for_location, class: 'form-control', placeholder: 'Search by location or by zip codes' %>
         <div class="input-group-append">
-          <%= f.button :search, class: 'btn btn-outline-secondary' %>
+          <%= f.button class: 'btn border-0 position-absolute', style: 'right: 0px;' do %>
+            <%= svg_tag 'packs/images/search-icon.svg', size: '18x18' %>
+          <% end %>
         </div>
       </div>
     <% end %>
