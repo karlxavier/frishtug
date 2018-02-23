@@ -5,6 +5,40 @@
     </h1>
   </div>
   <div class="col">
-    Filter by
+    <ul class="list-inline list-unstyled float-right nav nav-pills" role="tablist">
+      <li class="list-inline-item">Filter by</li>
+      <li class="list-inline-item">
+        <%= link_to 'Weekly',
+          admin_inventory_index_path(weekly: true),
+          class: "btn btn-sm btn-matterhorn-outline-circled font-size-14 #{ 'active' if params[:weekly] }" %>
+      </li>
+      <li class="list-inline-item">
+        <%= link_to 'Monthly',
+          admin_inventory_index_path(monthly: true),
+          class: "btn btn-sm btn-matterhorn-outline-circled font-size-14 #{ 'active' if params[:monthly] }" %>
+      </li>
+      <li class="list-inline-item">
+        <a class="btn btn-sm btn-matterhorn-outline-circled font-size-14"
+          data-toggle="tab" role="tab"
+          aria-controls="custom" aria-selected="false"
+          id="custom-tab"
+          href="#custom">Custom</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="tab-content">
+  <div class="tab-pane fade" id="custom" role="tabpanel">
+    <div class="row justify-content-center">
+      <div class="col-5 admin-dashboard__calendar">
+        <div class="admin-dashboard__calendar_container filter__inventory">
+          <%= render 'admin/calendars/calendar', date: Date.current, selected_date: @date  %>
+        </div>
+        <%= link_to 'Apply Filter', admin_inventory_index_path, class: 'btn btn-matterhorn', id: 'filter-date-btn' %>
+        <%= link_to 'Cancel', 'javascript:void(0)', class: 'close-active-tab btn btn-outline-secondary', data: {
+          target_tablist: '#custom-tab'
+        } %>
+      </div>
+    </div>
   </div>
 </div>

@@ -2,7 +2,15 @@
   <div class="row mx-0">
     <div class="col">
       <span class="font-family-montserrat-semi-bold font-size-16">
-        <%= @date.today? ? "Today - #{@date.strftime('%B %d')}" : @date.strftime('%B %d') %>
+        <% if params[:weekly] %>
+          <%= "Week - #{@date.beginning_of_week.strftime('%B %d')} to #{@date.end_of_week.strftime('%d')}"%>
+        <% elsif params[:monthly] %>
+          <%= "Month of #{@date.beginning_of_week.strftime('%B')}" %>
+        <% elsif params[:start_date] && params[:end_date] %>
+          <%= "Week - #{Time.zone.parse(params[:start_date]).strftime('%B %d')} to #{Time.zone.parse(params[:end_date]).strftime('%B %d')}"%>
+        <% else %>
+          <%= @date.today? ? "Today - #{@date.strftime('%B %d')}" : @date.strftime('%B %d') %>
+        <% end %>
       </span>
     </div>
     <div class="col d-flex justify-content-end">
@@ -27,4 +35,20 @@
       </table>
     </div>
   </div>
+<% end %>
+
+<%= content_for :footer_js do %>
+  <%= javascript_pack_tag 'admin/inventory' %>
+  <script type="text/javascript">
+    $('a.close-active-tab').click(function (e) {
+        var tablistId = $(this).attr('data-target-tablist');
+        var tab = $(tablistId);
+        if(tab.hasClass('active')){
+            window.setTimeout(function(){
+                $(".tab-pane").removeClass('active');
+                tab.removeClass('active');
+            },1);
+        }
+    });
+  </script>
 <% end %>
