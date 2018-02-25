@@ -16,7 +16,7 @@
     <thead>
       <tr>
         <th>Item Name</th>
-        <th>QTY</th>
+        <th class="text-right">QTY</th>
       </tr>
     </thead>
     <tbody>
@@ -28,7 +28,7 @@
             </span>
             <span class="font-size-14">Order # <%= list[:order_ids].join(', ') %></span>
           </td>
-          <td>
+          <td class="text-right">
             <span><%= list[:quantity] %></span>
           </td>
         </tr>

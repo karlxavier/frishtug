@@ -34,7 +34,7 @@
     </ul>
   </div>
 </div>
-<div class="tab-content">
+<div class="tab-content col-12">
   <div class="tab-pane fade" id="meal-plan-filter-tab" role="tabpanel">
     <%= form_with url: admin_dashboard_index_path, method: 'GET', local: true do |f| %>
       <%= hidden_field_tag :date, params[:date] if params[:date].present? %>

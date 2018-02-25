@@ -26,14 +26,14 @@
         <thead>
           <tr>
             <th>Items</th>
-            <th>Number Sold</th>
+            <th class="text-right">Number Sold</th>
           </tr>
         </thead>
         <tbody>
           <% @inventory_transactions.group_by { |i| i.inventory.menu.name }.sort.each do |name, items| %>
             <tr>
               <td><%= name %></td>
-              <td><%= items.map(&:quantity_sold).inject(:+) %></td>
+              <td class="text-right"><%= items.map(&:quantity_sold).inject(:+) %></td>
             </tr>
           <% end %>
         </tbody>

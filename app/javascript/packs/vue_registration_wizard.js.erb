@@ -163,7 +163,8 @@ const registrationForm = new Vue({
       shopping_cart_shown: true,
       tax_rate: parseFloat(localStorage.getItem("tax_rate")),
       phone_number: null,
-      schedule: null
+      schedule: null,
+      is_past: false
     },
     namespace: "user_registrations",
     storage: sessionStorage
@@ -643,16 +644,7 @@ const registrationForm = new Vue({
 
       const isDatePlusOne = theDate.getTime() === addOne(currentDate);
       if (isDatePlusOne) {
-        return get({
-          url: "/past_noons"
-        }).then(response => {
-          const parsed = JSON.parse(response);
-          if (parsed.is_past) {
-            return true;
-          } else {
-            return false;
-          }
-        });
+        return self.is_past
       }
 
       return !registrationForm.isNotSaturday(date);
@@ -733,6 +725,15 @@ const getSchedule = (date, vueModel) => {
     }
   });
 };
+
+const getIsPastNoon = () => {
+  const self = registrationForm
+  return get({ url: "/past_noons" }).then(response => {
+    const parsed = JSON.parse(response);
+    self.is_past = parsed.is_past
+  });
+}
+getIsPastNoon();
 
 const getCalendar = () => {
   const _this = registrationForm;
