@@ -65,6 +65,8 @@ gem 'trix', git: 'https://github.com/bcoia/trix.git'
 gem 'uploadcare-rails', '~> 1.1'
 gem 'virtus'
 gem 'pg_search'
+gem 'scenic'
+gem 'clockwork'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

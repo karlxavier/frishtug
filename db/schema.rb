@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180221045243) do
+ActiveRecord::Schema.define(version: 20180226003519) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -405,4 +405,31 @@ ActiveRecord::Schema.define(version: 20180221045243) do
   add_foreign_key "taxes", "stores"
   add_foreign_key "temp_orders", "users"
   add_foreign_key "users", "plans"
+
+  create_view "items_with_stocks", materialized: true,  sql_definition: <<-SQL
+      SELECT menus.id AS menu_id,
+      menus.name,
+      menus.price,
+      menus.published,
+      menus.unit_size,
+      menus.unit_id,
+      menus.item_number,
+      menus.tax,
+      menus.description,
+      menus.asset_id,
+      inventories.quantity,
+      menus.menu_category_id,
+      menu_categories.name AS menu_category_name,
+      ARRAY( SELECT diet_categories.name
+             FROM (diet_categories
+               JOIN diet_categories_menus ON (((diet_categories_menus.diet_category_id = diet_categories.id) AND (diet_categories_menus.menu_id = menus.id))))) AS diet_categories
+     FROM (((menus
+       JOIN menu_categories ON ((menu_categories.id = menus.menu_category_id)))
+       JOIN units ON ((units.id = menus.unit_id)))
+       JOIN inventories ON ((inventories.menu_id = menus.id)))
+    WHERE ((inventories.quantity <> 0) AND (menu_categories.part_of_plan = true))
+    GROUP BY menu_categories.id, menus.id, inventories.quantity
+    ORDER BY menus.id DESC;
+  SQL
+
 end

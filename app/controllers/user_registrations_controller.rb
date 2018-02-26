@@ -8,7 +8,7 @@ class UserRegistrationsController < ApplicationController
   def index
     @registration = RegistrationForm.new
     @categorized_menus = MenuCategory.published_menus
-    @menus_with_category = Menu.group_by_category_names
+    @menus_with_category = ItemsWithStock.grouped(:menu_category_name)
     @plans = Plan.all.sort
     fresh_when etag: [
       @registration,
