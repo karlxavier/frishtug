@@ -13,7 +13,6 @@ class WeeklyScheduler
   end
 
   def create_schedule_for_selection!
-    @last_five_orders = @user.orders.active_orders.last(5)
     create_selection_from(generate_schedule)
   end
 
