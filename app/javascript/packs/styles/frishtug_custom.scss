@@ -574,14 +574,13 @@ h1#title {
     }
 }
 
-#main-container:after {
+.user_end__sidebar:after {
     position: absolute;
     z-index: -1;
-    top: -84px;
-    left: -10px;
-    display: block;
-    width: 6px;
-    height: 100vh;
+    top: -1rem;
+    right: 0px;
+    width: 0px;
+    height: calc(100% + 1rem);
     content: '';
     border-left: 1px solid #e1e1e1;
 }
