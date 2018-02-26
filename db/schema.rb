@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180226003519) do
+ActiveRecord::Schema.define(version: 20180221040304) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -153,13 +153,15 @@ ActiveRecord::Schema.define(version: 20180226003519) do
     t.index ["user_id"], name: "index_credit_cards_on_user_id"
   end
 
-  create_table "diet_categories", force: :cascade do |t|
+  create_table "diet_categories", id: false, force: :cascade do |t|
+    t.bigserial "id", null: false
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "diet_categories_menus", force: :cascade do |t|
+  create_table "diet_categories_menus", id: false, force: :cascade do |t|
+    t.bigserial "id", null: false
     t.bigint "diet_category_id"
     t.bigint "menu_id"
     t.datetime "created_at", null: false
@@ -174,7 +176,8 @@ ActiveRecord::Schema.define(version: 20180226003519) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "inventories", force: :cascade do |t|
+  create_table "inventories", id: false, force: :cascade do |t|
+    t.bigserial "id", null: false
     t.bigint "menu_id"
     t.string "location"
     t.datetime "created_at", null: false
@@ -267,7 +270,6 @@ ActiveRecord::Schema.define(version: 20180226003519) do
     t.datetime "order_date"
     t.integer "series_number"
     t.string "sku"
-    t.integer "delivery_status"
     t.index ["order_date"], name: "index_orders_on_order_date"
     t.index ["series_number"], name: "index_orders_on_series_number"
     t.index ["user_id"], name: "index_orders_on_user_id"
@@ -335,7 +337,8 @@ ActiveRecord::Schema.define(version: 20180226003519) do
     t.index ["user_id"], name: "index_temp_orders_on_user_id"
   end
 
-  create_table "units", force: :cascade do |t|
+  create_table "units", id: false, force: :cascade do |t|
+    t.bigserial "id", null: false
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -390,10 +393,8 @@ ActiveRecord::Schema.define(version: 20180226003519) do
   add_foreign_key "contact_numbers", "users"
   add_foreign_key "credit_cards", "users"
   add_foreign_key "inventories", "menus"
-  add_foreign_key "inventory_transactions", "inventories"
   add_foreign_key "menus", "assets"
   add_foreign_key "menus", "menu_categories"
-  add_foreign_key "menus", "units"
   add_foreign_key "menus_orders", "menus"
   add_foreign_key "menus_orders", "orders"
   add_foreign_key "menus_temp_orders", "menus"
