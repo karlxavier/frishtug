@@ -28,6 +28,7 @@ class Menu < ApplicationRecord
   has_and_belongs_to_many :diet_categories
   has_many :menus_orders, dependent: :destroy
   has_many :orders, through: :menus_orders
+  has_many :search_results, as: :searchable
   has_and_belongs_to_many :temp_orders
 
   validates :name, :unit_id, :menu_category_id, :price, presence: true

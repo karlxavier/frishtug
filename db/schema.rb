@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180221040304) do
+ActiveRecord::Schema.define(version: 20180226074645) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -153,15 +153,13 @@ ActiveRecord::Schema.define(version: 20180221040304) do
     t.index ["user_id"], name: "index_credit_cards_on_user_id"
   end
 
-  create_table "diet_categories", id: false, force: :cascade do |t|
-    t.bigserial "id", null: false
+  create_table "diet_categories", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "diet_categories_menus", id: false, force: :cascade do |t|
-    t.bigserial "id", null: false
+  create_table "diet_categories_menus", force: :cascade do |t|
     t.bigint "diet_category_id"
     t.bigint "menu_id"
     t.datetime "created_at", null: false
@@ -176,8 +174,7 @@ ActiveRecord::Schema.define(version: 20180221040304) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "inventories", id: false, force: :cascade do |t|
-    t.bigserial "id", null: false
+  create_table "inventories", force: :cascade do |t|
     t.bigint "menu_id"
     t.string "location"
     t.datetime "created_at", null: false
@@ -270,6 +267,7 @@ ActiveRecord::Schema.define(version: 20180221040304) do
     t.datetime "order_date"
     t.integer "series_number"
     t.string "sku"
+    t.integer "delivery_status"
     t.index ["order_date"], name: "index_orders_on_order_date"
     t.index ["series_number"], name: "index_orders_on_series_number"
     t.index ["user_id"], name: "index_orders_on_user_id"
@@ -337,8 +335,7 @@ ActiveRecord::Schema.define(version: 20180221040304) do
     t.index ["user_id"], name: "index_temp_orders_on_user_id"
   end
 
-  create_table "units", id: false, force: :cascade do |t|
-    t.bigserial "id", null: false
+  create_table "units", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -393,8 +390,10 @@ ActiveRecord::Schema.define(version: 20180221040304) do
   add_foreign_key "contact_numbers", "users"
   add_foreign_key "credit_cards", "users"
   add_foreign_key "inventories", "menus"
+  add_foreign_key "inventory_transactions", "inventories"
   add_foreign_key "menus", "assets"
   add_foreign_key "menus", "menu_categories"
+  add_foreign_key "menus", "units"
   add_foreign_key "menus_orders", "menus"
   add_foreign_key "menus_orders", "orders"
   add_foreign_key "menus_temp_orders", "menus"
@@ -431,6 +430,47 @@ ActiveRecord::Schema.define(version: 20180221040304) do
     WHERE ((inventories.quantity <> 0) AND (menu_categories.part_of_plan = true))
     GROUP BY menu_categories.id, menus.id, inventories.quantity
     ORDER BY menus.id DESC;
+  SQL
+
+  add_index "items_with_stocks", ["asset_id"], name: "index_items_with_stocks_on_asset_id"
+  add_index "items_with_stocks", ["menu_category_id"], name: "index_items_with_stocks_on_menu_category_id"
+  add_index "items_with_stocks", ["menu_id"], name: "index_items_with_stocks_on_menu_id"
+
+  create_view "search_results",  sql_definition: <<-SQL
+      SELECT users.id AS searchable_id,
+      'Users'::text AS searchable_type,
+      users.first_name AS term
+     FROM users
+  UNION
+   SELECT users.id AS searchable_id,
+      'Users'::text AS searchable_type,
+      users.last_name AS term
+     FROM users
+  UNION
+   SELECT users.id AS searchable_id,
+      'Users'::text AS searchable_type,
+      users.email AS term
+     FROM users
+  UNION
+   SELECT menus.id AS searchable_id,
+      'Menus'::text AS searchable_type,
+      menus.name AS term
+     FROM menus
+  UNION
+   SELECT menus.id AS searchable_id,
+      'Menus'::text AS searchable_type,
+      menus.description AS term
+     FROM menus
+  UNION
+   SELECT menus.id AS searchable_id,
+      'Menus'::text AS searchable_type,
+      menus.item_number AS term
+     FROM menus
+  UNION
+   SELECT orders.id AS searchable_id,
+      'Orders'::text AS searchable_type,
+      orders.sku AS term
+     FROM orders;
   SQL
 
 end

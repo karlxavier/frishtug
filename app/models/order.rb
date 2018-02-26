@@ -27,10 +27,12 @@ class Order < ApplicationRecord
   belongs_to :user
   has_many :menus_orders, dependent: :destroy
   has_many :menus, through: :menus_orders
+  has_many :search_results, as: :searchable
   has_one :comment, as: :commentable, dependent: :destroy
   scope :completed, -> { where.not(delivered_at: nil) }
 
-  before_create :set_series_number, :set_sku
+  before_create :set_series_number
+  after_create :set_sku
   before_save :run_inventory_accounter
 
   def run_inventory_accounter
