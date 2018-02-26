@@ -26,7 +26,7 @@
     %>
     <%= render 'user/user_navbar' %>
     <div class="<%= root_container_class %>" id="root-container" style="padding-top: <%= padding_top %>;">
-      <div class="row">
+      <div class="row mb-4">
         <%= render 'user/user_sidebar' unless is_ordering? %>
         <div class="<%= main_container_class %>" id="main-container" role="main-container">
           <%= render 'shared/flash' %>
