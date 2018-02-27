@@ -7,7 +7,7 @@
     data-stripe="number"
     v-model="credit_card.number"
     v-mask="'#### #### #### ####'">
-  <div class="invalid-tooltip">
+  <div class="invalid-feedback">
     Credit Card is required
   </div>
 </div>
@@ -23,7 +23,7 @@
       },
       'v-model': 'credit_card.exp_month'
     %>
-    <div class="invalid-tooltip">
+    <div class="invalid-feedback">
       Please select a month
     </div>
   </div>
@@ -38,7 +38,7 @@
       },
       'v-model': 'credit_card.exp_year'
     %>
-    <div class="invalid-tooltip">
+    <div class="invalid-feedback">
       Please select a year
     </div>
   </div>
@@ -51,7 +51,7 @@
            data-stripe="cvc"
            v-model="credit_card.cvc"
     >
-    <div class="invalid-tooltip">
+    <div class="invalid-feedback">
       CVV is required
     </div>
   </div>
@@ -65,7 +65,7 @@
 <div class="different-billing" v-if="different_billing">
   <div class="form-group">
     <input type="text" class="form-control" name="registration_form[billing_line_1]" placeholder="Address Line 1" v-model="credit_card_billing_address.address_line1">
-    <div class="invalid-tooltip">
+    <div class="invalid-feedback">
       Line1 is required
     </div>
   </div>
@@ -75,13 +75,13 @@
   <div class="form-group row">
     <div class="col">
       <input type="text" class="form-control" name="registration_form[billing_city]" placeholder="City" v-model="credit_card_billing_address.address_city">
-      <div class="invalid-tooltip">
+      <div class="invalid-feedback">
         City is required
       </div>
     </div>
     <div class="col">
       <input type="text" class="form-control" name="registration_form[billing_state]" placeholder="State" v-model="credit_card_billing_address.address_state">
-      <div class="invalid-tooltip">
+      <div class="invalid-feedback">
         State is required
       </div>
     </div>
@@ -89,7 +89,7 @@
   <div class="form-group row">
     <div class="col">
       <input type="text" class="form-control" name="registration_form[billing_zip_code]" placeholder="Zipcode" v-model="credit_card_billing_address.address_zip">
-      <div class="invalid-tooltip">
+      <div class="invalid-feedback">
         Zipcode is required
       </div>
     </div>

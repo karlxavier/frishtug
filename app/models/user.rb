@@ -2,7 +2,7 @@
 #
 # Table name: users
 #
-#  id                      :integer          not null, primary key
+#  id                      :integer          not null
 #  email                   :string           default(""), not null
 #  encrypted_password      :string           default(""), not null
 #  reset_password_token    :string
@@ -31,17 +31,18 @@ class User < ApplicationRecord
   has_many :credit_cards, dependent: :destroy
   has_many :checkings, dependent: :destroy
   has_many :comments, dependent: :destroy
+  has_many :search_results, as: :searchable, dependent: :destroy
   has_one :contact_number, dependent: :destroy
   has_one :schedule, dependent: :destroy
   belongs_to :plan, optional: true, counter_cache: true
   has_many :orders, dependent: :destroy
   has_many :temp_orders, dependent: :destroy
-  has_many :search_results, as: :searchable
   has_one :referrer, dependent: :destroy
   has_one :candidate, dependent: :destroy
   has_one :order_preference, dependent: :destroy
 
   validates :first_name, :last_name, presence: true
+  validates :email, uniqueness: true
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable,

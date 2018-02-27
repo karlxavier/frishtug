@@ -2,7 +2,7 @@
 #
 # Table name: orders
 #
-#  id              :integer          not null, primary key
+#  id              :integer          not null
 #  user_id         :integer
 #  placed_on       :datetime
 #  eta             :datetime

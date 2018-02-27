@@ -2,7 +2,7 @@
 #
 # Table name: orders
 #
-#  id              :integer          not null, primary key
+#  id              :integer          not null
 #  user_id         :integer
 #  placed_on       :datetime
 #  eta             :datetime
@@ -27,7 +27,6 @@ class Order < ApplicationRecord
   belongs_to :user
   has_many :menus_orders, dependent: :destroy
   has_many :menus, through: :menus_orders
-  has_many :search_results, as: :searchable
   has_one :comment, as: :commentable, dependent: :destroy
   scope :completed, -> { where.not(delivered_at: nil) }
 

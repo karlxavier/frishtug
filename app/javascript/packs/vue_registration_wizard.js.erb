@@ -464,6 +464,10 @@ const registrationForm = new Vue({
 
       return `${days[d.getDay()]}, ${monthNames[d.getMonth()]} ${d.getDate()}`;
     },
+    emailValidator: function() {
+      const self = this
+      verifyEmailIsNotDuplicate({ email: self.user.email, el: "[name='registration_form[email]']" });
+    },
     accountValidations: function() {
       const inputs = [
         "[name='registration_form[first_name]']",
@@ -472,7 +476,10 @@ const registrationForm = new Vue({
         "[name='registration_form[password]']"
       ];
 
-      return multiplePresenceValidator(inputs);
+      if (!multiplePresenceValidator(inputs)) {
+        return false
+      }
+      this.emailValidator()
     },
     addressValidations: function() {
       const inputs = [
@@ -726,6 +733,25 @@ const getSchedule = (date, vueModel) => {
   });
 };
 
+const verifyEmailIsNotDuplicate = ({email, el}) => {
+  const target = document.querySelector(el)
+  const emailError = document.querySelector('.email--error')
+  Rails.ajax({
+    url: `/verify_users?email=${email}`,
+    type: 'GET',
+    success: function(response) {
+      if (response.status === 'error') {
+        target.classList.add("is-invalid")
+        emailError.innerHTML = 'Email already exits!'
+        return false
+      } else {
+        target.classList.remove("is-invalid")
+        return true
+      }
+    }
+  })
+}
+
 const getIsPastNoon = () => {
   const self = registrationForm
   return get({ url: "/past_noons" }).then(response => {
@@ -851,6 +877,12 @@ const multiplePresenceValidator = inputsNameClassOrIds => {
   const inputs = [];
   inputsNameClassOrIds.forEach(inputsNameClassOrId => {
     const inputsList = document.querySelectorAll(`${inputsNameClassOrId}`);
+
+    if (inputsNameClassOrId === "[name='registration_form[email]']") {
+      const elerror = document.querySelector('.email--error')
+      elerror.innerHTML = 'Email is required'
+    }
+
     const validator = input => {
       inputs.push(input);
       if (!input) {

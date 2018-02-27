@@ -4,6 +4,7 @@ Rails.application.routes.draw do
       get :schedule
     end
   end
+  get '/verify_users', to: 'verify_users#verify'
   resources :calendars, only: :index
   resources :selected_dates, only: :index
   resources :past_noons, only: :index

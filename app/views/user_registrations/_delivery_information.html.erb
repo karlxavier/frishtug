@@ -28,7 +28,7 @@
           </div>
           <div class="form-group">
             <%= form.text_field :line1, name: 'registration_form[addresses][][line1]', class: 'form-control address-line1', placeholder: 'Address Line 1', 'v-model': 'address.address_line1' %>
-            <div class="invalid-tooltip">
+            <div class="invalid-feedback">
               Line1 is required
             </div>
           </div>
@@ -41,13 +41,13 @@
           <div class="form-group row">
             <div class="col">
               <%= form.text_field :city, name: 'registration_form[addresses][][city]', class: 'form-control address-city', placeholder: 'City', 'v-model': 'address.address_city' %>
-              <div class="invalid-tooltip">
+              <div class="invalid-feedback">
                 City is required
               </div>
             </div>
             <div class="col">
               <%= form.text_field :state,  name: 'registration_form[addresses][][state]', class: 'form-control address-state', placeholder: 'State', 'v-model': 'address.address_state' %>
-              <div class="invalid-tooltip">
+              <div class="invalid-feedback">
                 State is required
               </div>
             </div>
@@ -63,7 +63,7 @@
                   'v-mask': "'#####'",
                   pattern: '(\d{5}([\-]\d{4})?)',
                   title: 'Format should be in the form of 12345' %>
-              <div class="invalid-tooltip">
+              <div class="invalid-feedback">
                 Zip code is required and must be a US valid zip.
               </div>
             </div>
@@ -75,7 +75,7 @@
                 title: 'Phone Number must be in the format of: 123-456-7890',
                 'v-model': 'phone_number',
                 'v-mask': "'###-###-####'" %>
-              <div class="invalid-tooltip">
+              <div class="invalid-feedback">
                 Phone Number is required
               </div>
             </div>

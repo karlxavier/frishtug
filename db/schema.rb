@@ -438,37 +438,37 @@ ActiveRecord::Schema.define(version: 20180226074645) do
 
   create_view "search_results",  sql_definition: <<-SQL
       SELECT users.id AS searchable_id,
-      'Users'::text AS searchable_type,
+      'User'::text AS searchable_type,
       users.first_name AS term
      FROM users
   UNION
    SELECT users.id AS searchable_id,
-      'Users'::text AS searchable_type,
+      'User'::text AS searchable_type,
       users.last_name AS term
      FROM users
   UNION
    SELECT users.id AS searchable_id,
-      'Users'::text AS searchable_type,
+      'User'::text AS searchable_type,
       users.email AS term
      FROM users
   UNION
    SELECT menus.id AS searchable_id,
-      'Menus'::text AS searchable_type,
+      'Menu'::text AS searchable_type,
       menus.name AS term
      FROM menus
   UNION
    SELECT menus.id AS searchable_id,
-      'Menus'::text AS searchable_type,
+      'Menu'::text AS searchable_type,
       menus.description AS term
      FROM menus
   UNION
    SELECT menus.id AS searchable_id,
-      'Menus'::text AS searchable_type,
+      'Menu'::text AS searchable_type,
       menus.item_number AS term
      FROM menus
   UNION
    SELECT orders.id AS searchable_id,
-      'Orders'::text AS searchable_type,
+      'Order'::text AS searchable_type,
       orders.sku AS term
      FROM orders;
   SQL

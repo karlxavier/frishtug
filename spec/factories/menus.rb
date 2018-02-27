@@ -2,7 +2,7 @@
 #
 # Table name: menus
 #
-#  id               :integer          not null, primary key
+#  id               :integer          not null
 #  name             :string
 #  price            :decimal(8, 2)
 #  unit_id          :integer
