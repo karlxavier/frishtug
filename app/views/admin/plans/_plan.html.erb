@@ -1,5 +1,4 @@
 <tr class="<%= plan.name.parameterize %>">
-  <td><%= plan.id %></td>
   <td><%= plan.name %></td>
   <td><%= number_to_currency(plan.price, unit: '$') %></td>
   <td><%= plan&.for_type.titleize %></td>

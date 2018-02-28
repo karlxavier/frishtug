@@ -4,9 +4,9 @@
       <table class="table table-sm">
         <thead>
           <tr>
-            <th>#</th>
             <th>Full Name</th>
             <th>Full Address</th>
+            <th>Email</th>
             <th>Contact Number</th>
             <th>Plan</th>
             <th></th>
@@ -15,9 +15,14 @@
         <tbody>
           <% @users.each do |user| %>
             <tr class="user_id_<%= user.id %>">
-              <td><%= user.id %></td>
               <td><%= user.full_name %></td>
               <td><%= user.full_address %></td>
+              <td>
+                <%= mail_to user.email, class: 'chocolate-font-color' do %>
+                  <i class="fa fa-envelope"></i>
+                  <%= user.email %>
+                <% end %>
+              </td>
               <td><%= user.contact_number_phone_number %></td>
               <td><%= user.plan_name %></td>
               <td>

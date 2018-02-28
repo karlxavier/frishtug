@@ -79,6 +79,7 @@ class RegistrationForm
       create_user_info(user)
       create_orders(user)
       save_and_charge_payment(user)
+      InactiveUser.where(email: email).destroy_all
     end
     true
   rescue ActiveRecord::StatementInvalid => e

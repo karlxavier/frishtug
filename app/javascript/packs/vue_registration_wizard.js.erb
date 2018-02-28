@@ -479,6 +479,13 @@ const registrationForm = new Vue({
     verifyEmail: function () {
       const input = document.querySelector("[name='registration_form[email]']");
       const self = this;
+
+      saveUserInfo({
+        email: self.user.email,
+        first_name: self.user.first_name,
+        last_name: self.user.last_name
+      })
+
       verifyEmailIsNotDuplicate({
         email: input.value,
         el: input,
@@ -739,6 +746,25 @@ const getSchedule = (date, vueModel) => {
     }
   });
 };
+
+const saveUserInfo = ({
+  email,
+  first_name,
+  last_name
+}) => {
+  const formData = new FormData()
+  formData.append('inactive_user[email]', email)
+  formData.append('inactive_user[first_name]', first_name)
+  formData.append('inactive_user[last_name]', last_name)
+  Rails.ajax({
+    url: '/inactive_users',
+    type: 'POST',
+    data: formData,
+    success: function(response) {
+      console.log(response)
+    }
+  })
+}
 
 const verifyEmailIsNotDuplicate = ({
   email,

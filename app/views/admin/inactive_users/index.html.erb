@@ -1,0 +1,32 @@
+<%= card_container do %>
+  <table class="table table-sm">
+    <thead>
+      <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <% @inactive_users.each do |user| %>
+        <tr>
+          <td><%= user.first_name.titleize %></td>
+          <td><%= user.last_name.titleize %></td>
+          <td>
+            <%= mail_to user.email, class: 'chocolate-font-color' do %>
+              <i class="fa fa-envelope"></i>
+              <%= user.email %>
+            <% end %>
+          </td>
+          <td>
+            <%= user.created_at.strftime('%B %d, %Y') %>
+          </td>
+        </tr>
+      <% end %>
+
+    </tbody>
+  </table>
+  <%= paginate @inactive_users %>
+<% end %>

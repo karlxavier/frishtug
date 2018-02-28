@@ -20,4 +20,5 @@ namespace :admin do
   resources :clients, only: %i[index show]
   resources :orders, only: :show
   resources :display_orders, only: :create
+  resources :inactive_users, only: :index
 end

@@ -2,7 +2,6 @@
   <table class="table table-sm">
     <thead>
       <tr>
-        <th>#</th>
         <th>Name</th>
         <th colspan="3"></th>
       </tr>
@@ -10,7 +9,6 @@
     <tbody>
       <% @units.each do |unit| %>
         <tr data-id="<%= unit.id %>" class="<%= unit.name.parameterize %>">
-          <td><%= unit.id %></td>
           <td><%= unit.name %></td>
           <td>
             <div class="float-right">
