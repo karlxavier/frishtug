@@ -1,0 +1,12 @@
+<div class="row align-items-center mx-0">
+  <div class="col">
+    <h1 id="title">
+      <%= link_to "Blackout Dates", admin_blackout_dates_path %>
+    </h1>
+  </div>
+  <div class="col">
+    <%= link_to new_admin_blackout_date_path, class: 'header-add-btn float-right light-gray-font-color font-family-montserrat font-size-14' do %>
+      <%= svg_tag 'packs/images/add-icon.svg', class: 'mr-1' %> Add Blackout Date
+    <% end %>
+  </div>
+</div>

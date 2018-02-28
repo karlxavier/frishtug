@@ -21,4 +21,5 @@ namespace :admin do
   resources :orders, only: :show
   resources :display_orders, only: :create
   resources :inactive_users, only: :index
+  resources :blackout_dates
 end

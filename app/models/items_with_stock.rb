@@ -1,3 +1,23 @@
+# == Schema Information
+#
+# Table name: items_with_stocks
+#
+#  menu_id            :integer
+#  name               :string
+#  price              :decimal(8, 2)
+#  published          :boolean
+#  unit_size          :integer
+#  unit_id            :integer
+#  item_number        :string
+#  tax                :boolean
+#  description        :text
+#  asset_id           :integer
+#  quantity           :integer
+#  menu_category_id   :integer
+#  menu_category_name :string
+#  diet_categories    :string           is an Array
+#
+
 class ItemsWithStock < ActiveRecord::Base
   belongs_to :menu
   belongs_to :menu_category
