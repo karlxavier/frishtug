@@ -17,6 +17,7 @@ class User::WeeklyMealsController < User::BaseController
     @from_options = weekly_scheduler.get_schedules_for_selection!
     @to_options = weekly_scheduler.create_schedule_for_selection!
     @available_dates = weekly_scheduler.create_schedule!.in_groups_of(5)
+    @blackout_dates = BlackoutDate.pluck_dates
   end
 
   def new

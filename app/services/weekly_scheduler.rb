@@ -40,13 +40,10 @@ class WeeklyScheduler
     last_order = last_first_order_placed_on_date
     date = last_order.next_week(WDAYS[last_order.wday].to_sym)
     results = []
-    date -= 1.days
     (0..14).map do |i|
-      date += 1.days
-      date += 1.days if date.saturday?
-      date += 1.days if date.sunday? && schedule == 'monday_to_friday'
-      date += 2.days if date.friday? && schedule == 'sunday_to_thursday'
+      date = ScheduleGenerator.new(date, schedule).generate
       results << date
+      date += 1.day
     end
     results
   end
