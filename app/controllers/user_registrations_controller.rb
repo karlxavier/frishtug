@@ -1,6 +1,7 @@
 class UserRegistrationsController < ApplicationController
+  ACTIONS = %i[set_allowed_zip set_tax set_plan set_dates set_blackout_dates].freeze
   before_action :user_exists?
-  before_action :set_allowed_zip, :set_tax, :set_plan, :set_dates, only: :index
+  before_action *ACTIONS, only: :index
   require 'date_helpers/weeks'
   respond_to :js, except: :index
   SATURDAY = 6
@@ -38,6 +39,10 @@ class UserRegistrationsController < ApplicationController
   end
 
   private
+
+  def set_blackout_dates
+    @blackout_dates = BlackoutDate.pluck_dates
+  end
 
   def set_dates
     @date = Time.current

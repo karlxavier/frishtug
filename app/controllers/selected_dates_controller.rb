@@ -20,8 +20,7 @@ class SelectedDatesController < ApplicationController
       sunday_to_thursday: 5,
       null_param: 6
     }
-    sched = params[:schedule] || 'null_param'
-    @schedule_to_skip = hash[sched.to_sym]
+    @sched = params[:schedule] || 'null_param'
   end
 
   def set_date
@@ -33,27 +32,16 @@ class SelectedDatesController < ApplicationController
   end
 
   def generate_dates_not_in_saturdays
-    index = 0
+    index = 1
     dates = []
-    current_date = @date - 1.days
-    while index <= 4 do
-      current_date += 1.days
-      current_date = skip_saturdays(current_date)
-      current_date = skip_not_in_schedule(current_date)
+    current_date = @date
+    while index <= 5 do
+      current_date = ScheduleGenerator.new(current_date, @sched).generate
       dates << current_date
+      current_date += 1.day
       index += 1
     end
     dates
-  end
-
-  def skip_saturdays(date)
-    date += 1 if date.saturday?
-    date
-  end
-
-  def skip_not_in_schedule(date)
-    date += 1.days if date.wday == @schedule_to_skip
-    skip_saturdays(date)
   end
 
   def verify_date

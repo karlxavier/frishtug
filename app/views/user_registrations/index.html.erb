@@ -48,6 +48,7 @@
     onload = function() {
       document.querySelector('#registration-form').classList.remove('d-none');
     };
+    localStorage.setItem('blackout_dates', '<%= raw @blackout_dates.to_json %>')
     localStorage.setItem('allowed_zip_codes', '<%= raw @allowed_zip_codes.to_json(only: :zip) %>');
     localStorage.setItem('current_date_est', '<%= Date.current %>');
     localStorage.setItem('tax_rate', <%= @tax_rate %>)
