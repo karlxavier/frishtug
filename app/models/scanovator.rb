@@ -21,6 +21,8 @@ class Scanovator
     attribute :eta, String
     attribute :route_started, String
     attribute :payment_details, String
+    attribute :picked, String
+    attribute :driver_name, String
   end
 
   attribute :state, String

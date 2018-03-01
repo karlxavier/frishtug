@@ -72,7 +72,7 @@ class ScanovatorApi
 
     def new_order_query order
       URI.encode_www_form({
-        store_id: nil,
+        store_id: STORE_ID,
         store_code: STORE_CODE,
         fname: order.user.first_name,
         lname: order.user.last_name,
