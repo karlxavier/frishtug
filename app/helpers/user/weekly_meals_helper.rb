@@ -21,6 +21,7 @@ module User::WeeklyMealsHelper
 
   def calendar_url(date, active_this_week, active_orders, available_dates)
     url = "javascript:void(0)"
+    return "javascript:void(0)" if @blackout_dates.include?(date.strftime('%B %d'))
     if date > Date.current && !date.saturday?
       if current_user.subscribed?
         sched = 'second' if available_dates.first.include?(date)
