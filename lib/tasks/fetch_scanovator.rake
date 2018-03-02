@@ -2,16 +2,17 @@ namespace :fetch_scanovator do
   task run: :environment do
     current_time = Time.current + 4.days
     range = DateRange.new(current_time.beginning_of_day, current_time.end_of_day)
-    Order.placed_between?(range).each do |order|
-      response = ScanovatorApi.fetch(order.id)
-      next unless response.state == 'success'
+    order_ids = Order.placed_between?(range).map(&:id)
+    response = ScanovatorApi.fetch_group(order_ids)
+    response.data.each do |data|
+      order = Order.find(data.order_id)
       order.update(
-        eta: response.data.first.eta,
-        delivered_at: response.data.first.actually_delivered,
-        payment_details: response.data.first.payment_details,
-        route_started: response.data.first.route_started
+        eta: data.eta,
+        delivered_at: data.actually_delivered,
+        payment_details: data.payment_details,
+        route_started: data.route_started
       )
-      order.completed! if response.data.first.actually_delivered != ''
+      order.completed! if data.eta.nil?
     end
   end
 end
