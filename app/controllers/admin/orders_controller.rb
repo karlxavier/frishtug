@@ -11,6 +11,7 @@ class Admin::OrdersController < Admin::BaseController
 
   def update
     @order = Order.find(params[:id])
+    has_menu_items_quantity_changed?
     if @order.update_attributes(order_params)
       render json: { status: 'success', order: @order }, status: :ok
     else
@@ -19,6 +20,12 @@ class Admin::OrdersController < Admin::BaseController
   end
 
   private
+
+  def has_menu_items_quantity_changed?
+    order_params[:menus_orders_attributes].each do |item|
+      AdminStockAccounter.new(item, order_params[:placed_on]).run
+    end
+  end
 
   def order_params
     params.require(:order)

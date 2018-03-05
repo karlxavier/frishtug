@@ -48,7 +48,7 @@ class ShoppingCart
       menus_order.add_ons << add_on.id
 
       return if order.fresh?
-      stock = Stock.new(add_on.menu_id, quantity)
+      stock = Stock.new(add_on.menu_id, menus_order.quantity)
       stock.reduce
       StockAccounter.new(stock, order.placed_on).increase
     end
@@ -63,7 +63,7 @@ class ShoppingCart
       menus_order.add_ons.delete_at(menus_order.add_ons.index(add_on_id))
 
       return if order.fresh?
-      stock = Stock.new(add_on.menu_id, quantity)
+      stock = Stock.new(add_on.menu_id, menus_order.quantity)
       stock.return
       StockAccounter.new(stock, order.placed_on).decrease
     end
