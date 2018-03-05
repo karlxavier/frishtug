@@ -18,7 +18,7 @@ namespace :admin do
   resources :scanovators, only: :create
   resources :assets, only: %i[index create destroy]
   resources :clients, only: %i[index show]
-  resources :orders, only: :show
+  resources :orders, only: %i[show edit update]
   resources :display_orders, only: :create
   resources :inactive_users, only: :index
   resources :blackout_dates

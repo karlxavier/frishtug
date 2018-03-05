@@ -1,0 +1,6 @@
+<%= card_container do %>
+  <%= render 'form' %>
+  <%= content_for :footer_js do %>
+    <%= javascript_pack_tag 'admin/client_orders.js' %>
+  <% end %>
+<% end %>

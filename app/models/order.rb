@@ -30,6 +30,8 @@ class Order < ApplicationRecord
   has_one :comment, as: :commentable, dependent: :destroy
   scope :completed, -> { where.not(delivered_at: nil) }
 
+  accepts_nested_attributes_for :menus_orders, allow_destroy: true
+
   before_create :set_series_number
   after_create :set_sku
   before_save :run_inventory_accounter

@@ -1,0 +1,43 @@
+<%= form_with url: '#',
+  id: 'client_orders_form',
+  data: {
+    order: @client_order.to_json(except: %[created_at updated_at]),
+    menus_orders_attributes: @client_order.menus_orders.to_json(except: %i[created_at updated_at order_id])
+  },
+  local: true do |f| %>
+
+  <div class="row">
+    <div class="col-8" v-for="(menu, index) in order.menus_orders_attributes">
+      <div v-show="menu._destroy != '1'">
+        <input type="hidden" name="id" v-model="menu.id">
+        <input type="hidden" name="_destroy" v-model="menu._destroy">
+        <div class="form-group row">
+          <div class="col">
+            <%= f.select :menu_id,
+              options_for_select(@menus),
+              {},
+              class: 'form-control',
+              "v-model": "menu.menu_id" %>
+          </div>
+          <div class="col">
+            <%= f.number_field :quantity, class: 'form-control', "v-model": "menu.quantity" %>
+          </div>
+          <div class="col">
+            <a href="javascript:void(0)"
+              @click="deleteMenuOrder(index)" class="btn btn-danger">
+              <i class="fa fa-times fa-lg"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row col-8">
+      <div class="col">
+        <a href="javascript:void(0)"
+          @click="addMenuOrder" class="btn btn-warning text-uppercase">+ Add Order</a>
+        <a href="javascript:void(0)"
+          @click="saveOrders" class="btn btn-matterhorn text-uppercase">Save Order</a>
+      </div>
+    </div>
+  </div>
+<% end %>

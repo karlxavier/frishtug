@@ -32,12 +32,15 @@
           <% @user_orders.each do |order| %>
             <tr class="<%= "#{@user.id}__#{order.id}" %>">
               <td><%= order.id %></td>
-              <td><%= order.order_date.strftime('%b %d, %Y @ %I:%M %P') %></td>
+              <td><%= order&.order_date&.strftime('%b %d, %Y @ %I:%M %P') %></td>
               <td><%= order.placed_on.strftime('%b %d, %Y') %></td>
               <td><%= order.menus_orders.count %></td>
               <td><%= order.remarks %></td>
-              <td><%= order.status || "Queued" %></td>
-              <td><%= user_order_details_link(order) %></td>
+              <td><%= order&.status&.titleize %></td>
+              <td>
+                <%= user_order_details_link(order) %>
+                <%= link_to 'Edit',  edit_admin_order_path(order_id: order.id) %>
+              </td>
             </tr>
           <% end %>
         </tbody>
