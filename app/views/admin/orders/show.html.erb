@@ -1,14 +1,16 @@
 <%= card_container do %>
   <div class="row mx-0">
     <div class="col">
-      <h4 class="text-center">
-        Order #: <%= @order.id %> <br>
-        <small class="text-muted font-size-14">
-          Placed On: <%= @order.placed_on.to_date %> <br>
-          Client: <%= @order.user.full_name %>
+      <h4 class="text-left">
+        Order SKU: <em class="text-muted-frish"><%= @order.sku %></em> <br>
+        <small class="font-size-14">
+          Placed On: <em class="text-muted-frish"><%= @order.placed_on.to_date %></em> <br>
+          Status: <em class="text-muted-frish"><%= @order.status.titleize %></em> <br>
+          Delivery Status: <em class="text-muted-frish"><%= @order.delivery_status&.titleize %></em> <br>
+          Client: <em class="text-muted-frish"><%= @order.user.full_name %></em>
         </small> <br>
         <strong class="font-size-14">
-          Total: <span class="font-size-18"><%= total_cost(@order) %></span>
+          Total: <em><span class="font-size-18"><%= total_cost(@order) %></span></em>
         </strong>
       </h4>
     </div>

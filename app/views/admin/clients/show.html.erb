@@ -1,6 +1,6 @@
 <%= card_container do %>
   <div class="row justify-content-center mx-0">
-    <div class="col text-center">
+    <div class="col text-left">
       <h4>
         <%= @user.full_name %> <br>
         <small class="text-muted font-size-14">
@@ -19,7 +19,7 @@
       <table class="table table-sm">
         <thead>
           <tr>
-            <th>#</th>
+            <th>SKU</th>
             <th>Order Date</th>
             <th>Placed On</th>
             <th># of items</th>
@@ -31,7 +31,7 @@
         <tbody>
           <% @user_orders.each do |order| %>
             <tr class="<%= "#{@user.id}__#{order.id}" %>">
-              <td><%= order.id %></td>
+              <td><%= order.sku %></td>
               <td><%= order&.order_date&.strftime('%b %d, %Y @ %I:%M %P') %></td>
               <td><%= order.placed_on.strftime('%b %d, %Y') %></td>
               <td><%= order.menus_orders.count %></td>
@@ -39,7 +39,7 @@
               <td><%= order&.status&.titleize %></td>
               <td>
                 <%= user_order_details_link(order) %>
-                <%= link_to 'Edit',  edit_admin_order_path(order_id: order.id) %>
+                <%= user_order_edit_link(order) %>
               </td>
             </tr>
           <% end %>

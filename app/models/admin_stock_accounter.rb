@@ -5,7 +5,7 @@ class AdminStockAccounter
   end
 
   def run
-    return reduce_stock_for_new_entries! if is_new_entry?
+    return reduce_stock_for_new_entries! if new_entry?
     menu_order = MenusOrder.find(@item[:id])
     return reduce_stock_for_increase_quantity!(menu_order) if quantity_increased?(menu_order)
     return return_stock_for_decrease_quantity!(menu_order) if quantity_decreased?(menu_order)
@@ -15,7 +15,7 @@ class AdminStockAccounter
 
   attr_accessor :item, :placed_on
 
-  def is_new_entry?
+  def new_entry?
     item[:id].nil?
   end
 

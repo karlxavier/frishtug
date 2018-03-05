@@ -1,5 +1,13 @@
 module Admin::ClientsHelper
 
+  def user_order_edit_link(order)
+    cant_edit = '<em class="text-muted font-size-12">Cannot Edit</em>'
+    return cant_edit.html_safe if order.placed_on < Time.current
+    link_to edit_admin_order_path(order_id: order.id), class: 'chocolate-font-color' do
+      content_tag(:i, nil, class: 'fa fa-edit') + "Edit"
+    end
+  end
+
   def user_plan_details(user)
     "Plan: #{user.plan_name} (#{to_currency(user.plan_price)})"
   end
