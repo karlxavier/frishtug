@@ -36,19 +36,6 @@ class Order < ApplicationRecord
   after_create :set_sku
   before_save :run_inventory_accounter
 
-  def run_inventory_accounter
-    InventoryAccounter.new(self).run if processing? && status_changed?
-  end
-
-  def set_sku
-    order_id = self[:id].to_s
-    self[:sku] = "SKU#{order_id.length >= 4 ? order_id : order_id.rjust(4, '0')}"
-  end
-
-  def set_series_number
-    self[:series_number] = SeriesCreator.new(self[:placed_on]).create
-  end
-
   def menu_quantity(menu)
     item =
       menus_orders.where(menu_id: menu.id).first || NullMenuOrders.new(menu)
@@ -100,5 +87,20 @@ class Order < ApplicationRecord
 
   def self.pluck_placed_on
     order(placed_on: :asc).pluck(:placed_on).map {|p| p.strftime('%Y-%m-%d')}.in_groups_of(5)
+  end
+
+  private
+
+  def run_inventory_accounter
+    InventoryAccounter.new(self).run if processing? && status_changed?
+  end
+
+  def set_sku
+    order_id = self[:id].to_s
+    self[:sku] = "SKU#{order_id.length >= 4 ? order_id : order_id.rjust(4, '0')}"
+  end
+
+  def set_series_number
+    self[:series_number] = SeriesCreator.new(self[:placed_on]).create
   end
 end

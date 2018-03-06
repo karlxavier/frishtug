@@ -17,6 +17,8 @@ class MenusOrder < ApplicationRecord
   belongs_to :order
   delegate :id, :name, :price, to: :menu, prefix: true, allow_nil: true
 
+  before_destroy :re_account_inventory
+
   def add_ons_list
     return nil if add_ons.blank?
     "(#{AddOn.where(id: add_ons).map(&:name).join(', ')})"
@@ -25,5 +27,11 @@ class MenusOrder < ApplicationRecord
   def self.top(number)
     return nil if number.nil?
     joins(:menu).group(:name, :menu_id).order('count_all desc').limit(number).count
+  end
+
+  private
+
+  def re_account_inventory
+    InventoryAccounter.new(self.order).re_account
   end
 end
