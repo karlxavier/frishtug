@@ -58,7 +58,8 @@ if (UserSelectedPlans !== "null") {
     interval: "",
     plan_minimum: 0,
     limit: 0,
-    minimum_credit_allowed: 0
+    minimum_credit_allowed: 0,
+    for_type: 'individual'
   };
 }
 
@@ -112,7 +113,8 @@ const registrationForm = new Vue({
         id: planObj.id,
         name: planObj.name,
         price: planObj.price,
-        shipping_fee: planObj.shipping_fee
+        shipping_fee: planObj.shipping_fee,
+        for_type: planObj.for_type
       },
       first_delivery_date: "",
       payment_method: "credit_card",
@@ -237,7 +239,7 @@ const registrationForm = new Vue({
         ];
       }
     },
-    nextTabOrSkipTab: function () {
+    nextTabOrSkipTab: function (zipcode) {
       if (this.plan.id > 0) {
         const div = document.querySelector('[aria-controls="Plan"]');
         div.classList.add("checked");
@@ -247,7 +249,17 @@ const registrationForm = new Vue({
         this.$refs.wizard.changeTab(1, 3);
         setTimeout(changeCheckedTabs, 300);
       } else {
-        this.$refs.wizard.nextTab();
+        if (this.isNotAllowed(zipcode)) {
+          swal(
+            'error',
+            "We don't deliver to your zip code",
+            'error'
+          ).then( response => {
+            this.$refs.wizard.nextTab();
+          })
+        } else {
+          this.$refs.wizard.nextTab();
+        }
       }
     },
     totalTaxableItemsPrice: function (itemsCollection) {
@@ -400,7 +412,8 @@ const registrationForm = new Vue({
       shipping_fee,
       name,
       limit,
-      minimum_credit_allowed
+      minimum_credit_allowed,
+      for_type
     ) {
       this.plan.name = name;
       if (shipping_fee !== null) {
@@ -409,6 +422,7 @@ const registrationForm = new Vue({
         this.plan.shipping_fee = 0;
       }
       this.plan.price = planPrice;
+      this.plan.for_type = for_type;
       this.plan_minimum = minimum_credit_allowed;
       this.plan_limit = limit;
 

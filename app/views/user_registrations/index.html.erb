@@ -52,7 +52,7 @@
     localStorage.setItem('allowed_zip_codes', '<%= raw @allowed_zip_codes.to_json(only: :zip) %>');
     localStorage.setItem('current_date_est', '<%= Date.current %>');
     localStorage.setItem('tax_rate', <%= @tax_rate %>)
-    localStorage.setItem('plans', '<%= raw @plan.to_json(only: %i[id name price shipping_fee interval limit minimum_credit_allowed]) %>');
+    localStorage.setItem('plans', '<%= raw @plan.to_json(only: %i[id name price shipping_fee interval limit minimum_credit_allowed for_type]) %>');
   <% end %>
 <% end %>
 
