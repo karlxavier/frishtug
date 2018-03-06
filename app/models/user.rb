@@ -37,6 +37,7 @@ class User < ApplicationRecord
   belongs_to :plan, optional: true, counter_cache: true
   has_many :orders, dependent: :destroy
   has_many :temp_orders, dependent: :destroy
+  has_many :pending_credits, dependent: :destroy
   has_one :referrer, dependent: :destroy
   has_one :candidate, dependent: :destroy
   has_one :order_preference, dependent: :destroy

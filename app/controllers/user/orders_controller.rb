@@ -24,9 +24,16 @@ class User::OrdersController < User::BaseController
 
   def cancel
     @order = Order.find(order_id)
-    cancel_order = CancelOrder.new(order, current_user)
+    cancel_order = CancelOrder.new(@order, current_user)
     if cancel_order.run
-      render json: { status: 'success', order: @order.to_json }, status: :ok
+      respond_with(@order)
+    end
+  end
+
+  def undo_cancel
+    @order = Order.find(order_id)
+    if @order.processing!
+      respond_with(@order)
     end
   end
 

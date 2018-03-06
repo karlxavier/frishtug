@@ -59,3 +59,27 @@
       remote: true %>
   </div>
 </div>
+<% if order.cancelled? %>
+  <div class="row mt-4">
+    <div class="col">
+      <div class="alert alert-warning">
+        Order has been cancelled for delivery!
+      </div>
+      <% is_disabled = "disabled" unless order.menus.present? %>
+      <%= link_to 'Undo Cancellation',
+        undo_cancel_user_orders_path(order_id: order.id, format: :js),
+        class: "btn btn-info text-uppercase btn-block #{is_disabled}",
+        remote: true %>
+    </div>
+  </div>
+<% else %>
+  <div class="row mt-4">
+    <div class="col">
+      <% is_disabled = "disabled" unless order.menus.present? %>
+      <%= link_to 'Cancel Delivery',
+        cancel_user_orders_path(order_id: order.id, format: :js),
+        class: "btn btn-warning text-uppercase btn-block #{is_disabled}",
+        remote: true %>
+    </div>
+  </div>
+<% end %>
