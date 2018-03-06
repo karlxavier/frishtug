@@ -13,6 +13,7 @@ class OrderCopier
 
   def copy_to(dates = [])
     ActiveRecord::Base.transaction do
+      clean_duplicates(dates)
       @last_five_orders.each_with_index do |order, index|
         user_order = @user.orders.create!(order_params(dates[index], order))
         create_menus_orders(user_order, order)
@@ -51,6 +52,20 @@ class OrderCopier
   private
 
   attr_accessor :user
+
+  def clean_duplicates(dates = [])
+    start_date  = parse_date(dates.first).beginning_of_day
+    end_date    = parse_date(dates.last).end_of_day
+    range       = DateRange.new(start_date, end_date)
+    orders      = user.orders.placed_between?(range)
+    if orders.count > 0
+      orders.destroy_all
+    end
+  end
+
+  def parse_date(date)
+    Time.zone.parse(date)
+  end
 
   def set_day(day)
     return day = 0 if day == 4

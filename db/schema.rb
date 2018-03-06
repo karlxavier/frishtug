@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180301081150) do
+ActiveRecord::Schema.define(version: 20180306024527) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -292,6 +292,15 @@ ActiveRecord::Schema.define(version: 20180301081150) do
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
+  create_table "pending_credits", force: :cascade do |t|
+    t.decimal "amount", precision: 8, scale: 2
+    t.datetime "activation_date"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_pending_credits_on_user_id"
+  end
+
   create_table "plans", force: :cascade do |t|
     t.string "name"
     t.text "description"
@@ -419,41 +428,12 @@ ActiveRecord::Schema.define(version: 20180301081150) do
   add_foreign_key "menus_temp_orders", "temp_orders"
   add_foreign_key "order_preferences", "users"
   add_foreign_key "orders", "users"
+  add_foreign_key "pending_credits", "users"
   add_foreign_key "referrers", "users"
   add_foreign_key "schedules", "users"
   add_foreign_key "taxes", "stores"
   add_foreign_key "temp_orders", "users"
   add_foreign_key "users", "plans"
-
-  create_view "items_with_stocks", materialized: true,  sql_definition: <<-SQL
-      SELECT menus.id AS menu_id,
-      menus.name,
-      menus.price,
-      menus.published,
-      menus.unit_size,
-      menus.unit_id,
-      menus.item_number,
-      menus.tax,
-      menus.description,
-      menus.asset_id,
-      inventories.quantity,
-      menus.menu_category_id,
-      menu_categories.name AS menu_category_name,
-      ARRAY( SELECT diet_categories.name
-             FROM (diet_categories
-               JOIN diet_categories_menus ON (((diet_categories_menus.diet_category_id = diet_categories.id) AND (diet_categories_menus.menu_id = menus.id))))) AS diet_categories
-     FROM (((menus
-       JOIN menu_categories ON ((menu_categories.id = menus.menu_category_id)))
-       JOIN units ON ((units.id = menus.unit_id)))
-       JOIN inventories ON ((inventories.menu_id = menus.id)))
-    WHERE ((inventories.quantity <> 0) AND (menu_categories.part_of_plan = true))
-    GROUP BY menu_categories.id, menus.id, inventories.quantity
-    ORDER BY menus.id DESC;
-  SQL
-
-  add_index "items_with_stocks", ["asset_id"], name: "index_items_with_stocks_on_asset_id"
-  add_index "items_with_stocks", ["menu_category_id"], name: "index_items_with_stocks_on_menu_category_id"
-  add_index "items_with_stocks", ["menu_id"], name: "index_items_with_stocks_on_menu_id"
 
   create_view "search_results",  sql_definition: <<-SQL
       SELECT users.id AS searchable_id,
@@ -491,5 +471,35 @@ ActiveRecord::Schema.define(version: 20180301081150) do
       orders.sku AS term
      FROM orders;
   SQL
+
+  create_view "items_with_stocks", materialized: true,  sql_definition: <<-SQL
+      SELECT menus.id AS menu_id,
+      menus.name,
+      menus.price,
+      menus.published,
+      menus.unit_size,
+      menus.unit_id,
+      menus.item_number,
+      menus.tax,
+      menus.description,
+      menus.asset_id,
+      inventories.quantity,
+      menus.menu_category_id,
+      menu_categories.name AS menu_category_name,
+      ARRAY( SELECT diet_categories.name
+             FROM (diet_categories
+               JOIN diet_categories_menus ON (((diet_categories_menus.diet_category_id = diet_categories.id) AND (diet_categories_menus.menu_id = menus.id))))) AS diet_categories
+     FROM (((menus
+       JOIN menu_categories ON ((menu_categories.id = menus.menu_category_id)))
+       JOIN units ON ((units.id = menus.unit_id)))
+       JOIN inventories ON ((inventories.menu_id = menus.id)))
+    WHERE ((inventories.quantity <> 0) AND (menu_categories.part_of_plan = true))
+    GROUP BY menu_categories.id, menus.id, inventories.quantity
+    ORDER BY menus.id DESC;
+  SQL
+
+  add_index "items_with_stocks", ["asset_id"], name: "index_items_with_stocks_on_asset_id"
+  add_index "items_with_stocks", ["menu_category_id"], name: "index_items_with_stocks_on_menu_category_id"
+  add_index "items_with_stocks", ["menu_id"], name: "index_items_with_stocks_on_menu_id"
 
 end
