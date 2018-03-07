@@ -184,12 +184,13 @@ const registrationForm = new Vue({
     }
   },
   methods: {
-    isNotAllowed: function (zipCode) {
-      if (!zipCode) {
-        return null;
-      }
+    isNotAllowed: function () {
       const self = this;
-      if (self.allowed_zip_codes.includes(zipCode.toString())) {
+      const isAllowed = self.billing_address.every( address => {
+        self.allowed_zip_codes.includes(String(address.address_zip))
+      })
+
+      if (isAllowed) {
         return false;
       } else {
         return true;
@@ -239,7 +240,7 @@ const registrationForm = new Vue({
         ];
       }
     },
-    nextTabOrSkipTab: function (zipcode) {
+    nextTabOrSkipTab: function () {
       if (this.plan.id > 0) {
         const div = document.querySelector('[aria-controls="Plan"]');
         div.classList.add("checked");
@@ -249,7 +250,7 @@ const registrationForm = new Vue({
         this.$refs.wizard.changeTab(1, 3);
         setTimeout(changeCheckedTabs, 300);
       } else {
-        if (this.isNotAllowed(zipcode)) {
+        if (this.isNotAllowed()) {
           swal(
             'error',
             "We don't deliver to your zip code",
