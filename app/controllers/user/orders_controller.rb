@@ -42,7 +42,9 @@ class User::OrdersController < User::BaseController
   def charge_user!
     if current_user.subscribed?
       plan_limit = current_user.plan.limit
-      amount_to_pay = OrderCalculator.new(@order).total_excess(plan_limit)
+      excess = OrderCalculator.new(@order).total_excess(plan_limit)
+      shipping_fee = @order.shipping_fee
+      amount_to_pay = excess + shipping_fee
       create_excess_charge!(amount_to_pay) if amount_to_pay > 0
     else
       amount_to_pay = OrderCalculator.new(@order).total
