@@ -12,7 +12,7 @@
     <% @bill_histories.each do |bill_history| %>
       <tr class="<%= bill_history.id %>">
         <td><%= bill_history.source.brand %> <%= "****#{bill_history.source.last4}" %></td>
-        <td><%= to_currency(bill_history.amount / 100) %></td>
+        <td><%= to_currency(to_dollar(bill_history.amount)) %></td>
         <td><%= bill_history.description || 'Subscription charge' %></td>
         <td><%= Time.at(bill_history.created).strftime('%b %d, %Y @ %I:%M %P') %></td>
       </tr>

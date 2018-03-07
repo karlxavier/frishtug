@@ -16,6 +16,8 @@ class BillHistoryService
   end
 
   def get_bill_histories
-    Stripe::Charge.list(customer: customer_id, limit: 100)
+    Rails.cache.fetch([user, "bill history"], expires: 1.hour) do
+      Stripe::Charge.list(customer: customer_id, limit: 100)
+    end
   end
 end

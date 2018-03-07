@@ -35,6 +35,30 @@
   </div>
 <% end %>
 <hr>
+
+<% if order.shipping_fee > 0 %>
+  <div class="row clearfix">
+    <div class="col">
+      <span>Sub Total</span>
+    </div>
+    <div class="col">
+      <span class="float-right">
+        <%= to_currency(order.sub_total) %>
+      </span>
+    </div>
+  </div>
+  <div class="row clearfix">
+    <div class="col">
+      <span>Shipping Fee</span>
+    </div>
+    <div class="col">
+      <span class="float-right">
+        <%= to_currency(order.excess) %>
+      </span>
+    </div>
+  </div>
+<% end %>
+
 <div class="row clearfix">
   <div class="col">
     <strong>Total</strong>
@@ -47,7 +71,7 @@
 </div>
 
 <div class="warnings">
-  <%= display_warning(order.total) %>
+  <%= display_warning(order.sub_total) %>
 </div>
 
 <div class="row mt-4">

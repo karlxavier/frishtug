@@ -2,7 +2,11 @@ module Computable
   extend ActiveSupport::Concern
 
   def sub_total
-    OrderCalculator.new(self).total
+    OrderCalculator.new(self).total_without_shipping
+  end
+
+  def excess
+    OrderCalculator.new(self).total_excess(self.user.plan.limit)
   end
 
   def shipping_fee

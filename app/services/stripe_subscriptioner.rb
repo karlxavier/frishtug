@@ -17,7 +17,9 @@ class StripeSubscriptioner
 
   def retrieve
     return false if user_not_subscribed?
-    Stripe::Subscription.retrieve(user.stripe_subscription_id)
+    Rails.cache.fetch([user, "stripe retrieve"], expires: 1.hour) do
+      Stripe::Subscription.retrieve(user.stripe_subscription_id)
+    end
   end
 
   def cancel

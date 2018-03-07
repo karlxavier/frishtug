@@ -1,6 +1,6 @@
 <div class="container-fluid">
   <div class="row">
-    <div class="col-6 col-md-6">
+    <div class="col-6">
       <h4 class="font-size-18 text-uppercase">Subscriptions</h4>
 
       <% if @plan.present? && !@plan.interval.nil? %>
@@ -22,6 +22,14 @@
         <%= link_to_btn 'Choose plans', choose_plans_user_subscriptions_path %>
       <% end %>
     </div>
+
+
+    <% if group_plan? %>
+      <div class="col-6">
+        <h4 class="font-size-18 text-uppercase">Members</h4>
+        <p class="font-family-montserrat font-size-14" style="">Send New Code to Member</p>
+      </div>
+    <% end %>
   </div>
 </div>
 
