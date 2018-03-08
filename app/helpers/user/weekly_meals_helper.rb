@@ -1,5 +1,9 @@
 module User::WeeklyMealsHelper
 
+  def user_plan_complete?
+    current_user.orders.count % 20
+  end
+
   def is_ordering?
     controller_name == 'weekly_meals' && action_name.in?(['new', 'edit'])
   end

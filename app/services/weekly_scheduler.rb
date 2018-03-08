@@ -30,7 +30,7 @@ class WeeklyScheduler
 
   private
 
-  attr_accessor :last_five_orders, :schedule
+  attr_accessor :last_five_orders, :schedule, :user
 
   def last_first_order_placed_on_date
     last_five_orders.first.placed_on.to_date
@@ -49,6 +49,9 @@ class WeeklyScheduler
   end
 
   def create_selection_from(results)
+    range = DateRange.new(results.first.beginning_of_day, results.last.end_of_day)
+    dates = user.orders.placed_between?(range).map { |o| o.placed_on.to_date }
+    results = results - dates
     results.in_groups_of(5).map do |r|
       ["#{format_date(r.first)} - #{format_date(r.last)}", r.join(',')]
     end
