@@ -36,7 +36,7 @@
               name="registration_form[plan_id]"
               value="<%= p.id %>"
               id="<%= "#{p.name.parameterize}-#{p.id}" %>"
-              class="d-none"
+              class="d-none <%= "#{p.name.parameterize}--radio_btn" %>"
               v-model="plan.id"
               @click="setInterVal(
                 '<%= p.interval || 'single_order' %>',
