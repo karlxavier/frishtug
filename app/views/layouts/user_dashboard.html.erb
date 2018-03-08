@@ -25,6 +25,7 @@
       padding_top = '5.4rem' if is_ordering?
     %>
     <%= render 'user/user_navbar' %>
+    <%= display_incomplete_plan_notification %>
     <div class="<%= root_container_class %>" id="root-container" style="padding-top: <%= padding_top %>;">
       <div class="row mb-4">
         <%= render 'user/user_sidebar' unless is_ordering? %>
