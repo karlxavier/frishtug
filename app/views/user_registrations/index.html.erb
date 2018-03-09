@@ -1,3 +1,7 @@
+<div class="overlay">
+  <div class="pulse_loader"></div>
+  <span class="pulse_loader_text">Loading Registration page...</span>
+</div>
 <%= form_with model: @registration, url: user_registrations_path(format: :js), id: 'sign_up_form' do |form| %>
   <div class="container-fluid px-0">
     <div id="registration-form" class="d-none">
@@ -45,9 +49,10 @@
 
 <%= content_for :header_js do %>
   <%= javascript_tag do %>
-    onload = function() {
+    $(document).ready(function() {
       document.querySelector('#registration-form').classList.remove('d-none');
-    };
+      pulse_loader.stop();
+    });
     localStorage.setItem('blackout_dates', '<%= raw @blackout_dates.to_json %>')
     localStorage.setItem('allowed_zip_codes', '<%= raw @allowed_zip_codes.to_json(only: :zip) %>');
     localStorage.setItem('current_date_est', '<%= Date.current %>');

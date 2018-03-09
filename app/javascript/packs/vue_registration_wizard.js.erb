@@ -18,9 +18,6 @@ import toCurrency from "./lib/to_currency";
 import totalPrice from "./filters/total_price";
 import toFixed from "./lib/to_fixed";
 import moment from "moment";
-import pulse_loader from "./lib/loaders";
-
-window.pulse_loader = pulse_loader;
 // filters
 Vue.filter("to_currency", toCurrency);
 Vue.filter("total_price", totalPrice);
@@ -1018,8 +1015,8 @@ const changeCheckedTabs = () => {
 })();
 
 const scroller = function () {
-  let cartSidebar = document.querySelector(".meal-sidebar");
-  let shoppingCartBtn = document.querySelector(".shopping-cart__shown_btn");
+  let cartSidebars = document.querySelectorAll(".meal-sidebar");
+  let shoppingCartBtns = document.querySelectorAll(".shopping-cart__shown_btn");
   var y = window.pageYOffset;
 
   const positionElelement = el => {
@@ -1037,11 +1034,19 @@ const scroller = function () {
   };
 
   if (y >= 90) {
-    positionElelement(cartSidebar);
-    positionElelement(shoppingCartBtn);
+    Array.from(cartSidebars).forEach(cartSidebar =>
+      positionElelement(cartSidebar)
+    );
+    Array.from(shoppingCartBtns).forEach(shoppingCartBtn =>
+      positionElelement(shoppingCartBtn)
+    );
   } else {
-    removePositioning(cartSidebar);
-    removePositioning(shoppingCartBtn);
+    Array.from(cartSidebars).forEach(cartSidebar =>
+      removePositioning(cartSidebar)
+    );
+    Array.from(shoppingCartBtns).forEach(shoppingCartBtn =>
+      removePositioning(shoppingCartBtn)
+    );
   }
 };
 

@@ -1248,7 +1248,7 @@ table.table {
         display: flex;
         overflow: hidden;
         flex-direction: column;
-        width: 23.13rem;
+        width: 25rem;
         height: calc(100% + 2.7rem);
         padding: 1rem 2rem;
         border-left: 1px solid #e1e1e1;
@@ -1267,7 +1267,7 @@ table.table {
             overflow-y: auto;
             width: calc(100% + 4rem);
             max-height: 250px;
-            margin: 0rem -2rem 0rem -2rem;
+            margin: 1rem -2rem 0rem -2rem;
             border-bottom: 1px solid #e1e1e1;
             & .col {
                 padding-right: 2rem;
