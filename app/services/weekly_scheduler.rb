@@ -58,6 +58,6 @@ class WeeklyScheduler
   end
 
   def format_date(date)
-    date.strftime('%b %d')
+    date&.strftime('%b %d')
   end
 end
