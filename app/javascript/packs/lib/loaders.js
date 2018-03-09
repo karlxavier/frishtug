@@ -1,26 +1,28 @@
-const pulse_loader = () => {
-  const body = document.querySelector('body')
-
-  const init = () => {
-    const overlay = document.createElement('div')
-    const loader = document.createElement('div')
-    loader.className = 'pulse_loader'
-    overlay.className = 'overlay'
-    overlay.appendChild(loader)
-    body.appendChild(overlay)
+const init = (loaderText) => {
+  let content = "Loading..."
+  if (loaderText) {
+    content = String(loaderText)
   }
+  const body = document.querySelector("body");
+  const overlay = document.createElement('div')
+  const loader = document.createElement('div')
+  const span = document.createElement('span')
+  const text = document.createTextNode(content)
+  loader.className = 'pulse_loader'
+  overlay.className = 'overlay'
+  span.className = 'pulse_loader_text'
+  overlay.appendChild(loader)
+  span.appendChild(text);
+  overlay.appendChild(span)
+  body.appendChild(overlay)
+}
 
-  const stop = () => {
-    const overlay = document.querySelector('.overlay')
-    overlay.remove()
-  }
-
-  return {
-    init: init,
-    stop: stop
-  }
+const stop = () => {
+  const overlay = document.querySelector('.overlay')
+  overlay.remove()
 }
 
 module.exports = {
-  pulse_loader: pulse_loader()
+  init: init,
+  stop: stop
 }

@@ -18,7 +18,9 @@ import toCurrency from "./lib/to_currency";
 import totalPrice from "./filters/total_price";
 import toFixed from "./lib/to_fixed";
 import moment from "moment";
+import pulse_loader from "./lib/loaders";
 
+window.pulse_loader = pulse_loader;
 // filters
 Vue.filter("to_currency", toCurrency);
 Vue.filter("total_price", totalPrice);
@@ -558,19 +560,12 @@ const registrationForm = new Vue({
       }
     },
     createToken: function () {
+      pulse_loader.init('Processing data...')
       const _this = this;
       const form = document.querySelector("form#sign_up_form");
-      const btn = form.querySelector(".complete-orders-btn");
       let address;
-      if (btn.classList.contains("disabled")) {
-        return;
-      }
 
       Stripe.setPublishableKey(_this.stripe_key);
-      btn.classList.add("disabled");
-      btn.innerHTML = `
-        <i class="fa fa-spinner fa-spin"></i> Processing..
-      `;
       if (_this.payment_method === "credit_card") {
         if (hasAddress(_this.credit_card_billing_address)) {
           address = _this.credit_card_billing_address;
@@ -914,21 +909,13 @@ const completeAction = (token, brand) => {
   });
 };
 
-const disableBtnHandler = btn => {
-  const temp = btn.innerHTML;
-  btn.innerHTML = "Complete Sign Up";
-  btn.dataset.disableWith = temp;
-  btn.classList.remove("disabled");
-};
-
 const stripeResponseHandler = (status, response) => {
   const form = document.querySelector("form#sign_up_form");
-  const btn = form.querySelector(".complete-orders-btn");
   let tempBtnContents;
 
   if (response.error) {
     registrationForm.error_messages = response.error.message;
-    disableBtnHandler(btn);
+    pulse_loader.stop()
   } else {
     const token = response.id;
     const brand = response.card.brand;

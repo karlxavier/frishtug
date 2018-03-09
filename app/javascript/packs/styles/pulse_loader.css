@@ -1,28 +1,40 @@
 .overlay {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   background: #fff;
+  z-index: 9999;
+  overflow: hidden;
 }
 
 .overlay .pulse_loader {
   position: absolute;
   top: 50%;
   left: 50%;
-  margin: -20px 0 0 -20px;
+  margin: -25px 0 0 -25px;
 }
 
 .pulse_loader {
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   margin: 100px auto;
-  background-color: #333;
+  background-color: #4E3C44;
 
-  border-radius: 100%;  
+  border-radius: 100%;
   -webkit-animation: sk-scaleout 1.0s infinite ease-in-out;
   animation: sk-scaleout 1.0s infinite ease-in-out;
+}
+
+.pulse_loader_text {
+  height: 20px;
+  width: 100%;
+  position: absolute;
+  top: 61%;
+  margin-top: -20px;
+  font-family: 'Montserrat';
+  text-align: center;
 }
 
 @-webkit-keyframes sk-scaleout {
@@ -34,7 +46,7 @@
 }
 
 @keyframes sk-scaleout {
-  0% { 
+  0% {
     -webkit-transform: scale(0);
     transform: scale(0);
   } 100% {
