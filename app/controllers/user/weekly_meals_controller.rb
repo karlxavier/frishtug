@@ -7,25 +7,30 @@ class User::WeeklyMealsController < User::BaseController
   START_DATE = Date.current.beginning_of_week(:sunday)
 
   def index
-    weekly_scheduler = WeeklyScheduler.new(current_user)
     order = current_user.orders
     @active_this_week = order.placed_between?(@date_range).pluck_placed_on
     @active_orders = order.active_orders.pluck_placed_on
     @completed = order.completed.pluck_placed_on
     @orders = order.pending_deliveries
     @order_preference = current_user.order_preference
-    @from_options = weekly_scheduler.get_schedules_for_selection!
-    @to_options = weekly_scheduler.create_schedule_for_selection!
-    @available_dates = weekly_scheduler.create_schedule!.in_groups_of(5)
     @blackout_dates = BlackoutDate.pluck_dates
+    if current_user.subscribed?
+      weekly_scheduler = WeeklyScheduler.new(current_user)
+      @from_options = weekly_scheduler.get_schedules_for_selection!
+      @to_options = weekly_scheduler.create_schedule_for_selection!
+      @available_dates = weekly_scheduler.create_schedule!.in_groups_of(5)
+
+    end
   end
 
   def new
-    weekly_scheduler = WeeklyScheduler.new(current_user)
-    dates = weekly_scheduler.create_schedule!.in_groups_of(5)
-    @available_dates = dates.first if params[:schedule] == 'second'
-    @available_dates = dates.second if params[:schedule] == 'third'
-    @available_dates = dates.third if params[:schedule] == 'fourth'
+    if current_user.subscribed?
+      weekly_scheduler = WeeklyScheduler.new(current_user)
+      dates = weekly_scheduler.create_schedule!.in_groups_of(5)
+      @available_dates = dates.first if params[:schedule] == 'second'
+      @available_dates = dates.second if params[:schedule] == 'third'
+      @available_dates = dates.third if params[:schedule] == 'fourth'
+    end
   end
 
   def edit
