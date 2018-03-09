@@ -802,7 +802,8 @@ const verifyEmailIsNotDuplicate = ({
     success: function (response) {
       if (response.status === "error") {
         el.classList.add("is-invalid");
-        emailError.innerHTML = "Email already exists!";
+        emailError.innerHTML = `Email already exists!
+        <a href="/users/password/new">Forgot your password?</a>`;
         callback(false)
       } else {
         if (el.classList.contains('is-invalid')) {
