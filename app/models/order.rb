@@ -35,6 +35,7 @@ class Order < ApplicationRecord
   before_create :set_series_number
   after_create :set_sku
   before_save :run_inventory_accounter
+  after_save :run_copier
 
   def menu_quantity(menu)
     item =
@@ -43,9 +44,10 @@ class Order < ApplicationRecord
   end
 
   def self.pending_deliveries
-    self.active_orders.order(placed_on: :asc).includes(menus: [:menu_category]).map do |o|
+    self.active_orders.includes(menus: [:menu_category]).map do |o|
       {
         placed_on: o.placed_on,
+        total: OrderCalculator.new(o).total,
         menus_orders: o.menus_orders.group_by do |m|
           m.menu.category.name
         end
@@ -90,6 +92,11 @@ class Order < ApplicationRecord
   end
 
   private
+
+  def run_copier
+    return unless saved_change_to_status?
+    OrderCopierWorker.perform_at(12.hours.from_now, self.user_id)
+  end
 
   def run_inventory_accounter
     InventoryAccounter.new(self).run if processing? && status_changed?

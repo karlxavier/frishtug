@@ -9,6 +9,7 @@ class OrderDuplicator
 
   def run
     copy_values_to(@order)
+    @order.processing!
     true
   end
 

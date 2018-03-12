@@ -2,7 +2,8 @@
   <div class="row">
     <div class="col-12 clearfix">
       <h5 class="float-left">
-        <%= order[:placed_on].strftime('%a, %b %d') %>
+        <%= order[:placed_on].strftime('%a, %b %d') %> <br>
+        <em class="font-size-14">Total: <%= to_currency(order[:total]) %></em>
       </h5>
       <small class="float-right">
         <%= link_to 'Edit', edit_user_weekly_meals_path(date: order[:placed_on].to_date), class: 'chocolate-font-color' %>
