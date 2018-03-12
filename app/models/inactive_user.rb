@@ -13,4 +13,14 @@
 
 class InactiveUser < ApplicationRecord
   enum status: %i[pending completed]
+  validate :does_user_exists?
+
+  private
+
+  def does_user_exists?
+    if User.where(email: self.email).any?
+      errors.add(:base, "User exists!")
+      return false
+    end
+  end
 end

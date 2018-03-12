@@ -54,6 +54,8 @@ class User < ApplicationRecord
   delegate :name, :id, :price, to: :plan, prefix: true, allow_nil: true
   delegate :phone_number, :id, to: :contact_number, prefix: true, allow_nil: true
 
+  after_create :delete_inactive_entry!
+
   def self.in_locations(locations)
     joins(:addresses).merge(Address.search_list(locations))
   end
@@ -118,4 +120,10 @@ class User < ApplicationRecord
   def orders_completed?
     orders.count % 20 == 0
   end
+
+  private
+
+    def delete_inactive_entry!
+      InactiveUser.find_by_email(self.email).destroy
+    end
 end
