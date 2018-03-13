@@ -1,14 +1,14 @@
-var btn = document.querySelector('button.complete-orders-btn');
-btn.classList.remove('disabled');
-btn.innerHTML = 'Complete Sign Up';
-
+sessionStorage.clear();
+pulse_loader.replace_text('Sign up complete!. You are being redirect to your dashboard...')
 <% if @registration.errors.present? %>
+  pulse_loader.stop();
   swal(
     'Opps...',
     '<%= @registration.errors.full_messages.join(', ') %>',
     'error'
   );
 <% elsif current_user.referrer %>
+  pulse_loader.stop();
   swal({
       html: `
         <div class="row">
@@ -48,5 +48,5 @@ btn.innerHTML = 'Complete Sign Up';
     }
   });
 <% else %>
-  window.location.href = '<%= new_user_session_path %>';
+  setTimeout( function() { window.location.href = '<%= new_user_session_path %>' }, 1000);
 <% end %>

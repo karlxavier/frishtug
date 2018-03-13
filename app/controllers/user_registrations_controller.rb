@@ -25,8 +25,6 @@ class UserRegistrationsController < ApplicationController
   def create
     @registration = RegistrationForm.new(registration_params)
     if @registration.save
-      flash[:success] = 'Registration successful.'
-      @message = 'success'
       sign_in(User.find_by_email(@registration.email), scope: :user)
     end
     respond_with(@registration)

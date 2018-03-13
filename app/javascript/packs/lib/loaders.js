@@ -22,7 +22,13 @@ const stop = () => {
   overlay.remove()
 }
 
+const replace_text = (text) => {
+  const el = document.querySelector('.pulse_loader_text')
+  el.innerHTML = text
+}
+
 module.exports = {
   init: init,
-  stop: stop
+  stop: stop,
+  replace_text: replace_text
 }

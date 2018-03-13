@@ -17,7 +17,6 @@ class OrderCalculator
   end
 
   def get_excess(plan_limit)
-    raise 'Parameter Order is not an array' unless @order.is_a?(Array)
     orders = @order
     excess = []
     orders.each do |order|

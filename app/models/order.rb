@@ -94,7 +94,7 @@ class Order < ApplicationRecord
   private
 
   def run_copier
-    return unless saved_change_to_status?
+    return unless saved_change_to_status? && completed?
     OrderCopierWorker.perform_at(12.hours.from_now, self.user_id)
   end
 
