@@ -6,10 +6,13 @@ class User::SchedulesController < User::BaseController
   end
 
   def create
-    if current_user.schedule.update_attributes(option: option)
+    @schedule = current_user.schedule
+    if @schedule.update_attributes(option: option)
       flash[:success] = "Schedule successfully changed to #{option.humanize}"
-      redirect_back fallback_location: user_dashboard_index_path
+    else
+      flash[:error] = "Error: #{ @schedule.errors.full_messages.join(', ') }"
     end
+    redirect_back fallback_location: user_dashboard_index_path
   end
 
   private
