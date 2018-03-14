@@ -32,7 +32,7 @@ class ItemsWithStock < ActiveRecord::Base
           :asset,
           :menu_category,
           menu: :add_ons
-        ).group_by(&attribute.to_sym)
+        ).order('display_order ASC').group_by(&attribute.to_sym)
       end
     end
 

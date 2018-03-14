@@ -16,7 +16,9 @@ Rails.application.routes.draw do
 
   require 'sidekiq/web'
 
-  devise_for :users
+  devise_for :users, controllers: {
+    sessions: 'users/sessions'
+  }
   devise_for :admins
 
   draw :admin

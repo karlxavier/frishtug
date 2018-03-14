@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180306024527) do
+ActiveRecord::Schema.define(version: 20180314010836) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -486,6 +486,7 @@ ActiveRecord::Schema.define(version: 20180306024527) do
       inventories.quantity,
       menus.menu_category_id,
       menu_categories.name AS menu_category_name,
+      menu_categories.display_order,
       ARRAY( SELECT diet_categories.name
              FROM (diet_categories
                JOIN diet_categories_menus ON (((diet_categories_menus.diet_category_id = diet_categories.id) AND (diet_categories_menus.menu_id = menus.id))))) AS diet_categories
@@ -495,7 +496,7 @@ ActiveRecord::Schema.define(version: 20180306024527) do
        JOIN inventories ON ((inventories.menu_id = menus.id)))
     WHERE ((inventories.quantity <> 0) AND (menu_categories.part_of_plan = true))
     GROUP BY menu_categories.id, menus.id, inventories.quantity
-    ORDER BY menus.id DESC;
+    ORDER BY menu_categories.display_order;
   SQL
 
   add_index "items_with_stocks", ["asset_id"], name: "index_items_with_stocks_on_asset_id"
