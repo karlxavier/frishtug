@@ -15,6 +15,7 @@
 #  quantity           :integer
 #  menu_category_id   :integer
 #  menu_category_name :string
+#  display_order      :integer
 #  diet_categories    :string           is an Array
 #
 

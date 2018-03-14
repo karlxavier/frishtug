@@ -25,7 +25,6 @@ module User::WeeklyMealsHelper
 
   def calendar_url(date, active_this_week, active_orders, available_dates)
     url = "javascript:void(0)"
-    return "javascript:void(0)" if @blackout_dates.include?(date.strftime('%B %d'))
     if date > Date.current && !date.saturday?
       if current_user.subscribed?
         sched = 'second' if available_dates.first.include?(date)
@@ -55,7 +54,7 @@ module User::WeeklyMealsHelper
     classes.push 'active' if active_this_week.present? && active_this_week[0].include?(date.to_s)
     multiple_colored_weeks(classes, active_orders, date) if current_user.plan.interval == 'month'
     single_colored_weeks(classes, active_orders, date) if current_user.plan.interval != 'month'
-    classes.push 'disabled' if date < Date.current || date.saturday? || @blackout_dates.include?(date.strftime('%B %d'))
+    classes.push 'disabled' if date < Date.current || date.saturday?
     if current_user.schedule.present?
       return "disabled" if date.sunday? && current_user.schedule.monday_to_friday?
       return "disabled" if date.friday? && current_user.schedule.sunday_to_thursday?

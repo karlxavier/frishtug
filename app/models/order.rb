@@ -5,7 +5,7 @@
 #  id              :integer          not null, primary key
 #  user_id         :integer
 #  placed_on       :datetime
-#  eta             :datetime
+#  eta             :string
 #  delivered_at    :datetime
 #  status          :integer
 #  remarks         :string
@@ -15,6 +15,8 @@
 #  series_number   :integer
 #  sku             :string
 #  delivery_status :integer
+#  payment_details :string
+#  route_started   :string
 #
 
 # Column names
@@ -36,6 +38,7 @@ class Order < ApplicationRecord
   after_create :set_sku
   before_save :run_inventory_accounter
   after_save :run_copier
+  after_commit :create_pending_credit, on: :create
 
   def menu_quantity(menu)
     item =
@@ -92,6 +95,16 @@ class Order < ApplicationRecord
   end
 
   private
+
+  def create_pending_credit
+    blackout_dates = BlackoutDate.pluck_dates
+    return unless blackout_dates.include?(placed_on.strftime('%B %d'))
+    user.pending_credits.create!(
+      amount: OrderCalculator.new(self).total,
+      activation_date: user.orders.first.placed_on + 28.days,
+      placed_on_date: placed_on
+    )
+  end
 
   def run_copier
     return unless saved_change_to_status? && completed?

@@ -8,28 +8,18 @@ class ScheduleGenerator
   def initialize(date, schedule)
     @schedule = schedule
     @schedule_to_skip = SCHEDULES[schedule.to_sym]
-    @blackout_dates = BlackoutDate.pluck_dates
     @date = date
   end
 
   def generate
     @date = skip_saturdays
     @date = skip_not_in_schedule
-    @date = skip_blackout_dates
     @date
   end
 
   private
 
-  attr_accessor :date, :blackout_dates, :schedule_to_skip, :schedule
-
-  def skip_blackout_dates
-    if blackout_dates.include?(date.strftime('%B %d'))
-      ScheduleGenerator.new(date + 1, schedule).generate
-    else
-      date
-    end
-  end
+  attr_accessor :date, :schedule_to_skip, :schedule
 
   def skip_not_in_schedule
     if date.wday == schedule_to_skip

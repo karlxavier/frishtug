@@ -13,7 +13,6 @@ class User::WeeklyMealsController < User::BaseController
     @completed = order.completed.pluck_placed_on
     @orders = order.pending_deliveries
     @order_preference = current_user.order_preference
-    @blackout_dates = BlackoutDate.pluck_dates
     if current_user.subscribed?
       weekly_scheduler = WeeklyScheduler.new(current_user)
       @from_options = weekly_scheduler.get_schedules_for_selection!

@@ -5,7 +5,7 @@
 #  id              :integer          not null, primary key
 #  user_id         :integer
 #  placed_on       :datetime
-#  eta             :datetime
+#  eta             :string
 #  delivered_at    :datetime
 #  status          :integer
 #  remarks         :string
@@ -15,6 +15,8 @@
 #  series_number   :integer
 #  sku             :string
 #  delivery_status :integer
+#  payment_details :string
+#  route_started   :string
 #
 
 FactoryBot.define do
