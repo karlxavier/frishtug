@@ -1,5 +1,5 @@
 class ContactUsMailer < ApplicationMailer
-  default from: 'contact_us_notifications@frishtug-staging.com'
+  default from: 'contact_us_notifications@frishtug.com'
 
   def send_message(options = {})
     @first_name = options[:first_name]
