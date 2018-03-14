@@ -677,16 +677,6 @@ const registrationForm = new Vue({
         return self.is_past;
       }
 
-      const isBlackOutDate = (date) => {
-        const day = date.getDate() >= 10 ? date.getDate() : `0${date.getDate()}`
-        const query = `${moment(date).format("MMMM")} ${day}`;
-        const blackoutDates = JSON.parse(localStorage.getItem('blackout_dates'))
-        return blackoutDates.includes(query)
-      }
-      if (isBlackOutDate(theDate)) {
-        return true
-      }
-
       return !registrationForm.isNotSaturday(date);
     },
     handleTabChange: function (tabIndex, newTab, oldTab) {},

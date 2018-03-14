@@ -28,13 +28,13 @@
       <div class="col-6">
         <h4 class="font-size-18 text-uppercase">Members</h4>
         <p class="font-family-montserrat font-size-14" style="">Send New Code to Member</p>
-        <%= form_with url: '#' do |f| %>
+        <%= form_with url: '#', id: 'invitation_mailer_form' do |f| %>
           <div class="form-group row">
             <div class="col-9">
               <%= f.email_field :invitee_email, class: 'form-control', placeholder: 'Type email here' %>
             </div>
             <div class="col">
-              <%= f.submit 'Send', class: 'btn btn-brown text-uppercase' %>
+              <%= f.submit 'Send', class: 'btn btn-brown text-uppercase send_invitation_btn' %>
             </div>
           </div>
         <% end %>
@@ -51,4 +51,8 @@
   <%= form.submit 'Cancel Subscription', class: 'btn btn-brown mb-3 float-right text-uppercase' %>
   <a href="javascript:void(0)" class="btn btn-default text-uppercase float-right"  data-dismiss="modal">Do not cancel</a>
   <% end %>
+<% end %>
+
+<%= content_tag :footer_js do %>
+  <%= javascript_pack_tag 'user/invitation_mailer.js' %>
 <% end %>

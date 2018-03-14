@@ -11,13 +11,7 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col">
-          <h4>
-            From: <%= "#{@first_name} #{@last_name}" %>
-            <%= mail_to @email, "<#{@email}>" %>
-          </h4>
-          <p>
-            <%= @message %>
-          </p>
+          <h4>You have been invited by <%= @sender.full_name %></h4>
         </div>
       </div>
     </div>

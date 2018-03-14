@@ -14,4 +14,12 @@
 class Inventory < ApplicationRecord
   belongs_to :menu
   has_many :inventory_transactions, dependent: :destroy
+  validates :menu_id, uniqueness: true
+  before_save :create_inventory_id
+
+  private
+
+  def create_inventory_id
+    self.inventory_id = SecureRandom.urlsafe_base64(10)
+  end
 end

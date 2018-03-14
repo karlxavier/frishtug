@@ -39,6 +39,7 @@ class Order < ApplicationRecord
   before_save :run_inventory_accounter
   after_save :run_copier
   after_commit :create_pending_credit, on: :create
+  before_destroy :re_account_inventory, prepend: true
 
   def menu_quantity(menu)
     item =
@@ -95,6 +96,10 @@ class Order < ApplicationRecord
   end
 
   private
+
+  def re_account_inventory
+    InventoryAccounter.new(self).re_account
+  end
 
   def create_pending_credit
     blackout_dates = BlackoutDate.pluck_dates
