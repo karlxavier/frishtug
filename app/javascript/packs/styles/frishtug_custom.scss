@@ -16,14 +16,10 @@ sans-serif;
 $base-dark: #252525;
 $base-darker: #191919;
 $matterhorn: #4E3C44;
-
 @font-face {
     font-family: 'icomoon';
-    src : url('../fonts/icomoon.eot?be3448');
-    src: url('../fonts/icomoon.eot?be3448#iefix') format('embedded-opentype'),
-    url('../fonts/icomoon.ttf?be3448') format('truetype'),
-    url('../fonts/icomoon.woff?be3448') format('woff'),
-    url('../fonts/icomoon.svg?be3448#icomoon') format('svg');
+    src: url('../fonts/icomoon.eot?be3448');
+    src: url('../fonts/icomoon.eot?be3448#iefix') format('embedded-opentype'), url('../fonts/icomoon.ttf?be3448') format('truetype'), url('../fonts/icomoon.woff?be3448') format('woff'), url('../fonts/icomoon.svg?be3448#icomoon') format('svg');
     font-weight: normal;
     font-style: normal;
 }
@@ -63,14 +59,11 @@ $matterhorn: #4E3C44;
         position: relative;
         top: 2px;
     }
-
     &:checked+label:before {
         content: "\e901";
         color: $matterhorn !important;
     }
 }
-
-
 
 html {
     /* Adjust font size */
@@ -195,12 +188,10 @@ h {
     color: $pure-white !important;
     border-color: $matterhorn;
     background: $matterhorn;
-
     &:hover,
-    &:focus{
+    &:focus {
         background: lighten($matterhorn, 5%);
     }
-
     &-outline {
         &-circled {
             padding-right: 1.25rem !important;
@@ -278,8 +269,9 @@ h {
     border-color: $muted-color !important;
     &:not([disabled]):not(.disabled):active,
     &:not([disabled]):not(.disabled).active,
-    .show > &.dropdown-toggle,
-    &:hover, &:focus {
+    .show>&.dropdown-toggle,
+    &:hover,
+    &:focus {
         color: $pure-white !important;
         background-color: $muted-color !important;
     }
@@ -564,7 +556,7 @@ a.btn-outline--category.active {
 }
 
 .form-control {
-    border-radius: 0!important;
+    border-radius: 0 !important;
 }
 
 h1#title {
@@ -608,6 +600,7 @@ h1#title {
     bottom: 20px;
     width: 100%;
 }
+
 .burlywood-font-color {
     color: #DFB676 !important;
 }
@@ -1411,7 +1404,7 @@ table.table {
 
 .admin-card {
     &__header {
-        border-bottom: 1px solid #EBE8E8!important;
+        border-bottom: 1px solid #EBE8E8 !important;
         & #title,
         & h1 {
             line-height: 3.4rem;
