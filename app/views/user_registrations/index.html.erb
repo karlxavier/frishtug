@@ -1,6 +1,6 @@
 <%= form_with model: @registration, url: user_registrations_path(format: :js), id: 'sign_up_form' do |form| %>
   <div class="container-fluid px-0">
-    <div id="registration-form">
+    <div id="registration-form" class="d-none">
       <form-wizard @on-complete="onComplete" step-size="xs" color="#562d07" ref="wizard">
         <h2 slot="title"></h2>
         <tab-content title="Plan">
@@ -55,6 +55,7 @@
 <%= content_for :footer_js do %>
   <%= javascript_pack_tag 'vue_registration_wizard' %>
   <script type="text/javascript">
+    var regForm = document.querySelector('#registration-form').classList.remove('d-none');
     <% if params[:plan_name] %>
       (function() {
         var plan_btn = document.querySelector('.<%= "#{params[:plan_name].parameterize}--radio_btn" %>');
