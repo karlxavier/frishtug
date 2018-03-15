@@ -44,4 +44,5 @@ namespace :user do
   resources :schedules, only: %i[index create]
   resources :bill_histories, only: :index
   resources :invitations, only: :create
+  resources :set_active_addresses, only: :index
 end

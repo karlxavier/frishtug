@@ -59,7 +59,7 @@ class Address < ApplicationRecord
   end
 
   def full_address
-    [line1, line2, city, state, 'US'].compact.join(', ')
+    [line1, line2, city, state, 'US'].reject(&:blank?).compact.join(', ')
   end
 
   private

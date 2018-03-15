@@ -31,7 +31,8 @@ class User::DeliveryInformationController < User::BaseController
   def response_message(status, message)
     {
       status: status,
-      message: message
+      message: message,
+      addresses: current_user.addresses
     }
   end
 

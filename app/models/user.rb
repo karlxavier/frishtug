@@ -97,11 +97,11 @@ class User < ApplicationRecord
 
   def full_address
     <<-EOT
-      #{addresses.first.line1}
-      #{addresses.first.line2}
-      #{addresses.first.city}
-      #{addresses.first.state}
-      #{addresses.first.zip_code}
+      #{addresses.active.first.line1}
+      #{addresses.active.first.line2}
+      #{addresses.active.first.city}
+      #{addresses.active.first.state}
+      #{addresses.active.first.zip_code}
     EOT
   end
 

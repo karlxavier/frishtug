@@ -185,7 +185,7 @@ const registrationForm = new Vue({
   methods: {
     isNotAllowed: function () {
       const self = this;
-      const isAllowed = self.billing_address.every( address => {
+      const isAllowed = self.billing_address.every(address => {
         self.allowed_zip_codes.includes(String(address.address_zip))
       })
 
