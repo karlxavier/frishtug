@@ -6,7 +6,7 @@ module User::NotificationsHelper
     remaining_weeks = remaining_days / 5
     orders_to_complete = remaining_weeks.zero? ?
       pluralize(remaining_days, 'day') : pluralize(remaining_weeks, 'week')
-    content_tag :div, class: 'alert alert-info notifications' do
+    content_tag :div, class: 'alert alert-info' do
       "You must complete your plan, you still have #{orders_to_complete} to fill."
     end
   end
