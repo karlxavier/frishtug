@@ -45,17 +45,22 @@
 
 <%= content_for :header_js do %>
   <%= javascript_tag do %>
+    window.onload = function() {
+      var regForm = document.querySelector('#registration-form');
+      if(regForm) {
+        regForm.classList.remove('d-none');
+      }
+    }
     localStorage.setItem('allowed_zip_codes', '<%= raw @allowed_zip_codes.to_json(only: :zip) %>');
     localStorage.setItem('current_date_est', '<%= Date.current %>');
     localStorage.setItem('tax_rate', <%= @tax_rate %>)
     localStorage.setItem('plans', '<%= raw @plan.to_json(only: %i[id name price shipping_fee interval limit minimum_credit_allowed for_type]) %>');
   <% end %>
+  <%= javascript_pack_tag 'vue_registration_wizard' %>
 <% end %>
 
 <%= content_for :footer_js do %>
-  <%= javascript_pack_tag 'vue_registration_wizard' %>
   <script type="text/javascript">
-    var regForm = document.querySelector('#registration-form').classList.remove('d-none');
     <% if params[:plan_name] %>
       (function() {
         var plan_btn = document.querySelector('.<%= "#{params[:plan_name].parameterize}--radio_btn" %>');
