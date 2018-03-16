@@ -22,4 +22,5 @@ namespace :admin do
   resources :display_orders, only: :create
   resources :inactive_users, only: :index
   resources :blackout_dates
+  resources :email_templates, only: [:index, :create]
 end

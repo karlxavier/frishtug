@@ -28,17 +28,17 @@
       <%= form_with scope: :contact_us, url: contact_us_path, local: true do |f| %>
         <div class="form-group row">
           <div class="col">
-            <%= f.text_field :first_name, class: 'form-control', placeholder: 'First Name*' %>
+            <%= f.text_field :first_name, class: 'form-control', placeholder: 'First Name*', required: true %>
           </div>
           <div class="col">
-            <%= f.text_field :last_name, class: 'form-control', placeholder: 'Last Name*' %>
+            <%= f.text_field :last_name, class: 'form-control', placeholder: 'Last Name*', required: true %>
           </div>
         </div>
         <div class="form-group">
-          <%= f.email_field :email, class: 'form-control', placeholder: 'Email*' %>
+          <%= f.email_field :email, class: 'form-control', placeholder: 'Email*', required: true %>
         </div>
         <div class="form-group">
-          <%= f.text_area :message, class: 'form-control', placeholder: 'Message*' %>
+          <%= f.text_area :message, class: 'form-control', placeholder: 'Message*', required: true %>
         </div>
         <%= f.submit :send, class: 'btn btn-brown text-uppercase font-family-montserrat', style: 'padding: 0.375rem 5rem;' %>
       <% end %>
