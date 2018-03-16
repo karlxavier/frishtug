@@ -711,6 +711,18 @@ table.table {
     }
 }
 
+.menu-items__container_for_five_days {
+    & .vue-tabs {
+        & .nav > li > a {
+            padding: 0;
+        }
+
+        & .tab__title {
+            padding: 10px 15px;
+        }
+    }
+}
+
 #meals-tab-container {
     & .vue-tabs .nav-pills {
         -webkit-box-pack: center !important;

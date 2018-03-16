@@ -3,7 +3,8 @@
     <div class="menu-items__container_for_five_days">
       <vue-tabs>
         <% (1..5).each do |n| %>
-          <v-tab :title="date_names[<%= n - 1 %>]">
+          <v-tab>
+            <div slot="title" class="tab__title" @click="scrollToView(`#${date_names[<%= n - 1 %>]}`)">{{ date_names[<%= n - 1 %>] }}</div>
             <div id="day-<%= n %>" class="tab_pane mt-3">
               <%= render 'meals_lists', { menus_with_category: @menus_with_category, type: "day_#{n}" }%>
             </div>

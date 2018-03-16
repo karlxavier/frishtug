@@ -205,8 +205,11 @@ const registrationForm = new Vue({
     }
   },
   methods: {
-    handleChange: function (res) {
-      console.log(res)
+    scrollToView: function (target) {
+      const el = document.querySelector(target)
+      const topPosition = el.offsetTop
+
+      $('.meal-sidebar__body').animate({ scrollTop: topPosition }, 600);
     },
     isNotAllowed: function () {
       const self = this;
