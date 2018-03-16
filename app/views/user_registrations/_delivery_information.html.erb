@@ -16,7 +16,7 @@
                       id: "#{type.to_s.parameterize}",
                       style: 'margin-right: 5px;',
                       checked: (true if type == :at_work),
-                      'v-model': 'address.address_location_at',
+                      'v-model.lazy': 'address.address_location_at',
                       '@click': "changeAddressType('#{type.to_s}')" %>
                   <%= type.to_s.humanize %>
                 </label>
@@ -24,29 +24,29 @@
             </div>
           </div>
           <div v-else>
-            <input type="hidden" v-model="address.address_location_at" name="registration_form[addresses][][location_at]">
+            <input type="hidden" v-model.lazy="address.address_location_at" name="registration_form[addresses][][location_at]">
           </div>
           <div class="form-group">
-            <%= form.text_field :line1, name: 'registration_form[addresses][][line1]', class: 'form-control address-line1', placeholder: 'Address Line 1', 'v-model': 'address.address_line1' %>
+            <%= form.text_field :line1, name: 'registration_form[addresses][][line1]', class: 'form-control address-line1', placeholder: 'Address Line 1', 'v-model.lazy': 'address.address_line1' %>
             <div class="invalid-feedback">
               Line1 is required
             </div>
           </div>
           <div class="form-group">
-            <%= form.text_field :line2, name: 'registration_form[addresses][][line2]', class: 'form-control', placeholder: 'Address Line 2', 'v-model': 'address.address_line2' %>
+            <%= form.text_field :line2, name: 'registration_form[addresses][][line2]', class: 'form-control', placeholder: 'Address Line 2', 'v-model.lazy': 'address.address_line2' %>
           </div>
           <div class="form-group">
             <%= form.text_field :front_door, name: 'registration_form[addresses][][front_door]', class: 'form-control', placeholder: 'Front Door Code (if applicable)' %>
           </div>
           <div class="form-group row">
             <div class="col">
-              <%= form.text_field :city, name: 'registration_form[addresses][][city]', class: 'form-control address-city', placeholder: 'City', 'v-model': 'address.address_city' %>
+              <%= form.text_field :city, name: 'registration_form[addresses][][city]', class: 'form-control address-city', placeholder: 'City', 'v-model.lazy': 'address.address_city' %>
               <div class="invalid-feedback">
                 City is required
               </div>
             </div>
             <div class="col">
-              <%= form.text_field :state,  name: 'registration_form[addresses][][state]', class: 'form-control address-state', placeholder: 'State', 'v-model': 'address.address_state' %>
+              <%= form.text_field :state,  name: 'registration_form[addresses][][state]', class: 'form-control address-state', placeholder: 'State', 'v-model.lazy': 'address.address_state' %>
               <div class="invalid-feedback">
                 State is required
               </div>

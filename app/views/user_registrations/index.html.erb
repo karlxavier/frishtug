@@ -21,7 +21,7 @@
         <tab-content title="Meals">
           <div style="position: relative">
             <div class="container">
-              <%= render 'meals', categorized_menus: @categorized_menus %>
+              <%= render 'meals' %>
             </div>
             <%= render 'cart' %>
           </div>
@@ -51,12 +51,11 @@
         regForm.classList.remove('d-none');
       }
     }
-    localStorage.setItem('allowed_zip_codes', '<%= raw @allowed_zip_codes.to_json(only: :zip) %>');
     localStorage.setItem('current_date_est', '<%= Date.current %>');
     localStorage.setItem('tax_rate', <%= @tax_rate %>)
     localStorage.setItem('plans', '<%= raw @plan.to_json(only: %i[id name price shipping_fee interval limit minimum_credit_allowed for_type]) %>');
   <% end %>
-  <%= javascript_pack_tag 'vue_registration_wizard' %>
+  <%= javascript_pack_tag 'vue_registration_wizard', defer: true %>
 <% end %>
 
 <%= content_for :footer_js do %>

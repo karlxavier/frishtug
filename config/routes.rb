@@ -10,6 +10,9 @@ Rails.application.routes.draw do
   resources :selected_dates, only: :index
   resources :past_noons, only: :index
   resources :inventories, only: :index
+  resources :earliest_dates, only: :index
+  resources :allowed_zip_codes, only: :index
+  resources :menus, only: :index
   resources :pages, only: :show, path: '/', as: :page, format: :false
   resources :contact_us, only: :create
   root to: 'pages#show', id: 'home'

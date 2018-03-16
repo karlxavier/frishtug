@@ -28,1033 +28,1047 @@ Vue.use(VueTabs);
 Vue.use(VueMask);
 Vue.use(vuejsStorage);
 
-document.addEventListener('DOMContentLoaded', function () {
-  // Days
-  const mondayToFriday = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-  const sundayToThursday = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday"
-  ];
+// Days
+const mondayToFriday = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+const sundayToThursday = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday"
+];
 
-  const UserSelectedPlans = localStorage.getItem("plans");
-  let planObj;
-  if (UserSelectedPlans !== "null") {
-    const plan = JSON.parse(UserSelectedPlans);
-    planObj = plan;
-    planObj.minimum_credit_allowed = parseFloat(plan.minimum_credit_allowed);
-    planObj.limit = parseFloat(plan.limit);
-    if (planObj.shipping_fee == null) {
-      planObj.shipping_fee = 0;
-    }
-  } else {
-    planObj = {
-      id: 0,
-      name: "",
-      price: 0,
-      shipping_fee: 0,
-      interval: "",
-      plan_minimum: 0,
-      limit: 0,
-      minimum_credit_allowed: 0,
-      for_type: 'individual'
-    };
+const UserSelectedPlans = localStorage.getItem("plans");
+let planObj;
+if (UserSelectedPlans !== "null") {
+  const plan = JSON.parse(UserSelectedPlans);
+  planObj = plan;
+  planObj.minimum_credit_allowed = parseFloat(plan.minimum_credit_allowed);
+  planObj.limit = parseFloat(plan.limit);
+  if (planObj.shipping_fee == null) {
+    planObj.shipping_fee = 0;
   }
+} else {
+  planObj = {
+    id: 0,
+    name: "",
+    price: 0,
+    shipping_fee: 0,
+    interval: "",
+    plan_minimum: 0,
+    limit: 0,
+    minimum_credit_allowed: 0,
+    for_type: 'individual'
+  };
+}
 
-  const getExcessAmount = vm => {
-    let price = 0;
-    const limit = parseFloatingNumber(vm.plan_limit);
-    if (vm.cart[0]) {
-      let i;
-      for (i = 0; i <= 4; i++) {
-        const currentCartItems = vm.cart[0][`day_${i + 1}`];
-        const total_prices = currentCartItems
-          .map(item => item.price)
-          .reduce((sum, price) => {
-            return (sum += parseFloatingNumber(price));
-          }, 0);
+const getExcessAmount = vm => {
+  let price = 0;
+  const limit = parseFloatingNumber(vm.plan_limit);
+  if (vm.cart[0]) {
+    let i;
+    for (i = 0; i <= 4; i++) {
+      const currentCartItems = vm.cart[0][`day_${i + 1}`];
+      const total_prices = currentCartItems
+        .map(item => item.price)
+        .reduce((sum, price) => {
+          return (sum += parseFloatingNumber(price));
+        }, 0);
 
-        const add_ons_price = currentCartItems.map(i => {
-          return i.add_ons
-            .map(a => a.price)
-            .reduce((sum, d) => (sum += parseFloatingNumber(d)), 0);
-        });
+      const add_ons_price = currentCartItems.map(i => {
+        return i.add_ons
+          .map(a => a.price)
+          .reduce((sum, d) => (sum += parseFloatingNumber(d)), 0);
+      });
 
-        const add_ons_total_price =
-          add_ons_price.length > 0 ?
-          add_ons_price.reduce((sum, a) => sum + a) :
-          0;
+      const add_ons_total_price =
+        add_ons_price.length > 0 ?
+        add_ons_price.reduce((sum, a) => sum + a) :
+        0;
 
-        const totalItemPrice = total_prices + add_ons_total_price;
-        price += totalItemPrice - limit > 0 ? totalItemPrice - limit : 0;
+      const totalItemPrice = total_prices + add_ons_total_price;
+      price += totalItemPrice - limit > 0 ? totalItemPrice - limit : 0;
+    }
+  }
+  return price;
+};
+
+const parseFloatingNumber = num => {
+  const val = parseFloat(num);
+  return isNaN(val) ? 0 : val;
+};
+
+const registrationForm = new Vue({
+  el: "#registration-form",
+  data: {
+    error_messages: "",
+    allowed_zip_codes: [],
+    interval: planObj.interval,
+    delivery_dates: [],
+    date_names: [],
+    calendars: "",
+    cart: [],
+    plan_minimum: planObj.minimum_credit_allowed,
+    plan_limit: planObj.limit,
+    shopping_cart_shown: true,
+    tax_rate: parseFloat(localStorage.getItem("tax_rate")),
+    phone_number: null,
+    schedule: null,
+    is_past: false,
+    completed: false,
+    earliest_monday: '',
+    earliest_sunday: ''
+  },
+  storage: {
+    data: {
+      user: {
+        first_name: "",
+        last_name: "",
+        email: "",
+        password: ""
+      },
+      plan: {
+        id: planObj.id,
+        name: planObj.name,
+        price: planObj.price,
+        shipping_fee: planObj.shipping_fee,
+        for_type: planObj.for_type
+      },
+      first_delivery_date: "",
+      payment_method: "credit_card",
+      different_billing: false,
+      delivery_date: "",
+      stripe_key: "<%= STRIPE_PUBLIC_KEY %>",
+      billing_address: [{
+        address_line1: "",
+        address_line2: "",
+        address_city: "",
+        address_state: "",
+        address_zip: "",
+        address_country: "US",
+        address_location_at: "at_work"
+      }],
+      credit_card_billing_address: {
+        address_line1: "",
+        address_line2: "",
+        address_city: "",
+        address_state: "",
+        address_country: "US",
+        address_zip: ""
+      },
+      credit_card: {
+        number: null,
+        cvc: null,
+        exp_month: "",
+        exp_year: ""
+      },
+      bank_account: {
+        country: "US",
+        currency: "usd",
+        routing_number: null,
+        account_number: null,
+        account_holder_name: null,
+        account_holder_type: "individual"
+      }
+    },
+    namespace: "user_registrations",
+    storage: sessionStorage
+  },
+  mounted: function() {
+    const self = this
+    Rails.ajax({
+      url: '/earliest_dates',
+      type: 'GET',
+      success: function(response) {
+        self.earliest_monday = response.earliest_monday
+        self.earliest_sunday = response.earliest_sunday
+      }
+    })
+
+    Rails.ajax({
+      url: '/allowed_zip_codes',
+      type: 'GET',
+      success: function(response) {
+        self.allowed_zip_codes = response.allowed_zip_codes
+      }
+    })
+  },
+  filters: {
+    get_num: val => parseInt(val.match(/\d+/)[0]) - 1,
+    get_date_name: val => registrationForm.date_names[val],
+    get_shipping_fee: shippingFee => {
+      if (shippingFee > 0) {
+        return toCurrency(shippingFee);
+      } else {
+        return "Free";
       }
     }
-    return price;
-  };
-
-  const parseFloatingNumber = num => {
-    const val = parseFloat(num);
-    return isNaN(val) ? 0 : val;
-  };
-
-  const registrationForm = new Vue({
-    el: "#registration-form",
-    data: {
-      error_messages: "",
-      allowed_zip_codes: JSON.parse(
-        localStorage.getItem("allowed_zip_codes")
-      ),
-      interval: planObj.interval,
-      delivery_dates: [],
-      date_names: [],
-      calendars: "",
-      cart: [],
-      plan_minimum: planObj.minimum_credit_allowed,
-      plan_limit: planObj.limit,
-      shopping_cart_shown: true,
-      tax_rate: parseFloat(localStorage.getItem("tax_rate")),
-      phone_number: null,
-      schedule: null,
-      is_past: false,
-      completed: false
+  },
+  methods: {
+    handleChange: function (res) {
+      console.log(res)
     },
-    storage: {
-      data: {
-        user: {
-          first_name: "",
-          last_name: "",
-          email: "",
-          password: ""
-        },
-        plan: {
-          id: planObj.id,
-          name: planObj.name,
-          price: planObj.price,
-          shipping_fee: planObj.shipping_fee,
-          for_type: planObj.for_type
-        },
-        first_delivery_date: "",
-        payment_method: "credit_card",
-        different_billing: false,
-        delivery_date: "",
-        stripe_key: "<%= STRIPE_PUBLIC_KEY %>",
-        billing_address: [
-          {
-            address_line1: "",
-            address_line2: "",
-            address_city: "",
-            address_state: "",
-            address_zip: "",
-            address_country: "US",
-            address_location_at: "at_work"
-          }
-        ],
-        credit_card_billing_address: {
-          address_line1: "",
-          address_line2: "",
-          address_city: "",
-          address_state: "",
-          address_country: "US",
-          address_zip: ""
-        },
-        credit_card: {
-          number: null,
-          cvc: null,
-          exp_month: "",
-          exp_year: ""
-        },
-        bank_account: {
-          country: "US",
-          currency: "usd",
-          routing_number: null,
-          account_number: null,
-          account_holder_name: null,
-          account_holder_type: "individual"
-        }
-      },
-      namespace: "user_registrations",
-      storage: sessionStorage
-    },
-    filters: {
-      get_num: val => parseInt(val.match(/\d+/)[0]) - 1,
-      get_date_name: val => registrationForm.date_names[val],
-      get_shipping_fee: shippingFee => {
-        if (shippingFee > 0) {
-          return toCurrency(shippingFee);
-        } else {
-          return "Free";
-        }
+    isNotAllowed: function () {
+      const self = this;
+      const isAllowed = self.billing_address.every(address => {
+        self.allowed_zip_codes.includes(String(address.address_zip));
+      });
+
+      if (isAllowed) {
+        return false;
+      } else {
+        return true;
       }
     },
-    methods: {
-      handleChange: function(res) {
-        console.log(res)
-      },
-      isNotAllowed: function() {
-        const self = this;
-        const isAllowed = self.billing_address.every(address => {
-          self.allowed_zip_codes.includes(String(address.address_zip));
-        });
+    hasAvailableCredit: function (price) {
+      const self = this;
+      const minimum = parseFloatingNumber(self.plan_minimum);
+      const limit = parseFloatingNumber(self.plan_limit);
+      const parsedPrice = parseFloatingNumber(price);
+      const remainingCredit = limit - parsedPrice;
 
-        if (isAllowed) {
-          return false;
-        } else {
-          return true;
-        }
-      },
-      hasAvailableCredit: function(price) {
-        const self = this;
-        const minimum = parseFloatingNumber(self.plan_minimum);
-        const limit = parseFloatingNumber(self.plan_limit);
-        const parsedPrice = parseFloatingNumber(price);
-        const remainingCredit = limit - parsedPrice;
-
-        if (remainingCredit <= 0) {
-          return false;
-        } else if (parsedPrice >= minimum) {
-          return true;
-        }
-      },
-      additionalCharges: function() {
-        const self = this;
-        if (self.interval === "month" && self.cart) {
-          return getExcessAmount(self);
-        } else {
-          return 0;
-        }
-      },
-      totalPlusAddOn: items => {
-        const self = registrationForm;
-        return items.reduce((sum, item) => {
-          return (sum += self.pricePlusAddOn(
-            item.price,
-            item.add_ons,
-            item.quantity
-          ));
-        }, 0);
-      },
-      pricePlusAddOn: (price, addOns, quantity) => {
-        const addOnsTotalPrice = addOns.reduce((sum, addOn) => {
-          return (sum += parseFloatingNumber(addOn.price));
-        }, 0);
-        return (
-          parseFloatingNumber(price) + addOnsTotalPrice * parseInt(quantity)
-        );
-      },
-      changeAddressType: location => {
-        if (location !== "multiple_workplaces") {
-          registrationForm.billing_address = [
-            registrationForm.billing_address[0]
-          ];
-        }
-      },
-      nextTabOrSkipTab: function() {
-        if (this.isNotAllowed()) {
-          swal({
-            type: "error",
-            title: "Error",
-            text: "We don't deliver to your zip code",
-            confirmButtonText: "Continue",
-            confirmButtonColor: "#582D11",
-            confirmButtonClass: "btn btn-brown text-uppercase",
-            buttonsStyling: false
-          }).then(response => {
-            this.nextTab();
-          });
-        } else {
-          this.nextTab();
-        }
-      },
-      totalTaxableItemsPrice: function(itemsCollection) {
-        const self = this;
-        const filterTaxableItems = item => {
-          return item.tax;
-        };
-
-        if (itemsCollection) {
-          const items = itemsCollection.filter(filterTaxableItems);
-          return items.map(item => item.price).reduce((sum, price) => {
-            return (sum += toFixed(getTax(price, self.tax_rate), 2));
-          }, 0);
-        } else {
-          const items = self.cart.filter(filterTaxableItems);
-          return items.map(item => item.price).reduce((sum, price) => {
-            return (sum += toFixed(getTax(price, self.tax_rate), 2));
-          }, 0);
-        }
-      },
-      cartHasTaxableItems: function(itemsCollection) {
-        const self = this;
-        let items;
-        const filterTaxableItems = item => {
-          return item.tax;
-        };
-
-        if (itemsCollection) {
-          items = itemsCollection.filter(filterTaxableItems);
-        } else {
-          items = self.cart.filter(filterTaxableItems);
-        }
-        return items.length > 0;
-      },
-      removeTaxFromPrice: function(price) {
-        return toFixed(price - getTax(price, this.tax_rate), 2);
-      },
-      showShoppingCart: function() {
-        setTimeout(scroller, 50);
-        this.shopping_cart_shown = true;
-      },
-      hideShoppingCart: function() {
-        setTimeout(scroller, 50);
-        this.shopping_cart_shown = false;
-      },
-      totalCartPricePlusShippingFee: function() {
-        const self = this;
-        if (self.interval === "month") {
-          return (
-            self.plan.price +
-            parseFloat(self.plan.shipping_fee) +
-            getExcessAmount(self)
-          );
-        } else {
-          const total = self.cart.reduce((sum, item) => {
-            return (sum += parseFloat(item.price));
-          }, 0);
-          const finalTotal =
-            total > parseFloat(self.plan.price) ? total : self.plan.price;
-          return finalTotal + parseFloat(self.plan.shipping_fee);
-        }
-      },
-      totalCartPrice: function() {
-        const self = this;
-        if (self.interval === "month") {
-          return self.plan.price;
-        } else {
-          const total = self.cart.reduce((sum, item) => {
-            return (sum += parseFloat(item.price));
-          }, 0);
-          return total > parseFloat(self.plan.price)
-            ? total
-            : self.plan.price;
-        }
-      },
-      addToCart: event => {
-        addToShoppingCart(event.target);
-      },
-      removeToCart: event => {
-        removeFromShoppingCart(event.target);
-      },
-      newItemJson: item => {
-        const newItem = {
-          id: item.id,
-          name: item.name,
-          price: item.price / item.quantity,
-          quantity: 1
-        };
-
-        return JSON.stringify(newItem);
-      },
-      changeCalendar: date => {
-        const _this = registrationForm;
-        get({
-          url: `/calendars.json?date=${date}`
+      if (remainingCredit <= 0) {
+        return false;
+      } else if (parsedPrice >= minimum) {
+        return true;
+      }
+    },
+    additionalCharges: function () {
+      const self = this;
+      if (self.interval === "month" && self.cart) {
+        return getExcessAmount(self);
+      } else {
+        return 0;
+      }
+    },
+    totalPlusAddOn: items => {
+      const self = registrationForm;
+      return items.reduce((sum, item) => {
+        return (sum += self.pricePlusAddOn(
+          item.price,
+          item.add_ons,
+          item.quantity
+        ));
+      }, 0);
+    },
+    pricePlusAddOn: (price, addOns, quantity) => {
+      const addOnsTotalPrice = addOns.reduce((sum, addOn) => {
+        return (sum += parseFloatingNumber(addOn.price));
+      }, 0);
+      return (
+        parseFloatingNumber(price) + addOnsTotalPrice * parseInt(quantity)
+      );
+    },
+    changeAddressType: location => {
+      if (location !== "multiple_workplaces") {
+        registrationForm.billing_address = [
+          registrationForm.billing_address[0]
+        ];
+      }
+    },
+    nextTabOrSkipTab: function () {
+      if (this.isNotAllowed()) {
+        swal({
+          type: "error",
+          title: "Error",
+          text: "We don't deliver to your zip code",
+          confirmButtonText: "Continue",
+          confirmButtonColor: "#582D11",
+          confirmButtonClass: "btn btn-brown text-uppercase",
+          buttonsStyling: false
         }).then(response => {
-          const parsed = JSON.parse(response);
-          _this.calendars = parsed;
-          setTimeout(function() {
-            registrationForm.populateCalendar();
-          }, 500);
+          this.nextTab();
         });
-      },
-      populateCalendar: () => {
-        const _this = registrationForm;
-        if (_this.interval === "month") {
-          const dates = registrationForm.delivery_dates;
-          registrationForm.unpopulateCalendar();
-          dates.forEach((date, index) => {
-            const el = document.querySelector(`.date-${date}`);
-            if (el) {
-              el.classList.add("active");
-            }
-          });
-        } else {
-          const el = document.querySelector(`.date-${_this.delivery_date}`);
-          _this.unpopulateCalendar();
+      } else {
+        this.nextTab();
+      }
+    },
+    totalTaxableItemsPrice: function (itemsCollection) {
+      const self = this;
+      const filterTaxableItems = item => {
+        return item.tax;
+      };
+
+      if (itemsCollection) {
+        const items = itemsCollection.filter(filterTaxableItems);
+        return items.map(item => item.price).reduce((sum, price) => {
+          return (sum += toFixed(getTax(price, self.tax_rate), 2));
+        }, 0);
+      } else {
+        const items = self.cart.filter(filterTaxableItems);
+        return items.map(item => item.price).reduce((sum, price) => {
+          return (sum += toFixed(getTax(price, self.tax_rate), 2));
+        }, 0);
+      }
+    },
+    cartHasTaxableItems: function (itemsCollection) {
+      const self = this;
+      let items;
+      const filterTaxableItems = item => {
+        return item.tax;
+      };
+
+      if (itemsCollection) {
+        items = itemsCollection.filter(filterTaxableItems);
+      } else {
+        items = self.cart.filter(filterTaxableItems);
+      }
+      return items.length > 0;
+    },
+    removeTaxFromPrice: function (price) {
+      return toFixed(price - getTax(price, this.tax_rate), 2);
+    },
+    showShoppingCart: function () {
+      setTimeout(scroller, 50);
+      this.shopping_cart_shown = true;
+    },
+    hideShoppingCart: function () {
+      setTimeout(scroller, 50);
+      this.shopping_cart_shown = false;
+    },
+    totalCartPricePlusShippingFee: function () {
+      const self = this;
+      if (self.interval === "month") {
+        return (
+          self.plan.price +
+          parseFloat(self.plan.shipping_fee) +
+          getExcessAmount(self)
+        );
+      } else {
+        const total = self.cart.reduce((sum, item) => {
+          return (sum += parseFloat(item.price));
+        }, 0);
+        const finalTotal =
+          total > parseFloat(self.plan.price) ? total : self.plan.price;
+        return finalTotal + parseFloat(self.plan.shipping_fee);
+      }
+    },
+    totalCartPrice: function () {
+      const self = this;
+      if (self.interval === "month") {
+        return self.plan.price;
+      } else {
+        const total = self.cart.reduce((sum, item) => {
+          return (sum += parseFloat(item.price));
+        }, 0);
+        return total > parseFloat(self.plan.price) ?
+          total :
+          self.plan.price;
+      }
+    },
+    addToCart: event => {
+      addToShoppingCart(event.target);
+    },
+    removeToCart: event => {
+      removeFromShoppingCart(event.target);
+    },
+    newItemJson: item => {
+      const newItem = {
+        id: item.id,
+        name: item.name,
+        price: item.price / item.quantity,
+        quantity: 1
+      };
+
+      return JSON.stringify(newItem);
+    },
+    changeCalendar: date => {
+      const _this = registrationForm;
+      get({
+        url: `/calendars.json?date=${date}`
+      }).then(response => {
+        const parsed = JSON.parse(response);
+        _this.calendars = parsed;
+        setTimeout(function () {
+          registrationForm.populateCalendar();
+        }, 500);
+      });
+    },
+    populateCalendar: () => {
+      const _this = registrationForm;
+      if (_this.interval === "month") {
+        const dates = registrationForm.delivery_dates;
+        registrationForm.unpopulateCalendar();
+        dates.forEach((date, index) => {
+          const el = document.querySelector(`.date-${date}`);
           if (el) {
             el.classList.add("active");
           }
-        }
-      },
-      unpopulateCalendar: () => {
-        const aTags = document.querySelectorAll(".calendar__date_item");
-        aTags.forEach(aTag => {
-          aTag.classList.remove("active");
         });
-      },
-      setSchedule: (date, schedule, event) => {
-        const _this = registrationForm;
-        const els = document.querySelectorAll(".schedule-btns");
-        _this.schedule = schedule;
-        _this.selectDay(date);
-        els.forEach(el => {
-          el.classList.remove("active");
-        });
-        event.target.classList.add("active");
-      },
-      selectDay: date => {
-        const _this = registrationForm;
-        if (_this.interval === "month") {
-          getSchedule(date, _this);
-        } else {
-          _this.delivery_date = date;
-          _this.first_delivery_date = date;
-          _this.populateCalendar();
+      } else {
+        const el = document.querySelector(`.date-${_this.delivery_date}`);
+        _this.unpopulateCalendar();
+        if (el) {
+          el.classList.add("active");
         }
-      },
-      setInterVal: function(
-        interval,
-        planPrice,
-        shipping_fee,
-        name,
-        limit,
-        minimum_credit_allowed,
-        for_type
-      ) {
-        this.plan.name = name;
-        if (shipping_fee !== null) {
-          this.plan.shipping_fee = shipping_fee;
-        } else {
-          this.plan.shipping_fee = 0;
-        }
-        this.plan.price = planPrice;
-        this.plan.for_type = for_type;
-        this.plan_minimum = minimum_credit_allowed;
-        this.plan_limit = limit;
+      }
+    },
+    unpopulateCalendar: () => {
+      const aTags = document.querySelectorAll(".calendar__date_item");
+      aTags.forEach(aTag => {
+        aTag.classList.remove("active");
+      });
+    },
+    setSchedule: (date, schedule, event) => {
+      const _this = registrationForm;
+      const els = document.querySelectorAll(".schedule-btns");
+      _this.schedule = schedule;
+      _this.selectDay(date);
+      els.forEach(el => {
+        el.classList.remove("active");
+      });
+      event.target.classList.add("active");
+    },
+    selectDay: date => {
+      const _this = registrationForm;
+      if (_this.interval === "month") {
+        getSchedule(date, _this);
+      } else {
+        _this.delivery_date = date;
+        _this.first_delivery_date = date;
+        _this.populateCalendar();
+      }
+    },
+    setInterVal: function (
+      interval,
+      planPrice,
+      shipping_fee,
+      name,
+      limit,
+      minimum_credit_allowed,
+      for_type
+    ) {
+      this.plan.name = name;
+      if (shipping_fee !== null) {
+        this.plan.shipping_fee = shipping_fee;
+      } else {
+        this.plan.shipping_fee = 0;
+      }
+      this.plan.price = planPrice;
+      this.plan.for_type = for_type;
+      this.plan_minimum = minimum_credit_allowed;
+      this.plan_limit = limit;
 
-        this.interval = interval;
-        this.cart = [];
-        this.populateCalendar();
-        this.nextTab();
-      },
-      addBillingAddress: function() {
-        const _this = registrationForm;
-        _this.billing_address.push({
-          line1: null,
-          line2: null,
-          city: null,
-          state: null,
-          zip_code: null,
-          location_at: "multiple_workplaces"
-        });
-      },
-      onComplete: function() {},
-      nextTab: function() {
-        this.$refs.wizard.nextTab();
-        setTimeout(changeCheckedTabs, 300);
-      },
-      isActiveDeliveryDate: function(date) {
-        if (this.delivery_date === date) {
-          return " btn-brown";
-        }
-        return "";
-      },
-      formatDate: function(date) {
-        const d = moment(date).toDate();
-        const days = [
-          "Sunday",
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday"
-        ];
-        const monthNames = [
-          "Jan",
-          "Feb",
-          "Mar",
-          "Apr",
-          "May",
-          "Jun",
-          "Jul",
-          "Aug",
-          "Sep",
-          "Oct",
-          "Nov",
-          "Dec"
-        ];
+      this.interval = interval;
+      this.cart = [];
+      this.populateCalendar();
+      this.nextTab();
+    },
+    addBillingAddress: function () {
+      const _this = registrationForm;
+      _this.billing_address.push({
+        line1: null,
+        line2: null,
+        city: null,
+        state: null,
+        zip_code: null,
+        location_at: "multiple_workplaces"
+      });
+    },
+    onComplete: function () {},
+    nextTab: function () {
+      this.$refs.wizard.nextTab();
+      setTimeout(changeCheckedTabs, 300);
+    },
+    isActiveDeliveryDate: function (date) {
+      if (this.delivery_date === date) {
+        return " btn-brown";
+      }
+      return "";
+    },
+    formatDate: function (date) {
+      const d = moment(date).toDate();
+      const days = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+      ];
+      const monthNames = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec"
+      ];
 
-        return `${days[d.getDay()]}, ${
+      return `${days[d.getDay()]}, ${
           monthNames[d.getMonth()]
         } ${d.getDate()}`;
-      },
-      accountValidations: function() {
-        const inputs = [
-          "[name='registration_form[first_name]']",
-          "[name='registration_form[last_name]']",
-          "[name='registration_form[email]']",
-          "[name='registration_form[password]']"
-        ];
+    },
+    accountValidations: function () {
+      const inputs = [
+        "[name='registration_form[first_name]']",
+        "[name='registration_form[last_name]']",
+        "[name='registration_form[email]']",
+        "[name='registration_form[password]']"
+      ];
 
-        return multiplePresenceValidator(inputs);
-      },
-      verifyEmail: function() {
-        const input = document.querySelector(
-          "[name='registration_form[email]']"
+      return multiplePresenceValidator(inputs);
+    },
+    verifyEmail: function () {
+      const input = document.querySelector(
+        "[name='registration_form[email]']"
+      );
+      const self = this;
+
+      saveUserInfo({
+        email: self.user.email,
+        first_name: self.user.first_name,
+        last_name: self.user.last_name
+      });
+
+      verifyEmailIsNotDuplicate({
+        email: input.value,
+        el: input,
+        callback: function (response) {
+          if (response !== false) {
+            self.nextTab();
+          }
+        }
+      });
+    },
+    addressValidations: function () {
+      const inputs = [
+        ".address-line1",
+        ".address-city",
+        ".address-state",
+        ".address-zip",
+        "[name='registration_form[phone_number]']"
+      ];
+      return multiplePresenceValidator(inputs);
+    },
+    paymentValidations: function () {
+      const inputs = [
+        "[name='registration_form[card_number]']",
+        "select[name='registration_form[month]']",
+        "select[name='registration_form[year]']",
+        "[name='registration_form[cvc]']",
+        "[name='registration_form[billing_line_1]']",
+        "[name='registration_form[billing_city]']",
+        "[name='registration_form[billing_state]']",
+        "[name='registration_form[billing_zip_code]']",
+        "[name='registration_form[bank_name]']",
+        "[name='registration_form[account_number]']",
+        "[name='registration_form[routing_number]']"
+      ];
+      registrationForm.enableMealSelector();
+      return multiplePresenceValidator(inputs);
+    },
+    showCongrats: function () {
+      const _this = this;
+      if (_this.isMealComplete()) {
+        swal({
+          title: "Congratulations!",
+          text: "You have made your first meal plan.",
+          type: "success",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "REVIEW ORDER"
+        }).then(function () {
+          _this.completed = true;
+          _this.nextTab();
+          return true;
+        });
+      } else {
+        swal(
+          "Opps...",
+          "Please complete your meals for each day.",
+          "error"
         );
-        const self = this;
-
-        saveUserInfo({
-          email: self.user.email,
-          first_name: self.user.first_name,
-          last_name: self.user.last_name
-        });
-
-        verifyEmailIsNotDuplicate({
-          email: input.value,
-          el: input,
-          callback: function(response) {
-            if (response !== false) {
-              self.nextTab();
-            }
-          }
-        });
-      },
-      addressValidations: function() {
-        const inputs = [
-          ".address-line1",
-          ".address-city",
-          ".address-state",
-          ".address-zip",
-          "[name='registration_form[phone_number]']"
-        ];
-        return multiplePresenceValidator(inputs);
-      },
-      paymentValidations: function() {
-        const inputs = [
-          "[name='registration_form[card_number]']",
-          "select[name='registration_form[month]']",
-          "select[name='registration_form[year]']",
-          "[name='registration_form[cvc]']",
-          "[name='registration_form[billing_line_1]']",
-          "[name='registration_form[billing_city]']",
-          "[name='registration_form[billing_state]']",
-          "[name='registration_form[billing_zip_code]']",
-          "[name='registration_form[bank_name]']",
-          "[name='registration_form[account_number]']",
-          "[name='registration_form[routing_number]']"
-        ];
-        registrationForm.enableMealSelector();
-        return multiplePresenceValidator(inputs);
-      },
-      showCongrats: function() {
-        const _this = this;
-        if (_this.isMealComplete()) {
-          swal({
-            title: "Congratulations!",
-            text: "You have made your first meal plan.",
-            type: "success",
-            confirmButtonColor: "#3085d6",
-            confirmButtonText: "REVIEW ORDER"
-          }).then(function() {
-            _this.completed = true;
-            _this.nextTab();
-            return true;
-          });
-        } else {
-          swal(
-            "Opps...",
-            "Please complete your meals for each day.",
-            "error"
-          );
-        }
-      },
-      createToken: function() {
-        pulse_loader.init("Processing data...");
-        const _this = this;
-        const form = document.querySelector("form#sign_up_form");
-        let address;
-
-        Stripe.setPublishableKey(_this.stripe_key);
-        if (_this.payment_method === "credit_card") {
-          if (hasAddress(_this.credit_card_billing_address)) {
-            address = _this.credit_card_billing_address;
-          } else {
-            address = _this.billing_address[0];
-          }
-
-          Stripe.card.createToken(
-            {
-              number: _this.credit_card.number.replace(/\s+/g, ""),
-              exp_month: _this.credit_card.exp_month,
-              exp_year: _this.credit_card.exp_year,
-              cvc: _this.credit_card.cvc,
-              address_line1: address.address_line1,
-              address_line2: address.address_line2,
-              address_city: address.address_city,
-              address_state: address.address_state,
-              address_country: address.address_country,
-              address_zip: address.address_zip
-            },
-            stripeResponseHandler
-          );
-        } else {
-          Stripe.bankAccount.createToken(
-            _this.bank_account,
-            stripeResponseHandler
-          );
-        }
-      },
-      validateZip: function(event, key, index) {
-        let showOrHide;
-        registrationForm[key][index].address_zip = event.target.value;
-        if (isValidUSZip(registrationForm[key][index].address_zip)) {
-          event.target.classList.remove("is-invalid");
-        } else {
-          event.target.classList.add("is-invalid");
-        }
-      },
-      enableMealSelector: function() {
-        shoppingCartInit();
-        registerShoppingCartListener(registrationForm);
-        return true;
-      },
-      showDate: (date, month) => {
-        const theMonth = moment(month, "MMMM YYYY")
-          .toDate()
-          .getMonth();
-        const newDate = moment(date).toDate();
-        if (theMonth === newDate.getMonth()) {
-          return newDate.getDate();
-        } else {
-          return null;
-        }
-      },
-      isNotSaturday: date => {
-        const newDate = moment(date).toDate();
-        return newDate.getDay() < 6;
-      },
-      isDisabledDate: date => {
-        const self = registrationForm;
-        const currentDate = moment(
-          localStorage.getItem("current_date_est")
-        ).toDate();
-        const theDate = moment(date).toDate();
-
-        if (!self) {
-          return false;
-        }
-
-        const isSunday = date => {
-          const sunday = 0;
-          return date.getDay() === sunday;
-        };
-
-        const isFriday = date => {
-          const friday = 5;
-          return date.getDay() === friday;
-        };
-
-        const isMondayToFridaySchedule = () => {
-          if (self.interval !== "month") return false;
-          return self.schedule === "monday_to_friday";
-        };
-
-        const isSundayToThursdaySchedule = () => {
-          if (self.interval !== "month") return false;
-          return self.schedule === "sunday_to_thursday";
-        };
-
-        if (isMondayToFridaySchedule()) {
-          if (isSunday(theDate)) return true;
-        } else if (isSundayToThursdaySchedule()) {
-          if (isFriday(theDate)) return true;
-        }
-
-        const isYesterdaysDate = theDate.getTime() < currentDate.getTime();
-        if (isYesterdaysDate) {
-          return true;
-        }
-
-        const isSameDate = theDate.getTime() === currentDate.getTime();
-        if (isSameDate) {
-          return true;
-        }
-
-        const addOne = date => {
-          date.setDate(date.getDate() + 1);
-          return date.getTime();
-        };
-
-        const isDatePlusOne = theDate.getTime() === addOne(currentDate);
-        if (isDatePlusOne) {
-          return self.is_past;
-        }
-
-        return !registrationForm.isNotSaturday(date);
-      },
-      handleTabChange: function(tabIndex, newTab, oldTab) {},
-      isMealComplete: function() {
-        const self = this;
-        let enable = false;
-
-        const checkPrices = price => {
-          return price >= self.plan_minimum;
-        };
-
-        if (self.interval === "month") {
-          let i;
-          let values = [];
-          for (i = 0; i <= 4; i++) {
-            const currentCartItems = self.cart[0][`day_${i + 1}`];
-            const total_prices = currentCartItems
-              .map(item => item.price)
-              .reduce((sum, price) => {
-                return (sum += parseFloat(price));
-              }, 0);
-
-            const add_ons_price = currentCartItems.map(i => {
-              return i.add_ons
-                .map(a => a.price)
-                .reduce((sum, d) => (sum += parseFloat(d)), 0);
-            });
-
-            const add_ons_total_price =
-              add_ons_price.length > 0
-                ? add_ons_price.reduce((sum, a) => sum + a)
-                : 0;
-
-            values.push(total_prices + add_ons_total_price);
-          }
-
-          enable = values.every(checkPrices);
-        }
-
-        if (self.interval !== "month") {
-          enable = true;
-        }
-
-        return enable;
       }
+    },
+    createToken: function () {
+      pulse_loader.init("Processing data...");
+      const _this = this;
+      const form = document.querySelector("form#sign_up_form");
+      let address;
+
+      Stripe.setPublishableKey(_this.stripe_key);
+      if (_this.payment_method === "credit_card") {
+        if (hasAddress(_this.credit_card_billing_address)) {
+          address = _this.credit_card_billing_address;
+        } else {
+          address = _this.billing_address[0];
+        }
+
+        Stripe.card.createToken({
+            number: _this.credit_card.number.replace(/\s+/g, ""),
+            exp_month: _this.credit_card.exp_month,
+            exp_year: _this.credit_card.exp_year,
+            cvc: _this.credit_card.cvc,
+            address_line1: address.address_line1,
+            address_line2: address.address_line2,
+            address_city: address.address_city,
+            address_state: address.address_state,
+            address_country: address.address_country,
+            address_zip: address.address_zip
+          },
+          stripeResponseHandler
+        );
+      } else {
+        Stripe.bankAccount.createToken(
+          _this.bank_account,
+          stripeResponseHandler
+        );
+      }
+    },
+    validateZip: function (event, key, index) {
+      let showOrHide;
+      registrationForm[key][index].address_zip = event.target.value;
+      if (isValidUSZip(registrationForm[key][index].address_zip)) {
+        event.target.classList.remove("is-invalid");
+      } else {
+        event.target.classList.add("is-invalid");
+      }
+    },
+    enableMealSelector: function () {
+      shoppingCartInit();
+      registerShoppingCartListener(registrationForm);
+      return true;
+    },
+    showDate: (date, month) => {
+      const theMonth = moment(month, "MMMM YYYY")
+        .toDate()
+        .getMonth();
+      const newDate = moment(date).toDate();
+      if (theMonth === newDate.getMonth()) {
+        return newDate.getDate();
+      } else {
+        return null;
+      }
+    },
+    isNotSaturday: date => {
+      const newDate = moment(date).toDate();
+      return newDate.getDay() < 6;
+    },
+    isDisabledDate: date => {
+      const self = registrationForm;
+      const currentDate = moment(
+        localStorage.getItem("current_date_est")
+      ).toDate();
+      const theDate = moment(date).toDate();
+
+      if (!self) {
+        return false;
+      }
+
+      const isSunday = date => {
+        const sunday = 0;
+        return date.getDay() === sunday;
+      };
+
+      const isFriday = date => {
+        const friday = 5;
+        return date.getDay() === friday;
+      };
+
+      const isMondayToFridaySchedule = () => {
+        if (self.interval !== "month") return false;
+        return self.schedule === "monday_to_friday";
+      };
+
+      const isSundayToThursdaySchedule = () => {
+        if (self.interval !== "month") return false;
+        return self.schedule === "sunday_to_thursday";
+      };
+
+      if (isMondayToFridaySchedule()) {
+        if (isSunday(theDate)) return true;
+      } else if (isSundayToThursdaySchedule()) {
+        if (isFriday(theDate)) return true;
+      }
+
+      const isYesterdaysDate = theDate.getTime() < currentDate.getTime();
+      if (isYesterdaysDate) {
+        return true;
+      }
+
+      const isSameDate = theDate.getTime() === currentDate.getTime();
+      if (isSameDate) {
+        return true;
+      }
+
+      const addOne = date => {
+        date.setDate(date.getDate() + 1);
+        return date.getTime();
+      };
+
+      const isDatePlusOne = theDate.getTime() === addOne(currentDate);
+      if (isDatePlusOne) {
+        return self.is_past;
+      }
+
+      return !registrationForm.isNotSaturday(date);
+    },
+    handleTabChange: function (tabIndex, newTab, oldTab) {},
+    isMealComplete: function () {
+      const self = this;
+      let enable = false;
+
+      const checkPrices = price => {
+        return price >= self.plan_minimum;
+      };
+
+      if (self.interval === "month") {
+        let i;
+        let values = [];
+        for (i = 0; i <= 4; i++) {
+          const currentCartItems = self.cart[0][`day_${i + 1}`];
+          const total_prices = currentCartItems
+            .map(item => item.price)
+            .reduce((sum, price) => {
+              return (sum += parseFloat(price));
+            }, 0);
+
+          const add_ons_price = currentCartItems.map(i => {
+            return i.add_ons
+              .map(a => a.price)
+              .reduce((sum, d) => (sum += parseFloat(d)), 0);
+          });
+
+          const add_ons_total_price =
+            add_ons_price.length > 0 ?
+            add_ons_price.reduce((sum, a) => sum + a) :
+            0;
+
+          values.push(total_prices + add_ons_total_price);
+        }
+
+        enable = values.every(checkPrices);
+      }
+
+      if (self.interval !== "month") {
+        enable = true;
+      }
+
+      return enable;
+    }
+  }
+});
+
+const getTax = (price, tax_rate) => {
+  const tax = tax_rate / 100;
+  const totalTaxRemove = price * tax;
+  return toFixed(totalTaxRemove, 2);
+};
+
+const getSchedule = (date, vueModel) => {
+  const _this = vueModel;
+  const sched = _this.schedule;
+  get({
+    url: `/selected_dates?date=${date}&schedule=${sched}`
+  }).then(response => {
+    const res = JSON.parse(response);
+    const errorEl = document.querySelector(".calendar-errors");
+    if (res.status === "success") {
+      errorEl.innerHTML = "";
+      _this.delivery_dates = res.dates;
+      _this.date_names = res.names;
+      _this.populateCalendar();
+      _this.first_delivery_date = res.dates[0];
+    } else {
+      errorEl.innerHTML = "";
+      const div = document.createElement("div");
+      div.className = "alert alert-danger";
+      div.innerHTML = `<strong>${res.message}</strong>`;
+      errorEl.appendChild(div);
+      _this.unpopulateCalendar();
     }
   });
+};
 
-  const getTax = (price, tax_rate) => {
-    const tax = tax_rate / 100;
-    const totalTaxRemove = price * tax;
-    return toFixed(totalTaxRemove, 2);
-  };
+const saveUserInfo = ({
+  email,
+  first_name,
+  last_name
+}) => {
+  const formData = new FormData()
+  formData.append('inactive_user[email]', email)
+  formData.append('inactive_user[first_name]', first_name)
+  formData.append('inactive_user[last_name]', last_name)
+  Rails.ajax({
+    url: '/inactive_users',
+    type: 'POST',
+    data: formData
+  })
+}
 
-  const getSchedule = (date, vueModel) => {
-    const _this = vueModel;
-    const sched = _this.schedule;
-    get({
-      url: `/selected_dates?date=${date}&schedule=${sched}`
-    }).then(response => {
-      const res = JSON.parse(response);
-      const errorEl = document.querySelector(".calendar-errors");
-      if (res.status === "success") {
-        errorEl.innerHTML = "";
-        _this.delivery_dates = res.dates;
-        _this.date_names = res.names;
-        _this.populateCalendar();
-        _this.first_delivery_date = res.dates[0];
-      } else {
-        errorEl.innerHTML = "";
-        const div = document.createElement("div");
-        div.className = "alert alert-danger";
-        div.innerHTML = `<strong>${res.message}</strong>`;
-        errorEl.appendChild(div);
-        _this.unpopulateCalendar();
-      }
-    });
-  };
-
-  const saveUserInfo = ({
-    email,
-    first_name,
-    last_name
-  }) => {
-    const formData = new FormData()
-    formData.append('inactive_user[email]', email)
-    formData.append('inactive_user[first_name]', first_name)
-    formData.append('inactive_user[last_name]', last_name)
-    Rails.ajax({
-      url: '/inactive_users',
-      type: 'POST',
-      data: formData
-    })
-  }
-
-  const verifyEmailIsNotDuplicate = ({
-    email,
-    el,
-    callback
-  }) => {
-    const emailError = document.querySelector(".email--error");
-    Rails.ajax({
-      url: `/verify_users?email=${email}`,
-      type: "GET",
-      success: function (response) {
-        if (response.status === "error") {
-          el.classList.add("is-invalid");
-          emailError.innerHTML = `Email already exists!
+const verifyEmailIsNotDuplicate = ({
+  email,
+  el,
+  callback
+}) => {
+  const emailError = document.querySelector(".email--error");
+  Rails.ajax({
+    url: `/verify_users?email=${email}`,
+    type: "GET",
+    success: function (response) {
+      if (response.status === "error") {
+        el.classList.add("is-invalid");
+        emailError.innerHTML = `Email already exists!
           <a href="/users/password/new">Forgot your password?</a>`;
-          callback(false)
-        } else {
-          if (el.classList.contains('is-invalid')) {
-            el.classList.remove('is-invalid')
-          }
-          callback(true);
+        callback(false)
+      } else {
+        if (el.classList.contains('is-invalid')) {
+          el.classList.remove('is-invalid')
         }
+        callback(true);
       }
-    })
-  }
+    }
+  })
+}
 
-  const getIsPastNoon = () => {
-    const self = registrationForm
-    return get({
-      url: "/past_noons"
-    }).then(response => {
-      const parsed = JSON.parse(response);
-      self.is_past = parsed.is_past
-    });
-  }
-  getIsPastNoon();
+const getIsPastNoon = () => {
+  const self = registrationForm
+  return get({
+    url: "/past_noons"
+  }).then(response => {
+    const parsed = JSON.parse(response);
+    self.is_past = parsed.is_past
+  });
+}
+getIsPastNoon();
 
-  const getCalendar = () => {
-    const _this = registrationForm;
-    get({
-      url: `/calendars.json`
-    }).then(response => {
-      const parsed = JSON.parse(response);
-      _this.calendars = parsed;
-    });
-  };
-  getCalendar();
+const getCalendar = () => {
+  const _this = registrationForm;
+  get({
+    url: `/calendars.json`
+  }).then(response => {
+    const parsed = JSON.parse(response);
+    _this.calendars = parsed;
+  });
+};
+getCalendar();
 
-  const hasAddress = address => {
-    const to_validate = [
-      "address_line1",
-      "address_city",
-      "address_state",
-      "address_zip"
-    ];
-    let is_valid = true;
-    to_validate.forEach(key => {
-      is_valid = address[key] !== "";
-      if (!is_valid) {
-        return;
-      }
-    });
-    return is_valid;
-  };
+const hasAddress = address => {
+  const to_validate = [
+    "address_line1",
+    "address_city",
+    "address_state",
+    "address_zip"
+  ];
+  let is_valid = true;
+  to_validate.forEach(key => {
+    is_valid = address[key] !== "";
+    if (!is_valid) {
+      return;
+    }
+  });
+  return is_valid;
+};
 
-  const extractValue = (obj, valueToExtract) => {
-    return obj.map(item => item[valueToExtract]);
-  };
+const extractValue = (obj, valueToExtract) => {
+  return obj.map(item => item[valueToExtract]);
+};
 
-  const extractAddOns = item => {
-    return item.add_ons.map(add_on => add_on.id);
-  };
+const extractAddOns = item => {
+  return item.add_ons.map(add_on => add_on.id);
+};
 
-  const addAddOnsToForm = (form, form_name, items) => {
-    items.forEach((item, index) => {
-      form.append(`${form_name}[add_ons][${index}][ids]`, extractAddOns(item));
-    });
-  };
+const addAddOnsToForm = (form, form_name, items) => {
+  items.forEach((item, index) => {
+    form.append(`${form_name}[add_ons][${index}][ids]`, extractAddOns(item));
+  });
+};
 
-  const completeAction = (token, brand) => {
-    const vForm = registrationForm;
-    const cart = vForm.cart;
-    const form = document.querySelector("form#sign_up_form");
-    const formData = new FormData(form);
+const completeAction = (token, brand) => {
+  const vForm = registrationForm;
+  const cart = vForm.cart;
+  const form = document.querySelector("form#sign_up_form");
+  const formData = new FormData(form);
 
-    if (vForm.interval === "month") {
-      let i;
-      for (i = 0; i <= 4; i++) {
-        let form_name = `registration_form[orders][${i}]`;
-        let current_cart = cart[0][`day_${i + 1}`];
-        formData.append(`${form_name}[order_date]`, vForm.delivery_dates[i]);
-        formData.append(
-          `${form_name}[menu_ids][]`,
-          extractValue(current_cart, "id")
-        );
-        formData.append(
-          `${form_name}[quantities][]`,
-          extractValue(current_cart, "quantity")
-        );
-        addAddOnsToForm(formData, form_name, current_cart);
-      }
-    } else {
-      let form_name = "registration_form[orders][0]";
-      formData.append(`${form_name}[order_date]`, vForm.delivery_date);
-      formData.append(`${form_name}[menu_ids][]`, extractValue(cart, "id"));
+  if (vForm.interval === "month") {
+    let i;
+    for (i = 0; i <= 4; i++) {
+      let form_name = `registration_form[orders][${i}]`;
+      let current_cart = cart[0][`day_${i + 1}`];
+      formData.append(`${form_name}[order_date]`, vForm.delivery_dates[i]);
+      formData.append(
+        `${form_name}[menu_ids][]`,
+        extractValue(current_cart, "id")
+      );
       formData.append(
         `${form_name}[quantities][]`,
-        extractValue(cart, "quantity")
+        extractValue(current_cart, "quantity")
       );
-      addAddOnsToForm(formData, form_name, cart);
+      addAddOnsToForm(formData, form_name, current_cart);
     }
+  } else {
+    let form_name = "registration_form[orders][0]";
+    formData.append(`${form_name}[order_date]`, vForm.delivery_date);
+    formData.append(`${form_name}[menu_ids][]`, extractValue(cart, "id"));
+    formData.append(
+      `${form_name}[quantities][]`,
+      extractValue(cart, "quantity")
+    );
+    addAddOnsToForm(formData, form_name, cart);
+  }
 
-    formData.append("registration_form[stripe_token]", token);
-    formData.append("registration_form[card_brand]", brand);
-    var AUTH_TOKEN = $("meta[name=csrf-token]").attr("content");
-    Rails.ajax({
-      url: form.action,
-      type: "POST",
-      data: formData,
-      success: data => {
-        eval(data);
-      }
-    });
-  };
-
-  const stripeResponseHandler = (status, response) => {
-    const form = document.querySelector("form#sign_up_form");
-    let tempBtnContents;
-
-    if (response.error) {
-      registrationForm.error_messages = response.error.message;
-      pulse_loader.stop()
-    } else {
-      const token = response.id;
-      const brand = response.card.brand;
-      completeAction(token, brand);
+  formData.append("registration_form[stripe_token]", token);
+  formData.append("registration_form[card_brand]", brand);
+  var AUTH_TOKEN = $("meta[name=csrf-token]").attr("content");
+  Rails.ajax({
+    url: form.action,
+    type: "POST",
+    data: formData,
+    success: data => {
+      eval(data);
     }
-  };
+  });
+};
 
-  const multiplePresenceValidator = inputsNameClassOrIds => {
-    let invalid = 0;
-    const invalidInputs = [];
-    const inputs = [];
-    inputsNameClassOrIds.forEach(inputsNameClassOrId => {
-      const inputsList = document.querySelectorAll(`${inputsNameClassOrId}`);
-      const validator = input => {
-        inputs.push(input);
-        if (!input) {
-          return;
-        }
+const stripeResponseHandler = (status, response) => {
+  const form = document.querySelector("form#sign_up_form");
+  let tempBtnContents;
 
-        if (!valueValidator(input)) {
-          invalidInputs.push(input);
-          invalid++;
-        }
+  if (response.error) {
+    registrationForm.error_messages = response.error.message;
+    pulse_loader.stop()
+  } else {
+    const token = response.id;
+    const brand = response.card.brand;
+    completeAction(token, brand);
+  }
+};
 
-        if (!input.checkValidity()) {
-          invalidInputs.push(input);
-          invalid++;
-        }
-      };
-      Array.from(inputsList).map(validator);
-    });
-
-    const addIsInvalid = input => {
-      input.classList.add("is-invalid");
-    };
-
-    const removeIsInvalid = input => {
-      if (!input.classList.contains("is-invalid")) {
+const multiplePresenceValidator = inputsNameClassOrIds => {
+  let invalid = 0;
+  const invalidInputs = [];
+  const inputs = [];
+  inputsNameClassOrIds.forEach(inputsNameClassOrId => {
+    const inputsList = document.querySelectorAll(`${inputsNameClassOrId}`);
+    const validator = input => {
+      inputs.push(input);
+      if (!input) {
         return;
       }
-      input.classList.remove("is-invalid");
-      input.classList.add("is-valid");
-    };
 
-    if (invalid > 0) {
-      invalidInputs.map(addIsInvalid);
-      return false;
+      if (!valueValidator(input)) {
+        invalidInputs.push(input);
+        invalid++;
+      }
+
+      if (!input.checkValidity()) {
+        invalidInputs.push(input);
+        invalid++;
+      }
+    };
+    Array.from(inputsList).map(validator);
+  });
+
+  const addIsInvalid = input => {
+    input.classList.add("is-invalid");
+  };
+
+  const removeIsInvalid = input => {
+    if (!input.classList.contains("is-invalid")) {
+      return;
+    }
+    input.classList.remove("is-invalid");
+    input.classList.add("is-valid");
+  };
+
+  if (invalid > 0) {
+    invalidInputs.map(addIsInvalid);
+    return false;
+  } else {
+    inputs.map(removeIsInvalid);
+    return true;
+  }
+};
+
+const valueValidator = input => {
+  if (input.value.trim().length === 0) {
+    return false;
+  } else {
+    return true;
+  }
+};
+
+const isValidUSZip = zipCode => {
+  return /^\d{5}$/.test(zipCode);
+};
+
+const changeCheckedTabs = () => {
+  const greenColor = "rgb(55, 196, 41)";
+  const ariaLabels = [
+    "Create Account",
+    "Delivery Information",
+    "Plan",
+    "Days",
+    "Payment Setup",
+    "Meals",
+    "Review Order"
+  ];
+  ariaLabels.forEach(label => {
+    const el = document.querySelector(`[aria-controls="${label}"]`);
+    const isChecked = el.classList.contains("checked");
+    const isActive = el.getAttribute("aria-selected");
+    if (isChecked && isActive === null) {
+      const icon = document.createElement("i");
+      const iconContainer = document.createElement("div");
+      iconContainer.className = "wizard-icon-container";
+      iconContainer.style.backgroundColor = greenColor;
+      icon.className = "wizard-icon fa fa-check";
+      icon.style.color = "#ffffff";
+      iconContainer.appendChild(icon);
+      el.innerHTML = "";
+      el.appendChild(iconContainer);
     } else {
-      inputs.map(removeIsInvalid);
-      return true;
+      return;
+    }
+  });
+};
+
+(function () {
+  const el = document.querySelector("ul.wizard-nav-pills");
+  el.classList.add("container");
+})();
+
+const scroller = function () {
+  let cartSidebars = document.querySelectorAll(".meal-sidebar");
+  let shoppingCartBtns = document.querySelectorAll(".shopping-cart__shown_btn");
+  var y = window.pageYOffset;
+
+  const positionElelement = el => {
+    if (el) {
+      el.classList.add("position-fixed");
+      el.style.marginTop = "7rem";
     }
   };
 
-  const valueValidator = input => {
-    if (input.value.trim().length === 0) {
-      return false;
-    } else {
-      return true;
+  const removePositioning = el => {
+    if (el) {
+      el.classList.remove("position-fixed");
+      el.style.marginTop = "0";
     }
   };
 
-  const isValidUSZip = zipCode => {
-    return /^\d{5}$/.test(zipCode);
-  };
+  if (y >= 90) {
+    Array.from(cartSidebars).forEach(cartSidebar =>
+      positionElelement(cartSidebar)
+    );
+    Array.from(shoppingCartBtns).forEach(shoppingCartBtn =>
+      positionElelement(shoppingCartBtn)
+    );
+  } else {
+    Array.from(cartSidebars).forEach(cartSidebar =>
+      removePositioning(cartSidebar)
+    );
+    Array.from(shoppingCartBtns).forEach(shoppingCartBtn =>
+      removePositioning(shoppingCartBtn)
+    );
+  }
+};
 
-  const changeCheckedTabs = () => {
-    const greenColor = "rgb(55, 196, 41)";
-    const ariaLabels = [
-      "Create Account",
-      "Delivery Information",
-      "Plan",
-      "Days",
-      "Payment Setup",
-      "Meals",
-      "Review Order"
-    ];
-    ariaLabels.forEach(label => {
-      const el = document.querySelector(`[aria-controls="${label}"]`);
-      const isChecked = el.classList.contains("checked");
-      const isActive = el.getAttribute("aria-selected");
-      if (isChecked && isActive === null) {
-        const icon = document.createElement("i");
-        const iconContainer = document.createElement("div");
-        iconContainer.className = "wizard-icon-container";
-        iconContainer.style.backgroundColor = greenColor;
-        icon.className = "wizard-icon fa fa-check";
-        icon.style.color = "#ffffff";
-        iconContainer.appendChild(icon);
-        el.innerHTML = "";
-        el.appendChild(iconContainer);
-      } else {
-        return;
-      }
-    });
-  };
-
-  (function () {
-    const el = document.querySelector("ul.wizard-nav-pills");
-    el.classList.add("container");
-  })();
-
-  const scroller = function () {
-    let cartSidebars = document.querySelectorAll(".meal-sidebar");
-    let shoppingCartBtns = document.querySelectorAll(".shopping-cart__shown_btn");
-    var y = window.pageYOffset;
-
-    const positionElelement = el => {
-      if (el) {
-        el.classList.add("position-fixed");
-        el.style.marginTop = "7rem";
-      }
-    };
-
-    const removePositioning = el => {
-      if (el) {
-        el.classList.remove("position-fixed");
-        el.style.marginTop = "0";
-      }
-    };
-
-    if (y >= 90) {
-      Array.from(cartSidebars).forEach(cartSidebar =>
-        positionElelement(cartSidebar)
-      );
-      Array.from(shoppingCartBtns).forEach(shoppingCartBtn =>
-        positionElelement(shoppingCartBtn)
-      );
-    } else {
-      Array.from(cartSidebars).forEach(cartSidebar =>
-        removePositioning(cartSidebar)
-      );
-      Array.from(shoppingCartBtns).forEach(shoppingCartBtn =>
-        removePositioning(shoppingCartBtn)
-      );
-    }
-  };
-
-  window.addEventListener("scroll", scroller);
-});
+window.addEventListener("scroll", scroller);

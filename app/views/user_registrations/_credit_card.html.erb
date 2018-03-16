@@ -21,7 +21,7 @@
       data: {
         stripe: 'exp_month'
       },
-      'v-model': 'credit_card.exp_month'
+      'v-model.lazy': 'credit_card.exp_month'
     %>
     <div class="invalid-feedback">
       Please select a month
@@ -36,7 +36,7 @@
       data: {
         stripe: 'exp_year'
       },
-      'v-model': 'credit_card.exp_year'
+      'v-model.lazy': 'credit_card.exp_year'
     %>
     <div class="invalid-feedback">
       Please select a year
@@ -50,6 +50,7 @@
            placeholder="CVV"
            data-stripe="cvc"
            v-model="credit_card.cvc"
+           v-mask="'####'"
     >
     <div class="invalid-feedback">
       CVV is required
@@ -58,29 +59,29 @@
 </div>
 <div class="form-check">
   <label for="registration_form_different_billing" class="form-check-label">
-    <input type="checkbox" name="registration_form[different_billing]" value="true" class="form-check-input" id="registration_form_different_billing" v-model="different_billing">
+    <input type="checkbox" name="registration_form[different_billing]" value="true" class="form-check-input" id="registration_form_different_billing" v-model.lazy="different_billing">
     Billing address is different to delivery address
   </label>
 </div>
 <div class="different-billing" v-if="different_billing">
   <div class="form-group">
-    <input type="text" class="form-control" name="registration_form[billing_line_1]" placeholder="Address Line 1" v-model="credit_card_billing_address.address_line1">
+    <input type="text" class="form-control" name="registration_form[billing_line_1]" placeholder="Address Line 1" v-model.lazy="credit_card_billing_address.address_line1">
     <div class="invalid-feedback">
       Line1 is required
     </div>
   </div>
   <div class="form-group">
-    <input type="text" class="form-control" name="registration_form[billing_line_2]" placeholder="Address Line 2" v-model="credit_card_billing_address.address_line2">
+    <input type="text" class="form-control" name="registration_form[billing_line_2]" placeholder="Address Line 2" v-model.lazy="credit_card_billing_address.address_line2">
   </div>
   <div class="form-group row">
     <div class="col">
-      <input type="text" class="form-control" name="registration_form[billing_city]" placeholder="City" v-model="credit_card_billing_address.address_city">
+      <input type="text" class="form-control" name="registration_form[billing_city]" placeholder="City" v-model.lazy="credit_card_billing_address.address_city">
       <div class="invalid-feedback">
         City is required
       </div>
     </div>
     <div class="col">
-      <input type="text" class="form-control" name="registration_form[billing_state]" placeholder="State" v-model="credit_card_billing_address.address_state">
+      <input type="text" class="form-control" name="registration_form[billing_state]" placeholder="State" v-model.lazy="credit_card_billing_address.address_state">
       <div class="invalid-feedback">
         State is required
       </div>
@@ -88,7 +89,7 @@
   </div>
   <div class="form-group row">
     <div class="col">
-      <input type="text" class="form-control" name="registration_form[billing_zip_code]" placeholder="Zipcode" v-model="credit_card_billing_address.address_zip">
+      <input type="text" class="form-control" name="registration_form[billing_zip_code]" placeholder="Zipcode" v-model.lazy="credit_card_billing_address.address_zip">
       <div class="invalid-feedback">
         Zipcode is required
       </div>
