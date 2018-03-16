@@ -1,6 +1,7 @@
 /* eslint semi: ["error", "never"] */
 import VueFormWizard from "vue-form-wizard";
 import vuejsStorage from "vuejs-storage";
+import VueLazyload from "vue-lazyload";;
 import VueTabs from "vue-nav-tabs";
 import VueMask from "v-mask";
 import Vue from "vue/dist/vue.esm";
@@ -27,6 +28,7 @@ Vue.use(VueFormWizard);
 Vue.use(VueTabs);
 Vue.use(VueMask);
 Vue.use(vuejsStorage);
+Vue.use(VueLazyload);
 
 // Days
 const mondayToFriday = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
@@ -125,7 +127,8 @@ const registrationForm = new Vue({
         first_name: "",
         last_name: "",
         email: "",
-        password: ""
+        password: "",
+        middle_name: ""
       },
       plan: {
         id: planObj.id,

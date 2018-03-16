@@ -14,7 +14,10 @@ module PagesHelper
     return nil unless obj.asset_id?
     options[:fetch_format] = :auto
     options[:quality] = :auto
-    cl_image_tag obj.asset.image, options
+    img = <<-IMG
+      <img v-lazy="'#{cloudinary_url(obj.asset.image, options)}'">
+    IMG
+    img.html_safe
   end
 
   def random_background

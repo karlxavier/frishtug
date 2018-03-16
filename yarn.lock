@@ -5358,6 +5358,10 @@ vue-form-wizard@^0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/vue-form-wizard/-/vue-form-wizard-0.7.0.tgz#fcfbb2d7b430cb9e2642ba577cf5c192131aa80e"
 
+vue-lazyload@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/vue-lazyload/-/vue-lazyload-1.2.2.tgz#73335ed32db25264f5957df1a21d277823423743"
+
 vue-masked-input@^0.5.2:
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/vue-masked-input/-/vue-masked-input-0.5.2.tgz#b47f64ea38e41378182918b1928066569b7504f4"

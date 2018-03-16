@@ -5,7 +5,7 @@
   </h3>
   <div class="card-deck" style="margin-bottom: 1.7rem;">
     <% @plans.each do |p| %>
-      <% cache p do%>
+      <% cache p do %>
         <%
         shipping_fee =  p.shipping_fee? ? p.shipping_fee : 0
         %>
