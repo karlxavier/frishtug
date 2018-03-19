@@ -118,7 +118,7 @@ class User < ApplicationRecord
   end
 
   def orders_completed?
-    orders.count % 20 == 0
+    orders.where(status: [:processing, :completed, :cancelled]).count % 20 == 0
   end
 
   private

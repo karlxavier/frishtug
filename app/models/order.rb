@@ -48,7 +48,7 @@ class Order < ApplicationRecord
   end
 
   def self.pending_deliveries
-    self.active_orders.includes(menus: [:menu_category]).map do |o|
+    self.active_orders.order(placed_on: :asc).includes(menus: [:menu_category]).map do |o|
       {
         placed_on: o.placed_on,
         total: OrderCalculator.new(o).total,
