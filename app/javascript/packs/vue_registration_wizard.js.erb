@@ -188,10 +188,10 @@ const registrationForm = new Vue({
     })
 
     Rails.ajax({
-      url: '/allowed_zip_codes',
+      url: '/api/v1/allowed_zip_codes',
       type: 'GET',
       success: function(response) {
-        self.allowed_zip_codes = response.allowed_zip_codes
+        self.allowed_zip_codes = response.data.map( d => d.attributes.zip )
       }
     })
 
@@ -259,7 +259,7 @@ const registrationForm = new Vue({
     isNotAllowed: function () {
       const self = this;
       const isAllowed = self.billing_address.every(address => {
-        self.allowed_zip_codes.includes(String(address.address_zip));
+        return self.allowed_zip_codes.includes(String(address.address_zip));
       });
 
       if (isAllowed) {
