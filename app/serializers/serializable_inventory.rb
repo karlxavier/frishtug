@@ -1,4 +1,4 @@
 class SerializableInventory < JSONAPI::Serializable::Resource
-  type: 'inventories'
+  type 'inventories'
   attributes :id, :menu_id, :quantity
 end
