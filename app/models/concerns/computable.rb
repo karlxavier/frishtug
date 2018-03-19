@@ -12,7 +12,7 @@ module Computable
   end
 
   def shipping_fee
-    user.plan.shipping_fee || 0
+    user.plan&.shipping_fee || 0
   end
 
   def total
