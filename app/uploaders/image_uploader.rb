@@ -36,6 +36,10 @@ class ImageUploader < CarrierWave::Uploader::Base
     process resize_to_fit: [100, 100]
   end
 
+  version :card do
+    process resize_to_fit: [255, 175]
+  end
+
   version :medium do
     process resize_to_fit: [300, 300]
     cloudinary_transformation :quality => 80

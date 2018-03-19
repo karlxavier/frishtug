@@ -72,7 +72,8 @@ class Menu < ApplicationRecord
   end
 
   def self.all_published
-    where(published: true)
+    joins(:menu_category).where(published: true)
+      .merge(MenuCategory.where.not(name: 'Add-Ons'))
   end
 
   def self.shopping_lists?(range)
