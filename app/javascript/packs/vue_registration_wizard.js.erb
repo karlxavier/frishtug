@@ -5,9 +5,6 @@ import VueTabs from "vue-nav-tabs";
 import VueMask from "v-mask";
 import Vue from "vue/dist/vue.esm";
 import {
-  get
-} from "./lib/ajax_lib";
-import {
   shoppingCart,
   shoppingCartInit,
   registerShoppingCartListener,
@@ -179,7 +176,7 @@ const registrationForm = new Vue({
   mounted: function() {
     const self = this
     Rails.ajax({
-      url: '/earliest_dates',
+      url: '/api/v1/earliest_dates',
       type: 'GET',
       success: function(response) {
         self.earliest_monday = response.earliest_monday
@@ -817,7 +814,7 @@ const getSchedule = (date, vueModel) => {
   const _this = vueModel;
   const sched = _this.schedule;
   Rails.ajax({
-    url: `/selected_dates?date=${date}&schedule=${sched}`,
+    url: `/api/v1/selected_dates?date=${date}&schedule=${sched}`,
     type: 'GET',
     success: function(response) {
       const errorEl = document.querySelector(".calendar-errors");

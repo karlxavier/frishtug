@@ -1,4 +1,5 @@
 class User::BaseController < ApplicationController
+  protect_from_forgery with: :null_session
   before_action :authenticate_user!, :set_full_name
   layout 'user_dashboard'
 

@@ -8,5 +8,7 @@ namespace :api do
     resources :is_past, only: :index
     resources :calendar, only: :index
     resources :inactive_users, only: :create
+    resources :earliest_dates, only: :index
+    resources :selected_dates, only: :index
   end
 end
