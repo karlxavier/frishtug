@@ -422,27 +422,28 @@ const registrationForm = new Vue({
     },
     changeCalendar: date => {
       const _this = registrationForm;
-      get({
-        url: `/calendars.json?date=${date}`
-      }).then(response => {
-        const parsed = JSON.parse(response);
-        _this.calendars = parsed;
-        setTimeout(function () {
-          registrationForm.populateCalendar();
-        }, 500);
-      });
+      Rails.ajax({
+        url: `/api/v1/calendar?date=${date}`,
+        type: 'GET',
+        success: function(response) {
+          _this.calendars = parsed;
+          setTimeout(function() {
+            _this.populateCalendar();
+          }, 500);
+        }
+      })
     },
     populateCalendar: () => {
       const _this = registrationForm;
       if (_this.interval === "month") {
         const dates = registrationForm.delivery_dates;
         registrationForm.unpopulateCalendar();
-        dates.forEach((date, index) => {
-          const el = document.querySelector(`.date-${date}`);
+        for(var i = 0; i<= dates.length; i++) {
+          const el = document.querySelector(`.date-${dates[i]}`);
           if (el) {
             el.classList.add("active");
           }
-        });
+        }
       } else {
         const el = document.querySelector(`.date-${_this.delivery_date}`);
         _this.unpopulateCalendar();
@@ -453,9 +454,11 @@ const registrationForm = new Vue({
     },
     unpopulateCalendar: () => {
       const aTags = document.querySelectorAll(".calendar__date_item");
-      aTags.forEach(aTag => {
-        aTag.classList.remove("active");
-      });
+      for(var i = 0; i <= aTags.length; i++) {
+        if(aTags[i]) {
+          aTags[i].classList.remove("active");
+        }
+      }
     },
     setSchedule: (date, schedule, event) => {
       const _this = registrationForm;
@@ -813,26 +816,27 @@ const getTax = (price, tax_rate) => {
 const getSchedule = (date, vueModel) => {
   const _this = vueModel;
   const sched = _this.schedule;
-  get({
-    url: `/selected_dates?date=${date}&schedule=${sched}`
-  }).then(response => {
-    const res = JSON.parse(response);
-    const errorEl = document.querySelector(".calendar-errors");
-    if (res.status === "success") {
-      errorEl.innerHTML = "";
-      _this.delivery_dates = res.dates;
-      _this.date_names = res.names;
-      _this.populateCalendar();
-      _this.first_delivery_date = res.dates[0];
-    } else {
-      errorEl.innerHTML = "";
-      const div = document.createElement("div");
-      div.className = "alert alert-danger";
-      div.innerHTML = `<strong>${res.message}</strong>`;
-      errorEl.appendChild(div);
-      _this.unpopulateCalendar();
+  Rails.ajax({
+    url: `/selected_dates?date=${date}&schedule=${sched}`,
+    type: 'GET',
+    success: function(response) {
+      const errorEl = document.querySelector(".calendar-errors");
+      if (response.status === "success") {
+        errorEl.innerHTML = "";
+        _this.delivery_dates = response.dates;
+        _this.date_names = response.names;
+        _this.populateCalendar();
+        _this.first_delivery_date = response.dates[0];
+      } else {
+        errorEl.innerHTML = "";
+        const div = document.createElement("div");
+        div.className = "alert alert-danger";
+        div.innerHTML = `<strong>${response.message}</strong>`;
+        errorEl.appendChild(div);
+        _this.unpopulateCalendar();
+      }
     }
-  });
+  })
 };
 
 const saveUserInfo = ({
@@ -845,7 +849,7 @@ const saveUserInfo = ({
   formData.append('inactive_user[first_name]', first_name)
   formData.append('inactive_user[last_name]', last_name)
   Rails.ajax({
-    url: '/inactive_users',
+    url: '/api/v1/inactive_users',
     type: 'POST',
     data: formData
   })
@@ -858,7 +862,7 @@ const verifyEmailIsNotDuplicate = ({
 }) => {
   const emailError = document.querySelector(".email--error");
   Rails.ajax({
-    url: `/verify_users?email=${email}`,
+    url: `/api/v1/verify_users?email=${email}`,
     type: "GET",
     success: function (response) {
       if (response.status === "error") {
@@ -878,22 +882,24 @@ const verifyEmailIsNotDuplicate = ({
 
 const getIsPastNoon = () => {
   const self = registrationForm
-  return get({
-    url: "/past_noons"
-  }).then(response => {
-    const parsed = JSON.parse(response);
-    self.is_past = parsed.is_past
-  });
+  Rails.ajax({
+    url: '/api/v1/is_past',
+    type: 'GET',
+    success: function(response) {
+      self.is_past = response.message
+    }
+  })
 }
 getIsPastNoon();
 
 const getCalendar = () => {
   const _this = registrationForm;
-  get({
-    url: `/calendars.json`
-  }).then(response => {
-    const parsed = JSON.parse(response);
-    _this.calendars = parsed;
+  Rails.ajax({
+    url: "/api/v1/calendar",
+    type: "GET",
+    success: function(response) {
+      _this.calendars = response;
+    }
   });
 };
 getCalendar();
