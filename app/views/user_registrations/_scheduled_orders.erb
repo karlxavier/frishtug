@@ -12,7 +12,7 @@
                 <div class="container-fluid">
                   <div class="row">
                     <div class='card col-12 col-custom-255 px-0 border-0 mb-4 mt-1 mr-4' v-for="item in items[category.attributes.name]">
-                      <img :src="item.attributes.asset.image.card.url" class="card-img-top" width="255" height="175">
+                      <img :src="getImageUrl(item)" class="card-img-top" width="255" height="175">
                       <div class="card-body px-0 py-1">
                         <h5 class="card-title mb-0 font-family-montserrat">
                           {{ item.attributes.name }}

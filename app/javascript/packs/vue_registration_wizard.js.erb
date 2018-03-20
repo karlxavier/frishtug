@@ -228,6 +228,13 @@ const registrationForm = new Vue({
     }
   },
   methods: {
+    getImageUrl: function(item) {
+      const asset = item.attributes.asset
+      if(asset === null) { return null }
+      if(asset.hasOwnProperty('image')) {
+        return asset.image.card.url;
+      }
+    },
     createAddOnValue: function(add_on) {
       const obj = {
         id: add_on.id,
