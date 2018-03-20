@@ -19,6 +19,7 @@ class SerializableMenu < JSONAPI::Serializable::Resource
           {
             id: a.id,
             menu_id: a.menu_id,
+            name: a.name,
             menu_category_id: a.menu_category_id,
             price: a.price
           }
