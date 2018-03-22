@@ -1,7 +1,6 @@
 /* eslint semi: ["error", "never"] */
 import VueFormWizard from "vue-form-wizard";
 import vuejsStorage from "vuejs-storage";
-import VueTabs from "vue-nav-tabs";
 import VueMask from "v-mask";
 import Vue from "vue/dist/vue.esm";
 import {
@@ -15,25 +14,16 @@ import toCurrency from "./lib/to_currency";
 import totalPrice from "./filters/total_price";
 import toFixed from "./lib/to_fixed";
 import moment from "moment";
+import SingleOrder from '../components/single_order.vue'
+import ScheduledOrder from '../components/scheduled_order.vue'
 // filters
 Vue.filter("to_currency", toCurrency);
 Vue.filter("total_price", totalPrice);
 
 // Components
 Vue.use(VueFormWizard);
-Vue.use(VueTabs);
 Vue.use(VueMask);
 Vue.use(vuejsStorage);
-
-// Days
-const mondayToFriday = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-const sundayToThursday = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday"
-];
 
 const UserSelectedPlans = localStorage.getItem("plans");
 let planObj;
@@ -98,11 +88,18 @@ const parseFloatingNumber = num => {
 const registrationForm = new Vue({
   el: "#registration-form",
   data: {
+    child_component: "",
     error_messages: "",
     allowed_zip_codes: [],
     interval: planObj.interval,
     delivery_dates: [],
-    date_names: [],
+    date_names: [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday"
+    ],
     calendars: "",
     cart: [],
     plan_minimum: planObj.minimum_credit_allowed,
@@ -113,32 +110,30 @@ const registrationForm = new Vue({
     schedule: null,
     is_past: false,
     completed: false,
-    earliest_monday: '',
-    earliest_sunday: '',
-    items: [],
-    menu_categories: []
-  },
-  storage: {
-    data: {
-      user: {
-        first_name: "",
-        last_name: "",
-        email: "",
-        password: ""
-      },
-      plan: {
-        id: planObj.id,
-        name: planObj.name,
-        price: planObj.price,
-        shipping_fee: planObj.shipping_fee,
-        for_type: planObj.for_type
-      },
-      first_delivery_date: "",
-      payment_method: "credit_card",
-      different_billing: false,
-      delivery_date: "",
-      stripe_key: "<%= STRIPE_PUBLIC_KEY %>",
-      billing_address: [{
+    earliest_monday: "",
+    earliest_sunday: "",
+    items: {},
+    menu_categories: [],
+    user: {
+      first_name: "",
+      last_name: "",
+      email: "",
+      password: ""
+    },
+    plan: {
+      id: planObj.id,
+      name: planObj.name,
+      price: planObj.price,
+      shipping_fee: planObj.shipping_fee,
+      for_type: planObj.for_type
+    },
+    first_delivery_date: "",
+    payment_method: "credit_card",
+    different_billing: false,
+    delivery_date: "",
+    stripe_key: "<%= STRIPE_PUBLIC_KEY %>",
+    billing_address: [
+      {
         address_line1: "",
         address_line2: "",
         address_city: "",
@@ -146,75 +141,89 @@ const registrationForm = new Vue({
         address_zip: "",
         address_country: "US",
         address_location_at: "at_work"
-      }],
-      credit_card_billing_address: {
-        address_line1: "",
-        address_line2: "",
-        address_city: "",
-        address_state: "",
-        address_country: "US",
-        address_zip: ""
-      },
-      credit_card: {
-        number: null,
-        cvc: null,
-        exp_month: "",
-        exp_year: ""
-      },
-      bank_account: {
-        country: "US",
-        currency: "usd",
-        routing_number: null,
-        account_number: null,
-        account_holder_name: null,
-        account_holder_type: "individual"
       }
+    ],
+    credit_card_billing_address: {
+      address_line1: "",
+      address_line2: "",
+      address_city: "",
+      address_state: "",
+      address_country: "US",
+      address_zip: ""
     },
+    credit_card: {
+      number: null,
+      cvc: null,
+      exp_month: "",
+      exp_year: ""
+    },
+    bank_account: {
+      country: "US",
+      currency: "usd",
+      routing_number: null,
+      account_number: null,
+      account_holder_name: null,
+      account_holder_type: "individual"
+    }
+  },
+  storage: {
+    keys: [
+      "user",
+      "plan",
+      "bank_account",
+      "credit_card",
+      "billing_address",
+      "credit_card_billing_address",
+      "first_delivery_date",
+      "payment_method",
+      "different_billing",
+      "delivery_date"
+    ],
     namespace: "user_registrations",
     storage: sessionStorage
   },
   mounted: function() {
-    const self = this
+    const self = this;
     Rails.ajax({
-      url: '/api/v1/earliest_dates',
-      type: 'GET',
+      url: "/api/v1/earliest_dates",
+      type: "GET",
       success: function(response) {
-        self.earliest_monday = response.earliest_monday
-        self.earliest_sunday = response.earliest_sunday
+        self.earliest_monday = response.earliest_monday;
+        self.earliest_sunday = response.earliest_sunday;
       }
-    })
+    });
 
     Rails.ajax({
-      url: '/api/v1/allowed_zip_codes',
-      type: 'GET',
+      url: "/api/v1/allowed_zip_codes",
+      type: "GET",
       success: function(response) {
-        self.allowed_zip_codes = response.data.map( d => d.attributes.zip )
+        self.allowed_zip_codes = response.data.map(d => d.attributes.zip);
       }
-    })
+    });
 
     Rails.ajax({
-      url: '/api/v1/items',
-      type: 'GET',
+      url: "/api/v1/items",
+      type: "GET",
       success: function(response) {
-        self.items = Array.from(response.data).reduce( (list, item) => {
-          if(list.hasOwnProperty(item.attributes.menu_category.name)) {
-            list[item.attributes.menu_category.name].push(item)
+        self.items = Array.from(response.data).reduce((list, item) => {
+          if (list.hasOwnProperty(item.attributes.menu_category.name)) {
+            list[item.attributes.menu_category.name].push(item);
           } else {
-            list[item.attributes.menu_category.name] = []
-            list[item.attributes.menu_category.name].push(item)
+            list[item.attributes.menu_category.name] = [];
+            list[item.attributes.menu_category.name].push(item);
           }
-          return list
-        }, {})
+          return list;
+        }, {});
       }
-    })
+    });
 
     Rails.ajax({
-      url: '/api/v1/menu_categories',
-      type: 'GET',
+      url: "/api/v1/menu_categories",
+      type: "GET",
       success: function(response) {
-        self.menu_categories = response.data
+        self.menu_categories = response.data;
       }
-    })
+    });
   },
   filters: {
     get_num: val => parseInt(val.match(/\d+/)[0]) - 1,
@@ -228,39 +237,10 @@ const registrationForm = new Vue({
     }
   },
   methods: {
-    getImageUrl: function(item) {
-      const asset = item.attributes.asset
-      if(asset === null) { return null }
-      if(asset.hasOwnProperty('image')) {
-        return asset.image.card.url;
-      }
+    handleChange: function () {
+      this.enableMealSelector()
     },
-    createAddOnValue: function(add_on) {
-      const obj = {
-        id: add_on.id,
-        name: add_on.name,
-        price: add_on.price
-      }
-      return JSON.stringify(obj)
-    },
-    menuCartValue: function(item) {
-      const obj = {
-        id: item.id,
-        name: item.attributes.name,
-        price: item.attributes.price,
-        quantity: 1,
-        tax: item.attributes.tax,
-        add_ons: []
-      }
-      return JSON.stringify(obj)
-    },
-    scrollToView: function (target) {
-      const el = document.querySelector(target)
-      const topPosition = el.offsetTop
-
-      $('.meal-sidebar__body').animate({ scrollTop: topPosition }, 600);
-    },
-    isNotAllowed: function () {
+    isNotAllowed: function() {
       const self = this;
       const isAllowed = self.billing_address.every(address => {
         return self.allowed_zip_codes.includes(String(address.address_zip));
@@ -272,7 +252,7 @@ const registrationForm = new Vue({
         return true;
       }
     },
-    hasAvailableCredit: function (price) {
+    hasAvailableCredit: function(price) {
       const self = this;
       const minimum = parseFloatingNumber(self.plan_minimum);
       const limit = parseFloatingNumber(self.plan_limit);
@@ -285,7 +265,7 @@ const registrationForm = new Vue({
         return true;
       }
     },
-    additionalCharges: function () {
+    additionalCharges: function() {
       const self = this;
       if (self.interval === "month" && self.cart) {
         return getExcessAmount(self);
@@ -307,9 +287,7 @@ const registrationForm = new Vue({
       const addOnsTotalPrice = addOns.reduce((sum, addOn) => {
         return (sum += parseFloatingNumber(addOn.price));
       }, 0);
-      return (
-        parseFloatingNumber(price) + addOnsTotalPrice * parseInt(quantity)
-      );
+      return parseFloatingNumber(price) + addOnsTotalPrice * parseInt(quantity);
     },
     changeAddressType: location => {
       if (location !== "multiple_workplaces") {
@@ -318,7 +296,7 @@ const registrationForm = new Vue({
         ];
       }
     },
-    nextTabOrSkipTab: function () {
+    nextTabOrSkipTab: function() {
       if (this.isNotAllowed()) {
         swal({
           type: "error",
@@ -335,7 +313,7 @@ const registrationForm = new Vue({
         this.nextTab();
       }
     },
-    totalTaxableItemsPrice: function (itemsCollection) {
+    totalTaxableItemsPrice: function(itemsCollection) {
       const self = this;
       const filterTaxableItems = item => {
         return item.tax;
@@ -353,7 +331,7 @@ const registrationForm = new Vue({
         }, 0);
       }
     },
-    cartHasTaxableItems: function (itemsCollection) {
+    cartHasTaxableItems: function(itemsCollection) {
       const self = this;
       let items;
       const filterTaxableItems = item => {
@@ -367,18 +345,18 @@ const registrationForm = new Vue({
       }
       return items.length > 0;
     },
-    removeTaxFromPrice: function (price) {
+    removeTaxFromPrice: function(price) {
       return toFixed(price - getTax(price, this.tax_rate), 2);
     },
-    showShoppingCart: function () {
+    showShoppingCart: function() {
       setTimeout(scroller, 50);
       this.shopping_cart_shown = true;
     },
-    hideShoppingCart: function () {
+    hideShoppingCart: function() {
       setTimeout(scroller, 50);
       this.shopping_cart_shown = false;
     },
-    totalCartPricePlusShippingFee: function () {
+    totalCartPricePlusShippingFee: function() {
       const self = this;
       if (self.interval === "month") {
         return (
@@ -395,7 +373,7 @@ const registrationForm = new Vue({
         return finalTotal + parseFloat(self.plan.shipping_fee);
       }
     },
-    totalCartPrice: function () {
+    totalCartPrice: function() {
       const self = this;
       if (self.interval === "month") {
         return self.plan.price;
@@ -403,9 +381,7 @@ const registrationForm = new Vue({
         const total = self.cart.reduce((sum, item) => {
           return (sum += parseFloat(item.price));
         }, 0);
-        return total > parseFloat(self.plan.price) ?
-          total :
-          self.plan.price;
+        return total > parseFloat(self.plan.price) ? total : self.plan.price;
       }
     },
     addToCart: event => {
@@ -428,51 +404,33 @@ const registrationForm = new Vue({
       const _this = registrationForm;
       Rails.ajax({
         url: `/api/v1/calendar?date=${date}`,
-        type: 'GET',
+        type: "GET",
         success: function(response) {
           _this.calendars = parsed;
-          setTimeout(function() {
-            _this.populateCalendar();
-          }, 500);
         }
-      })
+      });
     },
-    populateCalendar: () => {
-      const _this = registrationForm;
-      if (_this.interval === "month") {
-        const dates = registrationForm.delivery_dates;
-        registrationForm.unpopulateCalendar();
-        for(var i = 0; i<= dates.length; i++) {
-          const el = document.querySelector(`.date-${dates[i]}`);
-          if (el) {
-            el.classList.add("active");
-          }
-        }
-      } else {
-        const el = document.querySelector(`.date-${_this.delivery_date}`);
-        _this.unpopulateCalendar();
-        if (el) {
-          el.classList.add("active");
-        }
+    isActiveDate: function(date) {
+      const active = `date-${date} active calendar__date_item`;
+      if (this.delivery_dates.includes(date) && this.interval === 'month') {
+        return active
       }
-    },
-    unpopulateCalendar: () => {
-      const aTags = document.querySelectorAll(".calendar__date_item");
-      for(var i = 0; i <= aTags.length; i++) {
-        if(aTags[i]) {
-          aTags[i].classList.remove("active");
-        }
+
+      if (this.delivery_date === date) {
+        return active
       }
+
+      return `date-${date} calendar__date_item`;
     },
     setSchedule: (date, schedule, event) => {
       const _this = registrationForm;
       const els = document.querySelectorAll(".schedule-btns");
       _this.schedule = schedule;
-      _this.selectDay(date);
       els.forEach(el => {
         el.classList.remove("active");
       });
       event.target.classList.add("active");
+      _this.selectDay(date);
     },
     selectDay: date => {
       const _this = registrationForm;
@@ -481,10 +439,9 @@ const registrationForm = new Vue({
       } else {
         _this.delivery_date = date;
         _this.first_delivery_date = date;
-        _this.populateCalendar();
       }
     },
-    setInterVal: function (
+    setInterVal: function(
       interval,
       planPrice,
       shipping_fee,
@@ -506,10 +463,9 @@ const registrationForm = new Vue({
 
       this.interval = interval;
       this.cart = [];
-      this.populateCalendar();
       this.nextTab();
     },
-    addBillingAddress: function () {
+    addBillingAddress: function() {
       const _this = registrationForm;
       _this.billing_address.push({
         line1: null,
@@ -520,18 +476,18 @@ const registrationForm = new Vue({
         location_at: "multiple_workplaces"
       });
     },
-    onComplete: function () {},
-    nextTab: function () {
+    onComplete: function() {},
+    nextTab: function() {
       this.$refs.wizard.nextTab();
       setTimeout(changeCheckedTabs, 300);
     },
-    isActiveDeliveryDate: function (date) {
+    isActiveDeliveryDate: function(date) {
       if (this.delivery_date === date) {
         return " btn-brown";
       }
       return "";
     },
-    formatDate: function (date) {
+    formatDate: function(date) {
       const d = moment(date).toDate();
       const days = [
         "Sunday",
@@ -557,11 +513,9 @@ const registrationForm = new Vue({
         "Dec"
       ];
 
-      return `${days[d.getDay()]}, ${
-          monthNames[d.getMonth()]
-        } ${d.getDate()}`;
+      return `${days[d.getDay()]}, ${monthNames[d.getMonth()]} ${d.getDate()}`;
     },
-    accountValidations: function () {
+    accountValidations: function() {
       const inputs = [
         "[name='registration_form[first_name]']",
         "[name='registration_form[last_name]']",
@@ -571,10 +525,8 @@ const registrationForm = new Vue({
 
       return multiplePresenceValidator(inputs);
     },
-    verifyEmail: function () {
-      const input = document.querySelector(
-        "[name='registration_form[email]']"
-      );
+    verifyEmail: function() {
+      const input = document.querySelector("[name='registration_form[email]']");
       const self = this;
 
       saveUserInfo({
@@ -586,14 +538,14 @@ const registrationForm = new Vue({
       verifyEmailIsNotDuplicate({
         email: input.value,
         el: input,
-        callback: function (response) {
+        callback: function(response) {
           if (response !== false) {
             self.nextTab();
           }
         }
       });
     },
-    addressValidations: function () {
+    addressValidations: function() {
       const inputs = [
         ".address-line1",
         ".address-city",
@@ -603,7 +555,7 @@ const registrationForm = new Vue({
       ];
       return multiplePresenceValidator(inputs);
     },
-    paymentValidations: function () {
+    paymentValidations: function() {
       const inputs = [
         "[name='registration_form[card_number]']",
         "select[name='registration_form[month]']",
@@ -617,10 +569,15 @@ const registrationForm = new Vue({
         "[name='registration_form[account_number]']",
         "[name='registration_form[routing_number]']"
       ];
-      registrationForm.enableMealSelector();
+      if (this.interval !== 'month') {
+        this.child_component = SingleOrder
+      } else {
+        this.child_component = ScheduledOrder
+      }
+      this.handleChange()
       return multiplePresenceValidator(inputs);
     },
-    showCongrats: function () {
+    showCongrats: function() {
       const _this = this;
       if (_this.isMealComplete()) {
         swal({
@@ -629,20 +586,16 @@ const registrationForm = new Vue({
           type: "success",
           confirmButtonColor: "#3085d6",
           confirmButtonText: "REVIEW ORDER"
-        }).then(function () {
+        }).then(function() {
           _this.completed = true;
           _this.nextTab();
           return true;
         });
       } else {
-        swal(
-          "Opps...",
-          "Please complete your meals for each day.",
-          "error"
-        );
+        swal("Opps...", "Please complete your meals for each day.", "error");
       }
     },
-    createToken: function () {
+    createToken: function() {
       pulse_loader.init("Processing data...");
       const _this = this;
       const form = document.querySelector("form#sign_up_form");
@@ -656,7 +609,8 @@ const registrationForm = new Vue({
           address = _this.billing_address[0];
         }
 
-        Stripe.card.createToken({
+        Stripe.card.createToken(
+          {
             number: _this.credit_card.number.replace(/\s+/g, ""),
             exp_month: _this.credit_card.exp_month,
             exp_year: _this.credit_card.exp_year,
@@ -677,7 +631,7 @@ const registrationForm = new Vue({
         );
       }
     },
-    validateZip: function (event, key, index) {
+    validateZip: function(event, key, index) {
       let showOrHide;
       registrationForm[key][index].address_zip = event.target.value;
       if (isValidUSZip(registrationForm[key][index].address_zip)) {
@@ -686,7 +640,8 @@ const registrationForm = new Vue({
         event.target.classList.add("is-invalid");
       }
     },
-    enableMealSelector: function () {
+    enableMealSelector: function() {
+      this.cart = []
       shoppingCartInit();
       registerShoppingCartListener(registrationForm);
       return true;
@@ -765,8 +720,8 @@ const registrationForm = new Vue({
 
       return !registrationForm.isNotSaturday(date);
     },
-    handleTabChange: function (tabIndex, newTab, oldTab) {},
-    isMealComplete: function () {
+    handleTabChange: function(tabIndex, newTab, oldTab) {},
+    isMealComplete: function() {
       const self = this;
       let enable = false;
 
@@ -792,9 +747,9 @@ const registrationForm = new Vue({
           });
 
           const add_ons_total_price =
-            add_ons_price.length > 0 ?
-            add_ons_price.reduce((sum, a) => sum + a) :
-            0;
+            add_ons_price.length > 0
+              ? add_ons_price.reduce((sum, a) => sum + a)
+              : 0;
 
           values.push(total_prices + add_ons_total_price);
         }
@@ -829,7 +784,6 @@ const getSchedule = (date, vueModel) => {
         errorEl.innerHTML = "";
         _this.delivery_dates = response.dates;
         _this.date_names = response.names;
-        _this.populateCalendar();
         _this.first_delivery_date = response.dates[0];
       } else {
         errorEl.innerHTML = "";
@@ -837,7 +791,6 @@ const getSchedule = (date, vueModel) => {
         div.className = "alert alert-danger";
         div.innerHTML = `<strong>${response.message}</strong>`;
         errorEl.appendChild(div);
-        _this.unpopulateCalendar();
       }
     }
   })
@@ -1060,16 +1013,16 @@ const isValidUSZip = zipCode => {
 const changeCheckedTabs = () => {
   const greenColor = "rgb(55, 196, 41)";
   const ariaLabels = [
-    "Create Account",
-    "Delivery Information",
+    "CreateAccount",
+    "DeliveryInformation",
     "Plan",
     "Days",
-    "Payment Setup",
+    "PaymentSetup",
     "Meals",
-    "Review Order"
+    "ReviewOrder"
   ];
   ariaLabels.forEach(label => {
-    const el = document.querySelector(`[aria-controls="${label}"]`);
+    const el = document.querySelector(`[aria-controls^="${label}"]`);
     const isChecked = el.classList.contains("checked");
     const isActive = el.getAttribute("aria-selected");
     if (isChecked && isActive === null) {

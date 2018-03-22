@@ -14,21 +14,20 @@ default: &default
   cache_manifest: false
 
   extensions:
-    - .coffee
     - .erb
-    - .js
-    - .jsx
-    - .ts
     - .vue
+    - .js
     - .sass
     - .scss
     - .css
+    - .module.sass
+    - .module.scss
+    - .module.css
     - .png
     - .svg
     - .gif
     - .jpeg
     - .jpg
-    - .json
 
 development:
   <<: *default
@@ -44,8 +43,15 @@ development:
     # Inline should be set to true if using HMR
     inline: true
     overlay: true
+    compress: true
     disable_host_check: true
     use_local_ip: false
+    quiet: false
+    headers:
+      'Access-Control-Allow-Origin': '*'
+    watch_options:
+      ignored: /node_modules/
+
 
 test:
   <<: *default

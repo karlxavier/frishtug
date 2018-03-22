@@ -33,7 +33,7 @@
         <a
         href="javascript:void(0)"
         v-on:click="selectDay(date)"
-        :class="`date-${date} calendar__date_item`"
+        :class="isActiveDate(date)"
         v-else>
           {{ showDate(date, calendar.month) }}
         </a>

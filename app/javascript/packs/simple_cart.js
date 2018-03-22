@@ -97,7 +97,7 @@ const pushAddOn = (cart, addOn, el) => {
 const toggleAddOns = (el) => {
   const addOn = parseValue(el.dataset.value)
   const targetMenu = el.dataset.addOnFor
-  const item = { id: parseInt(targetMenu) }
+  const item = { id: targetMenu }
   const itemInCartIndex = findItemFromShoppingCart(item)
 
   if (itemInCartIndex >= 0) {
