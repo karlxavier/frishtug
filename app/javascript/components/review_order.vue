@@ -1,5 +1,5 @@
 <template>
-  <div class="row justify-content-center align-items-center" id="review_order" style="height: 503px; margin-bottom: 0.5rem;">
+  <div class="row justify-content-center align-items-center review_order__container" id="review_order">
     <div class="col-md-4">
       <div class="col-12">
         <h3 class="text-uppercase text-center font-family-montserrat-medium font-size-24 mb-30px">
@@ -295,4 +295,13 @@ export default {
   }
 }
 </script>
+
+<style>
+  .review_order__container {
+    min-width: 503px;
+    height: 100%;
+    margin: 2rem 0;
+  }
+</style>
+
 

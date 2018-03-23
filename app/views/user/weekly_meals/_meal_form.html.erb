@@ -100,8 +100,8 @@
     </div>
   </div>
 
-  <div class="col-4 col-md-3 col-lg-3 weekly-meal-sidebar fixed-rigth" role="sidebar" id="sidebar" style="top: 5.4rem">
-    <div class="row meal-form__sidebar py-1dot35rem border-bottom-grey mb-4">
+  <div class="col-4 col-md-3 col-lg-3 weekly-meal-sidebar fixed-rigth px-0" role="sidebar" id="sidebar" style="top: 5.4rem">
+    <div class="row meal-form__sidebar py-1dot35rem border-bottom-grey mx-0">
       <div class="col">
         <span class="text-uppercase">Your meals</span>
       </div>
@@ -109,7 +109,7 @@
         <a href="javascript:void(0)" class="btn btn-outline-dark hide-sidebar"> Hide Meals</a>
       </div>
     </div>
-    <div id="sidebar-list">
+    <div id="sidebar-list" class="px-3 pb-4" style="height: calc(100vh - 10.5rem);overflow: hidden;overflow-y: auto;">
       <%= render orders %>
     </div>
   </div>
@@ -119,6 +119,15 @@
   <script type="text/javascript">
     localStorage.setItem('sidebar_state', 'shown');
   </script>
+  <style>
+    #sidebar-list::-webkit-scrollbar {
+      width: 4px;
+      background-color: #f5f5f5;
+    }
+    #sidebar-list::-webkit-scrollbar-thumb {
+      background-color: #582D11;
+    }
+  </style>
 <% end %>
 
 <%= content_for :footer_js do %>
