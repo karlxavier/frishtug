@@ -1,1 +1,10 @@
-swal('success', 'You have successfully cancelled your delivery!', 'success');
+swal({
+  title: "Success",
+  text: "You have successfully cancelled your order",
+  type: "success",
+  confirmButtonClass: "btn btn-brown text-uppercase",
+  confirmButtonText: "Done",
+  buttonsStyling: false
+}).then(function() {
+  location.reload();
+});

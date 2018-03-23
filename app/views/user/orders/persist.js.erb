@@ -3,8 +3,9 @@
 	  title: 'Success',
 	  text: "Youre order is complete",
 	  type: 'success',
-	  confirmButtonColor: '#3085d6',
-	  confirmButtonText: 'Done'
+		confirmButtonText: 'Done',
+		confirmButtonClass: 'btn btn-brown text-uppercase',
+		buttonsStyling: false
 	}).then(function (result) {
 	  if (result) {
 	    window.location = '<%= user_weekly_meals_path %>';
@@ -15,7 +16,8 @@
 	  title: 'Success',
 	  text: "Youre order is complete.",
 	  type: 'success',
-	  confirmButtonColor: '#3085d6',
-	  confirmButtonText: 'Done'
+		confirmButtonText: 'Done',
+		confirmButtonClass: 'btn btn-brown text-uppercase',
+		buttonsStyling: false
 	});
 <% end %>

@@ -1,1 +1,10 @@
-swal('success', 'Undo cancellation successful!', 'success');
+swal({
+  title: "Success",
+  text: "Undo cancellation successful",
+  type: "success",
+  confirmButtonClass: "btn btn-brown text-uppercase",
+  confirmButtonText: "Done",
+  buttonsStyling: false
+}).then(function() {
+  location.reload();
+});
