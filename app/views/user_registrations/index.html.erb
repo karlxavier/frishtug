@@ -1,7 +1,7 @@
 <%= form_with model: @registration, url: user_registrations_path(format: :js), id: 'sign_up_form' do |form| %>
   <div class="container-fluid px-0">
     <div id="registration-form" class="d-none">
-      <form-wizard @on-complete="onComplete" step-size="xs" color="#562d07" ref="wizard">
+      <form-wizard @on-complete="createToken" step-size="xs" color="#562d07" ref="wizard">
         <h2 slot="title"></h2>
         <tab-content title="Plan">
           <%= render 'plan', form: form %>
@@ -28,7 +28,21 @@
         </tab-content>
         <tab-content title="Review Order">
           <div class="container-fluid">
-            <%= render 'review_order', form: form %>
+            <review-order
+              v-bind:cart="cart"
+              v-bind:plan="plan"
+              v-bind:delivery_dates="delivery_dates"
+              v-bind:delivery_date="delivery_date"
+              v-bind:interval="interval"
+              v-bind:credit_card_billing_address="credit_card_billing_address"
+              v-bind:billing_address="billing_address"
+              v-bind:plan_limit="plan_limit"
+              v-bind:first_delivery_date="first_delivery_date"
+              v-bind:credit_card="credit_card"
+              v-bind:stripe_key="stripe_key"
+              v-bind:payment_method="payment_method"
+            ></review-order>
+            <%# render 'review_order', form: form %>
           </div>
         </tab-content>
         <template slot="footer" scope="props">

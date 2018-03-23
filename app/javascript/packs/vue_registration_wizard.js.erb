@@ -16,6 +16,7 @@ import toFixed from "./lib/to_fixed";
 import moment from "moment";
 import SingleOrder from '../components/single_order.vue'
 import ScheduledOrder from '../components/scheduled_order.vue'
+import ReviewOrder from '../components/review_order.vue'
 // filters
 Vue.filter("to_currency", toCurrency);
 Vue.filter("total_price", totalPrice);
@@ -109,7 +110,6 @@ const registrationForm = new Vue({
     phone_number: null,
     schedule: null,
     is_past: false,
-    completed: false,
     earliest_monday: "",
     earliest_sunday: "",
     items: {},
@@ -181,6 +181,9 @@ const registrationForm = new Vue({
     ],
     namespace: "user_registrations",
     storage: sessionStorage
+  },
+  components: {
+    "review-order": ReviewOrder
   },
   mounted: function() {
     const self = this;
@@ -416,7 +419,7 @@ const registrationForm = new Vue({
         return active
       }
 
-      if (this.delivery_date === date) {
+      if (this.delivery_date === date && this.interval !== 'month') {
         return active
       }
 
@@ -459,7 +462,7 @@ const registrationForm = new Vue({
       this.plan.price = planPrice;
       this.plan.for_type = for_type;
       this.plan_minimum = minimum_credit_allowed;
-      this.plan_limit = limit;
+      this.plan_limit = limit > 0 ? limit : 0;
 
       this.interval = interval;
       this.cart = [];
@@ -476,7 +479,6 @@ const registrationForm = new Vue({
         location_at: "multiple_workplaces"
       });
     },
-    onComplete: function() {},
     nextTab: function() {
       this.$refs.wizard.nextTab();
       setTimeout(changeCheckedTabs, 300);
@@ -584,10 +586,11 @@ const registrationForm = new Vue({
           title: "Congratulations!",
           text: "You have made your first meal plan.",
           type: "success",
-          confirmButtonColor: "#3085d6",
-          confirmButtonText: "REVIEW ORDER"
+          confirmButtonText: "REVIEW ORDER",
+          confirmButtonColor: "#582D11",
+          confirmButtonClass: "btn btn-brown text-uppercase",
+          buttonsStyling: false
         }).then(function() {
-          _this.completed = true;
           _this.nextTab();
           return true;
         });
@@ -641,7 +644,6 @@ const registrationForm = new Vue({
       }
     },
     enableMealSelector: function() {
-      this.cart = []
       shoppingCartInit();
       registerShoppingCartListener(registrationForm);
       return true;
@@ -927,7 +929,6 @@ const completeAction = (token, brand) => {
 
   formData.append("registration_form[stripe_token]", token);
   formData.append("registration_form[card_brand]", brand);
-  var AUTH_TOKEN = $("meta[name=csrf-token]").attr("content");
   Rails.ajax({
     url: form.action,
     type: "POST",
@@ -940,7 +941,6 @@ const completeAction = (token, brand) => {
 
 const stripeResponseHandler = (status, response) => {
   const form = document.querySelector("form#sign_up_form");
-  let tempBtnContents;
 
   if (response.error) {
     registrationForm.error_messages = response.error.message;
