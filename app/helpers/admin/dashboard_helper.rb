@@ -20,6 +20,13 @@ module Admin::DashboardHelper
     end
   end
 
+  def refresh_orders_btn
+    button_to "Refresh",
+      admin_refresh_orders_path,
+      class: 'btn btn-sm btn-matterhorn-outline-circled font-size-14',
+      method: :get
+  end
+
   def rollover_orders_to_scanovator_api_btn
     button_to "Rollover Orders",
       admin_scanovators_path(date: date_tomorrow, format: :js),

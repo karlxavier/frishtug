@@ -23,4 +23,5 @@ namespace :admin do
   resources :inactive_users, only: :index
   resources :blackout_dates
   resources :email_templates, only: [:index, :create]
+  resources :refresh_orders, only: :index
 end

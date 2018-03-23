@@ -1,10 +1,24 @@
 <div class="row mx-0">
-  <div class="col-4">
-    <h1 id="title">
-      <%= link_to "Orders", admin_dashboard_index_path %>
-    </h1>
+  <div class="col-6">
+    <div class="row">
+      <div class="col-3">
+        <h1 id="title">
+          <%= link_to "Orders", admin_dashboard_index_path %>
+        </h1>
+      </div>
+      <div class="col">
+        <ul class="list-inline list-unstyled nav nav-pills float-left">
+          <li class="list-inline-item">
+            <%= refresh_orders_btn %>
+          </li>
+          <li class="list-inline-item">
+            <%= rollover_orders_to_scanovator_api_btn %>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
-  <div class="col-8">
+  <div class="col-6">
     <ul class="list-inline list-unstyled float-right nav nav-pills" role="tablist">
       <li class="list-inline-item">Filter by</li>
       <li class="list-inline-item">
@@ -27,9 +41,6 @@
           aria-controls="date-filter-tab" aria-selected="false"
           id="date-tab-item"
           href="#date-filter-tab">Date</a>
-      </li>
-      <li class="list-inline-item">
-        <%= rollover_orders_to_scanovator_api_btn %>
       </li>
     </ul>
   </div>
