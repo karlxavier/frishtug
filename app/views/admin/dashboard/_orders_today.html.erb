@@ -13,7 +13,7 @@
         <%= order.user.full_name %> <small class="pl-1 text-muted"><%= "< #{order.user.email} >" %></small>
       </strong>
       <p><%= order.user.full_address %></p>
-      <a href="javascript:void(0)" @click="showDetails(<%= order.id %>)" id="view-<%= order.id %>">
+      <a href="javascript:void(0)" @click="showDetails(<%= order.id %>)" id="view-<%= order.id %>" class="chocolate-font-color">
         View Order Details <i class="fa fa-angle-down"></i>
       </a>
     </div>

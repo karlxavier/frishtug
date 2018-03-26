@@ -229,9 +229,6 @@ const registrationForm = new Vue({
     });
   },
   filters: {
-    get_num: function(val) {
-      return parseInt(val.match(/\d+/)[0]) - 1
-    },
     get_date_name: val => registrationForm.date_names[val],
     get_shipping_fee: shippingFee => {
       if (shippingFee > 0) {
