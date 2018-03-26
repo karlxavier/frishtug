@@ -30,6 +30,7 @@ class Order < ApplicationRecord
   has_many :menus_orders, dependent: :destroy
   has_many :menus, through: :menus_orders
   has_one :comment, as: :commentable, dependent: :destroy
+  has_many :search_results, as: :searchable, dependent: :destroy
   scope :completed, -> { where.not(delivered_at: nil) }
 
   accepts_nested_attributes_for :menus_orders, allow_destroy: true

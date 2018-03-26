@@ -1,0 +1,16 @@
+<li class="list-group-item flex-column align-items-start">
+  <div class="d-flex w-100 justify-content-between">
+    <div class="col">
+      <h5 class="mb-1">Name: <%= result.user.full_name %></h5>
+      <small>Email: <%= result.user.email %></small><br>
+      <small>Joined: <%= result.user.created_at.strftime('%b %d, %Y') %></small><br>
+      <small>Address: <%= result.user.full_address %></small>
+    </div>
+    <small>Plan: <%= result.user.plan.name %></small>
+  </div>
+  <div class="col">
+    <%= link_to admin_client_path(result.searchable_id), class: 'chocolate-font-color' do %>
+      View More
+    <% end %>
+  </div>
+</li>

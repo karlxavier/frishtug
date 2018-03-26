@@ -23,6 +23,7 @@ class Menu < ApplicationRecord
   belongs_to  :unit
   belongs_to  :menu_category, touch: true
   has_one     :inventory, dependent: :destroy
+  has_many :search_results, as: :searchable, dependent: :destroy
   has_and_belongs_to_many :add_ons
   has_and_belongs_to_many :diet_categories
   has_many :menus_orders, dependent: :destroy

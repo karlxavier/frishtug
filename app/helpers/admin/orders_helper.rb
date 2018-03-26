@@ -25,6 +25,7 @@ module Admin::OrdersHelper
   end
 
   def item_image(menu_order)
+    return nil unless menu_order.menu.asset_id?
     cl_image_tag menu_order.menu.asset.image.thumb
   end
 

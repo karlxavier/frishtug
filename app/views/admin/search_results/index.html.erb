@@ -1,0 +1,7 @@
+<%= card_container do %>
+  <ul class="list-group">
+    <% @results.each do |result| %>
+      <%= render "#{result.searchable_type.downcase}", result: result %>
+    <% end %>
+  </ul>
+<% end %>

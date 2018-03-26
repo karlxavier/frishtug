@@ -1,0 +1,15 @@
+<li class="list-group-item flex-column align-items-start">
+  <div class="d-flex w-100 justify-content-between">
+    <div class="col">
+      <h5 class="mb-1"># <%= result.order.sku %></h5>
+      <small>User: <%= result.order.user.full_name %> &lt;<%= result.order.user.email %>&gt;</small><br>
+      <small>Items: <%= result.order.menus_orders.map(&:quantity).inject(:+) %></small>
+    </div>
+    <small>Status: <%= result.order.status.titleize %></small>
+  </div>
+  <div class="col">
+    <%= link_to admin_order_path(result.searchable_id), class: 'chocolate-font-color' do %>
+      View More
+    <% end %>
+  </div>
+</li>
