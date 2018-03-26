@@ -86,7 +86,7 @@ export default {
     credit_card: { type: Object, required: true },
     delivery_dates: { type: Array, required: true },
     delivery_date: { type: String, required: true},
-    plan_limit: { type: Number, required: true },
+    plan_limit: { type: String, required: true },
     payment_method: { type: String, required: true }
   },
   filters: {
@@ -121,7 +121,7 @@ export default {
       const val = parseFloat(num);
       return isNaN(val) ? 0 : val;
     },
-    getExcess: function() {
+    getExcessAmount: function() {
       const self = this
       let price = 0;
       const limit = self.parseFloatingNumber(self.plan_limit);
