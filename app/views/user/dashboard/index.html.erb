@@ -22,10 +22,10 @@
     <div class="row mt-4">
       <div class="col-8">
         <h4 class="font-size-18 font-family-montserrat text-uppercase mb-4">
-          Order Complaint
+          Order Suggestions
         </h4>
         <%= form_with url: user_complaints_path(order_id: @todays_order.first.id), local: true do |f| %>
-          <%= f.label :body, 'Complaint' %>
+          <%= f.label :body, 'Suggestions' %>
           <%= f.text_area :body,
               rows: 5,
               class: 'form-control',
