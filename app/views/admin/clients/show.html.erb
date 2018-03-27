@@ -3,7 +3,7 @@
     <div class="col text-left">
       <h4>
         <%= @user.full_name %> <br>
-        <small class="text-muted font-size-14">
+        <small class="text-muted font-size-14 chocolate-font-color">
           <%= user_email(@user) %> |
           <%= user_phone_number(@user) %> <br>
           <%= user_address(@user) %> <br>
@@ -14,7 +14,59 @@
     </div>
   </div>
 
-  <div class="row justify-content-center mx-0 mt-4">
+  <%
+    if params[:date]
+      start_month = Date.parse(params[:date])
+    else
+      start_month = @user_orders.first.placed_on
+    end
+    end_month = start_month + 1.month
+    active_orders = @user_orders.group_by { |o| o.placed_on.to_date }
+  %>
+  <div class="row justify-content-between mx-0 mt-4">
+    <div class="col">
+      <div class="float-left">
+        <%= link_to "<i class='fa fa-chevron-left'></i>".html_safe,
+          admin_client_path(@user, date: (start_month.to_date - 2.month).to_date),
+          class: 'chocolate-font-color' %>
+        <%= link_to "<i class='fa fa-chevron-right'></i>".html_safe,
+          admin_client_path(@user, date: (end_month + 1.month).to_date),
+          class: 'chocolate-font-color' %>
+      </div>
+      <h5 class="text-center">
+        <%= start_month.strftime('%^B %Y') %>
+      </h5>
+      <%= calendar start_month.to_date do |date| %>
+        <% if active_orders[date].present? %>
+          <% order = active_orders[date].first %>
+          <%= link_to admin_order_path(order.id),
+            style: "background: #582D11; color: #fff" do %>
+            <%= date.strftime('%d') %>
+          <% end %>
+        <% else %>
+          <%= date.strftime('%d') %>
+        <% end %>
+      <% end %>
+    </div>
+    <div class="col">
+      <h5 class="text-center">
+        <%= end_month.strftime('%^B %Y') %>
+      </h5>
+      <%= calendar end_month.to_date do |date| %>
+        <% if active_orders[date].present? %>
+          <% order = active_orders[date].first %>
+          <%= link_to admin_order_path(order.id),
+            style: "background: #582D11; color: #fff" do %>
+            <%= date.strftime('%d') %>
+          <% end %>
+        <% else %>
+          <%= date.strftime('%d') %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="row justify-content-center mx-0 mt-4 d-none">
     <div class="col">
       <table class="table table-sm">
         <thead>

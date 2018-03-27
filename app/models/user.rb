@@ -31,7 +31,7 @@ class User < ApplicationRecord
   has_many :credit_cards, dependent: :destroy
   has_many :checkings, dependent: :destroy
   has_many :comments, dependent: :destroy
-  has_many :search_results, as: :searchable, dependent: :destroy
+  has_many :search_results, as: :searchable
   has_one :contact_number, dependent: :destroy
   has_one :schedule, dependent: :destroy
   belongs_to :plan, optional: true, counter_cache: true
