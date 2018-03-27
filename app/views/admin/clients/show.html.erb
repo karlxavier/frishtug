@@ -13,19 +13,6 @@
       </h4>
     </div>
   </div>
-  <%
-    data = @user_orders.group_by { |d| d.placed_on.to_date }
-  %>
-  <%= calendar @user_orders.first.placed_on.to_date do |date| %>
-    <%= date.strftime('%d') %>
-    <%= data[date.to_date]&.first&.status %>
-  <% end %>
-
-  <%= calendar @user_orders.first.placed_on.to_date.next_month do |date| %>
-    <%= date.strftime('%d') %>
-    <%= data[date.to_date]&.first&.status %>
-  <% end %>
-
 
   <div class="row justify-content-center mx-0 mt-4">
     <div class="col">
