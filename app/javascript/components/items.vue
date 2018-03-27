@@ -31,6 +31,9 @@
               <div class="card-body px-0 py-1">
                 <h5 class="card-title mb-0 font-family-montserrat">
                   {{ item.attributes.name }}
+                  <template v-for="diet in item.attributes.diet_categories">
+                    <span :class="dietClass(diet)" v-bind:key="diet.id"></span>
+                  </template>
                 </h5>
                 <div class="row">
                   <div class="col-5">
@@ -106,6 +109,11 @@ export default {
     prefix: { type: String, required: true }
   },
   methods: {
+    dietClass: function(diet) {
+      const diet_name = diet.name
+      const formatted = diet_name.replace(/\s+/g, '-').toLowerCase()
+      return `fa fa-star diet-icons ${formatted}`
+    },
     getImageUrl: function(item) {
       const asset = item.attributes.asset
       if(asset === null) { return null }

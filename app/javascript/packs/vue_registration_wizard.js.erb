@@ -241,9 +241,14 @@ const registrationForm = new Vue({
   },
   methods: {
     checkGroupCode: function() {
-      const is_valid = false
+      let is_valid = false
       const self = this
-      const groupCode = this.group_code
+      const groupCode = self.group_code;
+
+      if (self.plan.for_type !== "group" || groupCode === "") {
+        return self.addressValidations();
+      }
+
       Rails.ajax({
         url: `/api/v1/check_codes?group_code=${groupCode}`,
         type: 'GET',
@@ -487,7 +492,7 @@ const registrationForm = new Vue({
       this.plan.price = planPrice;
       this.plan.for_type = for_type;
       this.plan_minimum = minimum_credit_allowed;
-      this.plan_limit = limit > 0 ? limit : 0;
+      this.plan_limit = parseFloat(limit) > 0 ? limit : "0";
 
       this.interval = interval;
       this.cart = [];
