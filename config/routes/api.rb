@@ -10,5 +10,6 @@ namespace :api do
     resources :inactive_users, only: :create
     resources :earliest_dates, only: :index
     resources :selected_dates, only: :index
+    resources :check_codes, only: :index
   end
 end

@@ -82,7 +82,13 @@
           </div>
         </div>
         <div class="form-group" v-show="plan.for_type === 'group'">
-          <%= form.text_field :group_code, class: 'form-control', placeholder: 'Group Code', value: params[:group_code] %>
+          <%= form.text_field :group_code,
+            class: 'form-control',
+            placeholder: 'Group Code',
+            value: params[:group_code],
+            "v-model": "group_code",
+            "v-on:blur": "checkGroupCode"
+          %>
         </div>
         <a href="javascript:void(0)" class="chocolate-font-color" @click="addBillingAddress" v-if="billing_address[0].address_location_at === 'multiple_workplaces'">+ Add Next Address</a>
         <div class="text-center">

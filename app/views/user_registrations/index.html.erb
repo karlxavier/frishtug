@@ -9,7 +9,7 @@
         <tab-content title="Create Account" :before-change="accountValidations">
           <%= render 'create_account', form: form %>
         </tab-content>
-        <tab-content title="Delivery Information" :before-change="addressValidations">
+        <tab-content title="Delivery Information" :before-change="checkGroupCode">
           <%= render 'delivery_information', { form: form, registration: @registration } %>
         </tab-content>
         <tab-content title="Days">

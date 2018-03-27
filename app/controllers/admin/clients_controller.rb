@@ -8,7 +8,7 @@ class Admin::ClientsController < Admin::BaseController
 
   def show
     @hide_search_form = true
-    @user_orders = @user.orders.page(page).per(10)
+    @user_orders = @user.orders#.page(page).per(10)
   end
 
   private

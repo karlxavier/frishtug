@@ -89,6 +89,7 @@ const parseFloatingNumber = num => {
 const registrationForm = new Vue({
   el: "#registration-form",
   data: {
+    group_code: "",
     child_component: "",
     error_messages: "",
     allowed_zip_codes: [],
@@ -239,6 +240,31 @@ const registrationForm = new Vue({
     }
   },
   methods: {
+    checkGroupCode: function() {
+      const is_valid = false
+      const self = this
+      const groupCode = this.group_code
+      Rails.ajax({
+        url: `/api/v1/check_codes?group_code=${groupCode}`,
+        type: 'GET',
+        success: function(response) {
+          if (response.is_valid !== true) {
+            swal({
+              type: 'error',
+              title: 'Group Code Invalid',
+              text: 'Group code is invalid!',
+              confirmButtonText: "Continue",
+              confirmButtonColor: "#582D11",
+              confirmButtonClass: "btn btn-brown text-uppercase",
+              buttonsStyling: false
+            })
+          } else {
+            is_valid = self.addressValidations();
+          }
+        }
+      })
+      return is_valid
+    },
     handleChange: function () {
       this.enableMealSelector()
     },
