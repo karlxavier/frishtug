@@ -8,6 +8,7 @@ class StockAccounter
   end
 
   def increase
+    return if inventory.nil?
     transaction = inventory.inventory_transactions
                             .between_transaction_date?(range)
                             .first_or_create(
@@ -20,6 +21,7 @@ class StockAccounter
   end
 
   def decrease
+    return if inventory.nil?
     transaction = inventory.inventory_transactions
                             .between_transaction_date?(range)
                             .first_or_create(

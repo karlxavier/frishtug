@@ -25,4 +25,5 @@ namespace :admin do
   resources :email_templates, only: [:index, :create]
   resources :refresh_orders, only: :index
   resources :search_results, only: :index
+  resources :add_ons, only: :index
 end

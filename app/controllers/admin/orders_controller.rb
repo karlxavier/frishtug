@@ -45,7 +45,7 @@ class Admin::OrdersController < Admin::BaseController
             :sku,
             :status,
             :remarks,
-            menus_orders_attributes: [:id, :menu_id, :quantity, :add_ons, :_destroy]
+            menus_orders_attributes: [:id, :menu_id, :quantity, :_destroy, add_ons: []]
           )
   end
 end

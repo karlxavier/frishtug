@@ -6,7 +6,9 @@ Vue.use(VueResource);
 const clientsApp = new Vue({
   el: document.querySelector('#clients-app'),
   data: {
-    current_order_id: null
+    current_order_id: null,
+    show_header: false,
+    show_edit_btn: true
   },
   methods: {
     showModal: function(order_id) {
@@ -17,8 +19,20 @@ const clientsApp = new Vue({
       })
       $('#clients-modal-dialog').modal('show')
     },
+    revertBack: function() {
+      this.show_edit_btn = true
+      this.show_header = false
+    },
     editOrder: function() {
-      window.location = `/admin/orders/${this.current_order_id}/edit`
+      const self = this
+      Rails.ajax({
+        url: `/admin/orders/${self.current_order_id}/edit.js`,
+        type: 'GET',
+        success: () => {
+          self.show_edit_btn = false;
+          self.show_header = true;
+        }
+      })
     }
   }
 })

@@ -6,23 +6,34 @@
   },
   local: true do |f| %>
 
-  <div class="row">
-    <div class="col-8" v-for="(menu, index) in order.menus_orders_attributes">
+  <div class="row mx-0">
+    <div class="col-12 px-0" v-for="(menu, index) in order.menus_orders_attributes">
       <div v-show="menu._destroy != '1'">
         <input type="hidden" name="id" v-model="menu.id">
         <input type="hidden" name="_destroy" v-model="menu._destroy">
-        <div class="form-group row">
+        <div class="form-group row mx-0">
           <div class="col">
+            <label>Menu</label>
             <%= f.select :menu_id,
               options_for_select(@menus),
               {},
               class: 'form-control',
-              "v-model": "menu.menu_id" %>
+              "v-model": "menu.menu_id",
+              "v-on:change": "getAddOns(menu.menu_id)",
+              required: true %>
           </div>
           <div class="col">
-            <%= f.number_field :quantity, class: 'form-control', "v-model": "menu.quantity" %>
+            <label>Quantity</label>
+            <%= f.number_field :quantity,
+              class: 'form-control', "v-model": "menu.quantity", required: true %>
           </div>
           <div class="col">
+            <label>Add Ons</label>
+            <select name="add_ons" class='form-control' v-model="menu.add_ons" multiple>
+              <option v-for="add_on in addonsForMenu(menu.menu_id)" v-bind:value="add_on.id">{{ add_on.name }}</option>
+            </select>
+          </div>
+          <div>
             <a href="javascript:void(0)"
               @click="deleteMenuOrder(index)" class="btn btn-danger">
               <i class="fa fa-times fa-lg"></i>
@@ -31,7 +42,7 @@
         </div>
       </div>
     </div>
-    <div class="row col-8">
+    <div class="row mx-0">
       <div class="col">
         <a href="javascript:void(0)"
           @click="addMenuOrder" class="btn btn-warning text-uppercase">+ Add Order</a>
