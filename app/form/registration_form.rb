@@ -177,8 +177,7 @@ class RegistrationForm
   def check_limit_and_charge(user)
     plan_limit = user.plan.limit
     excess_amount = OrderCalculator.new(user.orders).get_excess(plan_limit)
-    return if excess_amount < 50
-    return if excess_amount.zero?
+    return if excess_amount < 0.50 || excess_amount == 0
     charge = StripeCharger.new(user, excess_amount)
     charge.charge_excess!
     unless charge.errors.empty?

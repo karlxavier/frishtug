@@ -75,7 +75,7 @@
         <div v-else>
           <div v-for="(orders, index) in cart" v-bind:key="`${index}--orders`">
             <div class="mt-3" v-for="(day, index2) in orders" v-bind:key="`${index2}--day`">
-              <h6 class="text-upperclass order-title mb-0" :id="date_names[index+1]">{{ date_names[index+1] }}</h6>
+              <h6 class="text-upperclass order-title mb-0" :id="index2 | get_date_name">{{ index2 | get_date_name }}</h6>
               <div v-for="item in day" v-bind:key="item.id">
                 <div class="row order-list-items px-3">
                   <div class="col-7 px-0 text-left text-truncate">
@@ -85,20 +85,20 @@
                     <a href="javascript:void(0)"
                       class="remove-meal mx-1 chocolate-font-color"
                       :data-value="newItemJson(item)"
-                      :data-control-type="index"
+                      :data-control-type="index2"
                       data-control="remove" @click="removeToCart($event)">
                       <i class="fa fa-minus-square-o" :data-value="newItemJson(item)"
-                      :data-control-type="index"
+                      :data-control-type="index2"
                       data-control="remove"></i>
                     </a>
                     <span class="meal-count">{{ item.quantity }}</span>
                     <a href="javascript:void(0)"
                       class="add-meal mx-1 chocolate-font-color"
                       :data-value="newItemJson(item)"
-                      :data-control-type="index"
+                      :data-control-type="index2"
                       data-control="add" @click="addToCart($event)">
                       <i class="fa fa-plus-square-o" :data-value="newItemJson(item)"
-                      :data-control-type="index"
+                      :data-control-type="index2"
                       data-control="add"></i>
                     </a>
                   </div>

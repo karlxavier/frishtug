@@ -95,13 +95,7 @@ const registrationForm = new Vue({
     allowed_zip_codes: [],
     interval: planObj.interval,
     delivery_dates: [],
-    date_names: [
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday"
-    ],
+    date_names: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
     calendars: "",
     cart: [],
     plan_minimum: planObj.minimum_credit_allowed,
@@ -171,14 +165,17 @@ const registrationForm = new Vue({
     keys: [
       "user",
       "plan",
-      "bank_account",
-      "credit_card",
       "billing_address",
       "credit_card_billing_address",
       "first_delivery_date",
       "payment_method",
       "different_billing",
-      "delivery_date"
+      "delivery_date",
+      "phone_number",
+      "date_names",
+      "delivery_date",
+      "delivery_dates",
+      "interval"
     ],
     namespace: "user_registrations",
     storage: sessionStorage
@@ -230,7 +227,10 @@ const registrationForm = new Vue({
     });
   },
   filters: {
-    get_date_name: val => registrationForm.date_names[val],
+    get_date_name: val => {
+      const index = val.match(/\d+/)[0] - 1
+      return registrationForm.date_names[index]
+    },
     get_shipping_fee: shippingFee => {
       if (shippingFee > 0) {
         return toCurrency(shippingFee);
@@ -240,15 +240,19 @@ const registrationForm = new Vue({
     }
   },
   methods: {
+    dateName: function(index) {
+      console.log(index);
+      return this.date_names[index];
+    },
     checkGroupCode: function() {
-      const self = this
+      const self = this;
       const groupCode = self.group_code;
 
       if (self.plan.for_type !== "group" || groupCode === "") {
         return self.nextTab();
       }
 
-      const responseHandler = (response) => {
+      const responseHandler = response => {
         if (response.is_valid !== true) {
           swal({
             type: "error",
@@ -262,18 +266,18 @@ const registrationForm = new Vue({
         } else {
           return self.nextTab();
         }
-      }
+      };
 
       Rails.ajax({
         url: `/api/v1/check_codes?group_code=${groupCode}`,
-        type: 'GET',
+        type: "GET",
         success: function(response) {
-          responseHandler(response)
+          responseHandler(response);
         }
-      })
+      });
     },
-    handleChange: function () {
-      this.enableMealSelector()
+    handleChange: function() {
+      this.enableMealSelector();
     },
     isNotAllowed: function() {
       const self = this;
@@ -332,7 +336,7 @@ const registrationForm = new Vue({
       }
     },
     nextTabOrSkipTab: function() {
-      const self = this
+      const self = this;
       if (self.isNotAllowed()) {
         swal({
           type: "error",
@@ -448,12 +452,12 @@ const registrationForm = new Vue({
     },
     isActiveDate: function(date) {
       const active = `date-${date} active calendar__date_item`;
-      if (this.delivery_dates.includes(date) && this.interval === 'month') {
-        return active
+      if (this.delivery_dates.includes(date) && this.interval === "month") {
+        return active;
       }
 
-      if (this.delivery_date === date && this.interval !== 'month') {
-        return active
+      if (this.delivery_date === date && this.interval !== "month") {
+        return active;
       }
 
       return `date-${date} calendar__date_item`;
@@ -604,12 +608,12 @@ const registrationForm = new Vue({
         "[name='registration_form[account_number]']",
         "[name='registration_form[routing_number]']"
       ];
-      if (this.interval !== 'month') {
-        this.child_component = SingleOrder
+      if (this.interval !== "month") {
+        this.child_component = SingleOrder;
       } else {
-        this.child_component = ScheduledOrder
+        this.child_component = ScheduledOrder;
       }
-      this.handleChange()
+      this.handleChange();
       return multiplePresenceValidator(inputs);
     },
     showCongrats: function() {
