@@ -124,6 +124,6 @@ class User < ApplicationRecord
   private
 
     def delete_inactive_entry!
-      InactiveUser.find_by_email(self.email).destroy
+      InactiveUser.find_by_email(self.email)&.destroy
     end
 end

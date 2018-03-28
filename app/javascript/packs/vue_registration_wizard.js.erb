@@ -241,34 +241,36 @@ const registrationForm = new Vue({
   },
   methods: {
     checkGroupCode: function() {
-      let is_valid = false
       const self = this
       const groupCode = self.group_code;
 
       if (self.plan.for_type !== "group" || groupCode === "") {
-        return self.addressValidations();
+        return self.nextTab();
+      }
+
+      const responseHandler = (response) => {
+        if (response.is_valid !== true) {
+          swal({
+            type: "error",
+            title: "Group Code Invalid",
+            text: "Group code is invalid!",
+            confirmButtonText: "Continue",
+            confirmButtonColor: "#582D11",
+            confirmButtonClass: "btn btn-brown text-uppercase",
+            buttonsStyling: false
+          });
+        } else {
+          return self.nextTab();
+        }
       }
 
       Rails.ajax({
         url: `/api/v1/check_codes?group_code=${groupCode}`,
         type: 'GET',
         success: function(response) {
-          if (response.is_valid !== true) {
-            swal({
-              type: 'error',
-              title: 'Group Code Invalid',
-              text: 'Group code is invalid!',
-              confirmButtonText: "Continue",
-              confirmButtonColor: "#582D11",
-              confirmButtonClass: "btn btn-brown text-uppercase",
-              buttonsStyling: false
-            })
-          } else {
-            is_valid = self.addressValidations();
-          }
+          responseHandler(response)
         }
       })
-      return is_valid
     },
     handleChange: function () {
       this.enableMealSelector()
@@ -330,7 +332,8 @@ const registrationForm = new Vue({
       }
     },
     nextTabOrSkipTab: function() {
-      if (this.isNotAllowed()) {
+      const self = this
+      if (self.isNotAllowed()) {
         swal({
           type: "error",
           title: "Error",
@@ -340,10 +343,10 @@ const registrationForm = new Vue({
           confirmButtonClass: "btn btn-brown text-uppercase",
           buttonsStyling: false
         }).then(response => {
-          this.nextTab();
+          self.checkGroupCode();
         });
       } else {
-        this.nextTab();
+        self.checkGroupCode();
       }
     },
     totalTaxableItemsPrice: function(itemsCollection) {

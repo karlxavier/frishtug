@@ -31,11 +31,11 @@ class RegistrationForm
                 :card_brand
 
   validates :first_name, :last_name, :email, :password, presence: true
-  validates :phone_number, presence: true
+  validates :phone_number, :payment_method, presence: true
   validate  :user_email_unique?
   validates :bank_name, :account_number, :routing_number, presence: true, if: :checking?
   validates :card_number, :month, :year, :cvc, presence: true, if: :credit_card?
-  validates :stripe_token, presence: true
+  validates :stripe_token, :addresses, :orders, :schedule, presence: true
 
   def save
     return false if invalid?
