@@ -1,8 +1,8 @@
 <%= form_with url: '#',
   id: 'client_orders_form',
   data: {
-    order: @client_order.to_json(except: %[created_at updated_at]),
-    menus_orders_attributes: @client_order.menus_orders.to_json(except: %i[created_at updated_at order_id])
+    order: @order.to_json(except: %[created_at updated_at]),
+    menus_orders_attributes: @order.menus_orders.to_json(except: %i[created_at updated_at order_id])
   },
   local: true do |f| %>
 
