@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180327060856) do
+ActiveRecord::Schema.define(version: 20180402055202) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -92,6 +92,18 @@ ActiveRecord::Schema.define(version: 20180327060856) do
     t.datetime "updated_at", null: false
     t.index ["asset_id"], name: "index_assets_stores_on_asset_id"
     t.index ["store_id"], name: "index_assets_stores_on_store_id"
+  end
+
+  create_table "bill_histories", force: :cascade do |t|
+    t.bigint "order_id"
+    t.bigint "user_id"
+    t.decimal "amount_paid", precision: 8, scale: 2
+    t.datetime "billed_at"
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_bill_histories_on_order_id"
+    t.index ["user_id"], name: "index_bill_histories_on_user_id"
   end
 
   create_table "blackout_dates", force: :cascade do |t|
@@ -412,6 +424,8 @@ ActiveRecord::Schema.define(version: 20180327060856) do
   add_foreign_key "allowed_zip_codes", "stores"
   add_foreign_key "assets_stores", "assets"
   add_foreign_key "assets_stores", "stores"
+  add_foreign_key "bill_histories", "orders"
+  add_foreign_key "bill_histories", "users"
   add_foreign_key "candidates", "referrers"
   add_foreign_key "candidates", "users"
   add_foreign_key "checkings", "users"

@@ -62,8 +62,10 @@ module User::WeeklyMealsHelper
     classes.join(' ')
   end
 
-  def back_to_index_link(text, css_class)
-    link_to text, user_weekly_meals_path, class: css_class
+  def back_to_index_link(text)
+    link_to user_weekly_meals_path do 
+      "<i class='fa fa-chevron-left'></i> #{text}".html_safe
+    end
   end
 
   def category_link(date, category, category_id)
