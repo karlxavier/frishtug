@@ -134,6 +134,7 @@ class RegistrationForm
                .create!(menu_id: id, quantity: quantities_array[index], add_ons: add_on_ids)
         end
         order.processing!
+        order.paid!
       else
         errors.add(:base, 'Order place on is blank')
         raise ActiveRecord::StatementInvalid
@@ -156,8 +157,13 @@ class RegistrationForm
   def create_a_charge(user)
     amount_to_pay = OrderCalculator.new(user.orders.first).total
     charge = StripeCharger.new(user, amount_to_pay)
-    charge.run
-    unless charge.errors.empty?
+    if charge.run
+      user.bill_histories.create!(
+        amount_paid: amount_to_pay,
+        description: 'Single Order Charge!',
+        billed_at: Time.current
+      )
+    else
       errors.add(:base, charge.errors.full_message.join(', '))
       raise ActiveRecord::StatementInvalid
     end
@@ -168,6 +174,11 @@ class RegistrationForm
     if stripe_subscription.run
       user.approved = true
       user.save
+      user.bill_histories.create!(
+        amount_paid: user.plan.price, 
+        description: 'Subscription Payment!',
+        billed_at: Time.current
+      )
     else
       errors.add(:base, stripe_subscription.errors.full_messages.join(', '))
       raise ActiveRecord::StatementInvalid
@@ -179,8 +190,13 @@ class RegistrationForm
     excess_amount = OrderCalculator.new(user.orders).get_excess(plan_limit)
     return if excess_amount < 0.50 || excess_amount == 0
     charge = StripeCharger.new(user, excess_amount)
-    charge.charge_excess!
-    unless charge.errors.empty?
+    if charge.charge_excess!
+      user.bill_histories.create!(
+        amount_paid: excess_amount,
+        description: "Excess Charge!",
+        billed_at: Time.current
+      )
+    else
       errors.add(:base, charge.errors.full_messages.join(', '))
       raise ActiveRecord::StatementInvalid
     end

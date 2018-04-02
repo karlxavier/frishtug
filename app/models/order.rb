@@ -17,6 +17,7 @@
 #  delivery_status :integer
 #  payment_details :string
 #  route_started   :string
+#  payment_status  :integer
 #
 
 # Column names
@@ -26,9 +27,11 @@ class Order < ApplicationRecord
   include UserDelegator
   enum status: %i[processing completed failed cancelled refunded fulfilled fresh]
   enum delivery_status: %i[in_transit received address_not_found]
+  enum payment_status: %i[unpaid paid]
   belongs_to :user
   has_many :menus_orders, dependent: :destroy
   has_many :menus, through: :menus_orders
+  has_many :bill_histories, dependent: :destroy
   has_one :comment, as: :commentable, dependent: :destroy
   has_many :search_results, as: :searchable
   scope :completed, -> { where.not(delivered_at: nil) }

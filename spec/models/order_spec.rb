@@ -17,6 +17,7 @@
 #  delivery_status :integer
 #  payment_details :string
 #  route_started   :string
+#  payment_status  :integer
 #
 
 require 'rails_helper'

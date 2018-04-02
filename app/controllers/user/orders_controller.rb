@@ -42,20 +42,49 @@ class User::OrdersController < User::BaseController
   def charge_user!
     if current_user.subscribed?
       plan_limit = current_user.plan.limit
+      last_bill = @order.bill_histories.last
       amount_to_pay = OrderCalculator.new(@order).total_excess(plan_limit)
-      create_excess_charge!(amount_to_pay) if amount_to_pay > 0
+      return if amount_to_pay == 0
+      return create_excess_charge!(amount_to_pay) if last_bill.nil?
+      if amount_to_pay > last_bill.amount_paid
+        new_amount_to_pay = amount_to_pay - last_bill.amount_paid
+        return create_excess_charge!(new_amount_to_pay) 
+      end
     else
       amount_to_pay = OrderCalculator.new(@order).total
-      create_charge!(amount_to_pay)
+      last_bill = @order.bill_histories.last
+      return create_charge!(amount_to_pay) if last_bill.nil?
+      if amount_to_pay > last_bill.amount_paid
+        new_amount_to_pay = amount_to_pay - last_bill.amount_paid
+        return create_charge!(new_amount_to_pay) 
+      end
     end
   end
 
   def create_excess_charge!(amount_to_pay)
-    StripeCharger.new(current_user, amount_to_pay).charge_excess!
+    stripe =  StripeCharger.new(current_user, amount_to_pay)
+    if stripe.charge_excess!
+      @order.bill_histories.create!(
+        amount_paid: amount_to_pay, 
+        user: current_user, 
+        description: "Excess Charge",
+        billed_at: @order.placed_on
+      )
+      @order.paid!
+    end
   end
 
   def create_charge!(amount_to_pay)
-    StripeCharger.new(current_user, amount_to_pay).run
+    stripe = StripeCharger.new(current_user, amount_to_pay)
+    if stripe.run
+      @order.bill_histories.create!(
+        amount_paid: amount_to_pay, 
+        user: current_user, 
+        description: "Order Charge",
+        billed_at: @order.placed_on
+      )
+      @order.paid!
+    end
   end
 
   def order_id
