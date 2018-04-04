@@ -70,12 +70,11 @@
 
 <script>
 import { VueTabs, VTab } from "vue-nav-tabs";
-import Items from "./items.vue"
 export default {
   components: {
     VueTabs,
     VTab,
-    "items": Items
+    "items": () => import('./items.vue')
   },
   props: {
     menu_categories: { type: Array },

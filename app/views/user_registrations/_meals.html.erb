@@ -3,6 +3,7 @@
     <div class="menu-items__container_for_five_days">
       <template v-if="child_component !== ''">
         <component :is="child_component" :key="child_component.name"
+          v-once
           v-bind:menu_categories="menu_categories"
           v-bind:items="items"
           v-bind:date_names="date_names">
@@ -27,6 +28,7 @@
     <div id="single_order" class="mt-3 menu-item__container">
       <template v-if="child_component !== ''">
         <component :is="child_component" :key="child_component.name"
+          v-once
           v-bind:menu_categories="menu_categories"
           v-bind:items="items">
         </component>

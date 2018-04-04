@@ -17,6 +17,7 @@ import moment from "moment";
 import SingleOrder from '../components/single_order.vue'
 import ScheduledOrder from '../components/scheduled_order.vue'
 import ReviewOrder from '../components/review_order.vue'
+import VueLazyload from "vue-lazyload";
 // filters
 Vue.filter("to_currency", toCurrency);
 Vue.filter("total_price", totalPrice);
@@ -25,6 +26,9 @@ Vue.filter("total_price", totalPrice);
 Vue.use(VueFormWizard);
 Vue.use(VueMask);
 Vue.use(vuejsStorage);
+Vue.use(VueLazyload, {
+  lazyComponent: true
+});
 
 const UserSelectedPlans = localStorage.getItem("plans");
 let planObj;
@@ -1119,4 +1123,25 @@ const scroller = function () {
   }
 };
 
+const createStripeToken = () => {
+  pulse_loader.init("Processing data...");
+  const _this = registrationForm;
+  const form = document.querySelector("form#sign_up_form");
+  let address;
+
+  Stripe.setPublishableKey(_this.stripe_key);
+  if (_this.payment_method === "credit_card") {
+    if (hasAddress(_this.credit_card_billing_address)) {
+      address = _this.credit_card_billing_address;
+    } else {
+      address = _this.billing_address[0];
+    }
+
+    Stripe.card.createToken({ number: _this.credit_card.number.replace(/\s+/g, ""), exp_month: _this.credit_card.exp_month, exp_year: _this.credit_card.exp_year, cvc: _this.credit_card.cvc, address_line1: address.address_line1, address_line2: address.address_line2, address_city: address.address_city, address_state: address.address_state, address_country: address.address_country, address_zip: address.address_zip }, stripeResponseHandler);
+  } else {
+    Stripe.bankAccount.createToken(_this.bank_account, stripeResponseHandler);
+  }
+}
+
+window.createStripeToken = createStripeToken
 window.addEventListener("scroll", scroller);

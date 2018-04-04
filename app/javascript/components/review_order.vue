@@ -59,7 +59,7 @@
         <a href="javascript:void(0)"
           class="btn btn-brown text-uppercase complete-orders-btn"
           style="width: 203px; margin-top: 1.4rem;"
-          @click="createToken()">
+          @click="$emit('btn-action')">
           Complete Sign Up
         </a>
       </div>
@@ -170,127 +170,6 @@ export default {
         }, 0);
         return total > parseFloat(self.plan.price) ? total : self.plan.price;
       }
-    },
-    createToken: function() {
-      pulse_loader.init("Processing data...");
-      const _this = this;
-      const form = document.querySelector("form#sign_up_form");
-      let address;
-
-      Stripe.setPublishableKey(_this.stripe_key);
-      if (_this.payment_method === "credit_card") {
-        if (_this.hasAddress(_this.credit_card_billing_address)) {
-          address = _this.credit_card_billing_address;
-        } else {
-          address = _this.billing_address[0];
-        }
-
-        Stripe.card.createToken(
-          {
-            number: _this.credit_card.number.replace(/\s+/g, ""),
-            exp_month: _this.credit_card.exp_month,
-            exp_year: _this.credit_card.exp_year,
-            cvc: _this.credit_card.cvc,
-            address_line1: address.address_line1,
-            address_line2: address.address_line2,
-            address_city: address.address_city,
-            address_state: address.address_state,
-            address_country: address.address_country,
-            address_zip: address.address_zip
-          },
-          _this.stripeResponseHandler
-        );
-      } else {
-        Stripe.bankAccount.createToken(
-          _this.bank_account,
-          _this.stripeResponseHandler
-        );
-      }
-    },
-    stripeResponseHandler: function(status, response) {
-      const self = this
-      const form = document.querySelector("form#sign_up_form");
-
-      if (response.error) {
-        self.error_messages = response.error.message;
-        pulse_loader.stop()
-      } else {
-        const token = response.id;
-        const brand = response.card.brand;
-        self.completeAction(token, brand);
-      }
-    },
-    completeAction: function(token, brand) {
-      const self = this;
-      const cart = self.cart;
-      const form = document.querySelector("form#sign_up_form");
-      const formData = new FormData(form);
-
-      if (self.interval === "month") {
-        let i;
-        for (i = 0; i <= 4; i++) {
-          let form_name = `registration_form[orders][${i}]`;
-          let current_cart = cart[0][`day_${i + 1}`];
-          formData.append(`${form_name}[order_date]`, self.delivery_dates[i]);
-          formData.append(
-            `${form_name}[menu_ids][]`,
-            self.extractValue(current_cart, "id")
-          );
-          formData.append(
-            `${form_name}[quantities][]`,
-            self.extractValue(current_cart, "quantity")
-          );
-          self.addAddOnsToForm(formData, form_name, current_cart);
-        }
-      } else {
-        let form_name = "registration_form[orders][0]";
-        formData.append(`${form_name}[order_date]`, self.delivery_date);
-        formData.append(`${form_name}[menu_ids][]`, self.extractValue(cart, "id"));
-        formData.append(
-          `${form_name}[quantities][]`,
-          self.extractValue(cart, "quantity")
-        );
-        self.addAddOnsToForm(formData, form_name, cart);
-      }
-
-      formData.append("registration_form[stripe_token]", token);
-      formData.append("registration_form[card_brand]", brand);
-      Rails.ajax({
-        url: form.action,
-        type: "POST",
-        data: formData,
-        success: data => {
-          eval(data);
-        }
-      });
-    },
-    extractAddOns: function(item) {
-      return item.add_ons.map(add_on => add_on.id);
-    },
-    addAddOnsToForm: function(form, form_name, items) {
-      const self = this
-      items.forEach((item, index) => {
-        form.append(`${form_name}[add_ons][${index}][ids]`, self.extractAddOns(item));
-      });
-    },
-    extractValue: function(obj, valueToExtract) {
-      return obj.map(item => item[valueToExtract]);
-    },
-    hasAddress: function(address) {
-      const to_validate = [
-        "address_line1",
-        "address_city",
-        "address_state",
-        "address_zip"
-      ];
-      let is_valid = true;
-      to_validate.forEach(key => {
-        is_valid = address[key] !== "";
-        if (!is_valid) {
-          return;
-        }
-      });
-      return is_valid;
     }
   }
 }

@@ -11,10 +11,9 @@
 </template>
 
 <script>
-import Items from './items.vue'
 export default {
   components: {
-    "items": Items
+    "items": () => import('./items.vue')
   },
   props: {
     menu_categories: { type: Array },

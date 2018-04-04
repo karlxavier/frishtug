@@ -27,7 +27,7 @@
           <div class="row">
             <div class='card col-12 col-custom-255 px-0 border-0 mb-4 mt-1 mr-4'
               v-for="item in items[category.attributes.name]" v-bind:key="`${item.id}-${prefix}`">
-              <img :src="getImageUrl(item)" class="card-img-top" width="255" height="175">
+              <img :src="imageUrl(item)" class="card-img-top" width="255" height="175">
               <div class="card-body px-0 py-1">
                 <h5 class="card-title mb-0 font-family-montserrat">
                   {{ item.attributes.name }}
@@ -76,7 +76,7 @@
                           :name="add_on.name"
                           :id="`add_on_${add_on.id}__${prefix}`"
                           :value="add_on.id"
-                          :data-value="createAddOnValue(add_on)"
+                          :data-value="AddOnValue(add_on)"
                           data-type="add_ons"
                           :data-add-on-for="item.id"
                           :data-control-type="`${prefix}`"
@@ -104,9 +104,9 @@ export default {
     VTab
   },
   props: {
-    items: { type: Object, required: true },
-    menu_categories: { type: Array, required: true },
-    prefix: { type: String, required: true }
+    items: { type: Object },
+    menu_categories: { type: Array },
+    prefix: { type: String }
   },
   methods: {
     dietClass: function(diet) {
@@ -114,14 +114,14 @@ export default {
       const formatted = diet_name.replace(/\s+/g, '-').toLowerCase()
       return `fa fa-star diet-icons ${formatted}`
     },
-    getImageUrl: function(item) {
+    imageUrl: function(item) {
       const asset = item.attributes.asset
       if(asset === null) { return null }
       if(asset.hasOwnProperty('image')) {
         return asset.image.card.url;
       }
     },
-    createAddOnValue: function(add_on) {
+    AddOnValue: function(add_on) {
       const obj = {
         id: add_on.id,
         name: add_on.name,
