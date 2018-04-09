@@ -24,7 +24,7 @@
       </ul>
       <div class="row" :id="`${category.id}`">
         <div class="container-fluid">
-          <div class="row">
+          <div class="row" v-if="items[category.attributes.name]">
             <div class='card col-12 col-custom-255 px-0 border-0 mb-4 mt-1 mr-4'
               v-for="item in items[category.attributes.name]" v-bind:key="`${item.id}-${prefix}`">
               <img :src="imageUrl(item)" class="card-img-top" width="255" height="175">
@@ -45,41 +45,30 @@
                   </div>
                   <div class="col cart-controls">
                     <a href="javascript:void(0)"
-                      class="ctrl-btns btn btn-brown meal-ctrl-btns-minus rounded-0 disabled cart-controls__remove"
-                      :data-value="menuCartValue(item)"
-                      data-control="remove"
-                      :data-control-target="`.meal-counter__${item.id}__${prefix}`"
-                      :data-control-type="`${prefix}`">
+                      class="ctrl-btns btn btn-brown meal-ctrl-btns-minus rounded-0 cart-controls__remove"
+                      @click="removeItem(item, date)">
                       -
                     </a>
-                    <span :class="`meal-counter meal-counter__${item.id}__${prefix}`">
-                      0
+                    <span class="meal-counter">
+                      {{ displayQuantity(item, date) }}
                     </span>
                     <a href="javascript:void(0)"
                       class="ctrl-btns btn btn-brown meal-ctrl-btns-minus rounded-0 cart-controls__remove"
-                      :data-value="menuCartValue(item)"
-                      data-control="add"
-                      :data-control-target="`.meal-counter__${item.id}__${prefix}`"
-                      :data-control-type="`${prefix}`">
+                      @click="addItem(item, date)">
                       +
                     </a>
                   </div>
                 </div>
                 <div class="row">
-                  <div class="col">
-                    <ul
-                    :class="`list-unstyled d-none meal-counter__${item.id}__${prefix}__add_ons`">
+                  <div class="col" v-show="item.meta.add_ons.length > 0">
+                    <ul class="list-unstyled">
                       <li v-for="add_on in item.meta.add_ons"
-                        v-bind:key="`${add_on.id}-${prefix}`">
-                        <label :for="`add_on_${add_on.id}__${prefix}`">
+                        v-bind:key="`${add_on.id}-${item.id}-${prefix}`">
+                        <label :for="`add_on_${add_on.id}_${item.id}_${prefix}`">
                           <input type="checkbox"
                           :name="add_on.name"
-                          :id="`add_on_${add_on.id}__${prefix}`"
-                          :value="add_on.id"
-                          :data-value="AddOnValue(add_on)"
-                          data-type="add_ons"
-                          :data-add-on-for="item.id"
-                          :data-control-type="`${prefix}`"
+                          :id="`add_on_${add_on.id}_${item.id}_${prefix}`"
+                          @click="toggleAddOn(add_on.id, item, date)"
                           >
                           {{ add_on.name }}
                         </label>
@@ -97,18 +86,105 @@
 </template>
 
 <script>
+import toCurrency from "../packs/lib/to_currency";
 import { VueTabs, VTab } from "vue-nav-tabs";
 export default {
+  filters: {
+    to_currency: toCurrency
+  },
   components: {
     VueTabs,
     VTab
   },
   props: {
+    registration_form: { type: Object, required: true },
     items: { type: Object },
     menu_categories: { type: Array },
-    prefix: { type: String }
+    prefix: { type: String },
+    date: { type: String }
   },
   methods: {
+    displayQuantity: function(item, date) {
+      const self = this
+      const found_order = self.registration_form.orders
+                              .filter(m => m.order_date === date)
+      if (found_order.length > 0) {
+        const found_item = found_order[0].menus_orders_attributes
+                                       .filter(m => m.menu_id === item.id)
+        return found_item.length > 0 ? found_item[0].quantity : "0"
+      }
+
+      return "0"
+    },
+    toggleAddOn: function(add_on_id, item, date) {
+      const self = this
+      const item_id = item.id.toString()
+      self.registration_form.orders.forEach(order => {
+        if (order.order_date === date) {
+          const add_on_exist = order.menus_orders_attributes.filter( a => {
+            return a.add_ons.includes(add_on_id)
+          })
+
+          if (add_on_exist.length > 0) {
+            order.menus_orders_attributes.forEach( a => {
+              if (a.menu_id === item_id) {
+                const index_for_removal = a.add_ons.indexOf(add_on_id)
+                a.add_ons.splice(index_for_removal, 1)
+              }
+            })
+          } else {
+            order.menus_orders_attributes.forEach( a => {
+              if (a.menu_id === item_id) {
+                a.add_ons.push(add_on_id)
+              }
+            })
+          }
+        }
+      })
+    },
+    addItem: function(item, date) {
+      const self = this
+      const item_id = item.id.toString()
+      self.registration_form.orders.forEach(order => {
+        if (order.order_date === date) {
+          const item_exist = order.menus_orders_attributes
+                                  .filter(i => i.menu_id === item_id)
+          if (item_exist.length > 0) {
+            order.menus_orders_attributes.forEach( i => {
+              if (i.menu_id === item_id) {
+                i.quantity += 1
+              }
+            })
+          } else {
+            order.menus_orders_attributes.push({
+              menu_id: item_id,
+              quantity: 1,
+              add_ons: []
+            })
+          }
+        }
+      })
+    },
+    removeItem: function(item, date) {
+      const self = this
+      const item_id = item.id.toString()
+      self.registration_form.orders.forEach(order => {
+        if (order.order_date === date) {
+          const item_exist = order.menus_orders_attributes
+                                  .filter(i => i.menu_id === item_id)
+          if (item_exist.length > 0) {
+            order.menus_orders_attributes.forEach( (i, index) => {
+              if (i.menu_id === item_id && i.quantity !== 0) {
+                i.quantity -= 1
+                if (i.quantity <= 0) {
+                  order.menus_orders_attributes.splice(index, 1)
+                }
+              }
+            })
+          }
+        }
+      })
+    },
     dietClass: function(diet) {
       const diet_name = diet.name
       const formatted = diet_name.replace(/\s+/g, '-').toLowerCase()
@@ -120,25 +196,6 @@ export default {
       if(asset.hasOwnProperty('image')) {
         return asset.image.card.url;
       }
-    },
-    AddOnValue: function(add_on) {
-      const obj = {
-        id: add_on.id,
-        name: add_on.name,
-        price: add_on.price
-      }
-      return JSON.stringify(obj)
-    },
-    menuCartValue: function(item) {
-      const obj = {
-        id: item.id,
-        name: item.attributes.name,
-        price: item.attributes.price,
-        quantity: 1,
-        tax: item.attributes.tax,
-        add_ons: []
-      }
-      return JSON.stringify(obj)
     }
   }
 }

@@ -121,20 +121,11 @@ class RegistrationForm
   end
 
   def create_orders(user)
-    orders.each do |_key, o|
-      if o[:order_date].present?
-        add_ons = o[:add_ons]
-        order = user.orders.create!(order_date: Time.current, placed_on: o[:order_date])
-        menu_ids_array = o[:menu_ids][0].split(',')
-        quantities_array = o[:quantities][0].split(',')
-        menu_ids_array.each_with_index do |id, index|
-          add_on_ids = []
-          add_on_ids = add_ons[index.to_s][:ids].split(',') if add_ons.present?
-          order.menus_orders
-               .create!(menu_id: id, quantity: quantities_array[index], add_ons: add_on_ids)
-        end
-        order.processing!
-        order.paid!
+    orders.each do |order|
+      if order[:order_date].present?
+        order[:placed_on] = Time.zone.parse(order[:order_date])
+        order[:order_date] = Time.current
+        user.orders.create!(order)
       else
         errors.add(:base, 'Order place on is blank')
         raise ActiveRecord::StatementInvalid
@@ -175,7 +166,7 @@ class RegistrationForm
       user.approved = true
       user.save
       user.bill_histories.create!(
-        amount_paid: user.plan.price, 
+        amount_paid: user.plan.price,
         description: 'Subscription Payment!',
         billed_at: Time.current
       )

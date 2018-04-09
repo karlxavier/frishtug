@@ -1,0 +1,173 @@
+/* eslint semi: ["error", "never"] */
+import VueFormWizard from "vue-form-wizard"
+import vuejsStorage from "vuejs-storage"
+import VueMask from "v-mask"
+import Vue from "vue/dist/vue.esm"
+import VueRouter from "vue-router"
+import Vuelidate from "vuelidate"
+import VueResource from "vue-resource";
+import Plan from '../components/plan'
+import CreateAccount from '../components/create_account'
+import DeliveryInformation from '../components/delivery_information'
+import Days from '../components/days'
+import PaymentSetup from '../components/payment_setup'
+import Meals from '../components/meals'
+import ReviewOrder from '../components/review_order'
+
+// Components
+Vue.use(VueFormWizard)
+Vue.use(vuejsStorage)
+Vue.use(VueRouter)
+Vue.use(VueMask)
+Vue.use(Vuelidate)
+Vue.use(VueResource)
+
+Vue.http.headers.common["X-CSRF-Token"] = document
+  .querySelector('meta[name="csrf-token"]')
+  .getAttribute("content");
+
+const router = new VueRouter({
+  mode: "history",
+  routes: [
+    { path: "/user_registrations", component: Plan },
+    { path: "/user_registrations/create_account", component: CreateAccount },
+    {
+      path: "/user_registrations/delivery_information",
+      component: DeliveryInformation
+    },
+    { path: "/user_registrations/days", component: Days },
+    { path: "/user_registrations/payment_setup", component: PaymentSetup },
+    { path: "/user_registrations/meals", component: Meals },
+    { path: "/user_registrations/review_order", component: ReviewOrder }
+  ]
+});
+
+const vm = new Vue({
+  router,
+  el: "#registration_app",
+  data: {
+    stripe_key: "<%= STRIPE_PUBLIC_KEY %>",
+    charges: {
+      total_price: null,
+      additional_charges: null,
+      shipping_fee: null
+    },
+    plan: {
+      for_type: null,
+      interval: null,
+      limit: null,
+      minimum: null,
+      price: null
+    },
+    date: {
+      selected: null
+    },
+    registration_form: {
+      plan_id: null,
+      email: null,
+      first_name: null,
+      last_name: null,
+      password: null,
+      cvc: null,
+      year: null,
+      month: null,
+      card_number: null,
+      phone_number: null,
+      group_code: null,
+      routing_number: null,
+      account_number: null,
+      bank_name: null,
+      start_date: null,
+      schedule: null,
+      payment_method: "credit_card",
+      billing_line_1: null,
+      billing_line_2: null,
+      billing_city: null,
+      billing_state: null,
+      billing_zip_code: null,
+      billing_phone_number: null,
+      stripe_token: null,
+      card_brand: null,
+      addresses: [
+        {
+          line1: null,
+          line2: null,
+          front_door: null,
+          city: null,
+          state: null,
+          zip_code: null,
+          location_at: "at_home"
+        }
+      ],
+      orders: []
+    }
+  },
+  methods: {
+    nextTab: function() {
+      this.$refs.wizard.nextTab();
+    },
+    complete: function() {
+      const self = this
+      const successHandler = response => {
+        pulse_loader.replace_text(
+          "Sign up complete!. You are being redirect to your dashboard..."
+        );
+        if (self.plan.interval === 'month') {
+          swal({
+              html: `
+                <div class="row">
+                  <div class="col text-left">
+                    <h5 class="mb-3 font-family-montserrat font-size-20">Here Is Your Group Code</h5>
+                    <h1 class="dashed-box text-center">
+                      ${response.body.group_code}
+                    </h1>
+                    <i class="font-family-lato font-size-14">
+                      In order to avail of the Group Plan discount, you'll need to share the Group
+                      Code to at least 2 other people. Deliveries will be made to only one location.
+                    </i>
+                    <ul class="list-inline">
+                      <li class="list-inline-item" style="margin-right: 23px;">Share:</li>
+                      <li class="list-inline-item">
+                        <span class="chocolate-font-color">
+                        <i class="fa fa-envelope" style="margin-right: 12px; font-size: 21px;"></i>Email Code</span>
+                      </li>
+                      <li class="list-inline-item">
+                        <span class="chocolate-font-color">
+                        <i class="fa fa-mobile" style="margin-right: 12px; font-size: 30px; position: relative: bottom: -4px;"></i>Text Code</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              `,
+              showCancelButton: true,
+              confirmButtonColor: '#582D11',
+              confirmButtonText: 'done',
+              cancelButtonText: 'cancel',
+              confirmButtonClass: 'btn btn-brown text-uppercase',
+              cancelButtonClass: 'btn btn-default text-uppercase',
+              buttonsStyling: false
+          }).then( function(result) {
+            if (result) {
+              window.location.href = response.body.redirect_to;
+            }
+          });
+        }
+      };
+
+      const errorHandler = response => {
+        pulse_loader.stop()
+        swal({
+          type: "error",
+          title: "Opps...",
+          text: response.body.message
+        });
+      };
+
+      this.$http
+        .post("/user_registrations", {
+          registration_form: this.registration_form
+        })
+        .then(successHandler, errorHandler);
+    }
+  }
+});

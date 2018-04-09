@@ -1,66 +1,19 @@
 <template>
   <vue-tabs @tab-change="handleTabChange">
-    <v-tab :title="date_names[0]">
-      <div id="day_1" class="tab_pane mt-3">
-        <div class="row">
-          <div class="col meals__container" id="meals-tab-container">
+    <v-tab v-for="(date, index) in dates" :title="date | to_dddd" v-bind:key="date">
+      <div :id="`day_${index++}`" class="tab_pane mt-3">
+        <div class="row" v-if="checkObject(items)">
+          <div class="col meals__container" id="meals-tab-container" v-if="items">
             <items
               v-bind:menu_categories="menu_categories"
               v-bind:items="items"
-              v-bind:prefix="'day_1'">
+              v-bind:prefix="`day_${index++}`"
+              v-bind:date="date"
+              v-bind:registration_form="registration_form">
             </items>
           </div>
-        </div>
-      </div>
-    </v-tab>
-    <v-tab :title="date_names[1]">
-      <div id="day_2" class="tab_pane mt-3">
-        <div class="row">
-          <div class="col meals__container" id="meals-tab-container">
-            <items
-              v-bind:menu_categories="menu_categories"
-              v-bind:items="items"
-              v-bind:prefix="'day_2'">
-            </items>
-          </div>
-        </div>
-      </div>
-    </v-tab>
-    <v-tab :title="date_names[2]">
-      <div id="day_3" class="tab_pane mt-3">
-        <div class="row">
-          <div class="col meals__container" id="meals-tab-container">
-            <items
-              v-bind:menu_categories="menu_categories"
-              v-bind:items="items"
-              v-bind:prefix="'day_3'">
-            </items>
-          </div>
-        </div>
-      </div>
-    </v-tab>
-    <v-tab :title="date_names[3]">
-      <div id="day_4" class="tab_pane mt-3">
-        <div class="row">
-          <div class="col meals__container" id="meals-tab-container">
-            <items
-              v-bind:menu_categories="menu_categories"
-              v-bind:items="items"
-              v-bind:prefix="'day_4'">
-            </items>
-          </div>
-        </div>
-      </div>
-    </v-tab>
-    <v-tab :title="date_names[4]">
-      <div id="day_5" class="tab_pane mt-3">
-        <div class="row">
-          <div class="col meals__container" id="meals-tab-container">
-            <items
-              v-bind:menu_categories="menu_categories"
-              v-bind:items="items"
-              v-bind:prefix="'day_5'">
-            </items>
+          <div v-else>
+            <i class="fa fa-spinner fa-spin"></i> Loading Meals...
           </div>
         </div>
       </div>
@@ -70,21 +23,27 @@
 
 <script>
 import { VueTabs, VTab } from "vue-nav-tabs";
+import Items from './items'
+import moment from "moment"
 export default {
   components: {
     VueTabs,
     VTab,
-    "items": () => import('./items.vue')
+    Items
   },
   props: {
+    registration_form: { type: Object, required: true },
     menu_categories: { type: Array },
     items: { type: Object },
-    date_names: {
-      type: Array,
-      default: () => ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
-    }
+    dates: { type: Array, required: true }
+  },
+  filters: {
+    to_dddd: (date) => moment(date).format('dddd')
   },
   methods: {
+    checkObject: function(obj) {
+      return Object.keys(obj).length > 0
+    },
     handleTabChange: function(tabIndex, newTab, oldTab) {
       this.scrollToView(`#${newTab.title}`)
     },

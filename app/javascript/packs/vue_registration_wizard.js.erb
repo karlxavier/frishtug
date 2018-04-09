@@ -18,6 +18,7 @@ import SingleOrder from '../components/single_order.vue'
 import ScheduledOrder from '../components/scheduled_order.vue'
 import ReviewOrder from '../components/review_order.vue'
 import VueLazyload from "vue-lazyload";
+import VueRouter from "vue-router";
 // filters
 Vue.filter("to_currency", toCurrency);
 Vue.filter("total_price", totalPrice);
@@ -26,8 +27,22 @@ Vue.filter("total_price", totalPrice);
 Vue.use(VueFormWizard);
 Vue.use(VueMask);
 Vue.use(vuejsStorage);
+Vue.use(VueRouter);
 Vue.use(VueLazyload, {
   lazyComponent: true
+});
+
+const router = new VueRouter({
+  mode: "history",
+  routes: [
+    { path: '/', component: Plan },
+    { path: '/create_account', component: CreateAccount },
+    { path: '/delivery_information', component: DeliveryInformation },
+    { path: '/days', component: Days },
+    { path: '/payment_setup', PaymentSetup },
+    { path: '/meals', component: Meals },
+    { path: '/review_order', component: ReviewOrder }
+  ]
 });
 
 const UserSelectedPlans = localStorage.getItem("plans");

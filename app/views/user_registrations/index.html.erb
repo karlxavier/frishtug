@@ -1,52 +1,15 @@
-<%= form_with model: @registration, url: user_registrations_path(format: :js), id: 'sign_up_form' do |form| %>
-  <div class="container-fluid px-0">
-    <div id="registration-form" class="d-none">
+<div id="sign_up_form">
+  <div class="container-fluid px-0" id="registration-form">
+    <div id="registration_app">
       <form-wizard step-size="xs" color="#562d07" ref="wizard">
         <h2 slot="title"></h2>
-        <tab-content title="Plan">
-          <%= render 'plan', form: form %>
-        </tab-content>
-        <tab-content title="Create Account" :before-change="accountValidations">
-          <%= render 'create_account', form: form %>
-        </tab-content>
-        <tab-content title="Delivery Information" :before-change="addressValidations">
-          <%= render 'delivery_information', { form: form, registration: @registration } %>
-        </tab-content>
-        <tab-content title="Days">
-          <%= render 'days', { form: form, registration: @registration } %>
-        </tab-content>
-        <tab-content title="Payment Setup" :before-change="paymentValidations">
-          <%= render 'payment_setup', form: form %>
-        </tab-content>
-        <tab-content title="Meals">
-          <div style="position: relative">
-            <div class="container">
-              <%= render 'meals' %>
-            </div>
-            <%= render 'cart' %>
-          </div>
-        </tab-content>
-        <tab-content title="Review Order">
-          <div class="container-fluid">
-            <lazy-component>
-              <review-order v-once
-                v-bind:cart="cart"
-                v-bind:plan="plan"
-                v-bind:delivery_dates="delivery_dates"
-                v-bind:delivery_date="delivery_date"
-                v-bind:interval="interval"
-                v-bind:credit_card_billing_address="credit_card_billing_address"
-                v-bind:billing_address="billing_address"
-                v-bind:plan_limit="plan_limit"
-                v-bind:first_delivery_date="first_delivery_date"
-                v-bind:credit_card="credit_card"
-                v-bind:stripe_key="stripe_key"
-                v-bind:payment_method="payment_method"
-                @btn-action="createToken"
-              ></review-order>
-            </lazy-component>
-          </div>
-        </tab-content>
+        <tab-content title="Plan" route="/user_registrations"></tab-content>
+        <tab-content title="Create Account" route="/user_registrations/create_account"></tab-content>
+        <tab-content title="Delivery Information" route="/user_registrations/delivery_information"></tab-content>
+        <tab-content title="Days" route="/user_registrations/days"></tab-content>
+        <tab-content title="Payment Setup" route="/user_registrations/payment_setup"></tab-content>
+        <tab-content title="Meals" route="/user_registrations/meals"></tab-content>
+        <tab-content title="Review Orders" route="/user_registrations/review_order"></tab-content>
         <template slot="footer" scope="props">
           <wizard-button
             @click.native="props.nextTab()"
@@ -54,34 +17,22 @@
             Next Step
           </wizard-button>
         </template>
+        <transition name="fade" mode="out-in">
+          <router-view
+          v-bind:registration_form.sync="registration_form"
+          v-bind:plan="plan"
+          v-bind:date="date"
+          v-bind:charges="charges"
+          v-bind:stripe_key="stripe_key"
+          @next-tab="nextTab"
+          @on-complete="complete">
+          </router-view>
+        </transition>
       </form-wizard>
     </div>
   </div>
-<% end %>
-
-<%= content_for :header_js do %>
-  <%= javascript_tag do %>
-    window.onload = function() {
-      var regForm = document.querySelector('#registration-form');
-      if(regForm) {
-        regForm.classList.remove('d-none');
-      }
-    }
-    localStorage.setItem('current_date_est', '<%= Date.current %>');
-    localStorage.setItem('tax_rate', <%= @tax_rate %>)
-    localStorage.setItem('plans', '<%= raw @plan.to_json(only: %i[id name price shipping_fee interval limit minimum_credit_allowed for_type]) %>');
-  <% end %>
-  <%= javascript_pack_tag 'vue_registration_wizard', defer: true %>
-<% end %>
+</div>
 
 <%= content_for :footer_js do %>
-  <script type="text/javascript">
-    <% if params[:plan_name] %>
-      (function() {
-        var plan_btn = document.querySelector('.<%= "#{params[:plan_name].parameterize}--radio_btn" %>');
-        var click_event = new Event('click');
-        plan_btn.dispatchEvent(click_event);
-      })()
-    <% end %>
-  </script>
+  <%= javascript_pack_tag 'registration', defer: true %>
 <% end %>

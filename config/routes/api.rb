@@ -12,5 +12,6 @@ namespace :api do
     resources :selected_dates, only: :index
     resources :check_codes, only: :index
     resources :user_registrations, only: :create
+    resources :taxs, only: :index
   end
 end

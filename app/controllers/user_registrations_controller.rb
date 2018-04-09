@@ -3,7 +3,6 @@ class UserRegistrationsController < ApplicationController
   before_action :user_exists?
   before_action *ACTIONS, only: :index
   require 'date_helpers/weeks'
-  respond_to :js, except: :index
   SATURDAY = 6
 
   def index
@@ -15,8 +14,17 @@ class UserRegistrationsController < ApplicationController
     @registration = RegistrationForm.new(registration_params)
     if @registration.save
       sign_in(User.find_by_email(@registration.email), scope: :user)
+      render json: {
+        status: 'success',
+        redirect_to: user_dashboard_index_path,
+        group_code: current_user.referrer&.group_code
+      }, status: :ok
+    else
+      render json: {
+        status: 'error',
+        message: @registration.errors.full_messages.join(', ')
+      }, status: :unprocessable_entity
     end
-    respond_with(@registration)
   end
 
   def schedule
@@ -55,7 +63,7 @@ class UserRegistrationsController < ApplicationController
             :billing_phone_number,
             :stripe_token,
             :card_brand,
-            orders: [:order_date, menu_ids: [], quantities: [], add_ons: [:ids]],
+            orders: [:order_date, menus_orders_attributes: [:id , :menu_id, :quantity, add_ons: []]],
             addresses: %i[
               line1
               line2
