@@ -111,7 +111,11 @@ export default {
           swal({
             type: "error",
             title: "Opps...",
-            text: response.error.message
+            text: response.error.message,
+            confirmButtonText: "Ok",
+            confirmButtonColor: "#582D11",
+            confirmButtonClass: "btn btn-brown text-uppercase",
+            buttonsStyling: false
           });
         } else {
           self.registration_form.stripe_token = response.id;

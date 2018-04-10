@@ -1,7 +1,7 @@
 <template>
   <div style="position: relative">
-    <div class="container">
-      <div class="row">
+    <div class="container meals_container">
+      <div class="row" v-if="checkObject(items)">
         <div :class="show_sidebar ? 'col-md-9' : 'col'" v-if="plan.interval === 'month'">
           <div class="menu-items__container_for_five_days">
             <scheduled-order
@@ -19,7 +19,7 @@
           </div>
         </div>
 
-        <div class="col" v-else>
+        <div :class="show_sidebar ? 'col-md-9' : 'col'" v-else>
           <a href="javascript:void(0)"
             class="btn btn-outline-dark btn-sm font-size-12 shopping-cart__shown_btn"
             @click="show_sidebar = true"
@@ -36,8 +36,16 @@
           </div>
         </div>
       </div>
+
+      <div class="row" v-else>
+        <div class="col spinner__container">
+          <div class="spinner">
+            <i class="fa fa-spinner fa-spin"></i> Loading meals page...
+          </div>
+        </div>
+      </div>
     </div>
-    <sidebar v-show="show_sidebar"
+    <sidebar v-show="show_sidebar" v-if="checkObject(items)"
       v-bind:unreduce_items="unreduce_items"
       v-bind:registration_form="registration_form"
       v-bind:plan="plan"
@@ -76,38 +84,15 @@ export default {
     }
   },
   methods: {
+    checkObject: function(obj) {
+      return Object.keys(obj).length > 0
+    },
     showShoppingCart: function() {
       console.log('test')
     }
   },
   mounted: function() {
     const self = this
-    if (Object.keys(self.items).length > 0) { return }
-
-    Rails.ajax({
-      url: "/api/v1/items",
-      type: "GET",
-      success: function(response) {
-        self.unreduce_items = response.data
-        self.items = Array.from(response.data).reduce((list, item) => {
-          if (list.hasOwnProperty(item.attributes.menu_category.name)) {
-            list[item.attributes.menu_category.name].push(item);
-          } else {
-            list[item.attributes.menu_category.name] = [];
-            list[item.attributes.menu_category.name].push(item);
-          }
-          return list;
-        }, {});
-      }
-    });
-
-    Rails.ajax({
-      url: "/api/v1/menu_categories",
-      type: "GET",
-      success: function(response) {
-        self.menu_categories = response.data;
-      }
-    });
 
     if (self.plan.interval === 'month') {
       Rails.ajax({
@@ -121,7 +106,59 @@ export default {
           }
         }
       })
+    } else {
+      self.dates.push(self.registration_form.orders[0].order_date)
+    }
+
+    const populate_items = () => {
+      self.unreduce_items = self.$store.state.items
+       self.menu_categories = self.$store.state.menu_categories;
+      self.items = Array.from(self.$store.state.items).reduce((list, item) => {
+        if (list.hasOwnProperty(item.attributes.menu_category.name)) {
+          list[item.attributes.menu_category.name].push(item);
+        } else {
+          list[item.attributes.menu_category.name] = [];
+          list[item.attributes.menu_category.name].push(item);
+        }
+        return list;
+      }, {});
+    }
+
+    if (self.$store.state.items.length > 0) {
+      populate_items()
+    } else {
+      Rails.ajax({
+        url: "/api/v1/items",
+        type: "GET",
+        success: function(response) {
+          self.$store.commit('populate', response.data)
+          populate_items()
+        }
+      });
+
+      Rails.ajax({
+        url: "/api/v1/menu_categories",
+        type: "GET",
+        success: function(response) {
+          self.$store.commit('populate_categories', response.data)
+        }
+      });
     }
   }
 }
 </script>
+
+
+<style>
+  .meals_page_container {
+    overflow-x: hidden;
+  }
+  .spinner__container {
+    height: calc(100vh - 12rem);
+  }
+  .spinner {
+    text-align: center;
+    width: 100%;
+    display: block;
+  }
+</style>

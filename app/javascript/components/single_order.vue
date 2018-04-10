@@ -1,6 +1,6 @@
 <template>
   <div class="row" v-show="menu_categories">
-    <div class="col meals__container" id="meals-tab-container" v-if="checkObject(items)">
+    <div class="col meals__container" id="meals-tab-container">
       <items
         v-bind:menu_categories="menu_categories"
         v-bind:items="items"
@@ -8,9 +8,6 @@
         v-bind:date="dates[0]"
         v-bind:registration_form="registration_form">
       </items>
-    </div>
-    <div v-else>
-      <i class="fa fa-spinner fa-spin"></i> Loading Meals...
     </div>
   </div>
 </template>
@@ -28,9 +25,6 @@ export default {
     dates: { type: Array }
   },
   methods: {
-    checkObject: function(obj) {
-      return Object.keys(obj).length > 0
-    }
   }
 }
 </script>

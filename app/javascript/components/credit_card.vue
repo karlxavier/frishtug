@@ -7,6 +7,8 @@
         placeholder="Credit Card Number"
         data-stripe="number"
         v-model="registration_form.card_number"
+        v-bind:class="{ 'is-invalid': $v.registration_form.card_number.$error}"
+        @input="$v.registration_form.card_number.$touch"
         v-mask="'#### #### #### ####'">
       <div class="invalid-feedback">
         Credit Card is required
@@ -14,7 +16,10 @@
     </div>
     <div class="form-group row">
       <div class="col">
-        <select class="form-control" v-model="registration_form.month">
+        <select class="form-control"
+          v-model="registration_form.month"
+          v-bind:class="{ 'is-invalid': $v.registration_form.month.$error}"
+          @change="$v.registration_form.month.$touch">
           <option v-for="(month, index) in months" v-bind:key="month" :value="index + 1">
             {{ month }}
           </option>
@@ -24,7 +29,10 @@
         </div>
       </div>
       <div class="col">
-        <select class="form-control" v-model="registration_form.year">
+        <select class="form-control"
+          v-model="registration_form.year"
+          v-bind:class="{ 'is-invalid': $v.registration_form.year.$error}"
+          @change="$v.registration_form.year.$touch">
           <option v-for="year in years" v-bind:key="year" :value="year">
             {{ year }}
           </option>
@@ -40,6 +48,8 @@
               placeholder="CVV"
               data-stripe="cvc"
               v-model="registration_form.cvc"
+              v-bind:class="{ 'is-invalid': $v.registration_form.cvc.$error}"
+              @input="$v.registration_form.cvc.$touch"
               v-mask="'####'"
         >
         <div class="invalid-feedback">
@@ -92,7 +102,7 @@
     <div class="text-center">
       <a href="javascript:void(0)"
         class="btn btn-brown text-uppercase payment-step__btn"
-        @click="$emit('on-next-tab')">
+        @click="validate">
         Continue to meal selection
       </a>
     </div>
@@ -100,6 +110,7 @@
 </template>
 
 <script>
+import { required } from 'vuelidate/lib/validators'
 import moment from "moment"
 export default {
   props: {
@@ -112,6 +123,14 @@ export default {
       years: []
     }
   },
+  validations: {
+    registration_form: {
+      card_number: { required },
+      cvc: { required },
+      year: { required },
+      month: { required }
+    }
+  },
   mounted: function() {
     let current_year = moment().year();
     const list = []
@@ -119,6 +138,19 @@ export default {
       list.push(current_year++)
     }
     this.years = list
+  },
+  methods: {
+    validate: function() {
+      const self = this
+      self.$v.registration_form.$touch()
+      const isValid = !self.$v.registration_form.$invalid
+      if (isValid) {
+        return self.$emit('on-next-tab')
+      } else {
+        swal('Opps..', 'Please fill all the required fields', 'error')
+        return
+      }
+    }
   }
 }
 </script>

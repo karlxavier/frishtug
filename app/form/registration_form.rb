@@ -121,11 +121,12 @@ class RegistrationForm
   end
 
   def create_orders(user)
-    orders.each do |order|
-      if order[:order_date].present?
-        order[:placed_on] = Time.zone.parse(order[:order_date])
-        order[:order_date] = Time.current
-        user.orders.create!(order)
+    orders.each do |param|
+      if param[:order_date].present?
+        param[:placed_on] = Time.zone.parse(param[:order_date])
+        param[:order_date] = Time.current
+        order = user.orders.create!(order)
+        order.processing!
       else
         errors.add(:base, 'Order place on is blank')
         raise ActiveRecord::StatementInvalid

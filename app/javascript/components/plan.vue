@@ -79,6 +79,7 @@ export default {
     },
     choosePlan: function(plan) {
       this.registration_form.plan_id = plan.id
+      this.plan.name = plan.attributes.name
       this.plan.for_type = plan.attributes.for_type
       this.plan.interval = plan.attributes.interval
       this.plan.limit = this.parseFloatingNumber(plan.attributes.limit)

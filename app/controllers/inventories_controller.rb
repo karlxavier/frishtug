@@ -3,7 +3,7 @@ class InventoriesController < ApplicationController
   def index
     if @inventory.quantity >= quantity && stale?(@post)
       price = total_price(@inventory.menu.price, quantity)
-      render json: { status: 'success', price: price, quantity: quantity}, status: 200
+      render json: { status: 'success', price: price, quantity: quantity}, status: :ok
     else
       render json: { status: 'error', message: 'Not enough stock' }, status: 400
     end

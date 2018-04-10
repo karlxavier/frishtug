@@ -1,26 +1,57 @@
 /* eslint semi: ["error", "never"] */
-import VueFormWizard from "vue-form-wizard"
-import vuejsStorage from "vuejs-storage"
-import VueMask from "v-mask"
-import Vue from "vue/dist/vue.esm"
-import VueRouter from "vue-router"
-import Vuelidate from "vuelidate"
+import "es6-promise/auto";
+import VueFormWizard from "vue-form-wizard";
+import vuejsStorage from "vuejs-storage";
+import VueMask from "v-mask";
+import Vue from "vue/dist/vue.esm";
+import VueRouter from "vue-router";
+import Vuelidate from "vuelidate";
+import Vuex from "vuex";
 import VueResource from "vue-resource";
-import Plan from '../components/plan'
-import CreateAccount from '../components/create_account'
-import DeliveryInformation from '../components/delivery_information'
-import Days from '../components/days'
-import PaymentSetup from '../components/payment_setup'
-import Meals from '../components/meals'
-import ReviewOrder from '../components/review_order'
+import Plan from "../components/plan";
+import CreateAccount from "../components/create_account";
+import DeliveryInformation from "../components/delivery_information";
+import Days from "../components/days";
+import PaymentSetup from "../components/payment_setup";
+import Meals from "../components/meals";
+import ReviewOrder from "../components/review_order";
 
 // Components
-Vue.use(VueFormWizard)
-Vue.use(vuejsStorage)
-Vue.use(VueRouter)
-Vue.use(VueMask)
-Vue.use(Vuelidate)
-Vue.use(VueResource)
+Vue.use(VueFormWizard);
+Vue.use(vuejsStorage);
+Vue.use(VueRouter);
+Vue.use(VueMask);
+Vue.use(Vuelidate);
+Vue.use(VueResource);
+Vue.use(Vuex)
+
+const store = new Vuex.Store({
+  state: {
+    items: [],
+    menu_categories: [],
+    item_quantities: {}
+  },
+  mutations: {
+    populate(state, data) {
+      state.items.push(...data)
+    },
+    populate_categories(state, data) {
+      state.menu_categories.push(...data)
+    },
+    new_item_qty(state, id) {
+      state.item_quantities[id] = 1
+    },
+    increment_item_qty(state, id) {
+      state.item_quantities[id] += 1
+    },
+    decrement_item_qty(state, id) {
+      state.item_quantities[id] -= 1
+      if (state.item_quantities[id] === 0) {
+        delete state.item_quantities[id]
+      }
+    }
+  }
+})
 
 Vue.http.headers.common["X-CSRF-Token"] = document
   .querySelector('meta[name="csrf-token"]')
@@ -45,6 +76,7 @@ const router = new VueRouter({
 const vm = new Vue({
   router,
   el: "#registration_app",
+  store: store,
   data: {
     stripe_key: "<%= STRIPE_PUBLIC_KEY %>",
     charges: {
@@ -57,7 +89,8 @@ const vm = new Vue({
       interval: null,
       limit: null,
       minimum: null,
-      price: null
+      price: null,
+      name: null
     },
     date: {
       selected: null
@@ -103,18 +136,48 @@ const vm = new Vue({
     }
   },
   methods: {
+    changeCompletedState: function() {
+      const greenColor = "rgb(55, 196, 41)";
+      const ariaLabels = [
+        "CreateAccount",
+        "DeliveryInformation",
+        "Plan",
+        "Days",
+        "PaymentSetup",
+        "Meals",
+        "ReviewOrder"
+      ];
+      ariaLabels.forEach(label => {
+        const el = document.querySelector(`[aria-controls^="${label}"]`);
+        const isChecked = el.classList.contains("checked");
+        const isActive = el.getAttribute("aria-selected");
+        if (isChecked && isActive === null) {
+          const icon = document.createElement("i");
+          const iconContainer = document.createElement("div");
+          iconContainer.className = "wizard-icon-container";
+          iconContainer.style.backgroundColor = greenColor;
+          icon.className = "wizard-icon fa fa-check";
+          icon.style.color = "#ffffff";
+          iconContainer.appendChild(icon);
+          el.innerHTML = "";
+          el.appendChild(iconContainer);
+        } else {
+          return;
+        }
+      });
+    },
     nextTab: function() {
-      this.$refs.wizard.nextTab();
+      const self = this
+      setTimeout(self.changeCompletedState, 300);
+      self.$refs.wizard.nextTab();
     },
     complete: function() {
-      const self = this
+      const self = this;
       const successHandler = response => {
-        pulse_loader.replace_text(
-          "Sign up complete!. You are being redirect to your dashboard..."
-        );
-        if (self.plan.interval === 'month') {
+        if (self.plan.for_type === "group") {
+          pulse_loader.stop();
           swal({
-              html: `
+            html: `
                 <div class="row">
                   <div class="col text-left">
                     <h5 class="mb-3 font-family-montserrat font-size-20">Here Is Your Group Code</h5>
@@ -139,27 +202,36 @@ const vm = new Vue({
                   </div>
                 </div>
               `,
-              showCancelButton: true,
-              confirmButtonColor: '#582D11',
-              confirmButtonText: 'done',
-              cancelButtonText: 'cancel',
-              confirmButtonClass: 'btn btn-brown text-uppercase',
-              cancelButtonClass: 'btn btn-default text-uppercase',
-              buttonsStyling: false
-          }).then( function(result) {
+            showCancelButton: true,
+            confirmButtonColor: "#582D11",
+            confirmButtonText: "done",
+            cancelButtonText: "cancel",
+            confirmButtonClass: "btn btn-brown text-uppercase",
+            cancelButtonClass: "btn btn-default text-uppercase",
+            buttonsStyling: false
+          }).then(function(result) {
             if (result) {
               window.location.href = response.body.redirect_to;
             }
           });
+        } else {
+          pulse_loader.replace_text(
+            "Sign up complete!. You are being redirect to your dashboard..."
+          );
         }
+        window.location.href = response.body.redirect_to;
       };
 
       const errorHandler = response => {
-        pulse_loader.stop()
+        pulse_loader.stop();
         swal({
           type: "error",
           title: "Opps...",
-          text: response.body.message
+          text: response.body.message,
+          confirmButtonText: "Ok",
+          confirmButtonColor: "#582D11",
+          confirmButtonClass: "btn btn-brown text-uppercase",
+          buttonsStyling: false
         });
       };
 

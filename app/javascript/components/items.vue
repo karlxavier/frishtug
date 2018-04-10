@@ -68,7 +68,7 @@
                           <input type="checkbox"
                           :name="add_on.name"
                           :id="`add_on_${add_on.id}_${item.id}_${prefix}`"
-                          @click="toggleAddOn(add_on.id, item, date)"
+                          @click="toggleAddOn(add_on.id, item, date, $event)"
                           >
                           {{ add_on.name }}
                         </label>
@@ -105,98 +105,151 @@ export default {
   },
   methods: {
     displayQuantity: function(item, date) {
-      const self = this
-      const found_order = self.registration_form.orders
-                              .filter(m => m.order_date === date)
+      const self = this;
+      const found_order = self.registration_form.orders.filter(
+        m => m.order_date === date
+      );
       if (found_order.length > 0) {
-        const found_item = found_order[0].menus_orders_attributes
-                                       .filter(m => m.menu_id === item.id)
-        return found_item.length > 0 ? found_item[0].quantity : "0"
+        const found_item = found_order[0].menus_orders_attributes.filter(
+          m => m.menu_id === item.id
+        );
+        return found_item.length > 0 ? found_item[0].quantity : "0";
       }
 
-      return "0"
+      return "0";
     },
-    toggleAddOn: function(add_on_id, item, date) {
-      const self = this
-      const item_id = item.id.toString()
+    toggleAddOn: function(add_on_id, item, date, event) {
+      const self = this;
+      const item_id = item.id.toString();
       self.registration_form.orders.forEach(order => {
         if (order.order_date === date) {
-          const add_on_exist = order.menus_orders_attributes.filter( a => {
-            return a.add_ons.includes(add_on_id)
-          })
+          const add_on_exist = order.menus_orders_attributes.filter(a => {
+            return a.add_ons.includes(add_on_id);
+          });
 
-          if (add_on_exist.length > 0) {
-            order.menus_orders_attributes.forEach( a => {
+          if (add_on_exist.length > 0 && !event.target.checked) {
+            order.menus_orders_attributes.forEach(a => {
               if (a.menu_id === item_id) {
-                const index_for_removal = a.add_ons.indexOf(add_on_id)
-                a.add_ons.splice(index_for_removal, 1)
+                const index_for_removal = a.add_ons.indexOf(add_on_id);
+                a.add_ons.splice(index_for_removal, 1);
               }
-            })
+            });
           } else {
-            order.menus_orders_attributes.forEach( a => {
+            order.menus_orders_attributes.forEach(a => {
               if (a.menu_id === item_id) {
-                a.add_ons.push(add_on_id)
+                a.add_ons.push(add_on_id);
               }
-            })
+            });
           }
         }
-      })
+      });
     },
     addItem: function(item, date) {
-      const self = this
-      const item_id = item.id.toString()
-      self.registration_form.orders.forEach(order => {
-        if (order.order_date === date) {
-          const item_exist = order.menus_orders_attributes
-                                  .filter(i => i.menu_id === item_id)
-          if (item_exist.length > 0) {
-            order.menus_orders_attributes.forEach( i => {
+      const self = this;
+      const item_id = item.id;
+      const order = self.registration_form.orders.find(order => {
+        return order.order_date === date;
+      });
+
+      const outOfStock = response => {
+        swal({
+          type: response.status,
+          title: "Error",
+          text: response.message,
+          confirmButtonText: "Ok",
+          confirmButtonColor: "#582D11",
+          confirmButtonClass: "btn btn-brown text-uppercase",
+          buttonsStyling: false
+        });
+      };
+
+      const checkInventory = (id, quantity) => {
+        return new Promise((resolve, reject) => {
+          Rails.ajax({
+            url: `/inventories?menu_id=${id}&quantity=${quantity}`,
+            type: "GET",
+            success: resolve,
+            error: reject
+          });
+        });
+      };
+
+      if (!!order) {
+        const item_exist = order.menus_orders_attributes.find(
+          i => i.menu_id === item_id
+        );
+        if (!!item_exist) {
+          const qty = self.$store.state.item_quantities[item_id] + 1;
+          checkInventory(item_id, qty).then(function(response) {
+            order.menus_orders_attributes.forEach(i => {
               if (i.menu_id === item_id) {
-                i.quantity += 1
+                i.quantity += 1;
+                self.$store.commit("increment_item_qty", item_id);
               }
-            })
-          } else {
+            });
+          }, outOfStock);
+        } else {
+          const qty =
+            self.$store.state.item_quantities[item_id] > 0
+              ? self.$store.state.item_quantities[item_id] + 1
+              : 1;
+          checkInventory(item_id, qty).then(function(response) {
             order.menus_orders_attributes.push({
               menu_id: item_id,
               quantity: 1,
               add_ons: []
-            })
-          }
+            });
+            if (self.$store.state.item_quantities[item_id]) {
+              self.$store.commit("increment_item_qty", item_id);
+            } else {
+              self.$store.commit("new_item_qty", item_id);
+            }
+          }, outOfStock);
         }
-      })
+      } else {
+        console.warn(`Order not found for ${date}`);
+      }
     },
     removeItem: function(item, date) {
-      const self = this
-      const item_id = item.id.toString()
-      self.registration_form.orders.forEach(order => {
-        if (order.order_date === date) {
-          const item_exist = order.menus_orders_attributes
-                                  .filter(i => i.menu_id === item_id)
-          if (item_exist.length > 0) {
-            order.menus_orders_attributes.forEach( (i, index) => {
-              if (i.menu_id === item_id && i.quantity !== 0) {
-                i.quantity -= 1
-                if (i.quantity <= 0) {
-                  order.menus_orders_attributes.splice(index, 1)
-                }
+      const self = this;
+      const item_id = item.id;
+      const order = self.registration_form.orders.find(order => {
+        return order.order_date === date;
+      });
+
+      if (!!order) {
+        const item_exist = order.menus_orders_attributes.filter(
+          i => i.menu_id === item_id
+        );
+        if (item_exist.length > 0) {
+          order.menus_orders_attributes.forEach((i, index) => {
+            if (i.menu_id === item_id && i.quantity !== 0) {
+              i.quantity -= 1;
+              if (i.quantity <= 0) {
+                order.menus_orders_attributes.splice(index, 1);
               }
-            })
-          }
+              self.$store.commit("decrement_item_qty", item_id);
+            }
+          });
         }
-      })
+      } else {
+        console.warn(`Order not found for ${date}`);
+      }
     },
     dietClass: function(diet) {
-      const diet_name = diet.name
-      const formatted = diet_name.replace(/\s+/g, '-').toLowerCase()
-      return `fa fa-star diet-icons ${formatted}`
+      const diet_name = diet.name;
+      const formatted = diet_name.replace(/\s+/g, "-").toLowerCase();
+      return `fa fa-star diet-icons ${formatted}`;
     },
     imageUrl: function(item) {
-      const asset = item.attributes.asset
-      if(asset === null) { return null }
-      if(asset.hasOwnProperty('image')) {
+      const asset = item.attributes.asset;
+      if (asset === null) {
+        return null;
+      }
+      if (asset.hasOwnProperty("image")) {
         return asset.image.card.url;
       }
     }
   }
-}
+};
 </script>

@@ -121,6 +121,8 @@ export default {
         const arr = []
         arr.push(date)
         self.delivery_dates = arr;
+        self.date.selected = date
+        self.registration_form.orders = []
         self.registration_form.orders.push({
           order_date: date,
           menus_orders_attributes: []
@@ -139,6 +141,7 @@ export default {
           if (response.status === "success") {
             errorEl.innerHTML = "";
             self.delivery_dates = response.dates;
+            self.registration_form.orders = []
             for (let i = 1; i <= self.delivery_dates.length; i++) {
               self.registration_form.orders.push({
                 order_date: self.delivery_dates[i - 1],

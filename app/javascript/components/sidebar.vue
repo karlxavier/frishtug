@@ -146,6 +146,33 @@ export default {
         self.tax = parseFloat(response.data);
       }
     });
+
+    const scroller = function() {
+      let cartSidebar = document.querySelector(".meal-sidebar");
+      var y = window.pageYOffset;
+
+      const positionElelement = el => {
+        if (el) {
+          el.classList.add("position-fixed");
+          el.style.marginTop = "7rem";
+        }
+      };
+
+      const removePositioning = el => {
+        if (el) {
+          el.classList.remove("position-fixed");
+          el.style.marginTop = "0";
+        }
+      };
+
+      if (y >= 90) {
+        positionElelement(cartSidebar);
+      } else {
+        removePositioning(cartSidebar);
+      }
+    };
+
+    window.addEventListener("scroll", scroller);
   },
   methods: {
     verifyOrders: function() {
@@ -158,13 +185,15 @@ export default {
           },
           0
         );
-        if (total > self.plan.limit) {
-          self.charges.additional_charges += (total - self.plan.limit);
+        if (total > self.plan.limit && self.plan.limit !== 0) {
+          self.charges.additional_charges += total - self.plan.limit;
+        } else {
+          self.charges.additional_charges = 0;
         }
-        return sum += total;
+        return (sum += total);
       }, 0);
 
-      const checkLimit = (value) => {
+      const checkLimit = value => {
         return self.parseFloatingNumber(value) >= self.plan.minimum;
       };
 
@@ -189,53 +218,108 @@ export default {
           self.$emit("on-next-tab");
         });
       } else {
-        swal("Opps...", "Please complete your meals for each day.", "error");
+        swal({
+          type: "error",
+          title: "Error",
+          text: "Please complete your meals for each day.",
+          confirmButtonText: "Ok",
+          confirmButtonColor: "#582D11",
+          confirmButtonClass: "btn btn-brown text-uppercase",
+          buttonsStyling: false
+        });
       }
     },
     addItem: function(item, date) {
       const self = this;
-      const item_id = item.menu_id.toString();
-      self.registration_form.orders.forEach(order => {
-        if (order.order_date === date) {
-          const item_exist = order.menus_orders_attributes.filter(
-            i => i.menu_id === item_id
-          );
-          if (item_exist.length > 0) {
+      const item_id = item.menu_id;
+      const order = self.registration_form.orders.find(order => {
+        return order.order_date === date;
+      });
+
+      const outOfStock = response => {
+        swal({
+          type: response.status,
+          title: "Error",
+          text: response.message,
+          confirmButtonText: "Ok",
+          confirmButtonColor: "#582D11",
+          confirmButtonClass: "btn btn-brown text-uppercase",
+          buttonsStyling: false
+        });
+      };
+
+      const checkInventory = (id, quantity) => {
+        return new Promise((resolve, reject) => {
+          Rails.ajax({
+            url: `/inventories?menu_id=${id}&quantity=${quantity}`,
+            type: "GET",
+            success: resolve,
+            error: reject
+          });
+        });
+      };
+
+      if (!!order) {
+        const item_exist = order.menus_orders_attributes.find(
+          i => i.menu_id === item_id
+        );
+        if (!!item_exist) {
+          const qty = self.$store.state.item_quantities[item_id] + 1;
+          checkInventory(item_id, qty).then(function(response) {
             order.menus_orders_attributes.forEach(i => {
               if (i.menu_id === item_id) {
                 i.quantity += 1;
+                self.$store.commit("increment_item_qty", item_id);
               }
             });
-          } else {
+          }, outOfStock);
+        } else {
+          const qty =
+            self.$store.state.item_quantities[item_id] > 0
+              ? self.$store.state.item_quantities[item_id] + 1
+              : 1;
+          checkInventory(item_id, qty).then(function(response) {
             order.menus_orders_attributes.push({
               menu_id: item_id,
               quantity: 1,
               add_ons: []
             });
-          }
+            if (self.quantity[item_id]) {
+              self.$store.commit("increment_item_qty", item_id);
+            } else {
+              self.$store.commit("new_item_qty", item_id);
+            }
+          }, outOfStock);
         }
-      });
+      } else {
+        console.warn(`Order not found for ${date}`);
+      }
     },
     removeItem: function(item, date) {
       const self = this;
-      const item_id = item.menu_id.toString();
-      self.registration_form.orders.forEach(order => {
-        if (order.order_date === date) {
-          const item_exist = order.menus_orders_attributes.filter(
-            i => i.menu_id === item_id
-          );
-          if (item_exist.length > 0) {
-            order.menus_orders_attributes.forEach((i, index) => {
-              if (i.menu_id === item_id && i.quantity !== 0) {
-                i.quantity -= 1;
-                if (i.quantity <= 0) {
-                  order.menus_orders_attributes.splice(index, 1);
-                }
-              }
-            });
-          }
-        }
+      const item_id = item.menu_id;
+      const order = self.registration_form.orders.find(order => {
+        return order.order_date === date;
       });
+
+      if (!!order) {
+        const item_exist = order.menus_orders_attributes.filter(
+          i => i.menu_id === item_id
+        );
+        if (item_exist.length > 0) {
+          order.menus_orders_attributes.forEach((i, index) => {
+            if (i.menu_id === item_id && i.quantity !== 0) {
+              i.quantity -= 1;
+              if (i.quantity <= 0) {
+                order.menus_orders_attributes.splice(index, 1);
+              }
+              self.$store.commit("decrement_item_qty", item_id);
+            }
+          });
+        }
+      } else {
+        console.warn(`Order not found for ${date}`);
+      }
     },
     removeTax: function(price) {
       const self = this;
@@ -304,17 +388,9 @@ export default {
       const found = self.unreduce_items.filter(i => i.id === item.menu_id);
       if (found.length > 0) {
         const add_on = found[0].meta.add_ons.filter(a => {
-            return a.id === add_on_id
+          return a.id === add_on_id;
         });
-        let price = 0;
-        if (add_on[0].menu_id !== null) {
-          const found_item = self.unreduce_items.filter(
-            item => item.id === add_on[0].menu_id
-          );
-          const total = parseFloat(found[0].attributes.price) * item.quantity;
-          return (price = total);
-        }
-        return price;
+        return add_on[0].price;
       }
     },
     hasTaxableItems: function(menus_orders) {
@@ -356,11 +432,17 @@ export default {
       return self.unreduce_items
         .filter(i => item_ids.includes(i.id))
         .reduce((sum, item) => {
-          const add_on_price = menus_orders.reduce((add_on_sum, i) => {
-            return (add_on_sum += i.add_ons.reduce((sum, add_on) => {
-              return (sum += self.addOnPrice(add_on));
-            }, 0));
-          }, 0);
+          const add_on_price = menus_orders.reduce(
+            (add_on_sum, menus_order) => {
+              return (add_on_sum += menus_order.add_ons.reduce(
+                (sum, add_on) => {
+                  return (sum += self.addOnPrice(menus_order, add_on));
+                },
+                0
+              ));
+            },
+            0
+          );
           return (sum +=
             (parseFloat(item.attributes.price) + add_on_price) *
             quantity[item.id]);
