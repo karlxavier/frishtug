@@ -195,10 +195,10 @@ export default {
           confirmButtonClass: "btn btn-brown text-uppercase",
           buttonsStyling: false
         }).then(response => {
-          self.checkGroupCode();
+          self.validateAddress();
         });
       } else {
-        self.checkGroupCode();
+        self.validateAddress();
       }
     },
     checkGroupCode: function() {
@@ -232,6 +232,59 @@ export default {
           responseHandler(response);
         }
       });
+    },
+    validateAddress: function() {
+      const self = this;
+      let processedAddress = 0
+      const invalid = []
+      const validate_address = address => {
+        return new Promise((resolve, reject) => {
+          Rails.ajax({
+            url: `/api/v1/address?location=${address}`,
+            type: "GET",
+            success: function(response) {
+              resolve(response.valid);
+            }
+          });
+        });
+      };
+
+      self.registration_form.addresses.forEach( (address, index, array) => {
+        processedAddress++
+        const full_address = [
+          address.line1,
+          address.line2,
+          address.city,
+          address.state,
+          address.zip_code
+        ].filter(e => !!e).join(", ");
+
+        validate_address(full_address).then(response => {
+          if (!response) {
+            invalid.push(full_address);
+          }
+
+          if (processedAddress === array.length) {
+            done()
+          }
+        });
+      });
+
+      const done = () => {
+        if (invalid.length > 0) {
+          swal({
+            type: "error",
+            title: "Address Not Valid!",
+            text: invalid.join("|"),
+            confirmButtonText: "Ok",
+            confirmButtonColor: "#582D11",
+            confirmButtonClass: "btn btn-brown text-uppercase",
+            buttonsStyling: false
+          });
+        } else {
+          self.checkGroupCode();
+        }
+      }
     },
     validate: function() {
       const self = this;
