@@ -27,6 +27,7 @@
 #
 
 class User < ApplicationRecord
+  has_many :user_notifications
   has_many :addresses, as: :addressable, dependent: :destroy
   has_many :credit_cards, dependent: :destroy
   has_many :checkings, dependent: :destroy
@@ -115,6 +116,7 @@ class User < ApplicationRecord
   end
 
   def subscribed?
+    return false unless plan
     plan.interval == 'month'
   end
 

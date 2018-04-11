@@ -13,7 +13,7 @@
             <label :for="payment_method" class="form-check-label payment-step__control_label">
 
               <input type="radio" class="form-check-input" :value="payment_method" :id="payment_method" v-model="registration_form.payment_method">
-              Pay by {{ payment_method }}
+              Pay by {{ payment_method | format }}
             </label>
           </div>
           <div class="col px-0 payment-method-container" v-if="registration_form.payment_method === 'credit_card'">
@@ -38,6 +38,9 @@ export default {
   },
   props: {
     registration_form: { type: Object, required: true }
+  },
+  filters: {
+    format: (val) => val.split('_').join(' ')
   },
   data: () => {
     return {

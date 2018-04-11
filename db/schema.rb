@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180402060931) do
+ActiveRecord::Schema.define(version: 20180411011856) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -343,6 +343,14 @@ ActiveRecord::Schema.define(version: 20180402060931) do
     t.index ["user_id"], name: "index_referrers_on_user_id"
   end
 
+  create_table "registration_inputs", force: :cascade do |t|
+    t.string "sid"
+    t.jsonb "data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sid"], name: "index_registration_inputs_on_sid"
+  end
+
   create_table "schedules", force: :cascade do |t|
     t.integer "option"
     t.datetime "start_date"
@@ -381,6 +389,16 @@ ActiveRecord::Schema.define(version: 20180402060931) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "user_notifications", force: :cascade do |t|
+    t.string "title"
+    t.text "body"
+    t.integer "timeout"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_user_notifications_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -449,6 +467,7 @@ ActiveRecord::Schema.define(version: 20180402060931) do
   add_foreign_key "schedules", "users"
   add_foreign_key "taxes", "stores"
   add_foreign_key "temp_orders", "users"
+  add_foreign_key "user_notifications", "users"
   add_foreign_key "users", "plans"
 
   create_view "search_results",  sql_definition: <<-SQL

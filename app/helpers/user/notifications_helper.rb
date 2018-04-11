@@ -1,5 +1,6 @@
 module User::NotificationsHelper
   def display_incomplete_plan_notification
+    return nil unless current_user.plan
     return nil if current_user.plan.interval != 'month'
     return nil if current_user.orders.count >= 20
     remaining_days = 20 - current_user.orders.count

@@ -49,6 +49,7 @@ module User::WeeklyMealsHelper
   end
 
   def calendar_classes(date, active_this_week, active_orders)
+    return nil unless current_user.plan
     classes = []
     classes.push 'font-weight-bold font-italic font-size-18' if date.today?
     classes.push 'active' if active_this_week.present? && active_this_week[0].include?(date.to_s)
@@ -63,7 +64,7 @@ module User::WeeklyMealsHelper
   end
 
   def back_to_index_link(text)
-    link_to user_weekly_meals_path do 
+    link_to user_weekly_meals_path do
       "<i class='fa fa-chevron-left'></i> #{text}".html_safe
     end
   end
