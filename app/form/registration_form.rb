@@ -180,18 +180,8 @@ class RegistrationForm
   def check_limit_and_charge(user)
     plan_limit = user.plan.limit
     excess_amount = OrderCalculator.new(user.orders).get_excess(plan_limit)
-    return if excess_amount < 0.50 || excess_amount == 0
-    charge = StripeCharger.new(user, excess_amount)
-    if charge.charge_excess!
-      user.bill_histories.create!(
-        amount_paid: excess_amount,
-        description: "Excess Charge!",
-        billed_at: Time.current
-      )
-    else
-      errors.add(:base, charge.errors.full_messages.join(', '))
-      raise ActiveRecord::StatementInvalid
-    end
+    return if excess_amount < 0.50 || excess_amount.zero?
+    ExcessChargeWorker.perform_at(user.orders.first.placed_on, user.id, excess_amount)
   end
 
   def user_params
