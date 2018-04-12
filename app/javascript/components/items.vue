@@ -103,6 +103,11 @@ export default {
     prefix: { type: String },
     date: { type: String }
   },
+  data: () => {
+    return {
+      counter: 0
+    }
+  },
   methods: {
     displayQuantity: function(item, date) {
       const self = this;
@@ -120,6 +125,12 @@ export default {
     },
     toggleAddOn: function(add_on_id, item, date, event) {
       const self = this;
+      self.counter++
+      if (self.counter > 1) {
+        self.counter = 0
+        return
+      }
+
       const item_id = item.id.toString();
       self.registration_form.orders.forEach(order => {
         if (order.order_date === date) {
@@ -146,6 +157,12 @@ export default {
     },
     addItem: function(item, date) {
       const self = this;
+      self.counter++
+      if (self.counter > 1) {
+        self.counter = 0
+        return
+      }
+
       const item_id = item.id;
       const order = self.registration_form.orders.find(order => {
         return order.order_date === date;
@@ -212,6 +229,11 @@ export default {
     },
     removeItem: function(item, date) {
       const self = this;
+      self.counter++
+      if (self.counter > 1) {
+        self.counter = 0
+        return
+      }
       const item_id = item.id;
       const order = self.registration_form.orders.find(order => {
         return order.order_date === date;

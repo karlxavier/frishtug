@@ -80,10 +80,10 @@
                   Any excess will be charge directly to your account.
                 </small>
               </div>
-              <div v-if="hasAvailableCredit(totalWithoutTax(order.menus_orders_attributes, index))">
+              <div v-if="hasAvailableCredit(order, index)">
                 <small class="alert alert-info d-flex" style="font-size: 10px; width: 100%;">
                   <i class="fa fa-info-circle font-size-24 pr-1" aria-hidden="true"></i>
-                  Order not finished, because you still have $ {{ (plan.limit - totalPlusAddOn(order.menus_orders_attributes)).toFixed(2) }} credits available
+                  Order not finished, because you still have $ {{ remainingCredits(order, index) }} credits available
                   for {{ order.order_date | to_dddd }}.
                 </small>
               </div>
@@ -130,7 +130,8 @@ export default {
         day_3: 0,
         day_4: 0,
         day_5: 0
-      }
+      },
+      counter: 0
     };
   },
   filters: {
@@ -175,6 +176,11 @@ export default {
     window.addEventListener("scroll", scroller);
   },
   methods: {
+    remainingCredits: function(order, index) {
+      const self = this
+      const total = self.totalWithoutTax(order.menus_orders_attributes, index)
+      return (self.plan.limit - total).toFixed(2)
+    },
     verifyOrders: function() {
       const self = this;
       let complete = false;
@@ -231,6 +237,11 @@ export default {
     },
     addItem: function(item, date) {
       const self = this;
+      self.counter++
+      if (self.counter > 1) {
+        self.counter = 0
+        return
+      }
       const item_id = item.menu_id;
       const order = self.registration_form.orders.find(order => {
         return order.order_date === date;
@@ -297,6 +308,11 @@ export default {
     },
     removeItem: function(item, date) {
       const self = this;
+      self.counter++
+      if (self.counter > 1) {
+        self.counter = 0
+        return
+      }
       const item_id = item.menu_id;
       const order = self.registration_form.orders.find(order => {
         return order.order_date === date;
@@ -347,8 +363,9 @@ export default {
       const val = parseFloat(num);
       return isNaN(val) ? 0 : val;
     },
-    hasAvailableCredit: function(price) {
+    hasAvailableCredit: function(order, index) {
       const self = this;
+      const price = self.totalWithoutTax(order.menus_orders_attributes, index)
       if (self.plan.interval !== "month") {
         return false;
       }

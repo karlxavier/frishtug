@@ -125,7 +125,7 @@ class RegistrationForm
       if param[:order_date].present?
         param[:placed_on] = Time.zone.parse(param[:order_date])
         param[:order_date] = Time.current
-        order = user.orders.create!(order)
+        order = user.orders.create!(param)
         order.processing!
       else
         errors.add(:base, 'Order place on is blank')

@@ -38,11 +38,8 @@ class Order < ApplicationRecord
 
   accepts_nested_attributes_for :menus_orders, allow_destroy: true
 
-  before_create :set_series_number
-  after_create :set_sku
+  after_create :set_sku, :set_series_number, :create_pending_credit
   before_save :run_inventory_accounter
-  after_save :run_copier
-  after_commit :create_pending_credit, on: :create
   before_destroy :re_account_inventory, prepend: true
 
   def menu_quantity(menu)
@@ -115,11 +112,6 @@ class Order < ApplicationRecord
     )
   end
 
-  def run_copier
-    return unless saved_change_to_status? && completed?
-    OrderCopierWorker.perform_at(12.hours.from_now, self.user_id)
-  end
-
   def run_inventory_accounter
     InventoryAccounter.new(self).run if processing? && status_changed?
   end
@@ -130,6 +122,7 @@ class Order < ApplicationRecord
   end
 
   def set_series_number
+    raise self.inspect unless self.placed_on
     self[:series_number] = SeriesCreator.new(self[:placed_on]).create
   end
 end

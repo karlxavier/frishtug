@@ -13,5 +13,7 @@ namespace :api do
     resources :check_codes, only: :index
     resources :user_registrations, only: :create
     resources :taxs, only: :index
+    resources :address, only: :index
+    resources :server_time, only: :index
   end
 end

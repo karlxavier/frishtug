@@ -93,26 +93,11 @@ export default {
   },
   mounted: function() {
     const self = this
-
-    if (self.plan.interval === 'month') {
-      Rails.ajax({
-        url: `/api/v1/selected_dates?date=${self.date.selected}&schedule=${self.registration_form.schedule}`,
-        type: 'GET',
-        success: function(response) {
-          const errorEl = document.querySelector(".calendar-errors");
-          if (response.status === "success") {
-            self.dates = response.dates
-            self.date_names = response.names;
-          }
-        }
-      })
-    } else {
-      self.dates.push(self.registration_form.orders[0].order_date)
-    }
+    self.dates = self.$store.state.selected_dates
 
     const populate_items = () => {
       self.unreduce_items = self.$store.state.items
-       self.menu_categories = self.$store.state.menu_categories;
+      self.menu_categories = self.$store.state.menu_categories;
       self.items = Array.from(self.$store.state.items).reduce((list, item) => {
         if (list.hasOwnProperty(item.attributes.menu_category.name)) {
           list[item.attributes.menu_category.name].push(item);
@@ -126,23 +111,6 @@ export default {
 
     if (self.$store.state.items.length > 0) {
       populate_items()
-    } else {
-      Rails.ajax({
-        url: "/api/v1/items",
-        type: "GET",
-        success: function(response) {
-          self.$store.commit('populate', response.data)
-          populate_items()
-        }
-      });
-
-      Rails.ajax({
-        url: "/api/v1/menu_categories",
-        type: "GET",
-        success: function(response) {
-          self.$store.commit('populate_categories', response.data)
-        }
-      });
     }
   }
 }

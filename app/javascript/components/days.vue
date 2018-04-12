@@ -34,7 +34,6 @@
           <calendar
             v-bind:calendar="calendar"
             v-bind:index="index"
-            v-bind:delivery_dates="delivery_dates"
             v-bind:plan="plan"
             v-bind:registration_form="registration_form"
             @on-select-day="selectDay"
@@ -68,7 +67,6 @@ export default {
       calendars: null,
       earliest_monday: null,
       earliest_sunday: null,
-      delivery_dates: [],
       monday_to_friday_is_active: null,
       sunday_to_thursday_is_active: null
     }
@@ -96,7 +94,7 @@ export default {
     verifySchedule: function() {
       const self = this
       const message = self.plan.interval === 'month' ? 'schedule' : 'date'
-      if (self.delivery_dates.length > 0) {
+      if (self.$store.state.selected_dates.length > 0) {
         self.$emit('next-tab')
       } else {
         swal("Opps...", `Please select a ${message}.`, "error");
@@ -118,9 +116,7 @@ export default {
       if (self.plan.interval === "month") {
         self.setSchedule(date, self.registration_form.schedule);
       } else {
-        const arr = []
-        arr.push(date)
-        self.delivery_dates = arr;
+        self.$store.commit('new_selected_dates', date)
         self.date.selected = date
         self.registration_form.orders = []
         self.registration_form.orders.push({
@@ -140,12 +136,19 @@ export default {
           const errorEl = document.querySelector(".calendar-errors");
           if (response.status === "success") {
             errorEl.innerHTML = "";
-            self.delivery_dates = response.dates;
-            self.registration_form.orders = []
-            for (let i = 1; i <= self.delivery_dates.length; i++) {
-              self.registration_form.orders.push({
-                order_date: self.delivery_dates[i - 1],
-                menus_orders_attributes: []
+            self.$store.commit('new_selected_dates', response.dates);
+            const empty_orders = self.registration_form.orders.length === 0
+            const size = self.$store.state.selected_dates.length
+            if (empty_orders) {
+              for (let i = 1; i <= size; i++) {
+                self.registration_form.orders.push({
+                  order_date: self.$store.state.selected_dates[i - 1],
+                  menus_orders_attributes: []
+                })
+              }
+            } else {
+              self.registration_form.orders.forEach( (order, index) => {
+                order.order_date = self.$store.state.selected_dates[index]
               })
             }
           } else {
