@@ -84,6 +84,7 @@ class Admin::MenusController < Admin::BaseController
         :price,
         :unit_id,
         :menu_category_id,
+        :notes,
         diet_category_ids: [],
         add_on_ids: [],
         inventory_attributes: [ :quantity, :id ]

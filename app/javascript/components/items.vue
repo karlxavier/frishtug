@@ -30,7 +30,7 @@
               <img :src="imageUrl(item)" class="card-img-top" width="255" height="175">
               <div class="card-body px-0 py-1">
                 <h5 class="card-title mb-0 font-family-montserrat">
-                  {{ item.attributes.name }}
+                  {{ item.attributes.name }} 
                   <template v-for="diet in item.attributes.diet_categories">
                     <span :class="dietClass(diet)" v-bind:key="diet.id"></span>
                   </template>
@@ -186,7 +186,7 @@ export default {
                 i.quantity += 1;
                 self.$store.commit("increment_item_qty", item_id);
               }
-            });
+            }); 
           }, outOfStock);
         } else {
           const qty =
@@ -204,8 +204,22 @@ export default {
             } else {
               self.$store.commit("new_item_qty", item_id);
             }
+
+            if (response.notes) {
+              setTimeout(function() {
+                toastr.options = {
+                    closeButton: true,
+                    progressBar: true,
+                    showMethod: 'slideDown',
+                    positionClass: 'toast-bottom-left',
+                    timeOut: 7000
+                };
+                toastr.warning(response.notes, 'Notes');
+              }, 100);
+            }
+
           }, outOfStock);
-        }
+        } 
       } else {
         console.warn(`Order not found for ${date}`);
       }
