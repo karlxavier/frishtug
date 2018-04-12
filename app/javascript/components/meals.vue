@@ -3,6 +3,7 @@
     <div class="container meals_container">
       <div class="row" v-if="checkObject(items)">
         <div :class="show_sidebar ? 'col-md-9' : 'col'" v-if="plan.interval === 'month'">
+          <go-to-top v-bind:right="show_sidebar ? 25 : 2"></go-to-top>
           <div class="menu-items__container_for_five_days">
             <scheduled-order
               v-bind:menu_categories="menu_categories"
@@ -20,6 +21,7 @@
         </div>
 
         <div :class="show_sidebar ? 'col-md-9' : 'col'" v-else>
+          <go-to-top></go-to-top>
           <a href="javascript:void(0)"
             class="btn btn-outline-dark btn-sm font-size-12 shopping-cart__shown_btn"
             @click="show_sidebar = true"
@@ -57,6 +59,7 @@
 </template>
 
 <script>
+import GoToTop from './go_to_top'
 import SingleOrder from './single_order'
 import ScheduledOrder from './scheduled_order'
 import Sidebar from './sidebar'
@@ -64,7 +67,8 @@ export default {
   components: {
     ScheduledOrder,
     SingleOrder,
-    Sidebar
+    Sidebar,
+    GoToTop
   },
   props: {
     plan: { type: Object, required: true },
