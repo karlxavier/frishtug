@@ -29,7 +29,8 @@ const store = new Vuex.Store({
   state: {
     items: [],
     menu_categories: [],
-    item_quantities: {}
+    item_quantities: {},
+    selected_dates: []
   },
   mutations: {
     populate(state, data) {
@@ -37,6 +38,10 @@ const store = new Vuex.Store({
     },
     populate_categories(state, data) {
       state.menu_categories.push(...data)
+    },
+    new_selected_dates(state, dates) {
+      state.selected_dates.splice(0, state.selected_dates.length)
+      state.selected_dates.push(...dates)
     },
     new_item_qty(state, id) {
       state.item_quantities[id] = 1
@@ -134,6 +139,24 @@ const vm = new Vue({
       ],
       orders: []
     }
+  },
+  mounted: function() {
+    const self = this
+    Rails.ajax({
+      url: "/api/v1/items",
+      type: "GET",
+      success: function (response) {
+        self.$store.commit('populate', response.data)
+      }
+    });
+
+    Rails.ajax({
+      url: "/api/v1/menu_categories",
+      type: "GET",
+      success: function (response) {
+        self.$store.commit('populate_categories', response.data)
+      }
+    });
   },
   methods: {
     changeCompletedState: function() {

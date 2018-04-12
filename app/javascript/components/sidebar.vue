@@ -130,7 +130,8 @@ export default {
         day_3: 0,
         day_4: 0,
         day_5: 0
-      }
+      },
+      counter: 0
     };
   },
   filters: {
@@ -231,6 +232,11 @@ export default {
     },
     addItem: function(item, date) {
       const self = this;
+      self.counter++
+      if (self.counter > 1) {
+        self.counter = 0
+        return
+      }
       const item_id = item.menu_id;
       const order = self.registration_form.orders.find(order => {
         return order.order_date === date;
@@ -297,6 +303,11 @@ export default {
     },
     removeItem: function(item, date) {
       const self = this;
+      self.counter++
+      if (self.counter > 1) {
+        self.counter = 0
+        return
+      }
       const item_id = item.menu_id;
       const order = self.registration_form.orders.find(order => {
         return order.order_date === date;
