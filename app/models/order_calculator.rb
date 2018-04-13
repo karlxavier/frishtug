@@ -11,6 +11,10 @@ class OrderCalculator
     sum_of(total_item_price, total_add_ons_price)
   end
 
+  def total_without_tax
+    sum_of(total_item_price_without_tax, total_add_ons_price)
+  end
+
   def total_excess(plan_limit)
     total = sum_of(total_item_price, total_add_ons_price)
     total - plan_limit
@@ -39,6 +43,23 @@ class OrderCalculator
 
   def sum_of(*nums)
     nums.inject(:+)
+  end
+
+  def total_item_price_without_tax
+    taxable_items = order.menus_orders.select { |m| m.menu.tax == true }
+    not_taxable_items = order.menus_orders.reject { |m| m.menu.tax == true }
+
+    taxable_items_total = taxable_items
+        .map { |t| calculate_tax(t.menu_price) * t.quantity }.inject(:+) || 0
+    not_taxable_items_total = not_taxable_items
+        .map { |m| m.menu_price * m.quantity }.inject(:+) || 0
+
+    taxable_items_total + not_taxable_items_total
+  end
+
+  def calculate_tax(price)
+    tax = Tax.first.rate / 100
+    price - (price * tax)
   end
 
   def total_item_price

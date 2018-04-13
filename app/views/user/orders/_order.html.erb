@@ -6,20 +6,20 @@
 <div class="order--list--container">
   <% order.menus_orders.each do |order| %>
     <div class="row clearfix">
-      <div class="col-8">
+      <div class="col-9">
         <%= order.menu_name %><%= order.add_ons_list %>
-        <span class="float-right row">
-          <div class="col">
+        <span class="float-right row col-4">
+          <div class="pr-2">
             <%= link_to public_send(remove_url, menu_id: order.menu_id, date: params[:date], quantity: 1),
               class:'',
               remote: true do %>
               <i class="fa fa-minus-square-o chocolate-font-color" aria-hidden="true"></i>
             <% end %>
           </div>
-          <div class="col">
+          <div class="pr-2">
             <%= order.quantity %>
           </div>
-          <div class="col">
+          <div>
             <%= link_to public_send(store_url, menu_id: order.menu_id, date: params[:date], quantity: 1),
               class:'',
               remote: true do %>
@@ -28,26 +28,39 @@
           </div>
         </span>
       </div>
-      <div class="col-4">
+      <div class="col-3">
         <span class="float-right">
           <%= to_currency(total_menu_price(order)) %>
         </span>
       </div>
     </div>
   <% end %>
+
+  <% if has_tax(order.menus_orders) %>
+    <div class="row clearfix">
+      <div class="col-8">
+        Tax
+      </div>
+      <div class="col-4">
+        <span class="float-right">
+          <%= to_currency(total_tax(order.menus_orders)) %>
+        </span>
+      </div>
+    </div>
+  <% end %>
 </div>
 <hr>
-<% if order.shipping_fee > 0 %>
-  <div class="row clearfix">
-    <div class="col">
-      <span>Sub Total</span>
-    </div>
-    <div class="col">
-      <span class="float-right">
-        <%= to_currency(order.sub_total) %>
-      </span>
-    </div>
+<div class="row clearfix">
+  <div class="col">
+    <span>Sub Total</span>
   </div>
+  <div class="col">
+    <span class="float-right">
+      <%= to_currency(order.sub_total) %>
+    </span>
+  </div>
+</div>
+<% if order.shipping_fee > 0 %>
   <div class="row clearfix">
     <div class="col">
       <span>Shipping Fee</span>

@@ -97,8 +97,27 @@ module User::WeeklyMealsHelper
     end
   end
 
+  def has_tax(menus_orders)
+    menus_orders.any? { |order| order.menu.tax }
+  end
+
+  def total_tax(menus_orders)
+    tax = Tax.first.rate / 100
+    sum = 0
+    menus_orders.each do |order|
+      next unless order.menu.tax
+      sum += (order.menu_price * tax) * order.quantity
+    end
+    sum
+  end
+
   def total_menu_price(order)
-    price = order.menu_price * order.quantity
+    if order.menu.tax
+      tax = Tax.first.rate / 100
+      price = (order.menu_price - (order.menu_price * tax)) * order.quantity
+    else
+      price = order.menu_price * order.quantity
+    end
     add_ons_prices = AddOn.pluck_prices(:id)
     add_on_price = order.add_ons.map { |a| add_ons_prices[a.to_i] || 0 }.inject(:+) || 0
     price += add_on_price * order.quantity
@@ -108,7 +127,7 @@ module User::WeeklyMealsHelper
     return unless current_user.subscribed?
     plan_limit = current_user.plan.limit
     plan_minimum = current_user.plan.minimum_credit_allowed
-    remaining_credit = plan_limit - total
+    remaining_credit = (plan_limit - total).round(2)
 
     if total > plan_limit
       return content_tag :small, class: 'alert alert-warning d-flex', style: 'font-size: 9px; width: 100%' do

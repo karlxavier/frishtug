@@ -30,7 +30,7 @@ const hideSidebar = () => {
 const showSideBar = () => {
   mealSideBar.style.display = 'block'
   mealSidebarCtrl.classList.add('d-none')
-  mealFormContainer.className = 'col-9 col-md-9 col-lg-9'
+  mealFormContainer.className = 'col-8 col-md-8 col-lg-8'
   changeCardClass('md')
   localStorage.setItem('sidebar_state', 'shown')
 }

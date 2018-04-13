@@ -3,7 +3,7 @@ module Computable
 
   def sub_total
     return 0 unless menus_orders.present?
-    OrderCalculator.new(self).total_without_shipping
+    OrderCalculator.new(self).total_without_tax
   end
 
   def excess
@@ -17,6 +17,6 @@ module Computable
 
   def total
     return 0 unless menus_orders.present?
-    sub_total.to_f + shipping_fee.to_f
+    OrderCalculator.new(self).total
   end
 end
