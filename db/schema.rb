@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180411011856) do
+ActiveRecord::Schema.define(version: 20180411193141) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -248,6 +248,7 @@ ActiveRecord::Schema.define(version: 20180411011856) do
     t.boolean "tax", default: false
     t.text "description"
     t.bigint "asset_id"
+    t.string "notes"
     t.index ["asset_id"], name: "index_menus_on_asset_id"
     t.index ["item_number"], name: "index_menus_on_item_number", unique: true
     t.index ["menu_category_id"], name: "index_menus_on_menu_category_id"

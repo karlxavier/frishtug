@@ -211,6 +211,18 @@ export default {
                 self.$store.commit("new_item_qty", item_id);
               }
               event.target.classList.remove('disabled')
+              if (response.notes) {
+                setTimeout(function() {
+                  toastr.options = {
+                      closeButton: true,
+                      progressBar: true,
+                      showMethod: 'slideDown',
+                      positionClass: 'toast-bottom-left',
+                      timeOut: 7000
+                  };
+                  toastr.warning(response.notes, 'Notes');
+                }, 100);
+              }
             }, outOfStock);
           }
         }

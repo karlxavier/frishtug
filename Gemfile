@@ -80,6 +80,7 @@ group :development, :test do
   gem 'fuubar'
   gem 'rspec-rails'
   gem 'spring-commands-rspec'
+  gem 'figaro'
 end
 
 group :test do
