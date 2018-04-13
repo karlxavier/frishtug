@@ -39,11 +39,19 @@ public/uploads
 .tags
 .gemtags
 
-.DS_Store/public/packs
+.DS_Store
 /public/packs-test
 /node_modules
 yarn-debug.log*
 .yarn-integrity
+<<<<<<< HEAD
 
 # Ignore application configuration
 /config/application.yml
+=======
+yarn-error.log
+
+# Ignore application configuration
+/config/application.yml
+
+>>>>>>> 81d35b4... fix merge conflict from master branch:
