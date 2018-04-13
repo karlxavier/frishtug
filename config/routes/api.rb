@@ -15,5 +15,6 @@ namespace :api do
     resources :taxs, only: :index
     resources :address, only: :index
     resources :server_time, only: :index
+    resources :bill_histories, only: :index
   end
 end
