@@ -2,6 +2,7 @@
 import "es6-promise/auto";
 import VueFormWizard from "vue-form-wizard";
 import vuejsStorage from "vuejs-storage";
+import VueLazyload from "vue-lazyload";
 import VueMask from "v-mask";
 import Vue from "vue/dist/vue.esm";
 import VueRouter from "vue-router";
@@ -23,35 +24,41 @@ Vue.use(VueRouter);
 Vue.use(VueMask);
 Vue.use(Vuelidate);
 Vue.use(VueResource);
-Vue.use(Vuex)
+Vue.use(Vuex);
+Vue.use(VueLazyload);
 
 const store = new Vuex.Store({
   state: {
     items: [],
     menu_categories: [],
-    item_quantities: {}
+    item_quantities: {},
+    selected_dates: []
   },
   mutations: {
     populate(state, data) {
-      state.items.push(...data)
+      state.items.push(...data);
     },
     populate_categories(state, data) {
-      state.menu_categories.push(...data)
+      state.menu_categories.push(...data);
+    },
+    new_selected_dates(state, dates) {
+      state.selected_dates.splice(0, state.selected_dates.length);
+      state.selected_dates.push(...dates);
     },
     new_item_qty(state, id) {
-      state.item_quantities[id] = 1
+      state.item_quantities[id] = 1;
     },
     increment_item_qty(state, id) {
-      state.item_quantities[id] += 1
+      state.item_quantities[id] += 1;
     },
     decrement_item_qty(state, id) {
-      state.item_quantities[id] -= 1
+      state.item_quantities[id] -= 1;
       if (state.item_quantities[id] === 0) {
-        delete state.item_quantities[id]
+        delete state.item_quantities[id];
       }
     }
   }
-})
+});
 
 Vue.http.headers.common["X-CSRF-Token"] = document
   .querySelector('meta[name="csrf-token"]')
@@ -135,6 +142,50 @@ const vm = new Vue({
       orders: []
     }
   },
+  storage: {
+    keys: [
+      "registration_form",
+      "charges",
+      "plan",
+      "date"
+    ],
+    namespace: "sign_up_data",
+    storage: sessionStorage
+  },
+  mounted: function() {
+    const self = this;
+    const fetchItems = () => {
+      return new Promise(resolve => {
+        Rails.ajax({
+          url: "/api/v1/items",
+          type: "GET",
+          success: function(response) {
+            resolve(response);
+          }
+        });
+      });
+    };
+
+    const fetchMenuCategories = () => {
+      return new Promise(resolve => {
+        Rails.ajax({
+          url: "/api/v1/menu_categories",
+          type: "GET",
+          success: function(response) {
+            resolve(response);
+          }
+        });
+      });
+    };
+
+    fetchItems().then(response => {
+      self.$store.commit("populate", response.data);
+    });
+
+    fetchMenuCategories().then(response => {
+      self.$store.commit("populate_categories", response.data);
+    });
+  },
   methods: {
     changeCompletedState: function() {
       const greenColor = "rgb(55, 196, 41)";
@@ -167,7 +218,7 @@ const vm = new Vue({
       });
     },
     nextTab: function() {
-      const self = this
+      const self = this;
       setTimeout(self.changeCompletedState, 300);
       self.$refs.wizard.nextTab();
     },

@@ -344,6 +344,14 @@ ActiveRecord::Schema.define(version: 20180411193141) do
     t.index ["user_id"], name: "index_referrers_on_user_id"
   end
 
+  create_table "registration_inputs", force: :cascade do |t|
+    t.string "sid"
+    t.jsonb "data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sid"], name: "index_registration_inputs_on_sid"
+  end
+
   create_table "schedules", force: :cascade do |t|
     t.integer "option"
     t.datetime "start_date"

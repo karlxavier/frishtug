@@ -25,7 +25,7 @@
                   <div class="col-3 px-0 text-center">
                     <a href="javascript:void(0)"
                       class="remove-meal mx-1 chocolate-font-color"
-                      @click="removeItem(item, order.order_date)">
+                      @click="removeItem(item, order.order_date, $event)">
                       <i class="fa fa-minus-square-o"></i>
                     </a>
                     <span class="quantity">
@@ -33,7 +33,7 @@
                     </span>
                     <a href="javascript:void(0)"
                       class="add-meal mx-1 chocolate-font-color"
-                      @click="addItem(item, order.order_date)">
+                      @click="addItem(item, order.order_date, $event)">
                       <i class="fa fa-plus-square-o"></i>
                     </a>
                   </div>
@@ -80,10 +80,10 @@
                   Any excess will be charge directly to your account.
                 </small>
               </div>
-              <div v-if="hasAvailableCredit(totalWithoutTax(order.menus_orders_attributes, index))">
+              <div v-if="hasAvailableCredit(order, index)">
                 <small class="alert alert-info d-flex" style="font-size: 10px; width: 100%;">
                   <i class="fa fa-info-circle font-size-24 pr-1" aria-hidden="true"></i>
-                  Order not finished, because you still have $ {{ (plan.limit - totalPlusAddOn(order.menus_orders_attributes)).toFixed(2) }} credits available
+                  Order not finished, because you still have $ {{ remainingCredits(order, index) }} credits available
                   for {{ order.order_date | to_dddd }}.
                 </small>
               </div>
@@ -130,7 +130,8 @@ export default {
         day_3: 0,
         day_4: 0,
         day_5: 0
-      }
+      },
+      counter: 0
     };
   },
   filters: {
@@ -175,6 +176,11 @@ export default {
     window.addEventListener("scroll", scroller);
   },
   methods: {
+    remainingCredits: function(order, index) {
+      const self = this;
+      const total = self.totalWithoutTax(order.menus_orders_attributes, index);
+      return (self.plan.limit - total).toFixed(2);
+    },
     verifyOrders: function() {
       const self = this;
       let complete = false;
@@ -229,14 +235,13 @@ export default {
         });
       }
     },
-    addItem: function(item, date) {
+    addItem: function(item, date, event) {
+      event.target.classList.add('disabled')
       const self = this;
       const item_id = item.menu_id;
-      const order = self.registration_form.orders.find(order => {
-        return order.order_date === date;
-      });
 
       const outOfStock = response => {
+        event.target.classList.remove('disabled')
         swal({
           type: response.status,
           title: "Error",
@@ -259,66 +264,67 @@ export default {
         });
       };
 
-      if (!!order) {
-        const item_exist = order.menus_orders_attributes.find(
-          i => i.menu_id === item_id
-        );
-        if (!!item_exist) {
-          const qty = self.$store.state.item_quantities[item_id] + 1;
-          checkInventory(item_id, qty).then(function(response) {
-            order.menus_orders_attributes.forEach(i => {
-              if (i.menu_id === item_id) {
-                i.quantity += 1;
+      for (let order of self.registration_form.orders) {
+        if (order.order_date === date) {
+          let found = 0
+          for (let menus_order of order.menus_orders_attributes) {
+            if (menus_order.menu_id === item_id) {
+              found++
+              const qty = self.$store.state.item_quantities[item_id] + 1;
+              checkInventory(item_id, qty).then(function(response) {
+                menus_order.quantity += 1;
                 self.$store.commit("increment_item_qty", item_id);
-              }
-            });
-          }, outOfStock);
-        } else {
-          const qty =
-            self.$store.state.item_quantities[item_id] > 0
-              ? self.$store.state.item_quantities[item_id] + 1
-              : 1;
-          checkInventory(item_id, qty).then(function(response) {
-            order.menus_orders_attributes.push({
-              menu_id: item_id,
-              quantity: 1,
-              add_ons: []
-            });
-            if (self.quantity[item_id]) {
-              self.$store.commit("increment_item_qty", item_id);
-            } else {
-              self.$store.commit("new_item_qty", item_id);
+                event.target.classList.remove('disabled')
+              }, outOfStock);
+              return;
             }
-          }, outOfStock);
+          }
+
+          if (found === 0) {
+            const qty =
+              self.$store.state.item_quantities[item_id] > 0
+                ? self.$store.state.item_quantities[item_id] + 1
+                : 1;
+            checkInventory(item_id, qty).then(function(response) {
+              order.menus_orders_attributes.push({
+                menu_id: item_id,
+                quantity: 1,
+                add_ons: []
+              });
+              if (self.$store.state.item_quantities[item_id]) {
+                self.$store.commit("increment_item_qty", item_id);
+              } else {
+                self.$store.commit("new_item_qty", item_id);
+              }
+              event.target.classList.remove('disabled')
+            }, outOfStock);
+          }
         }
-      } else {
-        console.warn(`Order not found for ${date}`);
       }
     },
-    removeItem: function(item, date) {
+    removeItem: function(item, date, event) {
+      event.target.classList.add('disabled')
       const self = this;
       const item_id = item.menu_id;
-      const order = self.registration_form.orders.find(order => {
-        return order.order_date === date;
-      });
 
-      if (!!order) {
-        const item_exist = order.menus_orders_attributes.filter(
-          i => i.menu_id === item_id
-        );
-        if (item_exist.length > 0) {
-          order.menus_orders_attributes.forEach((i, index) => {
-            if (i.menu_id === item_id && i.quantity !== 0) {
-              i.quantity -= 1;
-              if (i.quantity <= 0) {
+      for (let order of self.registration_form.orders) {
+        if (order.order_date === date) {
+          for (let [
+            index,
+            menus_order
+          ] of order.menus_orders_attributes.entries()) {
+            if (menus_order.menu_id === item_id) {
+              menus_order.quantity -= 1;
+              if (menus_order.quantity <= 0) {
                 order.menus_orders_attributes.splice(index, 1);
               }
               self.$store.commit("decrement_item_qty", item_id);
+              event.target.classList.remove('disabled')
+              return;
             }
-          });
+          }
+          event.target.classList.remove('disabled')
         }
-      } else {
-        console.warn(`Order not found for ${date}`);
       }
     },
     removeTax: function(price) {
@@ -347,8 +353,9 @@ export default {
       const val = parseFloat(num);
       return isNaN(val) ? 0 : val;
     },
-    hasAvailableCredit: function(price) {
+    hasAvailableCredit: function(order, index) {
       const self = this;
+      const price = self.totalWithoutTax(order.menus_orders_attributes, index);
       if (self.plan.interval !== "month") {
         return false;
       }

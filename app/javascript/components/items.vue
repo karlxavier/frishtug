@@ -27,10 +27,10 @@
           <div class="row" v-if="items[category.attributes.name]">
             <div class='card col-12 col-custom-255 px-0 border-0 mb-4 mt-1 mr-4'
               v-for="item in items[category.attributes.name]" v-bind:key="`${item.id}-${prefix}`">
-              <img :src="imageUrl(item)" class="card-img-top" width="255" height="175">
+              <img v-lazy="imageUrl(item)" class="card-img-top" width="255" height="175">
               <div class="card-body px-0 py-1">
                 <h5 class="card-title mb-0 font-family-montserrat">
-                  {{ item.attributes.name }} 
+                  {{ item.attributes.name }}
                   <template v-for="diet in item.attributes.diet_categories">
                     <span :class="dietClass(diet)" v-bind:key="diet.id"></span>
                   </template>
@@ -46,7 +46,7 @@
                   <div class="col cart-controls">
                     <a href="javascript:void(0)"
                       class="ctrl-btns btn btn-brown meal-ctrl-btns-minus rounded-0 cart-controls__remove"
-                      @click="removeItem(item, date)">
+                      @click="removeItem(item, date, $event)">
                       -
                     </a>
                     <span class="meal-counter">
@@ -54,7 +54,7 @@
                     </span>
                     <a href="javascript:void(0)"
                       class="ctrl-btns btn btn-brown meal-ctrl-btns-minus rounded-0 cart-controls__remove"
-                      @click="addItem(item, date)">
+                      @click="addItem(item, date, $event)">
                       +
                     </a>
                   </div>
@@ -103,6 +103,11 @@ export default {
     prefix: { type: String },
     date: { type: String }
   },
+  data: () => {
+    return {
+      counter: 0
+    };
+  },
   methods: {
     displayQuantity: function(item, date) {
       const self = this;
@@ -123,28 +128,26 @@ export default {
       const item_id = item.id.toString();
       self.registration_form.orders.forEach(order => {
         if (order.order_date === date) {
-          const add_on_exist = order.menus_orders_attributes.filter(a => {
-            return a.add_ons.includes(add_on_id);
+          order.menus_orders_attributes.forEach(menus_order => {
+            if (menus_order.menu_id === item_id) {
+              if (
+                menus_order.add_ons.includes(add_on_id) &&
+                !event.target.checked
+              ) {
+                const index_for_removal = menus_order.add_ons.indexOf(
+                  add_on_id
+                );
+                menus_order.add_ons.splice(index_for_removal, 1);
+              } else {
+                menus_order.add_ons.push(add_on_id);
+              }
+            }
           });
-
-          if (add_on_exist.length > 0 && !event.target.checked) {
-            order.menus_orders_attributes.forEach(a => {
-              if (a.menu_id === item_id) {
-                const index_for_removal = a.add_ons.indexOf(add_on_id);
-                a.add_ons.splice(index_for_removal, 1);
-              }
-            });
-          } else {
-            order.menus_orders_attributes.forEach(a => {
-              if (a.menu_id === item_id) {
-                a.add_ons.push(add_on_id);
-              }
-            });
-          }
         }
       });
     },
-    addItem: function(item, date) {
+    addItem: function(item, date, event) {
+      event.target.classList.add('disabled')
       const self = this;
       const item_id = item.id;
       const order = self.registration_form.orders.find(order => {
@@ -152,6 +155,7 @@ export default {
       });
 
       const outOfStock = response => {
+        event.target.classList.remove('disabled')
         swal({
           type: response.status,
           title: "Error",
@@ -174,80 +178,78 @@ export default {
         });
       };
 
-      if (!!order) {
-        const item_exist = order.menus_orders_attributes.find(
-          i => i.menu_id === item_id
-        );
-        if (!!item_exist) {
-          const qty = self.$store.state.item_quantities[item_id] + 1;
-          checkInventory(item_id, qty).then(function(response) {
-            order.menus_orders_attributes.forEach(i => {
-              if (i.menu_id === item_id) {
-                i.quantity += 1;
+      for (let order of self.registration_form.orders) {
+        if (order.order_date === date) {
+          let found = 0;
+          for (let menus_order of order.menus_orders_attributes) {
+            if (menus_order.menu_id === item_id) {
+              found++;
+              const qty = self.$store.state.item_quantities[item_id] + 1;
+              checkInventory(item_id, qty).then(function(response) {
+                menus_order.quantity += 1;
                 self.$store.commit("increment_item_qty", item_id);
+                event.target.classList.remove('disabled')
+              }, outOfStock);
+              return;
+            }
+          }
+
+          if (found === 0) {
+            const qty =
+              self.$store.state.item_quantities[item_id] > 0
+                ? self.$store.state.item_quantities[item_id] + 1
+                : 1;
+            checkInventory(item_id, qty).then(function(response) {
+              order.menus_orders_attributes.push({
+                menu_id: item_id,
+                quantity: 1,
+                add_ons: []
+              });
+              if (self.$store.state.item_quantities[item_id]) {
+                self.$store.commit("increment_item_qty", item_id);
+              } else {
+                self.$store.commit("new_item_qty", item_id);
               }
-            }); 
-          }, outOfStock);
-        } else {
-          const qty =
-            self.$store.state.item_quantities[item_id] > 0
-              ? self.$store.state.item_quantities[item_id] + 1
-              : 1;
-          checkInventory(item_id, qty).then(function(response) {
-            order.menus_orders_attributes.push({
-              menu_id: item_id,
-              quantity: 1,
-              add_ons: []
-            });
-            if (self.$store.state.item_quantities[item_id]) {
-              self.$store.commit("increment_item_qty", item_id);
-            } else {
-              self.$store.commit("new_item_qty", item_id);
-            }
-
-            if (response.notes) {
-              setTimeout(function() {
-                toastr.options = {
-                    closeButton: true,
-                    progressBar: true,
-                    showMethod: 'slideDown',
-                    positionClass: 'toast-bottom-left',
-                    timeOut: 7000
-                };
-                toastr.warning(response.notes, 'Notes');
-              }, 100);
-            }
-
-          }, outOfStock);
-        } 
-      } else {
-        console.warn(`Order not found for ${date}`);
+              event.target.classList.remove('disabled')
+              if (response.notes) {
+                setTimeout(function() {
+                  toastr.options = {
+                      closeButton: true,
+                      progressBar: true,
+                      showMethod: 'slideDown',
+                      positionClass: 'toast-bottom-left',
+                      timeOut: 7000
+                  };
+                  toastr.warning(response.notes, 'Notes');
+                }, 100);
+              }
+            }, outOfStock);
+          }
+        }
       }
     },
-    removeItem: function(item, date) {
+    removeItem: function(item, date, event) {
+      event.target.classList.add('disabled')
       const self = this;
       const item_id = item.id;
-      const order = self.registration_form.orders.find(order => {
-        return order.order_date === date;
-      });
-
-      if (!!order) {
-        const item_exist = order.menus_orders_attributes.filter(
-          i => i.menu_id === item_id
-        );
-        if (item_exist.length > 0) {
-          order.menus_orders_attributes.forEach((i, index) => {
-            if (i.menu_id === item_id && i.quantity !== 0) {
-              i.quantity -= 1;
-              if (i.quantity <= 0) {
+      for (let order of self.registration_form.orders) {
+        if (order.order_date === date) {
+          for (let [
+            index,
+            menus_order
+          ] of order.menus_orders_attributes.entries()) {
+            if (menus_order.menu_id === item_id) {
+              menus_order.quantity -= 1;
+              if (menus_order.quantity <= 0) {
                 order.menus_orders_attributes.splice(index, 1);
               }
               self.$store.commit("decrement_item_qty", item_id);
+              event.target.classList.remove('disabled')
+              return;
             }
-          });
+          }
+          event.target.classList.remove('disabled')
         }
-      } else {
-        console.warn(`Order not found for ${date}`);
       }
     },
     dietClass: function(diet) {

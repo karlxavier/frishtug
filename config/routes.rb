@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  mount StripeEvent::Engine, at: '/stripe_events'
   resources :user_registrations, only: %i[index create] do
     collection do
       get :schedule

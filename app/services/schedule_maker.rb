@@ -3,17 +3,16 @@ class ScheduleMaker
 
   def initialize(user)
     @user = user
-    @last_five_orders = user.orders.active_orders.first(5)
     @schedule = user.schedule.try(:option)
     @orders = user.orders.processing
   end
 
   private
 
-  attr_accessor :last_five_orders, :schedule, :user
+  attr_accessor :schedule, :user
 
   def last_first_order_placed_on_date
-    last_five_orders.first.placed_on.to_date
+    user.orders.active_orders.last(5).first.placed_on.to_date
   end
 
   def generate_schedule(days = 15)

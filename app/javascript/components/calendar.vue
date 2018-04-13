@@ -49,12 +49,28 @@
 <script>
 import moment from "moment";
 export default {
+  data: function() {
+    return {
+      current_date: '',
+      delivery_dates: []
+    }
+  },
   props: {
     registration_form: { type: Object, required: true },
-    delivery_dates: { type: Array, required: true },
     calendar: { type: Object, required: true },
     index: { type: Number, required: true },
     plan: { type: Object, required: true }
+  },
+  mounted: function() {
+    const self = this
+    self.delivery_dates = self.$store.state.selected_dates
+    Rails.ajax({
+      url: '/api/v1/server_time',
+      type: 'GET',
+      success: function(response) {
+        self.current_date = response.data
+      }
+    })
   },
   methods: {
     showDate: function(date, month) {
@@ -78,9 +94,7 @@ export default {
     },
     isBlockDate: function(date) {
       const self = this;
-      const currentDate = moment(
-        localStorage.getItem("current_date_est")
-      ).toDate();
+      const currentDate = moment(self.current_date).toDate();
       const theDate = moment(date).toDate();
 
       if (!self) {

@@ -26,6 +26,7 @@ class Address < ApplicationRecord
   enum status: %i[active inactive]
   belongs_to :addressable, polymorphic: true, optional: true
   geocoded_by :full_address
+  after_validation :geocode
 
   def self.search_list(list)
     search_term = list.join('|')

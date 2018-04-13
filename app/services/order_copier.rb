@@ -9,6 +9,7 @@ class OrderCopier
   def initialize(last_five_orders, user)
     @user = user
     @last_five_orders = last_five_orders
+    @excess = []
   end
 
   def copy_to(dates = [])
@@ -18,6 +19,7 @@ class OrderCopier
         user_order = @user.orders.create!(order_params(dates[index], order))
         create_menus_orders(user_order, order)
       end
+      charge_excess!
     end
     true
   rescue ActiveRecord::StatementInvalid => e
@@ -51,7 +53,7 @@ class OrderCopier
 
   private
 
-  attr_accessor :user
+  attr_accessor :user, :excess
 
   def clean_duplicates(dates = [])
     start_date  = parse_date(dates.first).beginning_of_day
@@ -102,6 +104,7 @@ class OrderCopier
         add_ons: menu_order.add_ons
       )
     end
+    excess << OrderCalculator.new(user_order).total_excess(user.plan.limit)
   end
 
   def day_to_skip
@@ -112,6 +115,19 @@ class OrderCopier
 
     if user.schedule.sunday_to_thursday?
       return WDAY_TO_SKIP[:friday]
+    end
+  end
+
+  def charge_excess!
+    return unless excess.length > 0
+    excess_amount = excess.inject(:+)
+    charge = StripeCharger.new(user, excess_amount)
+    if charge.charge_excess!
+      user.bill_histories.create!(
+        amount_paid: excess_amount,
+        description: "Excess Charge!",
+        billed_at: Time.current
+      )
     end
   end
 end

@@ -75,7 +75,7 @@ module ApplicationHelper
 
   def address_from_source(source)
     address = <<-HEREDOC
-      #{source.address_line1}#{source.address_line2.empty? ? '' : ", #{source.address_line2}"} <br>
+      #{source.address_line1}#{source&.address_line2&.empty? ? '' : ", #{source.address_line2}"} <br>
       #{source.address_city}, #{source.address_state} #{source.address_zip} <br>
       #{source.address_country}
     HEREDOC
