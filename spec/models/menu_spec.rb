@@ -16,6 +16,7 @@
 #  tax              :boolean          default(FALSE)
 #  description      :text
 #  asset_id         :integer
+#  notes            :string
 #
 
 require 'rails_helper'
