@@ -17,6 +17,7 @@ module Computable
 
   def total
     return 0 unless menus_orders.present?
-    OrderCalculator.new(self).total
+    with_shipping = self.user.plan.interval == 'month'
+    OrderCalculator.new(self).total(skip_shipping_fee: with_shipping)
   end
 end

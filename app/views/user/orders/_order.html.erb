@@ -60,7 +60,7 @@
     </span>
   </div>
 </div>
-<% if order.shipping_fee > 0 %>
+<% if order.user.plan.interval != 'month' %>
   <div class="row clearfix">
     <div class="col">
       <span>Shipping Fee</span>
