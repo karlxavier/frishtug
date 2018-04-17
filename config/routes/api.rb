@@ -20,7 +20,7 @@ namespace :api do
 
     namespace :users do
       resources :authenticate, only: :create
-      resources :orders, only: :index
+      resources :orders, only: %i[index show create update]
     end
   end
 end

@@ -11,5 +11,6 @@ class SerializableOrder < JSONAPI::Serializable::Resource
               :delivery_status,
               :payment_details,
               :route_started,
-              :payment_status
+              :payment_status,
+              :menus_orders
 end
