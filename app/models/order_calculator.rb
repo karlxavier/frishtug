@@ -3,8 +3,9 @@ class OrderCalculator
     @order = order
   end
 
-  def total
-    sum_of(total_item_price, total_add_ons_price, shipping_fee)
+  def total(options = {})
+    fee = options[:skip_shipping_fee] == true ? 0 : shipping_fee
+    sum_of(total_item_price, total_add_ons_price, fee)
   end
 
   def total_without_shipping

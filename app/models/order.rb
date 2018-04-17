@@ -50,9 +50,10 @@ class Order < ApplicationRecord
 
   def self.pending_deliveries
     self.active_orders.order(placed_on: :asc).includes(menus: [:menu_category]).map do |o|
+      with_shipping = o.user.plan.interval == 'month'
       {
         placed_on: o.placed_on,
-        total: OrderCalculator.new(o).total,
+        total: OrderCalculator.new(o).total(skip_shipping_fee: with_shipping),
         menus_orders: o.menus_orders.group_by do |m|
           m.menu.category.name
         end
