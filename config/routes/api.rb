@@ -18,6 +18,7 @@ namespace :api do
     resources :bill_histories, only: :index
     resources :order_status, only: :index
     resources :user_informations, only: :index
+    resources :suggestion_complaints, only: :create
 
     namespace :users do
       resources :authenticate, only: :create
