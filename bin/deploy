@@ -8,7 +8,7 @@ set -e
 branch="$(git symbolic-ref HEAD --short)"
 target="${1:-staging}"
 
-git push "$target" "$branch:master"
+git push --force-with-lease "$target" "$branch:master"
 heroku run rails db:migrate --exit-code --remote "$target"
 heroku restart --remote "$target"
 echo "Clearing rails cache"
