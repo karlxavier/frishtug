@@ -12,39 +12,70 @@ StripeEvent.configure do |events|
     if event.type == 'customer.subscription.updated'
       subscription = event.data.object
       user = User.find_by_stripe_customer_id(subscription.customer)
-      next unless user
-      user.stripe_subscription_id = subscription.id
-      user.save
+      if user
+        user.stripe_subscription_id = subscription.id
+        user.save
+      end
     end
 
     if event.type == 'invoice.upcoming'
       invoice = event.data.object
       user = User.find_by_stripe_customer_id(invoice.customer)
-      next unless user
-      user.user_notifications.create!({
-        title: 'Subscription Notice!',
-        body: 'This is a notice to remind you that your subscription is scheduled for automatic charge.',
-        timeout: 5
-      })
+      if user
+        user.user_notifications.create!({
+          title: 'Subscription Notice!',
+          body: 'This is a notice to remind you that your subscription is scheduled for automatic charge.',
+          timeout: 5
+        })
+      end
+    end
+
+    if event.type == 'invoice.created'
+      invoice_data = event.data.object
+      user = User.find_by_stripe_customer_id(invoice_data.customer)
+      if user
+        invoice = Stripe::Invoice.retrieve(invoice_data.id)
+        invoice.pay
+      end
     end
 
     if event.type == 'customer.subscription.created'
       subscription = event.data.object
+      subscription_start = Time.at(subscription.current_period_start)
+      subscription_end = Time.at(subscription.current_period_end)
       user = User.find_by_stripe_customer_id(subscription.customer)
-      next unless user
-      next if user.stripe_subscription_id == subscription.id
-      user.stripe_subscription_id = subscription.id
-      user.save
-      OrderCopierWorker.perform_at(1.hour.from_now, user.id)
+      if user
+        user.update_attributes(
+          stripe_subscription_id: subscription.id,
+          subscribe_at: subscription_start,
+          subscription_expires_at: subscription_end
+        )
+      end
+    end
+
+    if event.type == 'customer.subscription.updated'
+      subscription = event.data.object
+      subscription_start = Time.at(subscription.current_period_start)
+      subscription_end = Time.at(subscription.current_period_end)
+      user = User.find_by_stripe_customer_id(subscription.customer)
+      if user && user.subscribe_at != subscription_start
+        user.update_attributes(
+          stripe_subscription_id: subscription.id,
+          subscribe_at: subscription_start,
+          subscription_expires_at: subscription_end
+        )
+        OrderCopierWorker.perform_at(1.hour.from_now, user.id)
+      end
     end
 
     if event.type == 'customer.subscription.deleted'
       subscription = event.data.object
       user = User.find_by_stripe_customer_id(subscription.customer)
-      next unless user
-      next if user.stripe_subscription_id == subscription.id
-      user.stripe_subscription_id = nil
-      user.save
+      if user
+        user.stripe_subscription_id = nil
+        user.plan_id = nil
+        user.save
+      end
     end
   end
 end
