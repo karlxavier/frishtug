@@ -20,7 +20,12 @@ namespace :api do
 
     namespace :users do
       resources :authenticate, only: :create
-      resources :orders, only: %i[index show create update]
+      resources :orders, only: %i[index show create update] do
+        member do
+          get :cancel
+          get :undo_cancel
+        end
+      end
     end
   end
 end

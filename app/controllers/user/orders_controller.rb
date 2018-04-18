@@ -32,7 +32,8 @@ class User::OrdersController < User::BaseController
 
   def undo_cancel
     @order = Order.find(order_id)
-    if @order.processing!
+    uncancel_order = UncancelOrder.new(@order, current_user)
+    if uncancel_order.run
       respond_with(@order)
     end
   end

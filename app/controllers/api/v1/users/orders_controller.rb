@@ -1,5 +1,5 @@
 class Api::V1::Users::OrdersController < Api::V1::Users::BaseController
-  before_action :set_order, only: %i[show update]
+  before_action :set_order, only: %i[show update cancel undo_cancel]
   def index
     @orders = current_user.orders
     if @orders
@@ -33,6 +33,20 @@ class Api::V1::Users::OrdersController < Api::V1::Users::BaseController
       render jsonapi: @order
     else
       render jsonapi_errors: @order.errors
+    end
+  end
+
+  def cancel
+    cancel_order = CancelOrder.new(@order, current_user)
+    if cancel_order.run
+      render jsonapi: @order
+    end
+  end
+
+  def undo_cancel
+    uncancel_order = UncancelOrder.new(@order, current_user)
+    if uncancel_order.run
+      render jsonapi: @order
     end
   end
 
