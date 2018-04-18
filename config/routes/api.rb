@@ -17,6 +17,7 @@ namespace :api do
     resources :server_time, only: :index
     resources :bill_histories, only: :index
     resources :order_status, only: :index
+    resources :user_informations, only: :index
 
     namespace :users do
       resources :authenticate, only: :create
