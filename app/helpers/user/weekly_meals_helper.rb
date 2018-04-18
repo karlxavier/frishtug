@@ -64,7 +64,7 @@ module User::WeeklyMealsHelper
   end
 
   def back_to_index_link(text)
-    link_to user_weekly_meals_path do
+    link_to user_weekly_meals_path, class: 'dark-font-color' do
       "<i class='fa fa-chevron-left'></i> #{text}".html_safe
     end
   end

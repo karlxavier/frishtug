@@ -4,9 +4,29 @@ const mealFormWrapper = document.querySelector('#meal-form__wrapper')
 const mealSideBar = document.querySelector('#sidebar')
 const mealFormContainer = document.querySelector('#meal-form__container')
 const addOns = document.querySelectorAll('.menu_add_ons')
+const scrollTopbtn = document.querySelector(".go_to_top")
 
 mealSidebarCtrl.classList.add('d-none')
 mainContainer.className = 'col-12 col-md-12 col-lg-12'
+
+const showScrollTopBtn = () => {
+  if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+    scrollTopbtn.style.display = 'block'
+    if (mealSideBar.style.display === "block") {
+      scrollTopbtn.style.right = "30rem"
+    } else {
+      scrollTopbtn.style.right = "1rem"
+    }
+  } else {
+    scrollTopbtn.style.display = 'none'
+  }
+}
+
+scrollTopbtn.addEventListener('click', function() {
+  $("html, body").animate({ scrollTop: 0 }, 600);
+})
+
+window.onscroll = showScrollTopBtn
 
 const changeCardClass = (size) => {
   const els = document.querySelectorAll('.card')
@@ -25,6 +45,7 @@ const hideSidebar = () => {
   mealFormContainer.className = 'col-12 col-md-12 col-lg-12'
   changeCardClass('lg')
   localStorage.setItem('sidebar_state', 'hidden')
+  scrollTopbtn.style.right = "1rem";
 }
 
 const showSideBar = () => {
@@ -33,6 +54,7 @@ const showSideBar = () => {
   mealFormContainer.className = 'col-8 col-md-8 col-lg-8'
   changeCardClass('md')
   localStorage.setItem('sidebar_state', 'shown')
+  scrollTopbtn.style.right = "30rem";
 }
 
 mealFormWrapper.addEventListener('click', (e)=> {

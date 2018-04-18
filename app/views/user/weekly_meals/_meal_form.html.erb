@@ -1,7 +1,10 @@
+<a class="go_to_top">
+  <i class="fa fa-chevron-up"></i>
+</a>
 <div class="row" id="meal-form__wrapper">
   <div class="col-8 col-md-8 col-lg-8" role="main" id="meal-form__container">
     <div class="row header py-4 meal-form__header border-bottom-grey mb-4">
-      <div class="col-3">
+      <div class="col-3 dark-font-color">
         <%= back_to_index_link(action_name.upcase) %>
         MEAL PLAN
       </div>
@@ -126,6 +129,26 @@
     }
     #sidebar-list::-webkit-scrollbar-thumb {
       background-color: #c1c1c1;
+    }
+    .go_to_top {
+      display: none;
+      width: 50px;
+      height: 50px;
+      background: rgb(88, 45, 17);
+      position: fixed;
+      bottom: 20px;
+      z-index: 99;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 0.6rem 1rem;
+      border-radius: 10px;
+      font-size: 18px;
+      text-decoration: none;
+    }
+
+    .go_to_top > i {
+      color: white;
     }
   </style>
 <% end %>
