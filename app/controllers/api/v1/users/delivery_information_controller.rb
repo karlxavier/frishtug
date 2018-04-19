@@ -15,7 +15,11 @@ class Api::V1::Users::DeliveryInformationController < Api::V1::Users::BaseContro
 
   def show
     @address = Address.find(params[:id])
-    render jsonapi: @address, status: :ok
+    if @address
+      render jsonapi: @address, status: :ok
+    else
+      render json: { status: 'error', message: 'Address not found' }, status: :not_found
+    end
   end
 
   def create

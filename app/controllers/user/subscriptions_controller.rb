@@ -37,6 +37,11 @@ class User::SubscriptionsController < User::BaseController
   def subscribe_to_plan
     user = current_user
     user.update_attributes(plan_id: params[:id])
+    create_referrer(user) if user.plan.for_type == 'group'
+  end
+
+  def create_referrer(user)
+    user.create_referrer!(group_code: SecureRandom.urlsafe_base64(10))
   end
 
   def response_msg(status, message)
