@@ -13,6 +13,11 @@ class Api::V1::Users::DeliveryInformationController < Api::V1::Users::BaseContro
     render jsonapi: @user_addresses, status: :ok
   end
 
+  def show
+    @address = Address.find(params[:id])
+    render jsonapi: @address, status: :ok
+  end
+
   def create
     @delivery_info_form = DeliveryInfoForm.new(
       addresses: address_params,
