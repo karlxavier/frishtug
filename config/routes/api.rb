@@ -26,6 +26,7 @@ namespace :api do
           get :undo_cancel
         end
       end
+      resources :delivery_information, only: %i[index create]
     end
   end
 end
