@@ -36,6 +36,7 @@ namespace :api do
           get :subscribe
         end
       end
+      resources :schedules, only: %i[index create]
     end
   end
 end
