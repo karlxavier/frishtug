@@ -28,6 +28,14 @@ namespace :api do
           get :undo_cancel
         end
       end
+      resources :delivery_information, only: %i[index create update show]
+      resources :payment_information, only: %i[index create update show]
+      resources :subscriptions, only: :index do
+        collection do
+          post :cancel
+          get :subscribe
+        end
+      end
     end
   end
 end
