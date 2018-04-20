@@ -130,7 +130,15 @@ export default {
       if (isValid) {
         return self.$emit('next-tab')
       } else {
-        swal('Opps..', 'Please fill all the required fields', 'error')
+        swal({
+          type: "error",
+          title: "Error",
+          text: "Please fill all the required fields",
+          confirmButtonText: "Ok",
+          confirmButtonColor: "#582D11",
+          confirmButtonClass: "btn btn-brown text-uppercase",
+          buttonsStyling: false
+        })
         return
       }
     },
@@ -138,7 +146,15 @@ export default {
       const self = this
 
       if (self.registration_form.email.trim() === '') {
-        swal('Opps..', 'Please provide an email.', 'error')
+        swal({
+          type: "error",
+          title: "Error",
+          text: "Please provide an email.",
+          confirmButtonText: "Ok",
+          confirmButtonColor: "#582D11",
+          confirmButtonClass: "btn btn-brown text-uppercase",
+          buttonsStyling: false
+        })
         return
       }
 
