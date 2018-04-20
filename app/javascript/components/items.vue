@@ -1,5 +1,5 @@
 <template>
-  <vue-tabs type="pills">
+  <vue-tabs type="pills" @tab-change="handleTabChange">
     <v-tab v-for="category in menu_categories" v-bind:key="`${category.id}-${prefix}`" :title="category.attributes.name">
       <ul class="nav justify-content-center my-4">
         <li class="nav-item mx-2">
@@ -23,10 +23,24 @@
         </li>
       </ul>
       <div class="row" :id="`${category.id}`">
+        <div class="col-5 mb-4">
+          <input type="text" v-model="searchText" icon="search" class="form-control" placeholder="Search menu.."/>
+        </div>
+        <div class="col-6 mb-4">
+          <ul class="list-inline list-unstyled float-right" role="tablist">
+            <li class="list-inline-item">Order by</li>
+            <li class="list-inline-item">
+              <a href="javascript:void(0)" class="btn btn-sm btn-matterhorn-outline-circled font-size-14" @click="invertSort('name')">Name</a>
+            </li>
+            <li class="list-inline-item">
+              <a href="javascript:void(0)" class="btn btn-sm btn-matterhorn-outline-circled font-size-14" @click="invertSort('price')">Price</a>
+            </li>
+          </ul>  
+        </div>
         <div class="container-fluid">
           <div class="row" v-if="items[category.attributes.name]">
             <div class='card col-12 col-custom-255 px-0 border-0 mb-4 mt-1 mr-4'
-              v-for="item in items[category.attributes.name]" v-bind:key="`${item.id}-${prefix}`">
+              v-for="item in filteredItems(category.attributes.name)" v-bind:key="`${item.id}-${prefix}`">
               <img v-lazy="imageUrl(item)" class="card-img-top" width="255" height="175">
               <div class="card-body px-0 py-1">
                 <h5 class="card-title mb-0 font-family-montserrat">
@@ -88,6 +102,7 @@
 <script>
 import toCurrency from "../packs/lib/to_currency";
 import { VueTabs, VTab } from "vue-nav-tabs";
+import lodash from "lodash";  
 export default {
   filters: {
     to_currency: toCurrency
@@ -105,7 +120,10 @@ export default {
   },
   data: () => {
     return {
-      counter: 0
+      counter: 0,
+      searchText: "",
+      sortAsc: true,
+      sortBy: "name"
     };
   },
   methods: {
@@ -265,6 +283,21 @@ export default {
       if (asset.hasOwnProperty("image")) {
         return asset.image.card.url;
       }
+    },
+    filteredItems: function(cats_name) {
+      const items = this.items[cats_name].filter(item => {
+        return item.attributes.name.toLowerCase().includes(this.searchText.toLowerCase());
+      });
+
+      let ascDesc = this.sortAsc ? 1 : -1;
+      return items.sort((a, b) => ascDesc * a.attributes[this.sortBy].localeCompare(b.attributes[this.sortBy]));
+    },
+    handleTabChange(tabIndex, newTab, oldTab){
+      this.searchText = "";
+    },
+    invertSort(sortBy) {
+      this.sortBy = sortBy
+      this.sortAsc = !this.sortAsc;
     }
   }
 };
