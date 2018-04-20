@@ -22,6 +22,7 @@ namespace :api do
 
     namespace :users do
       resources :authenticate, only: :create
+      resources :order_complaints, only: :create
       resources :orders, only: %i[index show create update] do
         member do
           get :cancel
@@ -32,8 +33,8 @@ namespace :api do
       resources :payment_information, only: %i[index create update show]
       resources :subscriptions, only: :index do
         collection do
-          post :cancel
-          get :subscribe
+          put :cancel
+          put :subscribe
         end
       end
       resources :schedules, only: %i[index create]
