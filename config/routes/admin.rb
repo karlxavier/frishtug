@@ -26,4 +26,6 @@ namespace :admin do
   resources :refresh_orders, only: :index
   resources :search_results, only: :index
   resources :add_ons, only: :index
+  resources :pending_credits, only: :index
+  resources :suggestions, only: %i[index show]
 end

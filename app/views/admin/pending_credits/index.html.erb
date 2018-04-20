@@ -1,0 +1,21 @@
+<%= card_container do %>
+  <table class="table table-sm">
+    <thead>
+      <tr>
+        <th>Full Name</th>
+        <th>Amount</th>
+        <th>Credit Activation Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @pending_credits.each do |pending_credit| %>
+        <tr>
+          <td><%= pending_credit.user.full_name %></td>
+          <td><%= to_currency(pending_credit.amount) %></td>
+          <td><%= pending_credit.activation_date.strftime('%B %d, %Y @ %I:%M %p') %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= paginate @pending_credits %>
+<% end %>

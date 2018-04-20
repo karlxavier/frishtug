@@ -1,0 +1,22 @@
+<%= card_container do %>
+  <table class="table table-sm">
+    <thead>
+      <tr>
+        <th>Full Name</th>
+        <th>Suggestion</th>
+        <th>Suggestion For</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @suggestions.each do |suggestion| %>
+        <tr>
+          <td><%= suggestion.user.full_name %></td>
+          <td><%= suggestion.body %></td>
+          <td><%= suggestion_for(suggestion) %></td>
+          <td><%= link_to 'Show', admin_suggestion_path(suggestion) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= paginate @suggestions %>
+<% end %>

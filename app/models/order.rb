@@ -106,6 +106,8 @@ class Order < ApplicationRecord
   def create_pending_credit
     blackout_dates = BlackoutDate.pluck_dates
     return unless blackout_dates.include?(placed_on.strftime('%B %d'))
+    total = OrderCalculator.new(self).total
+    return unless total > 0
     user.pending_credits.create!(
       amount: OrderCalculator.new(self).total,
       activation_date: user.orders.first.placed_on + 28.days,

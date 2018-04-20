@@ -1,0 +1,20 @@
+<%= card_container do %>
+  <div class="row mx-0">
+    <div class="col">
+      <h6>
+      From: <%= "#{@suggestion.user.full_name}<#{@suggestion.user.email}>" %>
+      </h6>
+      <small>
+        Date: <%= time_ago_in_words(@suggestion.created_at ) %> ago
+      </small> <br>
+      <small>Suggestion for: <%= suggestion_for(@suggestion) %></small> <br>
+    </div>
+  </div>
+  <div class="row mx-0 mt-3">
+    <div class="col-6">
+      <p>
+        <%= @suggestion.body %>
+      </p>
+    </div>
+  </div>
+<% end %>
