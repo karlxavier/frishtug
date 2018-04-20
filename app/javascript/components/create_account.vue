@@ -38,6 +38,9 @@
                 placeholder="Email*"
                 v-model.trim="registration_form.email"
                 @input="$v.registration_form.email.$touch">
+            <div class="invalid-feedback email--error"  v-show="$v.registration_form.email.email !== true">
+              Invalid email format.
+            </div>
             <div class="invalid-feedback email--error" v-show="$v.registration_form.email.required !== true">
               Email is required
             </div>
@@ -90,6 +93,7 @@ export default {
         required
       },
       email: {
+        email,
         required,
         isUnique(value) {
           return new Promise((resolve) => {
