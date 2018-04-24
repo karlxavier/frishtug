@@ -9,6 +9,7 @@
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  placed_on_date  :datetime
+#  order_id        :integer
 #
 
 class PendingCredit < ApplicationRecord

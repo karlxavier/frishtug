@@ -33,6 +33,19 @@ class StripeCharger
     false
   end
 
+  def charge_shipping
+    response = Stripe::Charge.create(
+      amount: to_cents(amount),
+      currency: 'usd',
+      customer: @user.stripe_customer_id,
+      description: "Shipping charge"
+    )
+    response
+  rescue Stripe::InvalidRequestError => e
+    errors.add(:base, e.message)
+    false
+  end
+
   private
 
   attr_accessor :amount, :user

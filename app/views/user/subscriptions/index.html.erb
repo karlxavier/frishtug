@@ -24,7 +24,7 @@
     </div>
 
 
-    <% if group_plan? %>
+    <% if current_user.referrer? %>
       <div class="col-6">
         <h4 class="font-size-18 text-uppercase">Members</h4>
         <p class="font-family-montserrat font-size-14" style="">Send New Code to Member</p>
@@ -38,6 +38,14 @@
             </div>
           </div>
         <% end %>
+        <ul class="unstyled-list">
+          <% current_user.members.each do |member| %>
+            <li>
+              <%= member.user.full_name %>
+              <%= member.user_email %>
+            </li>
+          <% end %>
+        </ul>
       </div>
     <% end %>
   </div>

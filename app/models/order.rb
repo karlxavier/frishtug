@@ -33,6 +33,7 @@ class Order < ApplicationRecord
   has_many :menus, through: :menus_orders
   has_many :bill_histories, dependent: :destroy
   has_one :comment, as: :commentable, dependent: :destroy
+  has_one :shipping_charge, dependent: :destroy
   has_many :search_results, as: :searchable
   scope :completed, -> { where.not(delivered_at: nil) }
 

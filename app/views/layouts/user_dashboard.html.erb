@@ -30,6 +30,7 @@
         <%= render 'user/user_sidebar' unless is_ordering? %>
         <div class="<%= main_container_class %>" id="main-container" role="main-container">
           <%= display_incomplete_plan_notification %>
+          <%= display_incomplete_group_notification %>
           <%= render 'shared/flash' %>
           <%= yield %>
         </div>

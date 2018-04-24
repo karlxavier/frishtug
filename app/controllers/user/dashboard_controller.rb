@@ -4,6 +4,7 @@ class User::DashboardController < User::BaseController
   def index
     @todays_order = current_user.orders.placed_between?(range)
     set_scanovator
+    check_and_charge_group
   end
 
   private
@@ -18,6 +19,13 @@ class User::DashboardController < User::BaseController
       @scanovator = NullScanovator.new if @scanovator.state == 'fail'
     else
       @scanovator = NullScanovator.new
+    end
+  end
+
+  def check_and_charge_group
+    command = ChargeGroup.call(current_user, @todays_order.first)
+    if command.success? && command.result != false
+      flash[:notice] = "You have #{current_user.total_members + 1} people in your group. You will be charge additional $5 for shipping."
     end
   end
 end
