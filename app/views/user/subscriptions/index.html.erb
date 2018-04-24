@@ -9,7 +9,7 @@
             <div class="card-body">
               <span>PLAN: <%= @plan.name %></span>
               <%= @plan.short_description.html_safe %>
-              <p>Renewal on <%= time_at(@subscription.current_period_end, '%B %d, %Y') %></p>
+              <p>Renewal on <%= time_at(@subscription&.current_period_end, '%B %d, %Y') %></p>
             </div>
           </div>
           <button class="btn btn-brown text-uppercase" data-toggle="modal" data-target="#cancel_subscription">Cancel Subscription</button>

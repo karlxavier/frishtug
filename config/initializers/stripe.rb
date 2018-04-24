@@ -41,8 +41,8 @@ StripeEvent.configure do |events|
 
     if event.type == 'customer.subscription.created'
       subscription = event.data.object
-      subscription_start = Time.at(subscription.current_period_start)
-      subscription_end = Time.at(subscription.current_period_end)
+      subscription_start = Time.zone.at(subscription.current_period_start)
+      subscription_end = Time.zone.at(subscription.current_period_end)
       user = User.find_by_stripe_customer_id(subscription.customer)
       if user
         user.update_attributes(
@@ -55,8 +55,8 @@ StripeEvent.configure do |events|
 
     if event.type == 'customer.subscription.updated'
       subscription = event.data.object
-      subscription_start = Time.at(subscription.current_period_start)
-      subscription_end = Time.at(subscription.current_period_end)
+      subscription_start = Time.zone.at(subscription.current_period_start)
+      subscription_end = Time.zone.at(subscription.current_period_end)
       user = User.find_by_stripe_customer_id(subscription.customer)
       if user && user.subscribe_at != subscription_start
         user.update_attributes(

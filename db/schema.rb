@@ -476,7 +476,6 @@ ActiveRecord::Schema.define(version: 20180424041432) do
   add_foreign_key "menus", "menu_categories"
   add_foreign_key "menus", "units"
   add_foreign_key "menus_orders", "menus"
-  add_foreign_key "menus_orders", "orders"
   add_foreign_key "menus_temp_orders", "menus"
   add_foreign_key "menus_temp_orders", "temp_orders"
   add_foreign_key "order_preferences", "users"

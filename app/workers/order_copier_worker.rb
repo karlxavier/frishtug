@@ -3,7 +3,7 @@ class OrderCopierWorker
 
   def perform(user_id)
     user = User.find(user_id)
-    return unless user.orders.all?(&:completed?) && user.orders.count % 20 == 0
+    return unless user.orders.count % 20 == 0
     full_month_dates = MonthScheduler.new(user).create_full_month!
     orders = user.orders.first(20)
     20.times do |index|
