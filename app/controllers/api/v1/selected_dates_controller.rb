@@ -4,12 +4,18 @@ class Api::V1::SelectedDatesController < Api::V1::BaseController
   def index
     @date = Date.parse(@date)
     verify_date
-    render json: {
-      status: @errors.any? ? 'error' : 'success',
-      message: @errors.any? ? @errors.join(', ') : '',
-      dates: generate_dates_not_in_saturdays,
-      names: generate_date_names
-    }
+    if @errors.any?
+      render json: {
+        status: 'error',
+        message: @errors.join(', '),
+      }, status: :ok
+    else
+      render json: {
+        status: 'success',
+        dates: generate_dates_not_in_saturdays,
+        names: generate_date_names
+      }, status: :ok
+    end
   end
 
   private
