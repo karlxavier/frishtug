@@ -23,6 +23,7 @@ namespace :api do
     namespace :users do
       resources :authenticate, only: :create
       resources :order_complaints, only: :create
+      resources :current_order, only: :index
       resources :orders, only: %i[index show create update] do
         member do
           get :cancel
