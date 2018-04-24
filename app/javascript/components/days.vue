@@ -28,7 +28,7 @@
     </div>
 
     <div class="row justify-content-center mb-4">
-      <div class="col-3" v-for="(calendar, index) in calendars" v-bind:key="`${index}--calendar`">
+      <div class="col-md-3" v-for="(calendar, index) in calendars" v-bind:key="`${index}--calendar`">
         <div class="calendar-errors"></div>
         <div class="calendar-container">
           <calendar
@@ -44,7 +44,7 @@
     </div>
 
     <div class="row justify-content-center">
-      <div class="col-4">
+      <div class="col-md-4">
         <a href="javascript:void(0)" class="btn btn-brown btn-block text-uppercase" @click="verifySchedule">Continue To Payment</a>
       </div>
     </div>
