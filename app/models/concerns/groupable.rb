@@ -1,6 +1,6 @@
 module Groupable
   extend ActiveSupport::Concern
-  TOTAL_MEMBERS_COUNT_FOR_DISCOUNT=4.freeze
+  TOTAL_MEMBERS_COUNT_FOR_DISCOUNT=1.freeze
 
   def referrer?
     !!self.referrer
@@ -31,7 +31,27 @@ module Groupable
     end
   end
 
+  def equal_group_address?
+    valid = []
+    if referrer?
+      groups = self.referrer.candidates
+      referrer_address = self.full_address
+    else
+      groups = self.candidate.referrer.candidates
+      referrer_address = self.candidate.referrer.user.full_address
+    end
+
+    return false unless groups.present?
+    return false unless groups.count >= TOTAL_MEMBERS_COUNT_FOR_DISCOUNT
+    return false unless referrer_address.present?
+
+    groups.each do |member|
+      valid << (member.user.full_address == referrer_address)
+    end
+    return valid.all? { |c| !!c }
+  end
+
   def is_entitled_for_discount?
-    total_members >= TOTAL_MEMBERS_COUNT_FOR_DISCOUNT
+    total_members >= TOTAL_MEMBERS_COUNT_FOR_DISCOUNT && equal_group_address?
   end
 end
