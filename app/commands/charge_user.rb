@@ -43,7 +43,7 @@ class ChargeUser
     if stripe.run
       create_bill_history('Order charge')
     else
-      errros.add(:charge, stripe.errors)
+      errors.add(:charge, stripe.errors)
     end
     nil
   end
@@ -54,7 +54,7 @@ class ChargeUser
     if stripe.charge_excess!
       return create_bill_history('Excess charge')
     else
-      errros.add(:charge, stripe.errors)
+      errors.add(:charge, stripe.errors)
     end
     nil
   end

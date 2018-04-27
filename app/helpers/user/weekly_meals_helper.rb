@@ -112,12 +112,7 @@ module User::WeeklyMealsHelper
   end
 
   def total_menu_price(order)
-    if order.menu.tax
-      tax = Tax.first.rate / 100
-      price = (order.menu_price - (order.menu_price * tax)) * order.quantity
-    else
-      price = order.menu_price * order.quantity
-    end
+    price = order.menu_price * order.quantity
     add_ons_prices = AddOn.pluck_prices(:id)
     add_on_price = order.add_ons.map { |a| add_ons_prices[a.to_i] || 0 }.inject(:+) || 0
     price += add_on_price * order.quantity
