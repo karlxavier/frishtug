@@ -43,7 +43,11 @@ const store = new Vuex.Store({
     },
     new_selected_dates(state, dates) {
       state.selected_dates.splice(0, state.selected_dates.length);
-      state.selected_dates.push(...dates);
+      if (dates instanceof Array) {
+        state.selected_dates.push(...dates);
+      } else {
+        state.selected_dates.push(dates);
+      }
     },
     new_item_qty(state, id) {
       state.item_quantities[id] = 1;

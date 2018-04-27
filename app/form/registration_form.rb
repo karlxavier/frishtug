@@ -143,6 +143,7 @@ class RegistrationForm
     if user.plan.interval == 'month'
       create_subscription(user)
       check_limit_and_charge(user)
+      check_tax_and_charge(user)
     else
       create_a_charge(user)
     end
@@ -185,6 +186,13 @@ class RegistrationForm
     return if excess_amount < 0.50 || excess_amount.zero?
     ExcessChargeWorker.perform_at(user.orders.first.placed_on, user.id, excess_amount)
   end
+
+  def check_tax_and_charge(user)
+    tax_amount = OrderCalculator.new(user.orders).total_orders_tax
+    return if tax_amount < 0.50 || tax_amount.zero?
+    TaxChargeWorker.perform_at(user.orders.first.placed_on, user.id, tax_amount)
+  end
+
 
   def user_params
     {

@@ -6,6 +6,11 @@ module Computable
     OrderCalculator.new(self).total_without_tax
   end
 
+  def total_tax
+    return 0 unless menus_orders.present?
+    OrderCalculator.new(self).total_tax
+  end
+
   def excess
     return 0 unless menus_orders.present?
     OrderCalculator.new(self).total_excess(self.user.plan.limit)

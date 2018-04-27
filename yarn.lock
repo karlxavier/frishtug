@@ -3754,6 +3754,10 @@ moment@^2.21.0:
   version "2.22.0"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.22.0.tgz#7921ade01017dd45186e7fee5f424f0b8663a730"
 
+moneysafe@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/moneysafe/-/moneysafe-1.1.0.tgz#d10b04820cab6ab2e15c64dcb76984b158da72ed"
+
 move-concurrently@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/move-concurrently/-/move-concurrently-1.0.1.tgz#be2c005fda32e0b29af1f05d7c4b33214c701f92"

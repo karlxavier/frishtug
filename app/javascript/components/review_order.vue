@@ -24,6 +24,14 @@
           </div>
         </div>
         <div class="row review-step__margin-b25">
+          <div class="col-5 font-family-lato-bold font-size-14">
+            Tax
+          </div>
+          <div class="col-7">
+            {{ totalTax() | to_currency }}
+          </div>
+        </div>
+        <div class="row review-step__margin-b25">
           <div class="col-5 font-family-lato-bold font-size-14">Shipping</div>
           <div class="col-7">{{ shipping_fee | to_currency }}</div>
         </div>
@@ -61,8 +69,13 @@
 
 <script>
 import toCurrency from "../packs/lib/to_currency";
-import moment from 'moment';
+import moment from "moment";
 export default {
+  data: () => {
+    return {
+      tax: 6.3
+    };
+  },
   props: {
     registration_form: { type: Object, required: true },
     stripe_key: { type: String, required: true },
@@ -101,10 +114,44 @@ export default {
       return moment(this.date.selected).format("MMM DD YYYY");
     }
   },
+  mounted: function() {
+    const self = this;
+    Rails.ajax({
+      url: "/api/v1/taxs",
+      type: "GET",
+      success: function(response) {
+        self.tax = parseFloat(response.data);
+      }
+    });
+  },
   methods: {
+    totalTax: function() {
+      const self = this
+      const taxable_items = self.$store.state.items.filter(item => {
+        return item.attributes.tax === true;
+      }).reduce( (obj, item) => {
+        obj[item.id] = item.attributes.price
+        return obj
+      }, {})
+
+      const calculate_tax = (price, quantity) => {
+        const taxPercent = self.tax / 100
+        return price * quantity * taxPercent
+      };
+
+      const total = self.registration_form.orders.reduce((total, order) => {
+        return total += order.menus_orders_attributes.reduce(
+          (sum, menu_order) => {
+            return sum += calculate_tax(taxable_items[menu_order.menu_id], menu_order.quantity)
+          },
+          0
+        );
+      }, 0);
+      return total;
+    },
     generateToken: function() {
       const self = this;
-      pulse_loader.init()
+      pulse_loader.init();
       const stripeResponseHandler = (status, response) => {
         if (response.error) {
           pulse_loader.stop();
@@ -155,7 +202,7 @@ export default {
       }
     }
   }
-};
+}
 </script>
 
 <style>
