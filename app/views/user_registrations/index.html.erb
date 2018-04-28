@@ -1,3 +1,6 @@
+<% if @plan.present? %>
+  <%= tag.div class: 'd-none selected-plan', data: @plan.to_json(except: %[created_at updated_at]) %>
+<% end %>
 <div id="sign_up_form">
   <div class="container-fluid px-0" id="registration-form">
     <div id="registration_app">

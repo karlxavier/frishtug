@@ -126,7 +126,6 @@ class Order < ApplicationRecord
   end
 
   def set_series_number
-    raise self.inspect unless self.placed_on
     self[:series_number] = SeriesCreator.new(self[:placed_on]).create
   end
 end

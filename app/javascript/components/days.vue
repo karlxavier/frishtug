@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import Calendar from './calendar'
+import Calendar from "./calendar";
 export default {
   components: {
     Calendar
@@ -69,7 +69,7 @@ export default {
       earliest_sunday: null,
       monday_to_friday_is_active: null,
       sunday_to_thursday_is_active: null
-    }
+    };
   },
   mounted: function() {
     const self = this;
@@ -92,10 +92,10 @@ export default {
   },
   methods: {
     verifySchedule: function() {
-      const self = this
-      const message = self.plan.interval === 'month' ? 'schedule' : 'date'
+      const self = this;
+      const message = self.plan.interval === "month" ? "schedule" : "date";
       if (self.$store.state.selected_dates.length > 0) {
-        self.$emit('next-tab')
+        self.$emit("next-tab");
       } else {
         swal("Opps...", `Please select a ${message}.`, "error");
         return;
@@ -116,40 +116,42 @@ export default {
       if (self.plan.interval === "month") {
         self.setSchedule(date, self.registration_form.schedule);
       } else {
-        self.$store.commit('new_selected_dates', date)
-        self.date.selected = date
-        self.registration_form.orders = []
+        self.$store.commit("new_selected_dates", date);
+        self.date.selected = date;
+        self.registration_form.orders = [];
         self.registration_form.orders.push({
           order_date: date,
           menus_orders_attributes: []
-        })
+        });
       }
     },
     setSchedule: function(date, schedule) {
-      const self = this
-      self.registration_form.schedule = schedule
-      self.date.selected = date
+      const self = this;
+      self.registration_form.schedule = schedule;
+      self.date.selected = date;
       Rails.ajax({
         url: `/api/v1/selected_dates?date=${date}&schedule=${schedule}`,
-        type: 'GET',
+        type: "GET",
         success: function(response) {
           const errorEl = document.querySelector(".calendar-errors");
           if (response.status === "success") {
             errorEl.innerHTML = "";
-            self.$store.commit('new_selected_dates', response.dates);
-            const empty_orders = self.registration_form.orders.length === 0
-            const size = self.$store.state.selected_dates.length
-            if (empty_orders) {
+            self.$store.commit("new_selected_dates", response.dates);
+            const empty_orders = self.registration_form.orders.length === 0;
+            const has_one_order = self.registration_form.orders.length === 1;
+            const size = self.$store.state.selected_dates.length;
+            if (empty_orders || has_one_order) {
+              self.registration_form.orders = [];
               for (let i = 1; i <= size; i++) {
                 self.registration_form.orders.push({
                   order_date: self.$store.state.selected_dates[i - 1],
                   menus_orders_attributes: []
-                })
+                });
               }
             } else {
-              self.registration_form.orders.forEach( (order, index) => {
-                order.order_date = self.$store.state.selected_dates[index]
-              })
+              self.registration_form.orders.forEach((order, index) => {
+                order.order_date = self.$store.state.selected_dates[index];
+              });
             }
           } else {
             errorEl.innerHTML = "";
@@ -159,22 +161,22 @@ export default {
             errorEl.appendChild(div);
           }
         }
-      })
+      });
 
       if (schedule === "monday_to_friday") {
-        self.monday_to_friday_is_active = "active"
-        self.sunday_to_thursday_is_active = ""
+        self.monday_to_friday_is_active = "active";
+        self.sunday_to_thursday_is_active = "";
       }
 
       if (schedule === "sunday_to_thursday") {
-        self.monday_to_friday_is_active = ""
-        self.sunday_to_thursday_is_active = "active"
+        self.monday_to_friday_is_active = "";
+        self.sunday_to_thursday_is_active = "active";
       }
     },
     nextTab: function() {
-      console.log('test')
+      console.log("test");
     }
   }
-}
+};
 </script>
 

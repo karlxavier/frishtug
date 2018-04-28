@@ -38,7 +38,7 @@
                     </a>
                   </div>
                   <div class="col-2 px-0 text-right" v-if="taxableItem(item)">
-                    {{ removeTax(totalPrice(item)) | to_currency }}
+                    {{ totalPrice(item) | to_currency }}
                   </div>
                   <div class="col-2 px-0 text-right" v-else>
                     {{ totalPrice(item) | to_currency }}
@@ -69,7 +69,7 @@
                 <h6 class="font-weight-bold">
                   Total
                   <span class="meal-total float-right mb-4">
-                    {{ totalPlusAddOn(order.menus_orders_attributes) | to_currency }}
+                    {{ totalPlusAddOnAndTax(order.menus_orders_attributes) | to_currency }}
                   </span>
                 </h6>
               </div>
@@ -236,12 +236,12 @@ export default {
       }
     },
     addItem: function(item, date, event) {
-      event.target.classList.add('disabled')
+      event.target.classList.add("disabled");
       const self = this;
       const item_id = item.menu_id;
 
       const outOfStock = response => {
-        event.target.classList.remove('disabled')
+        event.target.classList.remove("disabled");
         swal({
           type: response.status,
           title: "Error",
@@ -266,15 +266,15 @@ export default {
 
       for (let order of self.registration_form.orders) {
         if (order.order_date === date) {
-          let found = 0
+          let found = 0;
           for (let menus_order of order.menus_orders_attributes) {
             if (menus_order.menu_id === item_id) {
-              found++
+              found++;
               const qty = self.$store.state.item_quantities[item_id] + 1;
               checkInventory(item_id, qty).then(function(response) {
                 menus_order.quantity += 1;
                 self.$store.commit("increment_item_qty", item_id);
-                event.target.classList.remove('disabled')
+                event.target.classList.remove("disabled");
               }, outOfStock);
               return;
             }
@@ -296,14 +296,14 @@ export default {
               } else {
                 self.$store.commit("new_item_qty", item_id);
               }
-              event.target.classList.remove('disabled')
+              event.target.classList.remove("disabled");
             }, outOfStock);
           }
         }
       }
     },
     removeItem: function(item, date, event) {
-      event.target.classList.add('disabled')
+      event.target.classList.add("disabled");
       const self = this;
       const item_id = item.menu_id;
 
@@ -319,11 +319,11 @@ export default {
                 order.menus_orders_attributes.splice(index, 1);
               }
               self.$store.commit("decrement_item_qty", item_id);
-              event.target.classList.remove('disabled')
+              event.target.classList.remove("disabled");
               return;
             }
           }
-          event.target.classList.remove('disabled')
+          event.target.classList.remove("disabled");
         }
       }
     },
@@ -425,9 +425,14 @@ export default {
         .filter(taxed)
         .reduce((sum, item) => {
           const tax = self.tax / 100;
-          const totalTaxRemove = parseFloat(item.attributes.price) * tax;
-          return (sum += totalTaxRemove.toFixed(2) * quantity[item.id]);
+          return sum += parseFloat(item.attributes.price) * tax * quantity[item.id];
         }, 0);
+    },
+    totalPlusAddOnAndTax: function(menus_orders) {
+      const self = this;
+      const total_with_addon = self.totalPlusAddOn(menus_orders)
+      const total_tax = self.taxPrice(menus_orders)
+      return (total_with_addon + total_tax).toFixed(2)
     },
     totalPlusAddOn: function(menus_orders) {
       const self = this;
@@ -457,9 +462,7 @@ export default {
     },
     totalWithoutTax: function(menus_orders, index) {
       const self = this;
-      const totalWithTax = self.totalPlusAddOn(menus_orders);
-      const taxPrice = self.taxPrice(menus_orders);
-      const total = (totalWithTax - taxPrice).toFixed(2);
+      const total = self.totalPlusAddOn(menus_orders);
 
       if (self.plan.interval === "month") {
         self.total_without_tax[`day_${index + 1}`] = total;

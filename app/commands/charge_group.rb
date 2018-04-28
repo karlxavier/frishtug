@@ -18,10 +18,11 @@ class ChargeGroup
   def charge!
     return false unless user.in_a_group?
     return false if user.is_entitled_for_discount?
-    return false if order.shipping_charge?
+    return false if order.shipping_charge.present?
     charge = StripeCharger.new(user, 5)
-    if charge.charge_shipping
-      return order.create_shipping_charge!(charge_id: charge.id)
+    response = charge.charge_shipping
+    if response != false
+      return order.create_shipping_charge!(charge_id: response.id)
     else
       errors.add(:charge, charge.errors)
     end

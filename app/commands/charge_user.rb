@@ -41,9 +41,9 @@ class ChargeUser
     return if amount_valid?
     stripe = StripeCharger.new(user, amount)
     if stripe.run
-      raise create_bill_history('Order charge').inspect
+      create_bill_history('Order charge')
     else
-      errros.add(:charge, stripe.errors)
+      errors.add(:charge, stripe.errors)
     end
     nil
   end
@@ -54,7 +54,7 @@ class ChargeUser
     if stripe.charge_excess!
       return create_bill_history('Excess charge')
     else
-      errros.add(:charge, stripe.errors)
+      errors.add(:charge, stripe.errors)
     end
     nil
   end

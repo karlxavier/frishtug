@@ -2,20 +2,15 @@ version: '2'
 
 services:
   postgres:
-    image: 'postgres:9.6-alpine'
-    environment:
-      POSTGRES_USER: 'frishtug'
-      POSTGRES_PASSWORD: 'frishtug2017!'
-    ports:
-      - '5432:5432'
+    image: 'postgres:10.3-alpine'
     volumes:
       - 'postgres:/var/lib/postgresql/data'
+    env_file:
+      - '.env'
 
   redis:
-    image: 'redis:3.2-alpine'
+    image: 'redis:4.0-alpine'
     command: redis-server --requirepass frishtug
-    ports:
-      - '6379:6379'
     volumes:
       - 'redis:/data'
 
@@ -27,7 +22,7 @@ services:
     ports:
       - '3000:3000'
     volumes:
-      - '.:/frishtug'
+      - '.:/app'
     env_file:
       - '.env'
 
@@ -36,9 +31,9 @@ services:
       - 'postgres'
       - 'redis'
     build: .
-    command: sidekiq -c 1
+    command: sidekiq -C config/sidekiq.yml.erb
     volumes:
-      - '.:/frishtug'
+      - '.:/app'
     env_file:
       - '.env'
 
@@ -50,7 +45,7 @@ services:
     ports:
       - '28080:28080'
     volumes:
-      - '.:/frishtug'
+      - '.:/app'
     env_file:
       - '.env'
 

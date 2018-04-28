@@ -43,7 +43,11 @@ const store = new Vuex.Store({
     },
     new_selected_dates(state, dates) {
       state.selected_dates.splice(0, state.selected_dates.length);
-      state.selected_dates.push(...dates);
+      if (dates instanceof Array) {
+        state.selected_dates.push(...dates);
+      } else {
+        state.selected_dates.push(dates);
+      }
     },
     new_item_qty(state, id) {
       state.item_quantities[id] = 1;
@@ -57,7 +61,17 @@ const store = new Vuex.Store({
         delete state.item_quantities[id];
       }
     }
-  }
+  },
+  plugins: [
+    vuejsStorage({
+      keys: [
+        'menu_categories',
+        'selected_dates'
+      ],
+      namespace: 'state_store',
+      storage: sessionStorage
+    })
+  ]
 });
 
 Vue.http.headers.common["X-CSRF-Token"] = document
@@ -185,6 +199,27 @@ const vm = new Vue({
     fetchMenuCategories().then(response => {
       self.$store.commit("populate_categories", response.data);
     });
+
+    const node = document.querySelector('.selected-plan');
+    if (node) {
+      const data = JSON.parse(node.getAttribute('data'))
+      const limit = parseFloat(data.limit)
+      const minimum = parseFloat(data.minimum_credit_allowed)
+      self.plan = {
+        for_type: data.for_type,
+        interval: data.interval,
+        limit: isNaN(limit) ? 0 : limit,
+        minimum: isNaN(minimum) ? 0 : minimum,
+        price: parseInt(data.price),
+        name: data.name
+      }
+      self.registration_form.plan_id = data.id
+    }
+
+
+    if(self.plan.name !== null) {
+      self.nextTab();
+    }
   },
   methods: {
     changeCompletedState: function() {

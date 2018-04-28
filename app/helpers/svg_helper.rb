@@ -1,7 +1,6 @@
 module SvgHelper
   def svg_image_tag(filename, options = {})
     assets = Rails.application.assets
-    raise assets.find_asset(filename).source.force_encoding("UTF-8").inspect
     file = File.read(Rails.root.join('public', 'packs', 'packs/images', file_name))
     file.html_safe
   end
