@@ -346,14 +346,6 @@ ActiveRecord::Schema.define(version: 20180424041432) do
     t.index ["user_id"], name: "index_referrers_on_user_id"
   end
 
-  create_table "registration_inputs", force: :cascade do |t|
-    t.string "sid"
-    t.jsonb "data"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["sid"], name: "index_registration_inputs_on_sid"
-  end
-
   create_table "schedules", force: :cascade do |t|
     t.integer "option"
     t.datetime "start_date"
@@ -476,6 +468,7 @@ ActiveRecord::Schema.define(version: 20180424041432) do
   add_foreign_key "menus", "menu_categories"
   add_foreign_key "menus", "units"
   add_foreign_key "menus_orders", "menus"
+  add_foreign_key "menus_orders", "orders"
   add_foreign_key "menus_temp_orders", "menus"
   add_foreign_key "menus_temp_orders", "temp_orders"
   add_foreign_key "order_preferences", "users"
