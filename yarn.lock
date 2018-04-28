@@ -6340,8 +6340,8 @@ vue@2.5.16, vue@^2.2.4, vue@^2.2.6:
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.5.16.tgz#07edb75e8412aaeed871ebafa99f4672584a0085"
 
 vuejs-storage@^2.2.0:
-  version "2.2.4"
-  resolved "https://registry.yarnpkg.com/vuejs-storage/-/vuejs-storage-2.2.4.tgz#cf037f8314d03c2bb5ab61ed4cd3e13a8a6c5de4"
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/vuejs-storage/-/vuejs-storage-2.3.0.tgz#e6457d9ee9d4f034740b5400447cee7eeaa38e2d"
 
 vuelidate@^0.6.2:
   version "0.6.2"

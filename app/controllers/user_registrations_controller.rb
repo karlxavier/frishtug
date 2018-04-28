@@ -1,13 +1,10 @@
 class UserRegistrationsController < ApplicationController
-  ACTIONS = %i[set_tax set_plan].freeze
   before_action :user_exists?
-  before_action *ACTIONS, only: :index
+  before_action :set_plan, only: :index
   require 'date_helpers/weeks'
   SATURDAY = 6
 
   def index
-    @registration = RegistrationForm.new
-    @plans = Plan.all.sort
   end
 
   def create
@@ -76,16 +73,8 @@ class UserRegistrationsController < ApplicationController
           )
   end
 
-  def set_date
-    @date = params[:date]
-  end
-
   def user_exists?
     redirect_to root_url, notice: 'Already signed up' if current_user
-  end
-
-  def set_tax
-    @tax_rate = Store.first.tax.rate
   end
 
   def set_plan
