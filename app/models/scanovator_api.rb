@@ -8,6 +8,7 @@ class ScanovatorApi
 
   STORE_ID = Store.first._id.freeze
   STORE_CODE = Store.first._code.freeze
+  ALLOWED_ZIP_CODES = AllowedZipCode.pluck(:zip).freeze
   ERROR_CODES = {
     SI: 'Store ID missing or incorrect ',
     SC: 'Store Code missing or incorrect ',
@@ -29,8 +30,10 @@ class ScanovatorApi
 
   class << self
     def new_order order
+      return unless address_allowed?(order)
+      raise "test" unless valid_address?(order)
       response = get("/new_order?#{new_order_query(order)}")
-      process_response response.body
+      OpenStruct.new(JSON.parse(response.body))
     end
 
     def fetch order_id
@@ -44,6 +47,22 @@ class ScanovatorApi
     end
 
     private
+
+    def valid_address?(order)
+      full_address = order.user.active_address.full_address
+      coordinates = Geocoder.coordinates(full_address)
+      raise coordinates.inspect
+    end
+
+    def address_allowed?(order)
+      zip = order.user.active_address.zip_code
+      if ALLOWED_ZIP_CODES.include?(zip)
+        true
+      else
+        errors.add(:address, "Zip code #{zip} is not allowed")
+        false
+      end
+    end
 
     def process_response response
       sanitize_response = strip_tag response

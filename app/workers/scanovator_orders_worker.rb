@@ -7,8 +7,8 @@ class ScanovatorOrdersWorker
     orders.each do |order|
       next if order.fresh?
       scanovator_api = ScanovatorApi.new_order(order)
-      if scanovator_api.errors
-        Rails.logger.info scanovator_api.errors.full_messages.join(', ')
+      if scanovator_api.error
+        Rails.logger.info scanovator_api.error
       end
     end
   end
