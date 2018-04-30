@@ -61,17 +61,7 @@ const store = new Vuex.Store({
         delete state.item_quantities[id];
       }
     }
-  },
-  plugins: [
-    vuejsStorage({
-      keys: [
-        'menu_categories',
-        'selected_dates'
-      ],
-      namespace: 'state_store',
-      storage: sessionStorage
-    })
-  ]
+  }
 });
 
 Vue.http.headers.common["X-CSRF-Token"] = document
