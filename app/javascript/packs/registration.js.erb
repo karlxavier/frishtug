@@ -287,6 +287,7 @@ const vm = new Vue({
             buttonsStyling: false
           }).then(function(result) {
             if (result) {
+              sessionStorage.clear();
               window.location.href = response.body.redirect_to;
             }
           });
@@ -295,6 +296,7 @@ const vm = new Vue({
             "Sign up complete!. You are being redirect to your dashboard..."
           );
         }
+        sessionStorage.clear();
         window.location.href = response.body.redirect_to;
       };
 
