@@ -1,6 +1,6 @@
 <template>
   <div class="row justify-content-center align-items-center" style="margin-top: 1.6rem;">
-    <div class="col-12 col-md-4" style="margin-bottom: 1rem;">
+    <div class="col-md-6 col-md-offset-4" style="margin-bottom: 1rem;">
       <h3 class="text-uppercase text-center">Delivery Information</h3>
       <div class="row justify-content-center">
         <div class="col-10">

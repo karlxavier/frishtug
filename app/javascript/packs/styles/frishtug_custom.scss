@@ -852,7 +852,7 @@ table.table {
 
 .footer {
     display: flex;
-    height: 50px;
+    padding: 20px;
     background: #dbdbdb;
     align-items: center;
     &__copyright {
@@ -1693,4 +1693,43 @@ button.toast-close-button {
         padding: 15px 15px 15px 50px;
         width: 25em
     }
+}
+
+@media all and (min-width: 1201px) and (max-width: 9999px) {
+    
+    .navbar-right {
+        float: right!important;
+        margin-right: -15px;
+    }
+    .navbar-collapse.collapse {
+        display: block!important;
+        height: auto!important;
+        padding-bottom: 0;
+        overflow: visible!important;
+    }
+
+    .navbar-expand-lg .navbar-nav {
+        -webkit-box-orient: horizontal!important;
+        -webkit-box-direction: normal!important;
+        -ms-flex-direction: row!important;
+        flex-direction: row!important;
+    }
+}
+
+@media all and (max-width:1201px) {
+    #navbar-main.navbar .navbar-brand {
+        float:none;
+        display: block;
+    }
+    #navbar-main.navbar .navbar-nav>.nav-item {
+        float: none;
+        margin-left: .1rem;
+    }
+    #navbar-main.navbar .navbar-nav {
+        float:none !important;
+    }
+}
+
+.btn-block {
+    white-space: normal;
 }

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="row justify-content-center align-items-center mt-4">
-      <div class="col-12 col-md-6">
+      <div class="col-md-8 col-md-offset-2">
         <h4 class="text-center text-uppercase">
           Choose Delivery Day
         </h4>
@@ -15,7 +15,7 @@
     </div>
 
     <div class="row justify-content-center my-4" v-if="plan.interval === 'month' ">
-      <div class="col-4 text-center">
+      <div class="col-md-8 col-md-offset-2 text-center">
         <a href="javascript:void(0)" :class="`btn btn-brown-outline p-4 schedule-btns ${monday_to_friday_is_active}`"
           @click="setSchedule(earliest_monday, 'monday_to_friday')">
           Monday To Friday
@@ -28,7 +28,7 @@
     </div>
 
     <div class="row justify-content-center mb-4">
-      <div class="col-md-3" v-for="(calendar, index) in calendars" v-bind:key="`${index}--calendar`">
+      <div class="col-md-4" v-for="(calendar, index) in calendars" v-bind:key="`${index}--calendar`">
         <div class="calendar-errors"></div>
         <div class="calendar-container">
           <calendar

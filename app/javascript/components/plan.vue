@@ -28,7 +28,7 @@
           </div>
           <div class="card-footer card__plan_footer">
             <a href="javascript:void(0)"
-              class="btn btn-brown plan--btns"
+              class="btn btn-block btn-brown plan--btns"
               @click="choosePlan(plan)">
               Choose {{ plan.attributes.name }}
             </a>

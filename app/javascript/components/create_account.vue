@@ -1,6 +1,6 @@
 <template>
   <div class="row justify-content-center align-items-start sign-up-step__container">
-    <div class="col-12 col-md-4 sign-up-step__body">
+    <div class="col-md-6 col-md-offset-4 sign-up-step__body">
       <h3 class="text-uppercase text-center">Sign Up: Create Account</h3>
       <div class="row justify-content-center">
         <div class="col-10">
