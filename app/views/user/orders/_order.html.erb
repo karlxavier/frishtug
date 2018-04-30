@@ -88,6 +88,10 @@
   <%= display_warning(order.sub_total) %>
 </div>
 
+<div class="pending_credits_notice">
+  <%= display_pending_credits(order) %>
+</div>
+
 <div class="row mt-4">
   <div class="col">
     <% is_disabled = "disabled" unless order.menus.present? %>

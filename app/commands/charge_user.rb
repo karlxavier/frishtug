@@ -5,7 +5,7 @@ class ChargeUser
   def initialize(order, user)
     @user = user
     @order = order
-    @amount = 0
+    @amount_to_pay = 0
   end
 
   def call
@@ -15,7 +15,6 @@ class ChargeUser
   private
 
   attr_reader :order, :user
-  attr_accessor :amount
 
   def charge_user!
     subscribed? ? charge_excess! : charge!
@@ -38,8 +37,9 @@ class ChargeUser
   end
 
   def charge!
-    return if amount_valid?
-    stripe = StripeCharger.new(user, amount)
+    calculate_payment
+    return unless amount_valid?
+    stripe = StripeCharger.new(user, @amount_to_pay)
     if stripe.run
       create_bill_history('Order charge')
     else
@@ -49,8 +49,9 @@ class ChargeUser
   end
 
   def charge_excess!
-    return if amount_valid?
-    stripe = StripeCharger.new(user, amount)
+    calculate_payment
+    return unless amount_valid?
+    stripe = StripeCharger.new(user, @amount_to_pay)
     if stripe.charge_excess!
       return create_bill_history('Excess charge')
     else
@@ -61,7 +62,7 @@ class ChargeUser
 
   def create_bill_history(description)
     order.bill_histories.create!(
-      amount_paid: amount,
+      amount_paid: @amount_to_pay,
       user: user,
       description: description,
       billed_at: order.placed_on
@@ -70,16 +71,39 @@ class ChargeUser
     order
   end
 
-  def amount_to_pay
+  def calculate_payment
     if subscribed?
-      amount = OrderCalculator.new(order).total
-    else
       amount = OrderCalculator.new(order).total_excess(plan_limit)
+    else
+      amount = OrderCalculator.new(order).total
     end
     amount -= last_bill_amount
+    @amount_to_pay = deduct_pending_credit(amount)
   end
 
   def amount_valid?
-    amount_to_pay < STRIPE_MINIMUM_AMOUNT
+    @amount_to_pay > STRIPE_MINIMUM_AMOUNT
+  end
+
+  def pending_credit
+    user.pending_credits.activate_on(order.placed_on)
+  end
+
+  def deduct_pending_credit(amount)
+    return amount unless pending_credit.present?
+
+    pending_amount = pending_credit.amount || 0
+    total = 0
+
+    return unless pending_amount > 0
+    total = pending_amount - amount
+    if total < 0
+      pending_credit.destroy
+      return total.abs
+    else
+      pending_credit.amount = total
+      pending_credit.save
+      return 0
+    end
   end
 end

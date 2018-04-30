@@ -1,20 +1,26 @@
 <h6>Copy Week</h6>
 <div class="row">
-  <%= form_with url: user_copy_meals_path, local: true do |f| %>
-    <div class="col">
-      <div class="form-group row">
-        <div class="col">
-          <%= f.label :from %>
-          <%= f.select :from, options_for_select(@from_options), {}, class: 'form-control' %>
-        </div>
-        <div class="col">
-          <%= f.label :to %>
-          <%= f.select :to, options_for_select(@to_options), {}, class: 'form-control' %>
+  <% if @to_options.present? %>
+    <%= form_with url: user_copy_meals_path, local: true do |f| %>
+      <div class="col">
+        <div class="form-group row">
+          <div class="col">
+            <%= f.label :from %>
+            <%= f.select :from, options_for_select(@from_options), {}, class: 'form-control' %>
+          </div>
+          <div class="col">
+            <%= f.label :to %>
+            <%= f.select :to, options_for_select(@to_options), {}, class: 'form-control' %>
+          </div>
         </div>
       </div>
-    </div>
+      <div class="col">
+        <%= f.submit 'Copy', class: 'btn btn-brown text-uppercase' %>
+      </div>
+    <% end %>
+  <% else %>
     <div class="col">
-      <%= f.submit 'Copy', class: 'btn btn-brown text-uppercase' %>
+      <small>Create your first 5 orders, In order to activate copying of weekly meals</small>
     </div>
   <% end %>
 </div>

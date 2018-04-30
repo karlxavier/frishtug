@@ -1,5 +1,5 @@
 class User::WeeklyMealsController < User::BaseController
-  before_action :user_can_order?, :set_new_order, :check_order!, :check_schedule!, only: :new
+  before_action :user_can_order?, :check_order!, :check_schedule!, :set_new_order, only: :new
   before_action :set_order_for_edit, :editable?, only: :edit
   before_action :set_category_and_menus, :set_orders_for_option_select, only: %i[new edit]
   before_action :set_date_range, :set_date, only: :index
@@ -17,14 +17,14 @@ class User::WeeklyMealsController < User::BaseController
       weekly_scheduler = WeeklyScheduler.new(current_user)
       @from_options = weekly_scheduler.get_schedules_for_selection!
       @to_options = weekly_scheduler.create_schedule_for_selection!
-      @available_dates = weekly_scheduler.create_schedule!.in_groups_of(5)
+      @available_dates = weekly_scheduler.create_schedule!&.in_groups_of(5)
     end
   end
 
   def new
     if current_user.subscribed?
       weekly_scheduler = WeeklyScheduler.new(current_user)
-      dates = weekly_scheduler.create_schedule!.in_groups_of(5)
+      dates = weekly_scheduler.create_schedule!&.in_groups_of(5)
       @available_dates = dates.first if params[:schedule] == 'second'
       @available_dates = dates.second if params[:schedule] == 'third'
       @available_dates = dates.third if params[:schedule] == 'fourth'

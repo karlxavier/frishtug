@@ -28,7 +28,7 @@
 
 class User < ApplicationRecord
   include Groupable
-  has_many :user_notifications
+  has_many :user_notifications, dependent: :destroy
   has_many :addresses, as: :addressable, dependent: :destroy
   has_many :credit_cards, dependent: :destroy
   has_many :checkings, dependent: :destroy
@@ -122,7 +122,9 @@ class User < ApplicationRecord
   end
 
   def orders_completed?
-    orders.where(status: [:processing, :completed, :cancelled]).count % 20 == 0
+    counter = orders.where(status: [:processing, :completed, :cancelled]).count
+    return false if counter.zero?
+    counter % 20 == 0
   end
 
   private

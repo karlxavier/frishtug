@@ -89,7 +89,7 @@ class SubscriptionProcessor
   end
 
   def start_date
-    user.schedule.start_date.strftime('%Y-%m-%d')
+    user.schedule.start_date&.strftime('%Y-%m-%d')
   end
 
   def mode

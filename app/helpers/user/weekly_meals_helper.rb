@@ -25,16 +25,6 @@ module User::WeeklyMealsHelper
 
   def calendar_url(date, active_this_week, active_orders, available_dates)
     url = "javascript:void(0)"
-    if date > Date.current && !date.saturday?
-      if current_user.subscribed?
-        sched = 'second' if available_dates.first.include?(date)
-        sched = 'third' if available_dates.second.include?(date)
-        sched = 'fourth' if available_dates.third.include?(date)
-        url = new_user_weekly_meal_path(date: date, schedule: sched)
-      else
-        url = new_user_weekly_meal_path(date: date)
-      end
-    end
 
     if active_this_week.flatten.include?(date.to_s) || active_orders.flatten.include?(date.to_s)
       url = edit_user_weekly_meals_path(date: date)
@@ -43,6 +33,23 @@ module User::WeeklyMealsHelper
     if current_user.schedule.present?
       return "javascript:void(0)" if date.sunday? && current_user.schedule.monday_to_friday?
       return "javascript:void(0)" if date.friday? && current_user.schedule.sunday_to_thursday?
+    end
+
+    if date >= Date.current && !date.saturday?
+      if current_user.subscribed?
+        sched_list = %w[first second third fourth]
+        list_length = available_dates.count
+        sched = ''
+        available_dates.each_with_index do |dates, index|
+          new_index = list_length == 3 ? index + 1 : index
+          if dates.include?(date)
+            sched = sched_list[new_index]
+          end
+        end
+        url = new_user_weekly_meal_path(date: date, schedule: sched)
+      else
+        url = new_user_weekly_meal_path(date: date)
+      end
     end
 
     url
@@ -140,6 +147,17 @@ module User::WeeklyMealsHelper
         credits available.
           EOF
       end
+    end
+  end
+
+  def display_pending_credits(order)
+    return nil unless order.present?
+    pending_credit = current_user.pending_credits.activate_on(order.placed_on)
+    return nil unless pending_credit.present?
+    content_tag :small, class: 'alert alert-info d-flex', style: 'font-size: 9px; width: 100%' do
+      content_tag(:i, nil, class: 'fa fa-exclamation-circle font-size-24 pr-1') + <<-EOF
+       You have #{to_currency(pending_credit.amount)} of credits available. Your excess will be deducted to your pending credit.
+      EOF
     end
   end
 
