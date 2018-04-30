@@ -1,5 +1,6 @@
 const toCurrency = (number) => {
-  return parseFloat(number).toLocaleString('en-US', {
+  const num = isNaN(number) ? 0 : number
+  return parseFloat(num).toLocaleString('en-US', {
     style: 'currency',
     currency: 'USD'
   })

@@ -95,7 +95,7 @@ class Order < ApplicationRecord
   end
 
   def self.pluck_placed_on
-    order(placed_on: :asc).pluck(:placed_on).map {|p| p.strftime('%Y-%m-%d')}.in_groups_of(5)
+    order(placed_on: :asc).pluck(:placed_on).map {|p| p&.strftime('%Y-%m-%d')}.in_groups_of(5)
   end
 
   private
@@ -106,7 +106,7 @@ class Order < ApplicationRecord
 
   def create_pending_credit
     blackout_dates = BlackoutDate.pluck_dates
-    return unless blackout_dates.include?(placed_on.strftime('%B %d'))
+    return unless blackout_dates.include?(placed_on&.strftime('%B %d'))
     total = OrderCalculator.new(self).total
     return unless total > 0
     user.pending_credits.create!(

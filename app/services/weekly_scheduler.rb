@@ -1,10 +1,19 @@
 class WeeklyScheduler < ScheduleMaker
+
+  def initialize(user)
+    @user = user
+    @schedule = user.schedule.try(:option)
+    @last_five_orders = user.orders.last(5)
+    @orders = user.orders
+    @number_to_generate = @orders.count % 20 == 0 ? 20 : 15
+  end
+
   def create_schedule!
-    generate_schedule
+    generate_schedule(@number_to_generate)
   end
 
   def create_schedule_for_selection!
-    create_selection_from(generate_schedule)
+    create_selection_from(generate_schedule(@number_to_generate))
   end
 
   def get_schedules_for_selection!
@@ -24,6 +33,7 @@ class WeeklyScheduler < ScheduleMaker
   attr_accessor :user
 
   def create_selection_from(results)
+    return nil unless results.present?
     range = DateRange.new(results.first.beginning_of_day, results.last.end_of_day)
     dates = user.orders.placed_between?(range).map { |o| o.placed_on.to_date }
     results = results - dates

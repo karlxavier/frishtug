@@ -14,4 +14,9 @@
 
 class PendingCredit < ApplicationRecord
   belongs_to :user
+
+  def self.activate_on(date)
+    return nil unless date.present?
+    where('activation_date <= ?', date.end_of_day).first
+  end
 end
