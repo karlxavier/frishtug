@@ -24,13 +24,13 @@
           menu_id: menu.id,
           format: :js
         ),
-        class: 'dark-font-color',
+        class: 'chocolate-font-color',
         id: "new-btn--nutritional-data--#{menu.id}",
         remote: true %>
   <% else %>
     <%= link_to "Add Nutritional Data",
     new_admin_nutritional_datum_path(menu_id: menu.id, format: :js),
-    class: 'dark-font-color',
+    class: 'chocolate-font-color',
     id: "new-btn--nutritional-data--#{menu.id}",
     remote: true %>
   <% end %>
