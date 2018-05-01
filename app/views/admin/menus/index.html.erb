@@ -7,7 +7,7 @@
       <% @menus.each.with_index do |category, index| %>
         <div class="tab-pane fade <%= 'show active' if index == 0 %>" id="category_<%= category.id %>" aria-expanded="<%= index == 0 %>">
           <div class="row mx-0 <%= "#{category.name.parameterize}-items" %>">
-            <%= link_to '+ Add Menu Item', new_admin_menu_path(category: category.id, format: :js), class: 'add-menu-item rounded-0', remote: true
+            <%= link_to '+ Add Menu Item', new_admin_menu_path(category: category.id, format: :js), class: 'add-menu-item rounded-0 mt-3', remote: true
             %>
             <% category.menus.sort.each do |menu| %>
               <%= render 'menu_card', menu: menu %>
@@ -20,8 +20,11 @@
     <%= modal_for "menu-item-modal", nil  %>
 
     <%= content_for :header_js do %>
-      <%# javascript_pack_tag 'admin/simple_dropzone' %>
       <%= javascript_pack_tag 'admin/menu' %>
+    <% end %>
+
+    <%= content_for :footer_js do %>
+      <%= javascript_pack_tag 'admin/nutritional_data' %>
     <% end %>
   </div>
 <% end %>

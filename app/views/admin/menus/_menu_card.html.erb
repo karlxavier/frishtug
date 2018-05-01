@@ -1,4 +1,4 @@
-<div class="col-12 col-sm-4 col-md-4 col-xl-3" id="<%= menu.name.parameterize %>">
+<div class="col-12 col-sm-4 col-md-4 col-xl-3 mt-3" id="<%= menu.name.parameterize %>">
   <div class="card border-0 <%= 'draft-card' if !menu.published? %>">
     <%= link_to edit_admin_menu_path(menu.id, format: :js), class: "#{menu.name.parameterize}", remote: true do %>
         <%= cl_image_tag menu.asset.image.medium,
@@ -17,4 +17,21 @@
       </a>
     </div>
   </div>
+  <% if menu.nutritional_data.present? %>
+    <%= link_to "Edit Nutritional Data",
+        edit_admin_nutritional_datum_path(
+          menu.nutritional_data,
+          menu_id: menu.id,
+          format: :js
+        ),
+        class: 'dark-font-color',
+        id: "new-btn--nutritional-data--#{menu.id}",
+        remote: true %>
+  <% else %>
+    <%= link_to "Add Nutritional Data",
+    new_admin_nutritional_datum_path(menu_id: menu.id, format: :js),
+    class: 'dark-font-color',
+    id: "new-btn--nutritional-data--#{menu.id}",
+    remote: true %>
+  <% end %>
 </div>
