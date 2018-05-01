@@ -135,6 +135,7 @@ export default {
       }, {})
 
       const calculate_tax = (price, quantity) => {
+        if (price == null) { return 0 }
         const taxPercent = self.tax / 100
         return price * quantity * taxPercent
       };

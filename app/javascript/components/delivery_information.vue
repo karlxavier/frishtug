@@ -261,7 +261,7 @@ export default {
           address.state
         ].filter(e => !!e).join(", ");
 
-        validate_address(full_address).then(response => {
+        validate_address(encodeURIComponent(full_address).replace(/%20/g, '+')).then(response => {
           if (!response) {
             invalid.push(full_address);
           }

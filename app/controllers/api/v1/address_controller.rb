@@ -1,10 +1,10 @@
 class Api::V1::AddressController < Api::V1::BaseController
   def index
     if location
-      @coordinates = Geocoder.coordinates(location)
+      @coordinates = Geocoder.search(location)
       render json: {
         status: 'success',
-        coordinates: @coordinates,
+        data: @coordinates.first.data,
         valid: !@coordinates.nil?
       }, status: :ok
     else
