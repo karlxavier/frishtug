@@ -1,0 +1,8 @@
+(function() {
+  $('#menu-item-modal .modal-body')
+  .html('<%= j render 'form' %>');
+  $('#menu-item-modal .modal-title')
+    .html('Nutritional Data for <%= @menu.name %>');
+  $('#menu-item-modal').modal('show');
+  mountVm();
+}())

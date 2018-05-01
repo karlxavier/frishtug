@@ -19,6 +19,7 @@ namespace :api do
     resources :order_status, only: :index
     resources :user_informations, only: :index
     resources :suggestion_complaints, only: :create
+    resources :nutritional_data, onyl: %i[index show]
 
     namespace :users do
       resources :authenticate, only: :create
