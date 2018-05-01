@@ -54,7 +54,8 @@
                   placeholder="State"
                   class="form-control"
                   v-bind:class="{ 'is-invalid': $v.registration_form.addresses.$each[index].state.$error}"
-                  @input="$v.registration_form.addresses.$each[index].state.$touch">
+                  @input="$v.registration_form.addresses.$each[index].state.$touch"
+                  v-mask="'AA'">
                 <div class="invalid-feedback">
                   State is required
                 </div>

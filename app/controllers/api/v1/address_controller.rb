@@ -4,8 +4,8 @@ class Api::V1::AddressController < Api::V1::BaseController
       @coordinates = Geocoder.search(location)
       render json: {
         status: 'success',
-        data: @coordinates.first.data,
-        valid: !@coordinates.nil?
+        data: @coordinates,
+        valid: !@coordinates.blank?
       }, status: :ok
     else
       render json: {
