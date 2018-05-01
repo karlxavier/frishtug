@@ -3,7 +3,7 @@
     <%= render partial: 'user/weekly_meals/calendar', locals: {
       active_this_week: @active_this_week,
       active_orders: @active_orders,
-      calendar_date: @orders.present? ? orders.first[:placed_on].to_date : Date.current,
+      calendar_date: @orders.present? ? @orders.first[:placed_on].to_date : Date.current,
       available_dates: @available_dates,
       disable_right_control: false,
       disable_left_control: false
@@ -12,7 +12,7 @@
     <%= render partial: 'user/weekly_meals/calendar', locals: {
       active_this_week: @active_this_week,
       active_orders: @active_orders,
-      calendar_date: @orders.present? ? orders.first[:placed_on].to_date.next_month : Date.current.next_month,
+      calendar_date: @orders.present? ? @orders.first[:placed_on].to_date.next_month : Date.current.next_month,
       available_dates: @available_dates,
       disable_right_control: true,
       disable_left_control: true
