@@ -49,7 +49,7 @@
           </div>
           <div class="col-7">
             <strong class="font-size-18 font-family-lato-bold" style="color: #9bc634;">
-              {{ total_price + shipping_fee + additional_charges | to_currency }}
+              {{ total_price + shipping_fee + additional_charges + totalTax() | to_currency }}
             </strong>
           </div>
         </div>
@@ -147,7 +147,7 @@ export default {
           0
         );
       }, 0);
-      return total;
+      return isNaN(total) ? 0 : total;
     },
     generateToken: function() {
       const self = this;

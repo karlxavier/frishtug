@@ -184,6 +184,7 @@ export default {
     verifyOrders: function() {
       const self = this;
       let complete = false;
+      self.charges.additional_charges = 0
       const total = self.registration_form.orders.reduce((sum, order) => {
         const total = order.menus_orders_attributes.reduce(
           (sum, menus_order) => {

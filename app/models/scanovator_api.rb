@@ -51,7 +51,6 @@ class ScanovatorApi
     def valid_address?(order)
       full_address = order.user.active_address.full_address
       coordinates = Geocoder.coordinates(full_address)
-      raise coordinates.inspect
     end
 
     def address_allowed?(order)

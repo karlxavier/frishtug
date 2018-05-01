@@ -258,8 +258,7 @@ export default {
           address.line1,
           address.line2,
           address.city,
-          address.state,
-          address.zip_code
+          address.state
         ].filter(e => !!e).join(", ");
 
         validate_address(full_address).then(response => {
