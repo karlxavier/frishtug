@@ -16,6 +16,7 @@ class OrderCopier
     ActiveRecord::Base.transaction do
       clean_duplicates(dates)
       @last_five_orders.each_with_index do |order, index|
+        next unless dates[index].present?
         user_order = @user.orders.create!(order_params(dates[index], order))
         create_menus_orders(user_order, order)
       end
