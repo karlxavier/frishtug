@@ -7,6 +7,7 @@ class User::SchedulesController < User::BaseController
 
   def create
     @schedule = current_user.schedule
+    @schedule = current_user.create_schedule(option: nil) unless current_user.schedule.present?
     if @schedule.update_attributes(option: option)
       flash[:success] = "Schedule successfully changed to #{option.humanize}"
     else
@@ -22,7 +23,8 @@ class User::SchedulesController < User::BaseController
   end
 
   def user_has_schedule!
-    unless current_user.schedule.present? && current_user.subscribed?
+    unless current_user.subscribed?
+      flash[:error] = "You are not subscribe to any plan"
       redirect_back fallback_location: user_dashboard_index_path
     end
   end
