@@ -34,8 +34,8 @@ class User < ApplicationRecord
   has_many :checkings, dependent: :destroy
   has_many :comments, dependent: :destroy
   has_many :search_results, as: :searchable
-  has_one :contact_number, dependent: :destroy
-  has_one :schedule, dependent: :destroy
+  has_one  :contact_number, dependent: :destroy
+  has_one  :schedule, dependent: :destroy
   belongs_to :plan, optional: true, counter_cache: true
   has_many :orders, dependent: :destroy
   has_many :bill_histories, dependent: :destroy

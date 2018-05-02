@@ -8,7 +8,15 @@ submit_btn.addEventListener('click', (e) => {
     type: "POST",
     data: new FormData(form),
     success: function(response) {
-      swal("success", response.message, "success");
+      swal({
+        type: "success",
+        title: "Invitation",
+        text: response.message,
+        confirmButtonText: "Ok",
+        confirmButtonColor: "#582D11",
+        confirmButtonClass: "btn btn-brown text-uppercase",
+        buttonsStyling: false
+      });
     }
   });
 })

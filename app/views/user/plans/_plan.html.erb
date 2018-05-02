@@ -22,6 +22,22 @@
     </small>
   </div>
   <div class="card-footer card__plan_footer">
-    <%= link_to_btn "Choose #{plan.name}", subscribe_user_subscriptions_path(id: plan.id), 'btn-brown plan--btns' %>
+    <% if plan.for_type != 'group' %>
+      <%= link_to_btn "Choose #{plan.name}", subscribe_user_subscriptions_path(id: plan.id), 'btn-brown plan--btns' %>
+    <% else %>
+      <%= form_with url: user_subscriptions_path,
+        local: true do |f| %>
+        <%= f.hidden_field :id, value: plan.id %>
+        <div class="form-group">
+          <%= f.text_field :group_code, class: 'form-control', placeholder: 'Group Code' %>
+          <small class="form-text text-muted text-left">
+            If you are the first in the group leave group code empty and will generate a code for you.
+          </small>
+        </div>
+        <div class="form-group mt-4 mb-0">
+          <%= f.submit "Choose #{plan.name}", class: 'btn text-uppercase btn-brown plan--btns' %>
+        </div>
+      <% end %>
+    <% end %>
   </div>
 </div>

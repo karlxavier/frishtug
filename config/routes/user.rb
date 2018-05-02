@@ -7,7 +7,7 @@ namespace :user do
   resources :payment_informations do
     put :update, on: :collection
   end
-  resources :subscriptions, only: :index do
+  resources :subscriptions, only: [:index, :create] do
     collection do
       post :cancel
       get :choose_plans

@@ -37,7 +37,7 @@ class RegistrationForm
   validate  :user_email_unique?
   validates :bank_name, :account_number, :routing_number, presence: true, if: :checking?
   validates :card_number, :month, :year, :cvc, presence: true, if: :credit_card?
-  validates :stripe_token, :addresses, :orders, :schedule, presence: true
+  validates :stripe_token, :addresses, :orders, presence: true
 
   def save
     return false if invalid?
@@ -104,8 +104,7 @@ class RegistrationForm
       create_referrer(user) unless group_code.present?
       create_candidate(user) if group_code.present?
     end
-
-    user.create_schedule!(schedule_params)
+    user.create_schedule!(schedule_params) if user.plan.interval === 'month'
   end
 
   def create_candidate(user)

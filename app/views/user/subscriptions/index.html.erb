@@ -18,7 +18,7 @@
         </div>
       <% else %>
         <h6>You are not subscribe to a plan.</h6>
-        <%= link_to 'Show bill history', user_bill_histories_path %>
+        <%= link_to 'Show bill history', user_bill_histories_path,  class: 'font-size-14 chocolate-font-color' %> <br>
         <%= link_to_btn 'Choose plans', choose_plans_user_subscriptions_path %>
       <% end %>
     </div>
