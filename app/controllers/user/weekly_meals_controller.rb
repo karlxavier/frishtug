@@ -45,13 +45,6 @@ class User::WeeklyMealsController < User::BaseController
 
   def check_order!
     return unless params[:current_date].present?
-    date = parsed_date(params[:current_date])
-    range = DateRange.new(date.beginning_of_day, date.end_of_day)
-    order = current_user.orders.placed_between?(range).first
-    if order.fresh?
-      flash[:error] = "Please complete your order for #{date.strftime('%^A')}"
-      redirect_back fallback_location: request.referer
-    end
   end
 
   def set_date

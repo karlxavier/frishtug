@@ -3,7 +3,7 @@ class WeeklyScheduler < ScheduleMaker
   def initialize(user)
     @user = user
     @schedule = user.schedule.try(:option)
-    @last_five_orders = user.orders.last(5)
+    @last_five_orders = user.orders.first(5)
     @orders = user.orders
     @number_to_generate = @orders.count % 20 == 0 ? 20 : 15
   end

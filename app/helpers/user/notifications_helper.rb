@@ -3,10 +3,11 @@ module User::NotificationsHelper
     return nil unless current_user.plan
     return nil if current_user.plan.interval != 'month'
     return nil if current_user.orders.count >= 20
-    remaining_days = 20 - current_user.orders.count
-    remaining_weeks = remaining_days / 5
-    orders_to_complete = remaining_weeks.zero? ?
-      pluralize(remaining_days, 'day') : pluralize(remaining_weeks, 'week')
+    days = 20 - current_user.orders.processing.count
+    remaining_weeks = days / 5
+    remaining_days = days % 5
+    orders_to_complete = "#{pluralize(remaining_weeks, 'week')} #{ "and " + pluralize(remaining_days, 'day') unless remaining_days.zero?}"
+
     content_tag :div, class: 'alert alert-info' do
       ("You must complete your plan, you still have #{orders_to_complete} to fill " +
       link_to('click here', user_weekly_meals_path)).html_safe

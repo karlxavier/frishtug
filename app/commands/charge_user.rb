@@ -99,11 +99,20 @@ class ChargeUser
     total = pending_amount - amount
     if total < 0
       pending_credit.destroy
+      create_pending_remarks(pending_amount)
       return total.abs
     else
       pending_credit.amount = total
       pending_credit.save
+      remarks_amount = amount - pending_amount
+      create_pending_remarks(remarks_amount.abs)
       return 0
     end
+  end
+
+  def create_pending_remarks(amount)
+    return if amount <= 0
+    order.remarks = "Used pending credit amount of #{amount.to_f}"
+    order.save
   end
 end

@@ -25,9 +25,10 @@ module User::WeeklyMealsHelper
 
   def calendar_url(date, active_this_week, active_orders, available_dates)
     url = "javascript:void(0)"
+    db_date = date.to_formatted_s(:db)
 
-    if active_this_week.flatten.include?(date.to_s) || active_orders.flatten.include?(date.to_s)
-      url = edit_user_weekly_meals_path(date: date)
+    if active_this_week.flatten.include?(db_date) || active_orders.flatten.include?(db_date)
+      return edit_user_weekly_meals_path(date: date)
     end
 
     if current_user.schedule.present?
