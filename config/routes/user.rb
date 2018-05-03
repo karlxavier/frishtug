@@ -45,4 +45,5 @@ namespace :user do
   resources :bill_histories, only: :index
   resources :invitations, only: :create
   resources :set_active_addresses, only: :index
+  resources :nutritional_data, only: :index
 end

@@ -79,18 +79,31 @@ const addOnsHandler = (e) => {
   })
 }
 
+const modalHandler = (event) => {
+  const menu_id = event.target.dataset.menuId
+  if (menu_id) {
+    Rails.ajax({
+      url: `/user/nutritional_data?menu_id=${menu_id}`,
+      type: 'GET'
+    })
+  }
+}
+
 
 (function(){
-  const mainContainer = document.querySelector('#root-container')
-  mainContainer.classList.remove('pt-4')
-  mainContainer.classList.remove('container')
-  mainContainer.classList.add('container-fluid')
+  const mainContainer = document.querySelector('#root-container');
+  const menuEntries = document.querySelector("#menu-entries");
+  mainContainer.classList.remove('pt-4');
+  mainContainer.classList.remove('container');
+  mainContainer.classList.add('container-fluid');
   if (localStorage.getItem('sidebar_state') === 'shown') {
     showSideBar();
   } else {
-    hideSidebar()
+    hideSidebar();
   }
   Array.from(addOns).forEach( addOn => {
-    addOn.addEventListener('click', addOnsHandler)
+    addOn.addEventListener('click', addOnsHandler);
   })
+
+  menuEntries.addEventListener('click', modalHandler);
 }())

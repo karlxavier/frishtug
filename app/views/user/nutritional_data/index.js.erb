@@ -1,0 +1,9 @@
+<% if @nutritional_data.present? %>
+  (function() {
+    $('#nutritional-data-modal .modal-body')
+    .html('<%= j render 'nutritional_data' %>');
+    $('#nutritional-data-modal .modal-title')
+      .html('<%= @nutritional_data.menu.name %>')
+    $('#nutritional-data-modal').modal('show');
+  }())
+<% end %>

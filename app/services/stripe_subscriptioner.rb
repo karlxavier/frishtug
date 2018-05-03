@@ -91,6 +91,8 @@ class StripeSubscriptioner
   end
 
   def billing_cycle_anchor
-    user.orders.first.placed_on.to_i
+    first_placed_order = user.orders.first.placed_on
+    return Time.current.to_i if first_placed_order < Time.current
+    first_placed_order.to_i
   end
 end

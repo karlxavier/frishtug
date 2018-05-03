@@ -37,7 +37,8 @@ class User::WeeklyMealsController < User::BaseController
   private
 
   def user_has_schedule!
-    unless current_user.subscribed? && current_user.schedule.present?
+    return unless current_user.subscribed?
+    unless current_user.schedule.present?
       flash[:notice] = "Please select a schedule in the schedule information page"
       redirect_to user_dashboard_index_path
     end

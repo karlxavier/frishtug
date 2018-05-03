@@ -1,0 +1,153 @@
+
+<div class="row">
+  <div class="col-md-12">
+      <section class="performance-facts">
+        <header class="performance-facts__header">
+          <h2 class="performance-facts__title">Nutrition Facts</h2>
+          <p>Serving Size <%= @nutritional_data.data["serving_size"] %>
+          <p>Serving Per Container <%= @nutritional_data.data["servings_per_container"] %></p>
+        </header>
+        <table class="performance-facts__table">
+          <thead>
+            <tr>
+              <th colspan="3" class="small-info">
+                Amount Per Serving
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th colspan="2">
+                <b>Calories</b>
+                <%= @nutritional_data.data["calories"] %>
+              </th>
+              <td>
+                Calories from Fat
+                <%= @nutritional_data.data["calories_from_fat"] %>
+              </td>
+            </tr>
+            <tr class="thick-row">
+              <td colspan="3" class="small-info">
+                <b>% Daily Value*</b>
+              </td>
+            </tr>
+            <tr>
+              <th colspan="2">
+                <b>Total Fat</b>
+                <%= @nutritional_data.data["daily_values"][0]["value"] %>
+              </th>
+              <td>
+                <b><%= @nutritional_data.data["daily_values"][0]["percent_daily_value"] %></b>
+              </td>
+            </tr>
+            <tr>
+              <td class="blank-cell">
+              </td>
+              <th>
+                Saturated Fat
+                <%= @nutritional_data.data["daily_values"][1]["value"] %>
+              </th>
+              <td>
+                <b><%= @nutritional_data.data["daily_values"][1]["percent_daily_value"] %></b>
+              </td>
+            </tr>
+            <tr>
+              <td class="blank-cell">
+              </td>
+              <th>
+                Trans Fat
+                <%= @nutritional_data.data["daily_values"][2]["value"] %>
+              </th>
+              <td>
+                <b><%= @nutritional_data.data["daily_values"][2]["percent_daily_value"] %></b>
+              </td>
+            </tr>
+            <tr>
+              <th colspan="2">
+                <b>Cholesterol</b>
+                <%= @nutritional_data.data["daily_values"][3]["value"] %>
+              </th>
+              <td>
+                <b><%= @nutritional_data.data["daily_values"][3]["percent_daily_value"] %></b>
+              </td>
+            </tr>
+            <tr>
+              <th colspan="2">
+                <b>Sodium</b>
+                <%= @nutritional_data.data["daily_values"][4]["value"] %>
+              </th>
+              <td>
+                <b><%= @nutritional_data.data["daily_values"][4]["percent_daily_value"] %></b>
+              </td>
+            </tr>
+            <tr>
+              <th colspan="2">
+                <b>Total Carbohydrate</b>
+                <%= @nutritional_data.data["daily_values"][5]["value"] %>
+              </th>
+              <td>
+                <b><%= @nutritional_data.data["daily_values"][5]["percent_daily_value"] %></b>
+              </td>
+            </tr>
+            <tr>
+              <td class="blank-cell">
+              </td>
+              <th>
+                Dietary Fiber
+                <%= @nutritional_data.data["daily_values"][6]["value"] %>
+              </th>
+              <td>
+                <b><%= @nutritional_data.data["daily_values"][6]["percent_daily_value"] %></b>
+              </td>
+            </tr>
+            <tr>
+              <td class="blank-cell">
+              </td>
+              <th>
+                Sugars
+                <%= @nutritional_data.data["daily_values"][7]["value"] %>
+              </th>
+              <td>
+                <b><%= @nutritional_data.data["daily_values"][7]["percent_daily_value"] %></b>
+              </td>
+            </tr>
+            <tr class="thick-end">
+              <th colspan="2">
+                <b>Protein</b>
+                <%= @nutritional_data.data["daily_values"][8]["value"] %>
+              </th>
+              <td>
+                <b><%= @nutritional_data.data["daily_values"][8]["percent_daily_value"] %></b>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <table class="performance-facts__table--grid">
+          <tbody>
+            <% @nutritional_data.data["vitamins"].each do |vitamin| %>
+              <tr>
+                <td colspan="2">
+                  <%= vitamin["name"] %>
+                  <%= vitamin["percent_daily_value"] %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+
+        <p class="small-info thick-row">* <%= @nutritional_data.data["description"] %></p>
+
+        <p class="small-info">
+          Calories per gram:
+        </p>
+        <p class="small-info text-center">
+          Fat <%= @nutritional_data.data["daily_values"][0]["value"] %>
+          &bull;
+          Carbohydrate <%= @nutritional_data.data["daily_values"][5]["value"] %>
+          &bull;
+          Protein <%= @nutritional_data.data["daily_values"][8]["value"] %>
+        </p>
+      </section>
+  </div>
+</div>
