@@ -1,0 +1,74 @@
+<div id="nutritional_data_form"
+  data="<%= @nutritional_data.to_json(except: %[created_at updated_at]) %>">
+  <form>
+    <div class="form-group row mx-0">
+      <div class="col">
+        <label for="serving_size">Serving Size</label>
+        <input type="text" name="serving_size" class="form-control" v-model="nutritional_data.data.serving_size">
+      </div>
+      <div class="col">
+        <label for="servings_per_container">Servings Per Container</label>
+        <input type="text" name="servings_per_container" class="form-control" v-model="nutritional_data.data.servings_per_container">
+      </div>
+    </div>
+    <div class="form-group row mx-0">
+      <div class="col">
+        <label for="calories">Calories</label>
+        <input type="text" name="calories" class="form-control" v-model="nutritional_data.data.calories">
+      </div>
+      <div class="col">
+        <label for="calories_from_fat">Calories From Fat</label>
+        <input type="text" name="calories_from_fat" class="form-control" v-model="nutritional_data.data.calories_from_fat">
+      </div>
+    </div>
+    <div class="form-group row mx-0" v-for="nutrient in nutritional_data.data.daily_values">
+      <div class="col">
+        <label for="">{{ nutrient.name }}</label>
+        <input type="text" name="serving_size" class="form-control" v-model="nutrient.value">
+      </div>
+      <div class="col">
+        <label for="">% Daily Value</label>
+        <input type="text" name="serving_size" class="form-control" v-model="nutrient.percent_daily_value">
+      </div>
+    </div>
+    <div class="form-group row mx-0" v-for="(vitamin, index) in nutritional_data.data.vitamins">
+      <div class="col">
+        <label for="">Name</label>
+        <input type="text" name="serving_size" class="form-control" v-model="vitamin.name">
+      </div>
+      <div class="col">
+        <label for="" class="d-block">
+          % Daily Value
+          <a href="#" @click="remove(index)" class="float-right badge badge-secondary">
+            <i class="fa fa-remove"></i> Remove
+          </a>
+        </label>
+        <input type="text" name="serving_size" class="form-control" v-model="vitamin.percent_daily_value">
+      </div>
+    </div>
+    <div class="form-group row mx-0">
+      <div class="col">
+        <label for="size">Size</label>
+        <input type="text" name="size" v-model="nutritional_data.data.size" class="form-control">
+      </div>
+    </div>
+    <div class="form-group row mx-0">
+      <div class="col">
+        <label for="description">Description</label>
+        <%= text_area_tag :description, "{{ nutritional_data.data.description }}", size: "5x5", class: 'form-control' %>
+      </div>
+    </div>
+    <div class="form-group row mx-0">
+      <div class="col">
+        <a href="#" @click="add" class="btn btn-outline-secondary">
+          <i class="fa fa-plus"></i> Add
+        </a>
+      </div>
+      <div class="col">
+        <a href="#" @click="submit('<%= action_name %>')" class="btn btn-matterhorn float-right">
+          <%= action_name == 'new' ? "Save" : "Update" %> Nutritional Data
+        </a>
+      </div>
+    </div>
+  </form>
+</div>

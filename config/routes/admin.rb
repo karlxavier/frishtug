@@ -28,4 +28,5 @@ namespace :admin do
   resources :add_ons, only: :index
   resources :pending_credits, only: :index
   resources :suggestions, only: %i[index show]
+  resources :nutritional_data, except: %i[index show]
 end
