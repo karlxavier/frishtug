@@ -7,6 +7,7 @@ class ScanovatorOrdersWorker
     orders.each do |order|
       next if order.fresh?
       scanovator_api = ScanovatorApi.new_order(order)
+      next unless scanovator_api.present?
       if scanovator_api.error
         Rails.logger.info scanovator_api.error
       end

@@ -51,6 +51,11 @@ class ScanovatorApi
     def valid_address?(order)
       full_address = order.user.active_address.full_address
       coordinates = Geocoder.coordinates(full_address)
+      if coordinates.blank?
+        false
+      else
+        true
+      end
     end
 
     def address_allowed?(order)
@@ -58,7 +63,6 @@ class ScanovatorApi
       if ALLOWED_ZIP_CODES.include?(zip)
         true
       else
-        errors.add(:address, "Zip code #{zip} is not allowed")
         false
       end
     end
