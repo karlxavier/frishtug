@@ -47,7 +47,7 @@ module User::WeeklyMealsHelper
             sched = sched_list[new_index]
           end
         end
-        url = new_user_weekly_meal_path(date: date, schedule: sched)
+        url = new_user_weekly_meal_path(date: date, schedule: sched) if sched.present?
       else
         url = new_user_weekly_meal_path(date: date)
       end

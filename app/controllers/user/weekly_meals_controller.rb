@@ -22,13 +22,6 @@ class User::WeeklyMealsController < User::BaseController
   end
 
   def new
-    if current_user.subscribed?
-      weekly_scheduler = WeeklyScheduler.new(current_user)
-      dates = weekly_scheduler.create_schedule!&.in_groups_of(5, false)
-      @available_dates = dates.first if params[:schedule] == 'second'
-      @available_dates = dates.second if params[:schedule] == 'third'
-      @available_dates = dates.third if params[:schedule] == 'fourth'
-    end
   end
 
   def edit
@@ -49,6 +42,23 @@ class User::WeeklyMealsController < User::BaseController
     unless params[:schedule].present?
       redirect_back fallback_location: user_weekly_meals_path
     end
+    get_available_dates_from_schedule
+    is_date_included?
+  end
+
+  def get_available_dates_from_schedule
+    scheds = ["first", "second", "third", "fourth"]
+    weekly_scheduler = WeeklyScheduler.new(current_user)
+    dates = weekly_scheduler.create_schedule!&.in_groups_of(5, false)
+    @available_dates = dates.send(params[:schedule]) if scheds.include?(params[:schedule])
+  end
+
+  def is_date_included?
+    parsed_date = parse_date(params[:date])
+    unless @available_dates.include?(parsed_date)
+      flash[:error] = "#{parsed_date.strftime('%B %d')} is not include on your schedule"
+      redirect_back fallback_location: user_weekly_meals_path
+    end
   end
 
   def check_order!
@@ -56,14 +66,14 @@ class User::WeeklyMealsController < User::BaseController
   end
 
   def set_date
-    @date = parsed_date(params[:date])
+    @date = parse_date(params[:date])
   end
 
   def set_date_range
     @date_range = DateRange.new(START_DATE, START_DATE.end_of_week(:saturday))
   end
 
-  def parsed_date(date)
+  def parse_date(date)
     return first_current_order_date unless date
     Date.parse(date)
   end
