@@ -4,21 +4,17 @@ class ScheduleMaker
   def initialize(user)
     @user = user
     @schedule = user.schedule.try(:option)
-    @last_five_orders = user.orders.last(5)
+    @subscription_start = user.subscribe_at
+    @subscription_end = user.subscription_expires_at
     @orders = user.orders.processing
   end
 
   private
 
-  attr_accessor :schedule, :user, :last_five_orders
+  attr_accessor :schedule, :user, :subscription_start
 
-  def last_first_order_placed_on_date
-    last_five_orders.first.placed_on.to_date
-  end
-
-  def generate_schedule(days = 15)
-    last_order = last_first_order_placed_on_date
-    date = last_order.next_week(WDAYS[last_order.wday].to_sym)
+  def generate_schedule(days = 20)
+    date = subscription_start.to_date #.next_week(WDAYS[last_order.wday].to_sym)
     results = []
     (1..days).map do |i|
       date = ScheduleGenerator.new(date, schedule).generate

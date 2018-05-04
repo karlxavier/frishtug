@@ -1,44 +1,32 @@
 class WeeklyScheduler < ScheduleMaker
 
-  def initialize(user)
-    @user = user
-    @schedule = user.schedule.try(:option)
-    @last_five_orders = user.orders.first(5)
-    @orders = user.orders
-    @number_to_generate = @orders.count % 20 == 0 || @orders.count <= 4 ? 20 : 15
-  end
-
   def create_schedule!
-    if @orders.count <= 4
-      last = @last_five_orders.first.placed_on
-      @last_five_orders.first.placed_on = last.prev_week(WDAYS[last.wday].to_sym)
-    end
-    generate_schedule(@number_to_generate)
+    generate_schedule
   end
 
   def create_schedule_for_selection!
-    if @orders.count <= 4
-      last = @last_five_orders.first.placed_on
-      @last_five_orders.first.placed_on = last.prev_week(WDAYS[last.wday].to_sym)
-    end
-    create_selection_from(generate_schedule(@number_to_generate))
+    create_selection_from(generate_schedule)
   end
 
   def get_schedules_for_selection!
     @orders.order(placed_on: :asc).in_groups_of(5, false).map do |o|
-      o = o.compact
-      if o.count == 5
-        [
-          "#{format_date(o.first&.placed_on)} - #{format_date(o.last&.placed_on)}",
-          o.map(&:id).join(',')
-        ]
-      end
+      create_array_of_dates(o)
     end
   end
 
   private
 
   attr_accessor :user
+
+  def create_array_of_dates(list)
+    list = list.compact
+    if list.count == 5
+      return [
+        "#{format_date(list.first&.placed_on)} - #{format_date(list.last&.placed_on)}",
+        list.map(&:id).join(',')
+      ]
+    end
+  end
 
   def create_selection_from(results)
     return nil unless results.present?

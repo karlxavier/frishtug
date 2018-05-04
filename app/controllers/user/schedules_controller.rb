@@ -6,9 +6,9 @@ class User::SchedulesController < User::BaseController
   end
 
   def create
-    @schedule = current_user.schedule
-    @schedule = current_user.create_schedule(option: nil) unless current_user.schedule.present?
+    @schedule = Schedule.find_or_create_by(user_id: current_user.id)
     if @schedule.update_attributes(option: option)
+      MoveOrdersSchedule.call(current_user)
       flash[:success] = "Schedule successfully changed to #{option.humanize}"
     else
       flash[:error] = "Error: #{ @schedule.errors.full_messages.join(', ') }"
