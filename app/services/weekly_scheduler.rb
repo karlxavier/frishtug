@@ -30,8 +30,7 @@ class WeeklyScheduler < ScheduleMaker
 
   def create_selection_from(results)
     return nil unless results.present?
-    range = DateRange.new(results.first.beginning_of_day, results.last.end_of_day)
-    dates = user.orders.placed_between?(range).map { |o| o.placed_on.to_date }
+    dates = user.orders.active_orders.pluck(:placed_on).map(&:to_date)
     results = results - dates
     results.in_groups_of(5, false).map do |r|
       ["#{format_date(r.first)} - #{format_date(r.last)}", r.join(',')]
