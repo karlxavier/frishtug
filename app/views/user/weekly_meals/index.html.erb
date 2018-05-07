@@ -20,6 +20,7 @@
 
     <% if current_user.subscribed? %>
       <%= render 'copy_form' %>
+      <%= render 'uncomplete_orders' if current_user.has_fresh_orders? %>
     <% end %>
   </div>
 

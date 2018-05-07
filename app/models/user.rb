@@ -127,6 +127,10 @@ class User < ApplicationRecord
     counter % 20 == 0
   end
 
+  def has_fresh_orders?
+    orders.fresh.count > 0
+  end
+
   private
 
     def delete_inactive_entry!

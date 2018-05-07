@@ -52,7 +52,7 @@ class ChargeUser
   def charge_excess!
     calculate_payment
     return unless amount_valid?
-    stripe = StripeCharger.new(user, @amount_to_pay)
+    stripe = StripeCharger.new(user, @amount_to_pay, order)
     if stripe.charge_excess!
       return create_bill_history('Excess charge')
     else

@@ -1,9 +1,10 @@
 class StripeCharger
   include ActiveModel::Validations
 
-  def initialize(user, amount)
+  def initialize(user, amount, order = nil)
     @user = user
     @amount = amount
+    @order = order
   end
 
   def run
@@ -25,7 +26,7 @@ class StripeCharger
       amount: to_cents(amount),
       currency: 'usd',
       customer: @user.stripe_customer_id,
-      description: "Excess charge"
+      description: charge_description("Excess")
     )
     true
   rescue Stripe::InvalidRequestError => e
@@ -38,7 +39,7 @@ class StripeCharger
       amount: to_cents(amount),
       currency: 'usd',
       customer: @user.stripe_customer_id,
-      description: "Excess charge"
+      description: charge_description("Tax")
     )
     response
   rescue Stripe::InvalidRequestError => e
@@ -51,7 +52,7 @@ class StripeCharger
       amount: to_cents(amount),
       currency: 'usd',
       customer: @user.stripe_customer_id,
-      description: "Shipping charge"
+      description: charge_description("Shipping")
     )
     response
   rescue Stripe::InvalidRequestError => e
@@ -61,7 +62,15 @@ class StripeCharger
 
   private
 
-  attr_accessor :amount, :user
+  attr_accessor :amount, :user, :order
+
+  def charge_description(type)
+    if order.present?
+      "#{type} charge for #{order.placed_on.strftime('%B %d, %Y')}"
+    else
+      "#{type} charge"
+    end
+  end
 
   def to_cents(amount)
     (amount.to_r * 100).to_i
