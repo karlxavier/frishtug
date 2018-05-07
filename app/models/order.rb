@@ -101,7 +101,7 @@ class Order < ApplicationRecord
   private
 
   def re_account_inventory
-    InventoryAccounter.new(self).re_account
+    InventoryAccounter.new(self).re_account if self.processing?
   end
 
   def create_pending_credit

@@ -30,11 +30,15 @@ class WeeklyScheduler < ScheduleMaker
 
   def create_selection_from(results)
     return nil unless results.present?
-    dates = user.orders.active_orders.pluck(:placed_on).map(&:to_date)
-    results = results - dates
+    results = results - removable_dates
     results.in_groups_of(5, false).map do |r|
       ["#{format_date(r.first)} - #{format_date(r.last)}", r.join(',')]
     end
+  end
+
+  def removable_dates
+    user.orders
+        .where.not(status: [:fulfilled, nil]).pluck(:placed_on).map(&:to_date)
   end
 
   def format_date(date)

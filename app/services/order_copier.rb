@@ -121,7 +121,7 @@ class OrderCopier
 
   def charge_excess!
     return unless excess.length > 0
-    excess_amount = excess.inject(:+)
+    excess_amount = excess.inject(:+).round(2)
     charge = StripeCharger.new(user, excess_amount)
     if charge.charge_excess!
       user.bill_histories.create!(

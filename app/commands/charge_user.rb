@@ -33,7 +33,8 @@ class ChargeUser
   end
 
   def last_bill_amount
-    last_bill&.amount_paid || 0
+    return 0 unless last_bill.present?
+    last_bill.amount_paid
   end
 
   def charge!
@@ -82,7 +83,7 @@ class ChargeUser
   end
 
   def amount_valid?
-    @amount_to_pay > STRIPE_MINIMUM_AMOUNT
+    @amount_to_pay >= STRIPE_MINIMUM_AMOUNT
   end
 
   def pending_credit
