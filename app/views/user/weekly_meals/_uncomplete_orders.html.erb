@@ -6,7 +6,7 @@
         Order for <%= fresh_order.placed_on.strftime('%B %d') %> not saved
       </span>
       <span class="float-right">
-        <%= link_to "Edit", edit_user_weekly_meals_path(fresh_order.placed_on.to_date), class: 'btn btn-matterhorn btn-sm' %>
+        <%= link_to "Edit", edit_user_weekly_meals_path(date: fresh_order.placed_on.to_date), class: 'btn btn-matterhorn btn-sm' %>
       </span>
     </li>
   <% end %>
