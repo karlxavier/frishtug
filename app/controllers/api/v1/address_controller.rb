@@ -1,17 +1,18 @@
 class Api::V1::AddressController < Api::V1::BaseController
   def index
-    if location
-      @coordinates = Geocoder.search(location)
+    @coordinates = Geocoder.coordinates(location)
+    if @coordinates.present?
       render json: {
         status: 'success',
         data: @coordinates,
-        valid: !@coordinates.blank?
+        valid: true
       }, status: :ok
     else
       render json: {
-        status: 'error',
-        message: 'Please provide a location to check'
-      }, status: 400
+        status: 'success',
+        data: @coordinates,
+        valid: false
+      }, status: :ok
     end
   end
 

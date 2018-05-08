@@ -1,7 +1,8 @@
 Geocoder.configure(
-  api_key: [ENV["SMARTYSTREETS_AUTH_KEY"], ENV["SMARTYSTREETS_AUTH_TOKEN"]],
-  lookup: :smarty_streets,
-  use_https: true
+  timeout: 30
+  # api_key: [ENV["SMARTYSTREETS_AUTH_KEY"], ENV["SMARTYSTREETS_AUTH_TOKEN"]],
+  # lookup: :smarty_streets,
+  # use_https: true
   # Geocoding options
   # timeout: 3,                 # geocoding service timeout (secs)
   # lookup: :google,            # name of geocoding service (symbol)

@@ -268,7 +268,8 @@ export default {
           address.line1,
           address.line2,
           address.city,
-          address.state
+          address.state,
+          address.zip_code
         ].filter(e => !!e).join(", ");
 
         validate_address(encodeURIComponent(full_address).replace(/%20/g, '+')).then(response => {

@@ -50,21 +50,13 @@ class ScanovatorApi
 
     def valid_address?(order)
       full_address = order.user.active_address.full_address
-      coordinates = Geocoder.coordinates(full_address)
-      if coordinates.blank?
-        false
-      else
-        true
-      end
+      geocode = Geocoder.coordinates(full_address)
+      geocode.blank?
     end
 
     def address_allowed?(order)
       zip = order.user.active_address.zip_code
-      if ALLOWED_ZIP_CODES.include?(zip)
-        true
-      else
-        false
-      end
+      ALLOWED_ZIP_CODES.include?(zip)
     end
 
     def process_response response
