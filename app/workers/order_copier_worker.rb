@@ -5,7 +5,7 @@ class OrderCopierWorker
     user = User.find(user_id)
     return unless user.orders.count % 20 == 0
     full_month_dates = MonthScheduler.new(user).create_full_month!
-    orders = user.orders.first(20)
+    orders = user.orders.where(status: [:completed, :processing]).last(20)
     20.times do |index|
       order = orders[index]
       new_order = user.orders.create!(
