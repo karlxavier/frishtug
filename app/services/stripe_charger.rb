@@ -29,8 +29,9 @@ class StripeCharger
       description: charge_description("Excess")
     )
     true
-  rescue Stripe::InvalidRequestError => e
+  rescue Stripe::CardError => e
     errors.add(:base, e.message)
+    create_user_notification(e, "excess_charge")
     false
   end
 
@@ -42,8 +43,9 @@ class StripeCharger
       description: charge_description("Tax")
     )
     response
-  rescue Stripe::InvalidRequestError => e
+  rescue Stripe::CardError => e
     errors.add(:base, e.message)
+    create_user_notification(e, "tax_charge")
     false
   end
 
@@ -55,14 +57,32 @@ class StripeCharger
       description: charge_description("Shipping")
     )
     response
-  rescue Stripe::InvalidRequestError => e
+  rescue Stripe::CardError => e
     errors.add(:base, e.message)
+    create_user_notification(e, "shipping_charge")
     false
   end
 
   private
 
   attr_accessor :amount, :user, :order
+
+  def create_user_notification(e, type)
+    body = e.json_body
+    error = body[:error]
+    user_notification = user.user_notifications.where(uniq_id: uniq_id(type)).first_or_create
+
+    user_notification.update_attributes(
+      title: error[:type].humanize,
+      body: "#{e.message}. System will attempt to charge after an hour. Please update your payment information.",
+      timeout: 5,
+    )
+    ChargeWorker.perform_async(user.id, order&.id, amount, type)
+  end
+
+  def uniq_id(type)
+    [user.id, type, amount].join('_')
+  end
 
   def charge_description(type)
     if order.present?
@@ -73,7 +93,7 @@ class StripeCharger
   end
 
   def to_cents(amount)
-    (amount.to_r * 100).to_i
+    (amount.to_d * 100).to_i
   end
 
   def amount_to_cents
