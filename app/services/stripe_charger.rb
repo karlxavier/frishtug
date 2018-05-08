@@ -66,9 +66,9 @@ class StripeCharger
 
   def charge_description(type)
     if order.present?
-      "#{type} charge for #{order.placed_on.strftime('%B %d, %Y')}"
+      "#{type} charge for order # #{order.id} placed on #{order.placed_on.strftime('%B %d, %Y')}"
     else
-      "#{type} charge"
+      "#{type} charge on #{Time.current.strftime('%B %d, %Y @ %I:%M %P')}"
     end
   end
 

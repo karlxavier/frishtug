@@ -99,13 +99,13 @@ class User < ApplicationRecord
   end
 
   def full_address
-    <<-EOT
+    <<-EOF
       #{addresses.active.first.line1}
       #{addresses.active.first.line2}
       #{addresses.active.first.city}
       #{addresses.active.first.state}
       #{addresses.active.first.zip_code}
-    EOT
+    EOF
   end
 
   def street_address

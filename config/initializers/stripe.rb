@@ -80,5 +80,17 @@ StripeEvent.configure do |events|
         )
       end
     end
+
+    if event.type == 'charge.failed'
+      charge = event.data.object
+      user = User.find_by_stripe_customer_id(charge.customer)
+      if user
+        user.user_notifications.create!({
+          title: charge.failure_code.humanize,
+          body: charge.failure_message,
+          timeout: 5
+        })
+      end
+    end
   end
 end
