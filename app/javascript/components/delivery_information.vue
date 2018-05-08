@@ -90,7 +90,11 @@
             </div>
           </div>
           <div class="form-group" v-show="plan.for_type === 'group'">
-            <input type="text" v-model="registration_form.group_code" placeholder="Group Code" class="form-control">
+            <input type="text"
+              v-model="registration_form.group_code"
+              placeholder="Group Code"
+              class="form-control"
+              v-on:blur="getAddress">
             <small id="groupCodeHelpBlock" class="form-text text-muted">
               If your the First one setting up your Group we will supply you with a group code at check out.
             </small>
@@ -177,6 +181,28 @@ export default {
     });
   },
   methods: {
+    getAddress: function() {
+      const self = this;
+      const group_code = self.registration_form.group_code;
+      if (group_code.trim() !== '') {
+        Rails.ajax({
+          url: `/api/v1/get_address?group_code=${group_code}`,
+          type: 'GET',
+          success: function(response) {
+            const address = response.address
+            self.registration_form.addresses = [{
+              line1: address.line1,
+              line2: address.line2,
+              front_door: address.front_door,
+              city: address.city,
+              state: address.state,
+              zip_code: address.zip_code,
+              location_at: address.location_at
+            }]
+          }
+        });
+      }
+    },
     checkCase: function(event) {
       const value = event.target.value
       console.log(value)
