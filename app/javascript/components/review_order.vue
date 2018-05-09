@@ -7,7 +7,7 @@
         </h3>
         <span class="font-family-montserrat font-size-18">Order Summary</span>
         <div class="row review-step__margin-b25 review-step__margin-t30">
-          <div class="col-5 font-family-lato-bold font-size-14">Choosen Plan</div>
+          <div class="col-5 font-family-lato-bold font-size-14">Chosen Plan</div>
           <div class="col-7">{{ plan_name }}</div>
         </div>
         <div class="row review-step__margin-b25">
@@ -136,8 +136,8 @@ export default {
 
       const calculate_tax = (price, quantity) => {
         if (price == null) { return 0 }
-        const taxPercent = self.tax / 100
-        return price * quantity * taxPercent
+        const taxPercent = self.tax / 100.0
+        return Number((price * taxPercent * quantity).toFixed(2))
       };
 
       const total = self.registration_form.orders.reduce((total, order) => {

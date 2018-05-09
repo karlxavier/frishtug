@@ -38,7 +38,7 @@ class OrderCalculator
 
   def total_tax
     taxable_items = order.menus_orders.select { |m| m.menu.tax == true }
-    taxable_items.map {|o| calculate_tax(o.menu_price) * o.quantity }.inject(:+) || 0
+    taxable_items.map {|o| calculate_tax(o.menu_price * o.quantity) }.inject(:+) || 0
   end
 
   def total_orders_tax
@@ -71,8 +71,8 @@ class OrderCalculator
   end
 
   def calculate_tax(price)
-    tax = TAX / 100
-    (price * tax).to_d
+    tax = TAX / 100.0
+    (price * tax).round(2)
   end
 
   def calculate(price, quantity)
