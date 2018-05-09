@@ -6,7 +6,7 @@
     </h3>
     <div class="card-deck" style="margin-bottom: 1.7rem;">
       <template v-for="plan in plans">
-        <div class="card rounded-0 text-center" v-bind:key="plan.id">
+        <div class="card rounded0 text-center" v-bind:key="plan.id">
           <img class="card-img-top card__plan_image" :src="images[plan.attributes.name]" alt="Card image cap">
           <div class="card-body card__plan_body">
             <h4 class="card-title">

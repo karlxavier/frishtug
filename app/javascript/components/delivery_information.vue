@@ -70,7 +70,8 @@
                   v-bind:class="{ 'is-invalid': $v.registration_form.addresses.$each[index].state.$error}"
                   @input="$v.registration_form.addresses.$each[index].state.$touch"
                   v-mask="'AA'"
-                  @change="checkCase($event)">
+                  style="text-transform:uppercase"
+                  >
                 <div class="invalid-feedback">
                   State is required
                 </div>
@@ -247,14 +248,14 @@ export default {
         });
       }
     },
-    checkCase: function(event) {
-      const value = event.target.value
-      console.log(value)
-      if (!isNaN(value)) { event.target.value = '' }
-      if (value !== value.toUpperCase()) {
-        event.target.value = ''
-      }
-    },
+    // checkCase: function(event) {
+    //   const value = event.target.value
+    //   console.log(value)
+    //   if (!isNaN(value)) { event.target.value = '' }
+    //   if (value !== value.toUpperCase()) {
+    //     event.target.value = ''
+    //   }
+    // },
     changeAddress: function(location_at) {
       if (location_at !== "multiple_workplaces") {
         const newAddress = [];
