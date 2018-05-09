@@ -1,5 +1,7 @@
 Geocoder.configure(
-  timeout: 30
+  timeout: 30,
+  cache: Redis.new,
+  cache_prefix: 'geocoder:'
   # api_key: [ENV["SMARTYSTREETS_AUTH_KEY"], ENV["SMARTYSTREETS_AUTH_TOKEN"]],
   # lookup: :smarty_streets,
   # use_https: true

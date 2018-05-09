@@ -1,6 +1,6 @@
 class UserRegistrationsController < ApplicationController
   before_action :user_exists?
-  before_action :set_plan, only: :index
+  before_action :set_plan, :set_group_code, only: :index
   require 'date_helpers/weeks'
   SATURDAY = 6
 
@@ -80,5 +80,9 @@ class UserRegistrationsController < ApplicationController
   def set_plan
     plan_name = params[:plan_name]
     @plan = Plan.find_by_name(plan_name) if plan_name
+  end
+
+  def set_group_code
+    @group_code = params[:group_code] if params[:group_code].present?
   end
 end

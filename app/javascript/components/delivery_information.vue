@@ -24,22 +24,20 @@
                   ref="address_autocomplete"
                   :id="`map_${index}`"
                   classname="form-control"
-                  placeholder="Please type your address"
+                  placeholder="Enter your address"
                   v-on:placechanged="getAddressResult"
                   country="us"
-                  v-show="autocomplete_shown[index]"
-                  @blur="hideAutoComplete(index)"
               >
               </vue-google-autocomplete>
+            </div>
+            <div class="form-group">
               <input type="text"
                 ref="address_line1"
                 v-model.trim="address.line1"
                 placeholder="Address Line 1"
                 class="form-control"
                 v-bind:class="{ 'is-invalid': $v.registration_form.addresses.$each[index].line1.$error}"
-                @input="$v.registration_form.addresses.$each[index].line1.$touch"
-                v-show="!autocomplete_shown[index]"
-                @focus="showAutoComplete(index)">
+                @input="$v.registration_form.addresses.$each[index].line1.$touch">
               <div class="invalid-feedback">
                 Line1 is required
               </div>
@@ -147,8 +145,7 @@ export default {
     return {
       location_ats: ["at_home", "at_work", "multiple_workplaces"],
       invalids: 0,
-      allowed_zip_codes: [],
-      autocomplete_shown: [true]
+      allowed_zip_codes: []
     };
   },
   filters: {
@@ -199,18 +196,16 @@ export default {
         data => data.attributes.zip
       );
     });
-    self.$refs.address_autocomplete[0].focus()
+
+    const node = document.querySelector('.group_code')
+    if (node) {
+      self.registration_form.group_code = node.getAttribute('data')
+      self.getAddress()
+    } else {
+      self.$refs.address_autocomplete[0].focus()
+    }
   },
   methods: {
-    hideAutoComplete: function(index) {
-      const self = this
-      self.autocomplete_shown[index] = false
-    },
-    showAutoComplete: function(index) {
-      const self = this
-      self.autocomplete_shown[index] = true
-      self.$refs.address_autocomplete[index].focus()
-    },
     getAddressResult: function(data, placeResultData, id) {
       const self = this
       const index = id.split('_')[1]
@@ -224,7 +219,6 @@ export default {
       currentAddress.city = data.locality
       currentAddress.zip_code = data.postal_code
       currentAddress.state = data.administrative_area_level_1
-      self.autocomplete_shown[index] = false
     },
     getAddress: function() {
       const self = this;
@@ -248,14 +242,6 @@ export default {
         });
       }
     },
-    // checkCase: function(event) {
-    //   const value = event.target.value
-    //   console.log(value)
-    //   if (!isNaN(value)) { event.target.value = '' }
-    //   if (value !== value.toUpperCase()) {
-    //     event.target.value = ''
-    //   }
-    // },
     changeAddress: function(location_at) {
       if (location_at !== "multiple_workplaces") {
         const newAddress = [];
@@ -289,7 +275,7 @@ export default {
       const self = this;
       const group_code = self.registration_form.group_code;
 
-      if (group_code === null) {
+      if (group_code === null || group_code.length === 0) {
         return self.$emit("next-tab");
       }
 
@@ -391,7 +377,6 @@ export default {
         zip_code: null,
         location_at: self.registration_form.addresses[0].location_at
       });
-      self.autocomplete_shown.push(true)
     }
   }
 };
