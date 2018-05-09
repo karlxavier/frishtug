@@ -40,3 +40,7 @@
   <%= javascript_pack_tag 'registration', defer: true %>
   <%= stylesheet_pack_tag 'registration', defer: true %>
 <% end %>
+
+<%= content_for :header_js do %>
+  <script src="https://maps.googleapis.com/maps/api/js?key=<%= ENV["GOOGLE_PLACES_API_KEY"] %>&libraries=places"></script>
+<% end %>
