@@ -20,18 +20,32 @@
               <input type="hidden" v-model.lazy="address.location_at" name="location_at">
             </div>
             <div class="form-group">
+              <vue-google-autocomplete
+                  ref="address_autocomplete"
+                  :id="`map_${index}`"
+                  classname="form-control"
+                  placeholder="Please type your address"
+                  v-on:placechanged="getAddressResult"
+                  country="us"
+                  v-show="autocomplete_shown[index]"
+                  @blur="hideAutoComplete(index)"
+              >
+              </vue-google-autocomplete>
               <input type="text"
-                v-model="address.line1"
+                ref="address_line1"
+                v-model.trim="address.line1"
                 placeholder="Address Line 1"
                 class="form-control"
                 v-bind:class="{ 'is-invalid': $v.registration_form.addresses.$each[index].line1.$error}"
-                @input="$v.registration_form.addresses.$each[index].line1.$touch">
+                @input="$v.registration_form.addresses.$each[index].line1.$touch"
+                v-show="!autocomplete_shown[index]"
+                @focus="showAutoComplete(index)">
               <div class="invalid-feedback">
                 Line1 is required
               </div>
             </div>
             <div class="form-group">
-              <input type="text" v-model="address.line2" placeholder="Address Line 2" class="form-control">
+              <input type="text" v-model.trim="address.line2" placeholder="Address Line 2" class="form-control">
             </div>
             <div class="form-group">
               <input type="text" v-model="address.front_door" placeholder="Front Door Code (if applicable)" class="form-control">
@@ -39,7 +53,7 @@
             <div class="form-group row">
               <div class="col">
                 <input type="text"
-                  v-model="address.city"
+                  v-model.trim="address.city"
                   placeholder="City"
                   class="form-control"
                   v-bind:class="{ 'is-invalid': $v.registration_form.addresses.$each[index].city.$error}"
@@ -66,7 +80,7 @@
             <div class="form-group row">
               <div class="col">
                 <input type="text"
-                  v-model="address.zip_code"
+                  v-model.trim="address.zip_code"
                   placeholder="Zipcode"
                   class="form-control"
                   v-bind:class="{ 'is-invalid': $v.registration_form.addresses.$each[index].zip_code.$error}"
@@ -78,7 +92,7 @@
               </div>
               <div class="col" v-if="index === 0">
                 <input type="text"
-                  v-model="registration_form.phone_number"
+                  v-model.trim="registration_form.phone_number"
                   placeholder="Phone Number"
                   class="form-control"
                   v-bind:class="{ 'is-invalid': $v.registration_form.phone_number.$error}"
@@ -92,7 +106,7 @@
           </div>
           <div class="form-group" v-show="plan.for_type === 'group'">
             <input type="text"
-              v-model="registration_form.group_code"
+              v-model.trim="registration_form.group_code"
               placeholder="Group Code"
               class="form-control"
               v-on:blur="getAddress">
@@ -120,7 +134,11 @@
 
 <script>
 import { required } from "vuelidate/lib/validators";
+import VueGoogleAutocomplete from 'vue-google-autocomplete';
 export default {
+  components: {
+    VueGoogleAutocomplete
+  },
   props: {
     registration_form: { type: Object, required: true },
     plan: { type: Object, required: true }
@@ -129,7 +147,8 @@ export default {
     return {
       location_ats: ["at_home", "at_work", "multiple_workplaces"],
       invalids: 0,
-      allowed_zip_codes: []
+      allowed_zip_codes: [],
+      autocomplete_shown: [true]
     };
   },
   filters: {
@@ -180,8 +199,33 @@ export default {
         data => data.attributes.zip
       );
     });
+    self.$refs.address_autocomplete[0].focus()
   },
   methods: {
+    hideAutoComplete: function(index) {
+      const self = this
+      self.autocomplete_shown[index] = false
+    },
+    showAutoComplete: function(index) {
+      const self = this
+      self.autocomplete_shown[index] = true
+      self.$refs.address_autocomplete[index].focus()
+    },
+    getAddressResult: function(data, placeResultData, id) {
+      const self = this
+      const index = id.split('_')[1]
+      const currentAddress = self.registration_form.addresses[index]
+
+      if (data.street_number != null) {
+        currentAddress.line1 = `${data.street_number} ${data.route}`
+      } else {
+        currentAddress.line1 = data.route
+      }
+      currentAddress.city = data.locality
+      currentAddress.zip_code = data.postal_code
+      currentAddress.state = data.administrative_area_level_1
+      self.autocomplete_shown[index] = false
+    },
     getAddress: function() {
       const self = this;
       const group_code = self.registration_form.group_code;
@@ -347,6 +391,7 @@ export default {
         zip_code: null,
         location_at: self.registration_form.addresses[0].location_at
       });
+      self.autocomplete_shown.push(true)
     }
   }
 };

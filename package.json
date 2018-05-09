@@ -16,6 +16,7 @@
     "vee-validate": "^2.0.6",
     "vue": "2.5.16",
     "vue-form-wizard": "^0.8.4",
+    "vue-google-autocomplete": "^1.1.0",
     "vue-lazyload": "^1.2.2",
     "vue-loader": "^14.2.1",
     "vue-masked-input": "^0.5.2",
