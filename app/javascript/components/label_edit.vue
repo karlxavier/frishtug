@@ -1,6 +1,8 @@
 <template>
   <div class="vlabeledit">
-		<div class="form-control" @click="onLabelClick" v-if="!edit">{{vlabel}}</div>
+		<div class="form-control"
+      @click="onLabelClick"
+      v-if="!edit" style="font-style: italic;">{{vlabel}}</div>
     <vue-google-autocomplete
         ref="labeledit"
         id="map_address"
