@@ -9,8 +9,6 @@
     <%= stylesheet_pack_tag 'application' %>
     <%= javascript_include_tag 'application' %>
     <%= javascript_pack_tag 'app' %>
-    <%= include_uploadcare_widget_from_cdn version: "3.2.1", min: true %>
-    <script> UPLOADCARE_PUBLIC_KEY = '8b856cdd0a320cbe8d19'; </script>
     <%= yield :header_js %>
   </head>
   <body>
