@@ -20,18 +20,8 @@
               <input type="hidden" v-model.lazy="address.location_at" name="location_at">
             </div>
             <div class="form-group">
-              <vue-google-autocomplete
-                  ref="address_autocomplete"
-                  :id="`map_${index}`"
-                  classname="form-control"
-                  placeholder="Enter your address"
-                  v-on:placechanged="getAddressResult"
-                  country="us"
-              >
-              </vue-google-autocomplete>
-            </div>
-            <div class="form-group">
-              <input type="text"
+              <label-edit v-bind:text="text" :placeholder="address.line1" v-bind:address="address"></label-edit>
+              <input type="hidden"
                 ref="address_line1"
                 v-model.trim="address.line1"
                 placeholder="Address Line 1"
@@ -132,10 +122,10 @@
 
 <script>
 import { required } from "vuelidate/lib/validators";
-import VueGoogleAutocomplete from 'vue-google-autocomplete';
+import LabelEdit from './label_edit';
 export default {
   components: {
-    VueGoogleAutocomplete
+    LabelEdit
   },
   props: {
     registration_form: { type: Object, required: true },
@@ -145,7 +135,8 @@ export default {
     return {
       location_ats: ["at_home", "at_work", "multiple_workplaces"],
       invalids: 0,
-      allowed_zip_codes: []
+      allowed_zip_codes: [],
+      autocomplete_hidden: [true]
     };
   },
   filters: {
@@ -206,20 +197,6 @@ export default {
     }
   },
   methods: {
-    getAddressResult: function(data, placeResultData, id) {
-      const self = this
-      const index = id.split('_')[1]
-      const currentAddress = self.registration_form.addresses[index]
-
-      if (data.street_number != null) {
-        currentAddress.line1 = `${data.street_number} ${data.route}`
-      } else {
-        currentAddress.line1 = data.route
-      }
-      currentAddress.city = data.locality
-      currentAddress.zip_code = data.postal_code
-      currentAddress.state = data.administrative_area_level_1
-    },
     getAddress: function() {
       const self = this;
       const group_code = self.registration_form.group_code;
