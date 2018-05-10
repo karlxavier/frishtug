@@ -24,7 +24,7 @@ export default {
 		return {
 			edit: false,
 			label: '',
-			empty: 'Enter your address',
+			empty: 'Address Line 1',
 		}
 	},
 	props: [
