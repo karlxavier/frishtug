@@ -20,7 +20,7 @@
               <input type="hidden" v-model.lazy="address.location_at" name="location_at">
             </div>
             <div class="form-group">
-              <label-edit v-bind:text="text" :placeholder="address.line1" v-bind:address="address"></label-edit>
+              <label-edit v-bind:text="address.line1" v-bind:placeholder="address.line1" v-bind:address="address"></label-edit>
               <input type="hidden"
                 ref="address_line1"
                 v-model.trim="address.line1"
@@ -192,8 +192,6 @@ export default {
     if (node) {
       self.registration_form.group_code = node.getAttribute('data')
       self.getAddress()
-    } else {
-      self.$refs.address_autocomplete[0].focus()
     }
   },
   methods: {

@@ -20,7 +20,7 @@
             Additional Charges
           </div>
           <div class="col-7">
-            {{ additional_charges | to_currency }}
+            {{ additional_charges() | to_currency }}
           </div>
         </div>
         <div class="row review-step__margin-b25">
@@ -49,7 +49,7 @@
           </div>
           <div class="col-7">
             <strong class="font-size-18 font-family-lato-bold" style="color: #9bc634;">
-              {{ total_price + shipping_fee + additional_charges + totalTax() | to_currency }}
+              {{ total_price + shipping_fee + additional_charges() + totalTax() | to_currency }}
             </strong>
           </div>
         </div>
@@ -107,9 +107,6 @@ export default {
           : this.charges.total_price;
       return total;
     },
-    additional_charges: function() {
-      return this.charges.additional_charges;
-    },
     first_delivery_date: function() {
       return moment(this.date.selected).format("MMM DD YYYY");
     }
@@ -125,6 +122,32 @@ export default {
     });
   },
   methods: {
+    additional_charges: function() {
+      let additional = 0
+      const self = this
+      const items = self.$store.state.items
+      const orders = self.registration_form.orders
+
+      const getPrice = (item) => {
+        const found = items.filter(data => data.id === item.menu_id)
+        if (found.length > 0) {
+          return parseFloat(found[0].attributes.price) * item.quantity;
+        } else {
+          return 0;
+        }
+      }
+
+      orders.forEach(order => {
+        const total = order.menus_orders_attributes.reduce((sum, item) => {
+          return sum += getPrice(item);
+        }, 0)
+        console.log(total)
+        if (total > self.plan.limit && self.plan.interval === 'month') {
+          additional += total - self.plan.limit
+        }
+      })
+      return additional
+    },
     totalTax: function() {
       const self = this
       const taxable_items = self.$store.state.items.filter(item => {

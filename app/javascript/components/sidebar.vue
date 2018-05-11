@@ -184,7 +184,6 @@ export default {
     verifyOrders: function() {
       const self = this;
       let complete = false;
-      self.charges.additional_charges = 0
       const total = self.registration_form.orders.reduce((sum, order) => {
         const total = order.menus_orders_attributes.reduce(
           (sum, menus_order) => {
@@ -192,11 +191,6 @@ export default {
           },
           0
         );
-        if (total > self.plan.limit && self.plan.limit !== 0) {
-          self.charges.additional_charges += total - self.plan.limit;
-        } else {
-          self.charges.additional_charges = 0;
-        }
         return (sum += total);
       }, 0);
 
