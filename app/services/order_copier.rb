@@ -14,7 +14,7 @@ class OrderCopier
 
   def copy_to(dates = [])
     ActiveRecord::Base.transaction do
-      # clean_duplicates(dates)
+      clean_duplicates(dates)
       @last_five_orders.each_with_index do |order, index|
         next unless dates[index].present?
         user_order = @user.orders.create!(order_params(dates[index], order))
