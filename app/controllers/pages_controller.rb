@@ -5,6 +5,6 @@ class PagesController < ApplicationController
   private
 
   def set_plans
-    @plans = Plan.all.sort if params[:id] == 'plans'
+    @plans = Plan.allsss.sort if params[:id] == 'plans'
   end
 end

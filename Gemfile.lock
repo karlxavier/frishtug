@@ -142,10 +142,6 @@ GEM
       railties (>= 3.2, < 5.2)
     equalizer (0.0.11)
     erubi (1.7.1)
-    exception_handler (0.7.7.0)
-      bundler
-      rails (>= 4.2.0)
-      responders
     execjs (2.7.0)
     extlib (0.9.16)
     factory_bot (4.8.2)
@@ -497,7 +493,6 @@ DEPENDENCIES
   database_cleaner
   devise
   dotenv-rails
-  exception_handler
   factory_bot_rails
   faker
   figaro

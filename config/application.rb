@@ -29,5 +29,11 @@ module Frishtug
     config.generators.system_tests = nil
     config.time_zone = 'Eastern Time (US & Canada)'
     config.middleware.insert_after ActionDispatch::Static, Rack::Deflater
+    config.exception_handler = {
+      dev: false,
+      layouts: {
+        500 => 'exception'
+      }
+    }
   end
 end
