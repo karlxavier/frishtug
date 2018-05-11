@@ -141,7 +141,6 @@ export default {
         const total = order.menus_orders_attributes.reduce((sum, item) => {
           return sum += getPrice(item);
         }, 0)
-        console.log(total)
         if (total > self.plan.limit && self.plan.interval === 'month') {
           additional += total - self.plan.limit
         }
