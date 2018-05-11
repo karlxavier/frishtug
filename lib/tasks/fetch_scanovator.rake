@@ -1,6 +1,6 @@
 namespace :fetch_scanovator do
   task run: :environment do
-    first_hour = Time.parse "1:00 am"
+    first_hour = Time.zone.parse "1:00 am"
     current_time = Time.current
 
     # process orders for today if the time is 1:00 am
