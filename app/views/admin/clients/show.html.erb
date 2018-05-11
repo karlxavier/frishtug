@@ -55,7 +55,7 @@
       <%= calendar end_month.to_date do |date| %>
         <% if active_orders[date].present? %>
           <% order = active_orders[date].first %>
-          <%= link_to link_to "javascript:void(0)",
+          <%= link_to "javascript:void(0)",
             style: "background: #582D11; color: #fff", "@click": "showModal(#{order.id})" do %>
             <%= date.strftime('%d') %>
           <% end %>

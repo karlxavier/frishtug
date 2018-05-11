@@ -1418,6 +1418,10 @@ table.table {
     }
 }
 
+td.not-month > * {
+    display: none !important;
+}
+
 .admin-dashboard__calendar {
     & table.calendar {
         border: 0;
@@ -1696,7 +1700,7 @@ button.toast-close-button {
 }
 
 @media all and (min-width: 1201px) and (max-width: 9999px) {
-    
+
     .navbar-right {
         float: right!important;
         margin-right: -15px;
@@ -1839,7 +1843,7 @@ p {
     font-weight: normal;
     text-align: left;
     padding: 0.25rem 0;
-    border-top: 1px solid black; 
+    border-top: 1px solid black;
     white-space: nowrap;
   }
   td {
@@ -1867,7 +1871,7 @@ p {
   margin: 0 0 0.5rem 0;
   thead {
     tr {
-      border-bottom: 1px solid black; 
+      border-bottom: 1px solid black;
     }
   }
   td {
