@@ -9,7 +9,6 @@ class SeriesCreator
   def create
     last_series_number =
       Order.placed_between?(@range).order('series_number DESC')                 .first.series_number || 0
-    raise Order.placed_between?(@range).inspect
     last_series_number + 1
   end
 end

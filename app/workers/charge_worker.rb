@@ -7,8 +7,9 @@ class ChargeWorker
     @amount = amount
     @type = type
     return unless @user.present?
+    return unless @amount.present?
+    return unless @type.present?
     @order = order_id.present? ? Order.find(order_id) : nil
-    raise amount_in_cents.inspect
     response = Stripe::Charge.create(
       amount: amount_in_cents,
       currency: 'usd',
