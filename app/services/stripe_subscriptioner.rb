@@ -61,7 +61,7 @@ class StripeSubscriptioner
     user.update_attributes(
       stripe_customer_id: customer_id,
       stripe_subscription_id: subscription.id,
-      subscribe_at: Time.at(subscription.current_period_start)
+      subscribe_at: Time.at(subscription.billing_cycle_anchor)
     )
   end
 
