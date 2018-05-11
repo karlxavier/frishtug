@@ -291,6 +291,7 @@ const vm = new Vue({
               window.location.href = response.body.redirect_to;
             }
           });
+          return
         } else {
           pulse_loader.replace_text(
             "Sign up complete!. You are being redirect to your dashboard..."
