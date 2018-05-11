@@ -20,7 +20,7 @@
               <input type="hidden" v-model.lazy="address.location_at" name="location_at">
             </div>
             <div class="form-group">
-              <label-edit v-bind:text="`${address.line1} || Address Line 1`" v-bind:placeholder="address.line1" v-bind:address="address"></label-edit>
+              <label-edit v-bind:text="`${address.line1}`" v-bind:placeholder="address.line1" v-bind:address="address"></label-edit>
               <input type="hidden"
                 ref="address_line1"
                 v-model.trim="address.line1"
