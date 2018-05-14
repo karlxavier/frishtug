@@ -11,7 +11,7 @@ class Api::V1::AddressController < Api::V1::BaseController
       render json: {
         status: 'success',
         data: @coordinates,
-        valid: false
+        valid: true #false
       }, status: :ok
     end
   end
