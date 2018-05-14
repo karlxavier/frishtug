@@ -5,6 +5,7 @@ class User::DuplicateMealsController < User::BaseController
     @order_duplicator = OrderDuplicator.new(@order_to_cop, date, @order)
     if @order_duplicator.run
       flash[:success] = "Order successfully duplicated"
+      flash[:notice] = @order_duplicator.notices.join(', ') if @order_duplicator.notices.present?
       redirect_to edit_user_weekly_meals_path(date: date)
     end
   end
