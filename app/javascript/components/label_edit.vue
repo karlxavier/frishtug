@@ -57,7 +57,8 @@ export default {
       }
       currentAddress.city = data.locality
       currentAddress.zip_code = data.postal_code
-      currentAddress.state = data.administrative_area_level_1
+			currentAddress.state = data.administrative_area_level_1
+			self.label = currentAddress.line1
       self.edit = false
     }
 	},

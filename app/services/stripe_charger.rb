@@ -22,6 +22,7 @@ class StripeCharger
   end
 
   def charge_excess!
+    return false if amount <= 0
     Stripe::Charge.create(
       amount: to_cents(amount),
       currency: 'usd',

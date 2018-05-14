@@ -7,6 +7,7 @@ class User::CopyMealsController < User::BaseController
 
     if @order_copier.copy_to(params[:to].split(','))
       flash[:success] = 'Copy successful!'
+      flash[:notice] = @order_copier.notices.join(', ') if @order_copier.notices.present?
       redirect_back fallback_location: :user_weekly_meals
     else
       flash[:error] = @order_copier.errors.full_messages.join(', ')

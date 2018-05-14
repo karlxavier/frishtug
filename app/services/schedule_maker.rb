@@ -13,8 +13,13 @@ class ScheduleMaker
 
   attr_accessor :schedule, :user, :subscription_start
 
+  def start_date
+    return subscription_start if subscription_start.present?
+    user.last(20).first.placed_on
+  end
+
   def generate_schedule(days = 20)
-    date = subscription_start.to_date #.next_week(WDAYS[last_order.wday].to_sym)
+    date = start_date.to_date
     results = []
     (1..days).map do |i|
       date = ScheduleGenerator.new(date, schedule).generate

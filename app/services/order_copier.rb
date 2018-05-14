@@ -10,6 +10,11 @@ class OrderCopier
     @user = user
     @last_five_orders = last_five_orders
     @excess = []
+    @messages = []
+  end
+
+  def notices
+    @messages
   end
 
   def copy_to(dates = [])
@@ -19,6 +24,7 @@ class OrderCopier
         next unless dates[index].present?
         user_order = @user.orders.create!(order_params(dates[index], order))
         create_menus_orders(user_order, order)
+        user_order.processing!
       end
       charge_excess!
     end
@@ -54,7 +60,7 @@ class OrderCopier
 
   private
 
-  attr_accessor :user, :excess
+  attr_accessor :user, :excess, :messages
 
   def clean_duplicates(dates = [])
     start_date  = parse_date(dates.first).beginning_of_day
@@ -80,7 +86,7 @@ class OrderCopier
       placed_on: placed_on_date,
       order_date: Time.current,
       remarks: current_order.remarks,
-      status: :processing
+      status: :fresh
     }
   end
 
@@ -99,11 +105,16 @@ class OrderCopier
 
   def create_menus_orders(user_order, current_order)
     current_order.menus_orders.each do |menu_order|
-      user_order.menus_orders.create!(
-        menu_id: menu_order.menu_id,
-        quantity: menu_order.quantity,
-        add_ons: menu_order.add_ons
-      )
+      stock = Stock.new(menu_order.menu_id, menu_order.quantity)
+      unless stock.empty?
+        user_order.menus_orders.create!(
+          menu_id: menu_order.menu_id,
+          quantity: menu_order.quantity,
+          add_ons: menu_order.add_ons
+        )
+      else
+        messages << "Not enough stock for #{menu_order.menu.name} in #{user_order.placed_on.strftime('%B %d, %Y')}"
+      end
     end
     excess << OrderCalculator.new(user_order).total_excess(user.plan.limit)
   end

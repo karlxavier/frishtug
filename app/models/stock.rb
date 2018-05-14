@@ -17,8 +17,17 @@ class Stock
     inventory.save
   end
 
+  def remaining_stocks
+    inventory.quantity - quantity
+  end
+
   def empty?
-    remaining_stocks = inventory.quantity - quantity
     remaining_stocks <= 0
+  end
+
+  def available_quantity
+    return quantity if remaining_stocks >= 0
+    quantity = inventory.quantity
+    quantity
   end
 end
