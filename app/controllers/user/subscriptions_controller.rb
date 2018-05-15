@@ -18,7 +18,7 @@ class User::SubscriptionsController < User::BaseController
   end
 
   def choose_plans
-    if current_user.plan.present?
+    if current_user.subscribed?
       redirect_to user_subscriptions_path
     end
     @plans = Plan.subscriptions.sort
