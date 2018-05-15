@@ -140,14 +140,45 @@ export default {
     this.years = list
   },
   methods: {
+    verifyCard: function() {
+      const self = this
+      const card_month = self.registration_form.month
+      const card_year = self.registration_form.year
+      const current_date = new Date()
+      const card_date = new Date(card_year, card_month - 1)
+      self.$v.registration_form.year.$touch()
+
+      if (current_date > card_date) {
+        swal({
+          type: "error",
+          title: "Opps..",
+          text: "Your card is expired!",
+          confirmButtonText: "Ok",
+          confirmButtonColor: "#582D11",
+          confirmButtonClass: "btn btn-brown text-uppercase",
+          buttonsStyling: false
+        })
+        return
+      } else {
+        return self.$emit('on-next-tab')
+      }
+    },
     validate: function() {
       const self = this
       self.$v.registration_form.$touch()
       const isValid = !self.$v.registration_form.$invalid
       if (isValid) {
-        return self.$emit('on-next-tab')
+        self.verifyCard()
       } else {
-        swal('Opps..', 'Please fill all the required fields', 'error')
+        swal({
+          type: "error",
+          title: "Opps..",
+          text: "Please fill all the required fields",
+          confirmButtonText: "Continue",
+          confirmButtonColor: "#582D11",
+          confirmButtonClass: "btn btn-brown text-uppercase",
+          buttonsStyling: false
+        })
         return
       }
     }
