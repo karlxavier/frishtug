@@ -1,5 +1,6 @@
 <%
   list_class = "list-group-item rounded-0 "
+  is_complete = true
 
   if current_user.subscribed?
     limit = current_user.plan.limit
