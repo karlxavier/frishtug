@@ -1,14 +1,22 @@
 import Vue from 'vue/dist/vue.esm'
 import swal from 'sweetalert2'
 import ajax from '../lib/ajax_lib'
-import { $only_numbers, $limit } from '../lib/input_helpers'
+import {
+  $only_numbers,
+  $limit
+} from '../lib/input_helpers'
+import VueMask from "v-mask"
+import LabelEdit from '../../components/label_edit'
+Vue.use(VueMask)
 
 const el = document.querySelector('#user_delivery_info')
 const el2 = document.querySelector('#user_address_list')
 
 if (el) {
   const addresses = JSON.parse(el.dataset.addresses)
-  addresses.forEach( address => { address._delete = null })
+  addresses.forEach(address => {
+    address._delete = null
+  })
 
   const addresses_list = JSON.parse(el2.dataset.addresses)
 
@@ -18,16 +26,16 @@ if (el) {
       addresses: addresses
     },
     methods: {
-      fullAddress: function(address) {
+      fullAddress: function (address) {
         const add = [address.line1, address.line2, address.city, address.state, 'US']
-        return add.filter(n => n != '').join(', ')
+        return add.filter(n => n != null && n.length > 0).join(', ')
       },
-      setActiveAddress: function(address) {
+      setActiveAddress: function (address) {
         const self = this
         Rails.ajax({
           url: `/user/set_active_addresses?address_id=${address.id}`,
           type: 'GET',
-          success: function(response) {
+          success: function (response) {
             swal({
               title: response.status.toUpperCase(),
               text: 'Successfully change active address',
@@ -47,6 +55,9 @@ if (el) {
 
   const userDelivery = new Vue({
     el: el,
+    components: {
+      LabelEdit
+    },
     data: {
       addresses: addresses,
       show: false
