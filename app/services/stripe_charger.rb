@@ -8,7 +8,7 @@ class StripeCharger
   end
 
   def run
-    create_a_customer
+    create_a_customer unless @user.stripe_customer_id.present?
     Stripe::Charge.create(
       amount: amount_to_cents,
       currency: 'usd',
@@ -105,7 +105,6 @@ class StripeCharger
      customer = StripeCustomer.new(user)
      unless customer.create
       errors.add(:base, customer.errors.full_messages.join(', '))
-      raise Stripe::InvalidRequestError
      end
   end
 end
