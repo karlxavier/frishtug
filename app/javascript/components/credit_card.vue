@@ -174,7 +174,7 @@ export default {
           type: "error",
           title: "Opps..",
           text: "Please fill all the required fields",
-          confirmButtonText: "Continue",
+          confirmButtonText: "Ok",
           confirmButtonColor: "#582D11",
           confirmButtonClass: "btn btn-brown text-uppercase",
           buttonsStyling: false
