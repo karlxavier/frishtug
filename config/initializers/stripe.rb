@@ -46,13 +46,16 @@ StripeEvent.configure do |events|
       if user && data.type == 'subscription'
         subscription_start = Time.zone.at(data.period.start)
         subscription_end = Time.zone.at(data.period.end)
-        return unless user.subscribe_at != subscription_start
-        user.update_attributes(
-          stripe_subscription_id: subscription.id,
-          subscribe_at: subscription_start,
-          subscription_expires_at: subscription_end
-        )
-        OrderCopierWorker.perform_at(1.hour.from_now, user.id)
+        if user.subscribe_at != subscription_start
+          user.update_attributes(
+            stripe_subscription_id: subscription.id,
+            subscribe_at: subscription_start,
+            subscription_expires_at: subscription_end
+          )
+          OrderCopierWorker.perform_at(1.hour.from_now, user.id)
+        else
+          user.orders.update_all(status: :processing)
+        end
       end
     end
 
@@ -60,11 +63,13 @@ StripeEvent.configure do |events|
       invoice_data = event.data.object
       user = User.find_by_stripe_customer_id(invoice_data.customer)
       if user
+        return if invoice_data.next_payment_attempt.nil?
         user.user_notifications.create!({
           title: 'Payment Failed',
-          body: "Next payment attempt will be #{Time.zone.at(invoice_data.next_payment_attempt).to_date}",
+          body: "Next payment attempt will be #{Time.zone.at(invoice_data.next_payment_attempt).to_date}. Please update your payment info.",
           timeout: 5
         })
+        user.orders.update_all(status: :cancelled)
       end
     end
 
