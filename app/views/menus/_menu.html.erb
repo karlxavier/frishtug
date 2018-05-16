@@ -1,6 +1,6 @@
 <%# render 'shared/menus/products', menu: menu, control: true  %>
 <div class="card col-12 col-custom-255 px-0 border-0 mb-4 mt-1 mr-4">
-  <%= image_asset(menu, class: 'card-img-top', width: 255, height: 175) if menu.asset_id?%>
+  <%= image_asset(menu, class: 'card-img-top', width: 255, height: 175) %>
   <div class="card-body px-0 py-1">
     <h5 class="card-title mb-0 font-family-montserrat">
       <%= menu.name.titleize %>

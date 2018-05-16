@@ -108,6 +108,7 @@ import { VueTabs, VTab } from "vue-nav-tabs";
 import lodash from "lodash";
 import axios from 'axios';
 import NutritionalDataModal from "./nutritional_data_modal";
+import NoImage from "../packs/images/no-image.svg"
 
 export default {
   filters: {
@@ -286,7 +287,7 @@ export default {
     imageUrl: function(item) {
       const asset = item.attributes.asset;
       if (asset === null) {
-        return null;
+        return NoImage;
       }
       if (asset.hasOwnProperty("image")) {
         return asset.image.card.url;
