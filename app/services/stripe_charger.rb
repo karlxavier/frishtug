@@ -16,7 +16,7 @@ class StripeCharger
       description: "Single Order Charge for #{@user.full_name} <#{@user.email}>"
     )
     true
-  rescue Stripe::InvalidRequestError => e
+  rescue Stripe::CardError => e
     errors.add(:base, e.message)
     false
   end

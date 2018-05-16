@@ -18,7 +18,7 @@ class StripeCustomer
 
   def add_source(token)
     stripe_customer.sources.create(source: token)
-  rescue Stripe::InvalidRequestError => e
+  rescue => e
     errors.add(:base, e.message)
     false
   end
@@ -26,7 +26,7 @@ class StripeCustomer
   def remove_source(card_or_bank_id)
     stripe_customer.sources.retrieve(card_or_bank_id).delete
     true
-  rescue Stripe::InvalidRequestError => e
+  rescue => e
     errors.add(:base, e.message)
     false
   end
@@ -36,9 +36,9 @@ class StripeCustomer
     set_card_source_attributes(source, params) if type == 'credit_card'
     set_bank_source_attributes(source, params) if type == 'checking'
     true
-  rescue Stripe::InvalidRequestError => e
+  rescue => e
     errors.add(:base, e.message)
-    false 
+    false
   end
 
   def set_default_source(token)
@@ -46,7 +46,7 @@ class StripeCustomer
     customer.default_source = token
     customer.save
     true
-  rescue Stripe::InvalidRequestError => e
+  rescue => e
     errors.add(:base, e.message)
     false
   end
@@ -57,14 +57,14 @@ class StripeCustomer
 
   def retrieve
     stripe_customer
-  rescue Stripe::InvalidRequestError => e
+  rescue => e
     errors.add(:base, e.message)
     []
   end
 
   def sources
     stripe_customer.sources.data
-  rescue Stripe::InvalidRequestError => e
+  rescue => e
     errors.add(:base, e.message)
     []
   end

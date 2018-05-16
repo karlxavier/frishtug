@@ -39,6 +39,35 @@ StripeEvent.configure do |events|
       end
     end
 
+    if event.type == 'invoice.payment_succeeded'
+      invoice_data = event.data.object
+      user = User.find_by_stripe_customer_id(invoice_data.customer)
+      data = invoice_data.lines.data[0]
+      if user && data.type == 'subscription'
+        subscription_start = Time.zone.at(data.period.start)
+        subscription_end = Time.zone.at(data.period.end)
+        return unless user.subscribe_at != subscription_start
+        user.update_attributes(
+          stripe_subscription_id: subscription.id,
+          subscribe_at: subscription_start,
+          subscription_expires_at: subscription_end
+        )
+        OrderCopierWorker.perform_at(1.hour.from_now, user.id)
+      end
+    end
+
+    if event.type == 'invoice.payment_failed'
+      invoice_data = event.data.object
+      user = User.find_by_stripe_customer_id(invoice_data.customer)
+      if user
+        user.user_notifications.create!({
+          title: 'Payment Failed',
+          body: "Next payment attempt will be #{Time.zone.at(invoice_data.next_payment_attempt).to_date}",
+          timeout: 5
+        })
+      end
+    end
+
     if event.type == 'customer.subscription.created'
       subscription = event.data.object
       subscription_start = Time.zone.at(subscription.billing_cycle_anchor)
@@ -50,21 +79,6 @@ StripeEvent.configure do |events|
           subscribe_at: subscription_start,
           subscription_expires_at: subscription_end
         )
-      end
-    end
-
-    if event.type == 'customer.subscription.updated'
-      subscription = event.data.object
-      subscription_start = Time.zone.at(subscription.current_period_start)
-      subscription_end = Time.zone.at(subscription.current_period_end)
-      user = User.find_by_stripe_customer_id(subscription.customer)
-      if user && user.subscribe_at != subscription_start
-        user.update_attributes(
-          stripe_subscription_id: subscription.id,
-          subscribe_at: subscription_start,
-          subscription_expires_at: subscription_end
-        )
-        OrderCopierWorker.perform_at(1.hour.from_now, user.id)
       end
     end
 

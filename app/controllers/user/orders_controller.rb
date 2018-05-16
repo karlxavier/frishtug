@@ -16,10 +16,11 @@ class User::OrdersController < User::BaseController
 
   def persist
     @order = Order.find(order_id)
-    ChargeUser.call(@order, current_user)
-    if @order.fresh?
-      @order.update_attributes(order_date: Time.current, status: :processing)
+    @command = ChargeUser.call(@order, current_user)
+    if @order.fresh? && @command.success?
+      @command.result.update_attributes(order_date: Time.current, status: :processing)
     end
+    respond_with(@command)
   end
 
   def cancel

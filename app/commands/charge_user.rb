@@ -39,24 +39,26 @@ class ChargeUser
 
   def charge!
     calculate_payment
-    return unless amount_valid?
+    return order unless amount_valid?
     stripe = StripeCharger.new(user, @amount_to_pay)
     if stripe.run
       create_bill_history('Order charge')
+      return order
     else
-      errors.add(:charge, stripe.errors)
+      errors.add(:charge, stripe.errors.full_messages.join(', '))
     end
     nil
   end
 
   def charge_excess!
     calculate_payment
-    return unless amount_valid?
+    return order unless amount_valid?
     stripe = StripeCharger.new(user, @amount_to_pay, order)
     if stripe.charge_excess!
-      return create_bill_history('Excess charge')
+      create_bill_history('Excess charge')
+      return order
     else
-      errors.add(:charge, stripe.errors)
+      errors.add(:charge, stripe.errors.full_messages.join(', '))
     end
     nil
   end
