@@ -18,7 +18,7 @@ class User::OrdersController < User::BaseController
     @order = Order.find(order_id)
     @command = ChargeUser.call(@order, current_user)
     if @order.fresh? && @command.success?
-      @command.result.update_attributes(order_date: Time.current, status: :processing)
+      @command.result.update_columns(order_date: Time.current, status: :processing)
     end
     respond_with(@command)
   end

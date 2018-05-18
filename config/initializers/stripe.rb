@@ -63,13 +63,18 @@ StripeEvent.configure do |events|
       invoice_data = event.data.object
       user = User.find_by_stripe_customer_id(invoice_data.customer)
       if user
-        return if invoice_data.next_payment_attempt.nil?
-        user.user_notifications.create!({
-          title: 'Payment Failed',
-          body: "Next payment attempt will be #{Time.zone.at(invoice_data.next_payment_attempt).to_date}. Please update your payment info.",
-          timeout: 5
-        })
-        user.orders.processing.update_all(status: :pending_payment)
+        if invoice_data.next_payment_attempt.nil?
+          user.orders.processing.each do |order|
+            order.payment_failed!
+          end
+        else
+          user.user_notifications.create!({
+            title: 'Payment Failed',
+            body: "Next payment attempt will be #{Time.zone.at(invoice_data.next_payment_attempt).to_date}. Please update your payment info.",
+            timeout: 5
+          })
+          user.orders.processing.update_all(status: :pending_payment)
+        end
       end
     end
 

@@ -25,7 +25,7 @@
 class Order < ApplicationRecord
   include Computable
   include UserDelegator
-  enum status: %i[processing completed failed cancelled refunded fulfilled fresh pending_payment]
+  enum status: %i[processing completed failed cancelled refunded fulfilled fresh pending_payment payment_failed]
   enum delivery_status: %i[in_transit received address_not_found]
   enum payment_status: %i[unpaid paid]
   belongs_to :user
@@ -101,8 +101,12 @@ class Order < ApplicationRecord
 
   private
 
+  def re_account_on_failed_payment
+    InventoryAccounter.new(self).re_account if payment_failed? && status_changed
+  end
+
   def re_account_inventory
-    InventoryAccounter.new(self).re_account if self.processing?
+    InventoryAccounter.new(self).re_account if processing?
   end
 
   def create_pending_credit
