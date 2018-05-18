@@ -70,6 +70,7 @@
 <script>
 import toCurrency from "../packs/lib/to_currency";
 import moment from "moment";
+import Big from "big.js";
 export default {
   data: () => {
     return {
@@ -131,7 +132,8 @@ export default {
       const getPrice = (item) => {
         const found = items.filter(data => data.id === item.menu_id)
         if (found.length > 0) {
-          return parseFloat(found[0].attributes.price) * item.quantity;
+          const price = new Big(parseFloat(found[0].attributes.price))
+          return price.times(item.quantity).toFixed(2);
         } else {
           return 0;
         }
@@ -139,10 +141,10 @@ export default {
 
       orders.forEach(order => {
         const total = order.menus_orders_attributes.reduce((sum, item) => {
-          return sum += getPrice(item);
-        }, 0)
-        if (total > self.plan.limit && self.plan.interval === 'month') {
-          additional += total - self.plan.limit
+          return sum.plus(getPrice(item));
+        }, new Big(0))
+        if (total.gt(self.plan.limit) && self.plan.interval === 'month') {
+          additional += Number(total.minus(self.plan.limit).toFixed(2))
         }
       })
       return additional
@@ -158,19 +160,21 @@ export default {
 
       const calculate_tax = (price, quantity) => {
         if (price == null) { return 0 }
-        const taxPercent = self.tax / 100.0
-        return Number((price * taxPercent * quantity).toFixed(2))
+        const big_price = new Big(price)
+        const taxPercent = new Big(self.tax / 100.0)
+        return big_price.times(taxPercent).times(quantity).toFixed(2)
       };
 
       const total = self.registration_form.orders.reduce((total, order) => {
-        return total += order.menus_orders_attributes.reduce(
+        return total.plus(order.menus_orders_attributes.reduce(
           (sum, menu_order) => {
-            return sum += calculate_tax(taxable_items[menu_order.menu_id], menu_order.quantity)
+            return sum.plus(calculate_tax(taxable_items[menu_order.menu_id], menu_order.quantity))
           },
-          0
-        );
-      }, 0);
-      return isNaN(total) ? 0 : total;
+          new Big(0)
+        ));
+      }, new Big(0));
+      const parsed_total = Number(total)
+      return isNaN(parsed_total) ? 0 : parsed_total;
     },
     generateToken: function() {
       const self = this;

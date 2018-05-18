@@ -5,7 +5,7 @@ class UncancelOrder
   end
 
   def run
-    if @order.processing!
+    if @order.update_column(:status, :processing)
       pending_credits = PendingCredit.where(order_id: @order.id)
       pending_credits.map { |c| c.destroy }
       true

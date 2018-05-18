@@ -54,7 +54,7 @@ StripeEvent.configure do |events|
           )
           OrderCopierWorker.perform_at(1.hour.from_now, user.id)
         else
-          user.orders.update_all(status: :processing)
+          user.orders.where.not(status: [:fresh, :fulfilled, :completed, :failed]).update_all(status: :processing)
         end
       end
     end
@@ -69,7 +69,7 @@ StripeEvent.configure do |events|
           body: "Next payment attempt will be #{Time.zone.at(invoice_data.next_payment_attempt).to_date}. Please update your payment info.",
           timeout: 5
         })
-        user.orders.update_all(status: :cancelled)
+        user.orders.processing.update_all(status: :pending_payment)
       end
     end
 

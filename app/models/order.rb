@@ -25,7 +25,7 @@
 class Order < ApplicationRecord
   include Computable
   include UserDelegator
-  enum status: %i[processing completed failed cancelled refunded fulfilled fresh]
+  enum status: %i[processing completed failed cancelled refunded fulfilled fresh pending_payment]
   enum delivery_status: %i[in_transit received address_not_found]
   enum payment_status: %i[unpaid paid]
   belongs_to :user
