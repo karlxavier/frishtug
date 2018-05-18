@@ -60,7 +60,26 @@ if (el) {
     },
     data: {
       addresses: addresses,
-      show: false
+      show: false,
+      zipcodes: []
+    },
+    mounted: function() {
+      const self = this
+      const fetchAllowedZip = () => {
+        return new Promise(resolve => {
+          Rails.ajax({
+            url: "/api/v1/allowed_zip_codes",
+            type: "GET",
+            success: resolve
+          });
+        });
+      };
+
+      fetchAllowedZip().then(function(response) {
+        self.zipcodes = Array.from(response.data).map(
+          data => data.attributes.zip
+        );
+      });
     },
     methods: {
       saveChanges: () => {
@@ -127,11 +146,19 @@ if (el) {
           _delete: null
         })
       },
-      limitZipCode: (event, index) => {
-        userDelivery.addresses[index].zip_code = $limit(event.target, 5)
-      },
-      is_numeric: (event, index) => {
-        userDelivery.addresses[index].zip_code = $only_numbers(event.target)
+      validateZip: function(event) {
+        const zip = event.target.value
+        if (!this.zipcodes.includes(zip)) {
+          swal({
+            type: "error",
+            title: "Oppss..",
+            text: "We don't deliver to your zip code",
+            confirmButtonText: "Continue",
+            confirmButtonColor: "#582D11",
+            confirmButtonClass: "btn btn-brown text-uppercase",
+            buttonsStyling: false
+          })
+        }
       }
     }
   })

@@ -65,7 +65,7 @@
                   name="address[zip_code]"
                   v-model="address.zip_code"
                   v-mask="'#####'"
-                  v-on:keyup="limitZipCode($event, index) + is_numeric($event, index)">
+                  @blur="validateZip($event)">
               </div>
             </div>
           </div>

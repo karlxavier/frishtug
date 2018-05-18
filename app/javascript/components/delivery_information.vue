@@ -233,7 +233,7 @@ export default {
       if (!isValid) {
         swal({
           type: "error",
-          title: "Error",
+          title: "Oppss..",
           text: "We don't deliver to your zip code",
           confirmButtonText: "Continue",
           confirmButtonColor: "#582D11",
