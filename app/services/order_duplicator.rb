@@ -11,7 +11,7 @@ class OrderDuplicator
   def run
     copy_values_to(@order)
     @order.processing!
-    ChargeUser.call(@order, @user)
+    ChargeUser.call(@order, @order.user)
     true
   end
 
@@ -33,7 +33,7 @@ class OrderDuplicator
           add_ons: menu_order.add_ons
         )
       else
-        messages << "Not enough stock for #{menu_order.menu.name} in #{user_order.placed_on.strftime('%B %d, %Y')}"
+        messages << "Not enough stock for #{menu_order.menu.name} in #{new_order.placed_on.strftime('%B %d, %Y')}"
       end
     end
   end
