@@ -41,7 +41,7 @@ class Order < ApplicationRecord
 
   before_create :set_series_number
   after_create :set_sku, :create_pending_credit
-  before_save :run_inventory_accounter
+  before_save :run_inventory_accounter, :re_account_on_failed_payment
   before_destroy :re_account_inventory, prepend: true
 
   def menu_quantity(menu)
