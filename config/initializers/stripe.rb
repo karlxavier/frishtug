@@ -48,7 +48,7 @@ StripeEvent.configure do |events|
         subscription_end = Time.zone.at(data.period.end)
         if user.subscribe_at != subscription_start
           user.update_attributes(
-            stripe_subscription_id: subscription.id,
+            stripe_subscription_id: data.id,
             subscribe_at: subscription_start,
             subscription_expires_at: subscription_end
           )

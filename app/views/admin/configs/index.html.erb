@@ -32,7 +32,7 @@
         <label for="">Tax Rate</label>
         <%= f.fields_for :tax, @store_config.tax || @store_config.build_tax do |t| %>
           <div class="input-group">
-            <%= t.number_field :rate, class: 'form-control', step: '0.1' %>
+            <%= t.text_field :rate, class: 'form-control' %>
             <div class="input-group-append">
               <span class="input-group-text">%</span>
             </div>

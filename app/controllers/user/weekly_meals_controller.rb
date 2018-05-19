@@ -2,7 +2,7 @@ class User::WeeklyMealsController < User::BaseController
   before_action :user_can_order?, :check_order!, :check_schedule!, :set_new_order, only: :new
   before_action :set_order_for_edit, :editable?, only: :edit
   before_action :set_category_and_menus, :set_orders_for_option_select, only: %i[new edit]
-  before_action :user_has_schedule!, :set_date_range, :set_date, only: :index
+  before_action :user_has_schedule?, :set_date_range, :set_date, only: :index
   respond_to :js, only: :category
   START_DATE = Date.current.beginning_of_week(:sunday)
 
@@ -29,9 +29,9 @@ class User::WeeklyMealsController < User::BaseController
 
   private
 
-  def user_has_schedule!
+  def user_has_schedule?
     return unless current_user.subscribed?
-    unless current_user.schedule.present?
+    unless current_user.schedule&.option&.present?
       flash[:notice] = "Please select a schedule in the schedule information page"
       redirect_to user_dashboard_index_path
     end

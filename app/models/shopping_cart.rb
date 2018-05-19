@@ -11,6 +11,7 @@ class ShoppingCart
       check_stocks_and_add_quantity(menus_order, menu.id, quantity)
     else
       menus_order = get_menus_order(menu.id)
+      return unless menus_order.present?
       add_add_ons(menus_order, quantity, add_on_id) if menus_order.present?
       menus_order.save
     end

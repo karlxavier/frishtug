@@ -11,4 +11,5 @@
 
 class Tax < ApplicationRecord
   belongs_to :store
+  validates :rate, presence: true, numericality: true
 end
