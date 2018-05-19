@@ -1,40 +1,41 @@
 class StockAccounter
-  attr_accessor :stock, :range, :date, :inventory
+  attr_accessor :stock, :range, :date_begin, :inventory, :transaction
   def initialize(stock, date)
     @stock = stock
-    @date = date
-    @range = DateRange.new(date.beginning_of_day, date.end_of_day)
+    @date_begin = date.beginning_of_day
     @inventory = stock.inventory
+    @transaction = set_transaction
   end
 
   def increase
-    return if inventory.nil?
-    transaction = inventory.inventory_transactions
-                            .between_transaction_date?(range)
-                            .first_or_create(
-                              transaction_date: date,
-                              quantity_sold: 0
-                            )
+    return unless transaction.present?
     transaction.quantity_on_hand = stock.inventory.quantity
-    transaction.quantity_sold += stock.quantity
-    transaction.save
+    transaction.save!
+    transaction.increment! :quantity_sold, stock.quantity
   end
 
   def decrease
-    return if inventory.nil?
-    transaction = inventory.inventory_transactions
-                            .between_transaction_date?(range)
+    return unless transaction.present?
+    transaction.quantity_on_hand = stock.inventory.quantity
+    transaction.save!
+    transaction.decrement! :quantity_sold, stock.quantity
+
+    if transaction.quantity_sold <= 0
+      transaction.destroy
+    end
+  end
+
+  private
+
+  attr_accessor :date_begin, :inventory
+
+  def set_transaction
+    return nil unless inventory.present?
+    inventory.inventory_transactions
+                            .where(transaction_date: date_begin)
                             .first_or_create(
-                              transaction_date: date,
+                              transaction_date: date_begin,
                               quantity_sold: 0
                             )
-    transaction.quantity_on_hand = stock.inventory.quantity
-    transaction.quantity_sold -= stock.quantity
-
-    if transaction.quantity_sold == 0
-      transaction.destroy
-    else
-      transaction.save!
-    end
   end
 end

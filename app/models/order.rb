@@ -35,6 +35,7 @@ class Order < ApplicationRecord
   has_one :comment, as: :commentable, dependent: :destroy
   has_one :shipping_charge, dependent: :destroy
   has_many :search_results, as: :searchable
+  has_one :pending_credit, dependent: :destroy
   scope :completed, -> { where.not(delivered_at: nil) }
 
   accepts_nested_attributes_for :menus_orders, allow_destroy: true

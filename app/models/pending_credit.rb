@@ -14,6 +14,7 @@
 
 class PendingCredit < ApplicationRecord
   belongs_to :user
+  belongs_to :order, optional: true
 
   def self.activate_on(date)
     return nil unless date.present?

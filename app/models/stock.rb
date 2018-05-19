@@ -7,13 +7,13 @@ class Stock
 
   def reduce
     return if inventory.nil?
-    inventory.quantity -= quantity
+    inventory.decrement! :quantity, quantity
     inventory.save
   end
 
   def return
     return if inventory.nil?
-    inventory.quantity += quantity
+    inventory.increment! :quantity, quantity
     inventory.save
   end
 
