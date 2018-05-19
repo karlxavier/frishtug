@@ -128,6 +128,30 @@ class RegistrationForm
         param[:order_date] = Time.current
         order = user.orders.create!(param)
         order.processing!
+        excess = OrderCalculator.new(order).total_excess(user.plan.limit)
+        tax = OrderCalculator.new(order).total_tax
+        total = OrderCalculator.new(user.orders.first).total
+
+        order.bill_histories.create!(
+          user_id: user.id,
+          amount_paid: excess,
+          description: "Excess Charge",
+          billed_at: Time.current
+        ) if excess >= 0.50 && user.plan.interval == 'month'
+
+        order.bill_histories.create!(
+          user_id: user.id,
+          amount_paid: tax,
+          description: "Tax Charge",
+          billed_at: Time.current
+        ) if tax >= 0.50 && user.plan.interval == 'month'
+
+        order.bill_histories.create!(
+          user_id: user.id,
+          amount_paid: total,
+          description: "Order Charge",
+          billed_at: Time.current
+        ) if total >= 0.50 && user.plan.interval != 'month'
       else
         errors.add(:base, 'Order place on is blank')
         raise ActiveRecord::StatementInvalid

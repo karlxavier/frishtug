@@ -28,21 +28,22 @@ class ChargeUser
     user.plan.limit
   end
 
-  def last_bill
-    order.bill_histories.last
+  def last_bill(description)
+    order.bill_histories.where(description: description).last
   end
 
-  def last_bill_amount
-    return 0 unless last_bill.present?
-    last_bill.amount_paid
+  def last_bill_amount(description)
+    bill = last_bill(description)
+    return 0 unless bill.present?
+    bill.amount_paid
   end
 
   def charge!
-    calculate_payment
+    calculate_payment('charge')
     return order unless amount_valid?
     stripe = StripeCharger.new(user, @amount_to_pay)
     if stripe.run
-      create_bill_history('Order charge')
+      create_bill_history('Order Charge')
       return order
     else
       errors.add(:charge, stripe.errors.full_messages.join(', '))
@@ -51,11 +52,24 @@ class ChargeUser
   end
 
   def charge_excess!
-    calculate_payment
+    calculate_payment('excess')
     return order unless amount_valid?
     stripe = StripeCharger.new(user, @amount_to_pay, order)
     if stripe.charge_excess!
-      create_bill_history('Excess charge')
+      create_bill_history('Excess Charge')
+      charge_tax!
+    else
+      errors.add(:charge, stripe.errors.full_messages.join(', '))
+    end
+    nil
+  end
+
+  def charge_tax!
+    calculate_payment('tax')
+    return order unless amount_valid?
+    stripe = StripeCharger.new(user, @amount_to_pay, order)
+    if stripe.charge_tax!
+      create_bill_history('Tax Charge')
       return order
     else
       errors.add(:charge, stripe.errors.full_messages.join(', '))
@@ -74,13 +88,20 @@ class ChargeUser
     order
   end
 
-  def calculate_payment
-    if subscribed?
-      amount = OrderCalculator.new(order).total_excess(plan_limit)
-    else
-      amount = OrderCalculator.new(order).total
-    end
-    amount -= last_bill_amount
+  def calculate_payment(type)
+    calculations_type = {
+      'excess' => OrderCalculator.new(order).total_excess(plan_limit),
+      'tax' => OrderCalculator.new(order).total_tax,
+      'charge' => OrderCalculator.new(order).total
+    }
+
+    charge_description = {
+      'excess' => "Excess Charge",
+      'tax' => "Tax Charge",
+      'charge' => "Order Charge"
+    }
+    amount = calculations_type[type]
+    amount -= last_bill_amount(charge_description[type])
     @amount_to_pay = deduct_pending_credit(amount)
   end
 
