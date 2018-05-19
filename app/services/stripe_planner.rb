@@ -9,7 +9,9 @@ class StripePlanner
     stripe_plan = Stripe::Plan.create(
       amount: format_to_cent(@plan.price),
       interval: @plan.interval,
-      name: @plan.name,
+      product: {
+        name: @plan.name,
+      },
       currency: 'usd',
       id: @plan.name.parameterize
     )
