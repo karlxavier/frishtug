@@ -100,7 +100,7 @@ if (el) {
             swal({
               type: "error",
               title: "Address Not Valid!",
-              text: invalid.join("|"),
+              text: invalids.join("|"),
               confirmButtonText: "Ok",
               confirmButtonColor: "#582D11",
               confirmButtonClass: "btn btn-brown text-uppercase",

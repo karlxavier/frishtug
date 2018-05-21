@@ -296,15 +296,9 @@ export default {
 
       self.registration_form.addresses.forEach( (address, index, array) => {
         processedAddress++
-        const full_address = [
-          address.line1,
-          address.line2,
-          address.city,
-          address.state,
-          address.zip_code
-        ].filter(e => !!e).join(", ");
+        const full_address = `line1=${address.line1}&line2=${address.line2}&city=${address.city}&state=${address.state}&zip_code=${address.zip_code}`
 
-        validate_address(encodeURIComponent(full_address).replace(/%20/g, '+')).then(response => {
+        validate_address(full_address).then(response => {
           if (!response) {
             invalid.push(full_address);
           }
