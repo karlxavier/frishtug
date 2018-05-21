@@ -1,24 +1,22 @@
 class Api::V1::AddressController < Api::V1::BaseController
   def index
-    @coordinates = Geocoder.coordinates(location)
-    if @coordinates.present?
+    @command = ValidateAddress.call(address_params)
+    if @command.success?
       render json: {
-        status: 'success',
-        data: @coordinates,
-        valid: true
-      }, status: :ok
-    else
-      render json: {
-        status: 'success',
-        data: @coordinates,
-        valid: true #false
-      }, status: :ok
+        is_valid: @command.result
+      }
     end
   end
 
   private
 
-  def location
-    params[:location]
+  def address_params
+    {
+      line1: params[:line1],
+      line2: params[:line2],
+      city: params[:city],
+      state: params[:state],
+      zip_code: params[:zip_code]
+    }
   end
 end

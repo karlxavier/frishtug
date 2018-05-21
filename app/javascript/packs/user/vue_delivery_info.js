@@ -1,10 +1,6 @@
 import Vue from 'vue/dist/vue.esm'
 import swal from 'sweetalert2'
 import ajax from '../lib/ajax_lib'
-import {
-  $only_numbers,
-  $limit
-} from '../lib/input_helpers'
 import VueMask from "v-mask"
 import LabelEdit from '../../components/label_edit'
 Vue.use(VueMask)
@@ -82,8 +78,55 @@ if (el) {
       });
     },
     methods: {
+      verifyAddress: function() {
+        const self = this
+        const invalids = []
+        let processedAddress = 0
+
+        const validate_address = address => {
+          return new Promise((resolve, reject) => {
+            Rails.ajax({
+              url: `/api/v1/address?${address}`,
+              type: "GET",
+              success: function (response) {
+                resolve(response.valid);
+              }
+            });
+          });
+        };
+
+        const done = () => {
+          if (invalids.length > 0) {
+            swal({
+              type: "error",
+              title: "Address Not Valid!",
+              text: invalid.join("|"),
+              confirmButtonText: "Ok",
+              confirmButtonColor: "#582D11",
+              confirmButtonClass: "btn btn-brown text-uppercase",
+              buttonsStyling: false
+            });
+          } else {
+            self.saveChanges();
+          }
+        }
+
+        self.addresses.forEach((address, index, array) => {
+          processedAddress++
+          const full_address = `line1=${address.line1}&line2=${address.line2}&city=${address.city}&state=${address.state}&zip_code=${address.zip_code}`
+
+          validate_address(full_address).then(response => {
+            if (!response) {
+              invalids.push(full_address);
+            }
+
+            if (processedAddress === array.length) {
+              done()
+            }
+          });
+        });
+      },
       saveChanges: () => {
-        const _this = this
         const form = new FormData(document.querySelector('form.user_delivery_info'))
         const data = new Object()
         data.address = userDelivery.addresses
