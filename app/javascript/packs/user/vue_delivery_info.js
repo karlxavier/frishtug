@@ -80,8 +80,8 @@ if (el) {
     methods: {
       verifyAddress: function() {
         const self = this
-        const invalids = []
         let processedAddress = 0
+        const address_params = []
 
         const validate_address = address => {
           return new Promise((resolve, reject) => {
@@ -89,18 +89,31 @@ if (el) {
               url: `/api/v1/address?${address}`,
               type: "GET",
               success: function (response) {
-                resolve(response.valid);
+                resolve(response);
               }
             });
           });
         };
 
-        const done = () => {
-          if (invalids.length > 0) {
+        self.addresses.forEach((address, index, array) => {
+          processedAddress++
+          address_params.push(`address[${processedAddress}][line1]=${address.line1}&address[${processedAddress}][line2]=${address.line2}&address[${processedAddress}][city]=${address.city}&address[${processedAddress}][state]=${address.state}&address[${processedAddress}][zip_code]=${address.zip_code}`)
+        });
+
+        validate_address(address_params.join('&')).then(response => {
+          done(response)
+        })
+
+        const done = (response) => {
+          if (response.valid === false) {
+            const error_message = response.errors.reduce( (list, error) => {
+              return list += `<li>${error}</li>`
+            }, "")
+
             swal({
               type: "error",
               title: "Address Not Valid!",
-              text: invalids.join("|"),
+              html: `<ul class="list-unstyled">${error_message}</ul>`,
               confirmButtonText: "Ok",
               confirmButtonColor: "#582D11",
               confirmButtonClass: "btn btn-brown text-uppercase",
@@ -110,21 +123,6 @@ if (el) {
             self.saveChanges();
           }
         }
-
-        self.addresses.forEach((address, index, array) => {
-          processedAddress++
-          const full_address = `line1=${address.line1}&line2=${address.line2}&city=${address.city}&state=${address.state}&zip_code=${address.zip_code}`
-
-          validate_address(full_address).then(response => {
-            if (!response) {
-              invalids.push(full_address);
-            }
-
-            if (processedAddress === array.length) {
-              done()
-            }
-          });
-        });
       },
       saveChanges: () => {
         const form = new FormData(document.querySelector('form.user_delivery_info'))

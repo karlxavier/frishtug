@@ -281,14 +281,15 @@ export default {
     validateAddress: function() {
       const self = this;
       let processedAddress = 0
-      const invalid = []
+      const address_params = []
+
       const validate_address = address => {
         return new Promise((resolve, reject) => {
           Rails.ajax({
-            url: `/api/v1/address?location=${address}`,
+            url: `/api/v1/address?${address}`,
             type: "GET",
             success: function(response) {
-              resolve(response.valid);
+              resolve(response);
             }
           });
         });
@@ -296,25 +297,23 @@ export default {
 
       self.registration_form.addresses.forEach( (address, index, array) => {
         processedAddress++
-        const full_address = `line1=${address.line1}&line2=${address.line2}&city=${address.city}&state=${address.state}&zip_code=${address.zip_code}`
-
-        validate_address(full_address).then(response => {
-          if (!response) {
-            invalid.push(full_address);
-          }
-
-          if (processedAddress === array.length) {
-            done()
-          }
-        });
+        address_params.push(`address[${processedAddress}][line1]=${address.line1}&address[${processedAddress}][line2]=${address.line2}&address[${processedAddress}][city]=${address.city}&address[${processedAddress}][state]=${address.state}&address[${processedAddress}][zip_code]=${address.zip_code}`)
       });
 
-      const done = () => {
-        if (invalid.length > 0) {
+      validate_address(address_params.join('&')).then(response => {
+        done(response)
+      })
+
+      const done = (response) => {
+        if (response.valid === false) {
+          const error_message = response.errors.reduce( (list, error) => {
+            return list += `<li>${error}</li>`
+          }, "")
+
           swal({
             type: "error",
             title: "Address Not Valid!",
-            text: invalid.join("|"),
+            html: `<ul class="list-unstyled">${error_message}</ul>`,
             confirmButtonText: "Ok",
             confirmButtonColor: "#582D11",
             confirmButtonClass: "btn btn-brown text-uppercase",

@@ -48,7 +48,7 @@ export default {
 		},
     getAddressResult: function(data, placeResultData, id) {
       const self = this
-      const currentAddress = self.address
+			const currentAddress = self.address
 
       if (data.street_number != null) {
         currentAddress.line1 = `${data.street_number} ${data.route}`
