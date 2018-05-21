@@ -120,6 +120,10 @@ if (el) {
               buttonsStyling: false
             });
           } else {
+            response.data.forEach((data, index) => {
+              self.addresses[index].state = data.state
+              self.addresses[index].city = data.city
+            })
             self.saveChanges();
           }
         }

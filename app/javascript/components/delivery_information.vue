@@ -320,6 +320,10 @@ export default {
             buttonsStyling: false
           });
         } else {
+          response.data.forEach((data, index) => {
+            self.registration_form.addresses[index].state = data.state
+            self.registration_form.addresses[index].city = data.city
+          })
           self.checkGroupCode();
         }
       }

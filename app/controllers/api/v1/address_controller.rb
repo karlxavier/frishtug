@@ -1,10 +1,13 @@
 class Api::V1::AddressController < Api::V1::BaseController
   def index
     invalids = []
+    valids = []
     params[:address].each do |key, value|
       command = VerifyAddress.call(address_params(value))
       if !command.success?
         command.errors[:address].map { |e| invalids<<e }
+      else
+        valids << command.result
       end
     end
 
@@ -15,6 +18,7 @@ class Api::V1::AddressController < Api::V1::BaseController
       }, status: :ok
     else
       render json: {
+        data: valids,
         valid: true
       }, status: :ok
     end

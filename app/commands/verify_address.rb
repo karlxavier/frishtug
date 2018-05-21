@@ -18,11 +18,10 @@ class VerifyAddress
       zip: @zip,
       country: "US",
     )
-
     delivery = verifiable_address.verifications.delivery
 
     if delivery.success
-      return delivery.details
+      return verifiable_address
     else
       delivery.errors.each do |error|
         errors.add(:address, error.message)
