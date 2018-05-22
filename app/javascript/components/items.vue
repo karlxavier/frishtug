@@ -50,6 +50,13 @@
                       <span :class="dietClass(diet)" v-bind:key="diet.id"></span>
                     </template>
                   </h5>
+                  <div class="row" v-show="!!item.attributes.notes">
+                    <div class="col">
+                      <p class="card-text font-size-14 text-info">
+                        {{ item.attributes.notes }}
+                      </p>
+                    </div>
+                  </div>
                   <div class="row">
                     <div class="col-5">
                       <p class="card-text">

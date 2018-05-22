@@ -3,6 +3,7 @@ class SerializableMenu < JSONAPI::Serializable::Resource
   type 'menus'
   attributes :name,
              :price,
+             :notes,
              :description,
              :published_at,
              :published,

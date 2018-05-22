@@ -11,6 +11,15 @@
       <%= menu.name.titleize %>
       <%= legend_marker(menu) %>
     </h4>
+    <% if menu.notes.present? %>
+      <div class="row">
+        <div class="col">
+          <p class="card-text font-size-14 text-info">
+            <%= menu.notes %>
+          </p>
+        </div>
+      </div>
+    <% end %>
     <div class="row">
       <div class="col-5">
         <p class="card-text">
