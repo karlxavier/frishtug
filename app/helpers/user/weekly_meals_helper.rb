@@ -109,14 +109,8 @@ module User::WeeklyMealsHelper
     menus_orders.any? { |order| order.menu.tax }
   end
 
-  def total_tax(menus_orders)
-    tax = Tax.first.rate / 100
-    sum = 0
-    menus_orders.each do |order|
-      next unless order.menu.tax
-      sum += (order.menu_price * tax) * order.quantity
-    end
-    sum
+  def total_tax(order)
+    OrderCalculator.new(order).total_tax
   end
 
   def total_menu_price(order)
