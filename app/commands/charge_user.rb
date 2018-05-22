@@ -44,7 +44,7 @@ class ChargeUser
     stripe = StripeCharger.new(user, @amount_to_pay)
     if stripe.run
       create_bill_history('Order Charge')
-      return order
+      charge_tax!
     else
       errors.add(:charge, stripe.errors.full_messages.join(', '))
     end

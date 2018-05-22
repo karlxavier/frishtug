@@ -11,5 +11,6 @@ class SerializablePlan < JSONAPI::Serializable::Resource
               :interval,
               :limit,
               :minimum_credit_allowed,
-              :stripe_plan_id
+              :stripe_plan_id,
+              :minimum_charge
 end

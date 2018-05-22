@@ -23,6 +23,7 @@ class OrderCalculator
   end
 
   def total_excess(plan_limit)
+    return 0 if plan_limit.blank?
     total = sum_of(total_item_price, total_add_ons_price)
     total - plan_limit
   end

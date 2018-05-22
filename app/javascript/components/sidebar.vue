@@ -73,7 +73,7 @@
                   </span>
                 </h6>
               </div>
-              <div v-if="totalPlusAddOn(order.menus_orders_attributes) > plan.limit">
+              <div v-if="hasExceededPlanLimit(order)">
                 <small class="alert alert-warning d-flex" style="font-size: 9px; width: 100%;">
                   <i class="fa fa-exclamation-circle font-size-24 pr-1" aria-hidden="true"></i>
                   You have exceeded your plan limit of $ {{ plan.limit }} for {{ order.order_date | to_dddd }}.
@@ -177,6 +177,12 @@ export default {
     window.addEventListener("scroll", scroller);
   },
   methods: {
+    hasExceededPlanLimit: function(order) {
+      if (this.plan.interval !== 'month') {
+        return false
+      }
+      return totalPlusAddOn(order.menus_orders_attributes) > plan.limit
+    },
     remainingCredits: function(order, index) {
       const self = this;
       const total = self.totalWithoutTax(order.menus_orders_attributes, index);

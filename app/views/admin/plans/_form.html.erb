@@ -67,6 +67,18 @@
     </small>
   </div>
   <div class="form-group">
+    <%= form.label :minimum_charge %>
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text">$</span>
+      </div>
+      <%= form.number_field :minimum_charge, class: 'form-control', min: 0, step: '0.01' %>
+    </div>
+    <small id="minimumcreditallowedHelp" class="form-text text-muted">
+      The minimum charge, is the default charge value if orders are below the minimum credit. "0" means it will be skip/ has no minimum charge.
+    </small>
+  </div>
+  <div class="form-group">
     <%= form.label :shipping %>
     <%= form.select :shipping, [["Free", :free], ["Paid", :paid]] , {}, { class: 'form-control plan-shipping' } %>
   </div>

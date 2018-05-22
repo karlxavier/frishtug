@@ -29,7 +29,7 @@
           <div class="card-footer card__plan_footer">
             <a href="javascript:void(0)"
               class="btn btn-block btn-brown plan--btns"
-              :class="chosenPlan(plan)"
+              :class="String(registration_form.plan_id) === plan.id ? 'active__plan' : ''"
               @click="choosePlan(plan)">
               <i class="fa fa-check"></i>
               Choose {{ plan.attributes.name }}
@@ -75,12 +75,6 @@ export default {
     })
   },
   methods: {
-    chosenPlan: function(plan) {
-      const self = this
-      if (plan.id === self.registration_form.plan_id) {
-        return "active__plan"
-      }
-    },
     parseFloatingNumber: function(num) {
       const val = parseFloat(num);
       return isNaN(val) ? 0 : val;
@@ -93,6 +87,7 @@ export default {
       this.plan.limit = this.parseFloatingNumber(plan.attributes.limit)
       this.plan.minimum = this.parseFloatingNumber(plan.attributes.minimum_credit_allowed)
       this.charges.shipping_fee = this.parseFloatingNumber(plan.attributes.shipping_fee)
+      this.plan.minimum_charge = this.parseFloatingNumber(plan.attributes.minimum_charge)
 
       if (plan.attributes.interval === 'month') {
         this.plan.price = this.parseFloatingNumber(plan.attributes.price)

@@ -102,10 +102,12 @@ export default {
       return this.charges.shipping_fee;
     },
     total_price: function() {
-      const total =
-        this.plan.interval === "month"
-          ? this.plan.price
-          : this.charges.total_price;
+      let total = 0
+      if (this.plan.interval === "month") {
+        total = this.plan.price
+      } else {
+        total = this.charges.total_price > this.plan.minimum_charge ? this.charges.total_price : this.plan.minimum_charge
+      }
       return total;
     },
     first_delivery_date: function() {

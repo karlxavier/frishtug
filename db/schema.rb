@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180508061053) do
+ActiveRecord::Schema.define(version: 20180522061203) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -343,6 +343,7 @@ ActiveRecord::Schema.define(version: 20180508061053) do
     t.string "short_description", limit: 150
     t.decimal "limit", precision: 8, scale: 2
     t.decimal "minimum_credit_allowed", precision: 8, scale: 2
+    t.decimal "minimum_charge", precision: 8, scale: 2, default: "0.0"
     t.index ["stripe_plan_id"], name: "index_plans_on_stripe_plan_id"
   end
 
@@ -352,6 +353,14 @@ ActiveRecord::Schema.define(version: 20180508061053) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_referrers_on_user_id"
+  end
+
+  create_table "registration_inputs", force: :cascade do |t|
+    t.string "sid"
+    t.jsonb "data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sid"], name: "index_registration_inputs_on_sid"
   end
 
   create_table "schedules", force: :cascade do |t|

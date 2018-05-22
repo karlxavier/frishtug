@@ -101,7 +101,8 @@ const vm = new Vue({
       limit: null,
       minimum: null,
       price: null,
-      name: null
+      name: null,
+      minimum_charge: null
     },
     date: {
       selected: null
@@ -196,13 +197,15 @@ const vm = new Vue({
       const data = JSON.parse(node.getAttribute('data'))
       const limit = parseFloat(data.limit)
       const minimum = parseFloat(data.minimum_credit_allowed)
+      const minimum_charge = parseFloat(data.minimum_charge)
       self.plan = {
         for_type: data.for_type,
         interval: data.interval,
         limit: isNaN(limit) ? 0 : limit,
         minimum: isNaN(minimum) ? 0 : minimum,
         price: parseInt(data.price),
-        name: data.name
+        name: data.name,
+        minimum_charge: minimum_charge
       }
       self.registration_form.plan_id = data.id
     }
