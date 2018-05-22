@@ -70,7 +70,7 @@
 <script>
 import toCurrency from "../packs/lib/to_currency";
 import moment from "moment";
-import Big from "big.js";
+import Money from "../packs/lib/money";
 export default {
   data: () => {
     return {
@@ -132,19 +132,19 @@ export default {
       const getPrice = (item) => {
         const found = items.filter(data => data.id === item.menu_id)
         if (found.length > 0) {
-          const price = new Big(parseFloat(found[0].attributes.price))
-          return price.times(item.quantity).toFixed(2);
+          const price = Money.$cents(parseFloat(found[0].attributes.price))
+          return Money.$dollar(price * item.quantity);
         } else {
           return 0;
         }
       }
 
       orders.forEach(order => {
-        const total = order.menus_orders_attributes.reduce((sum, item) => {
-          return sum.plus(getPrice(item));
-        }, new Big(0))
-        if (total.gt(self.plan.limit) && self.plan.interval === 'month') {
-          additional += Number(total.minus(self.plan.limit).toFixed(2))
+        const total = Money.$dollar(order.menus_orders_attributes.reduce((sum, item) => {
+          return sum += Money.$cents(getPrice(item));
+        }, 0))
+        if (total > self.plan.limit && self.plan.interval === 'month') {
+          additional += Number((total - self.plan.limit).toFixed(2))
         }
       })
       return additional
@@ -160,21 +160,20 @@ export default {
 
       const calculate_tax = (price, quantity) => {
         if (price == null) { return 0 }
-        const big_price = new Big(price)
-        const taxPercent = new Big(self.tax / 100.0)
-        return big_price.times(taxPercent).times(quantity).toFixed(2)
+        const price_in_cents = Money.$cents(price)
+        const taxPercent = self.tax / 100.0
+        return Money.$dollar(Money.$tax(price_in_cents, taxPercent) * quantity)
       };
 
       const total = self.registration_form.orders.reduce((total, order) => {
-        return total.plus(order.menus_orders_attributes.reduce(
+        return total += order.menus_orders_attributes.reduce(
           (sum, menu_order) => {
-            return sum.plus(calculate_tax(taxable_items[menu_order.menu_id], menu_order.quantity))
+            return sum += Money.$cents(calculate_tax(taxable_items[menu_order.menu_id], menu_order.quantity))
           },
-          new Big(0)
-        ));
-      }, new Big(0));
-      const parsed_total = Number(total)
-      return isNaN(parsed_total) ? 0 : parsed_total;
+          0
+        );
+      }, 0);
+      return Money.$dollar(total)
     },
     generateToken: function() {
       const self = this;

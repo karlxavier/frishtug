@@ -6,8 +6,12 @@ class OrderCalculator
   end
 
   def total(options = {})
-    fee = options[:skip_shipping_fee] == true ? 0 : shipping_fee
-    sum_of(total_item_price, total_add_ons_price, fee, self.class.new(order).total_tax)
+    shipping_fee = options[:skip_shipping_fee] == true ? 0 : shipping_fee
+    sum_of(
+      total_item_price,
+      total_add_ons_price,
+      shipping_fee,
+      self.class.new(order).total_tax)
   end
 
   def total_without_shipping
@@ -37,7 +41,7 @@ class OrderCalculator
 
   def total_tax
     taxable_items = order.menus_orders.select { |m| m.menu.tax == true }
-    taxable_items.map {|o| calculate_tax(o.menu_price * o.quantity) }.inject(:+) || 0
+    taxable_items.map {|o| calculate_tax(o.menu_price) * o.quantity }.inject(:+) || 0
   end
 
   def total_orders_tax
@@ -67,7 +71,8 @@ class OrderCalculator
 
   def calculate_tax(price)
     tax = (TAX / 100.0).to_d
-    (price.to_d * tax).round(2)
+    price = convert_to_cents(price)
+    ((price * tax) / 100).round(2)
   end
 
   def calculate(price, quantity)

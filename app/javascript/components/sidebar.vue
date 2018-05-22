@@ -112,8 +112,8 @@
 <script>
 import swal from "sweetalert2";
 import moment from "moment";
-import Big from "big.js";
 import toCurrency from "../packs/lib/to_currency";
+import Money from "../packs/lib/money";
 export default {
   props: {
     registration_form: { type: Object, required: true },
@@ -188,7 +188,7 @@ export default {
       const total = self.registration_form.orders.reduce((sum, order) => {
         const total = order.menus_orders_attributes.reduce(
           (sum, menus_order) => {
-            return (sum += self.totalPrice(menus_order));
+            return (sum += Money.$cents(self.totalPrice(menus_order)));
           },
           0
         );
@@ -206,7 +206,7 @@ export default {
       }
 
       if (complete) {
-        self.charges.total_price = total;
+        self.charges.total_price = Money.$dollar(total);
 
         swal({
           title: "Congratulations!",
@@ -370,9 +370,9 @@ export default {
       const self = this;
       const found = self.unreduce_items.filter(i => i.id === item.menu_id);
       if (found.length > 0) {
-        const price = new Big(parseFloat(found[0].attributes.price))
-        let total = price.times(item.quantity);
-        return total.toFixed(2);
+        const price = Money.$cents(parseFloat(found[0].attributes.price))
+        let total = Money.$dollar(Math.round(price * item.quantity));
+        return total;
       } else {
         return 0;
       }
@@ -417,20 +417,20 @@ export default {
       const taxed = item => {
         return item.attributes.tax === true;
       };
-      return self.unreduce_items
+      return Money.$dollar(self.unreduce_items
         .filter(i => item_ids.includes(i.id))
         .filter(taxed)
         .reduce((sum, item) => {
-          const tax = new Big(self.tax / 100);
-          const total = new Big(parseFloat(item.attributes.price))
-          return sum.plus(total.times(tax).times(quantity[item.id]));
-        }, new Big(0));
+          const tax = self.tax / 100;
+          const price = Money.$cents(parseFloat(item.attributes.price))
+          return sum += Money.$tax(price, tax) * quantity[item.id];
+        }, 0))
     },
     totalPlusAddOnAndTax: function(menus_orders) {
       const self = this;
-      const total_with_addon = new Big(self.totalPlusAddOn(menus_orders))
-      const total_tax = new Big(self.taxPrice(menus_orders))
-      return total_with_addon.plus(total_tax).toFixed(2)
+      const total_with_addon = Money.$cents(self.totalPlusAddOn(menus_orders))
+      const total_tax = Money.$cents(self.taxPrice(menus_orders))
+      return Money.$dollar(total_with_addon + total_tax)
     },
     totalPlusAddOn: function(menus_orders) {
       const self = this;
@@ -439,23 +439,23 @@ export default {
         obj[i.menu_id] = i.quantity;
         return obj;
       }, {});
-      return self.unreduce_items
+     return Money.$dollar(self.unreduce_items
         .filter(i => item_ids.includes(i.id))
         .reduce((sum, item) => {
-          const price = new Big(parseFloat(item.attributes.price))
+          const price = Money.$cents(parseFloat(item.attributes.price))
           const add_on_price = menus_orders.reduce(
             (add_on_sum, menus_order) => {
               return (add_on_sum += menus_order.add_ons.reduce(
                 (sum, add_on) => {
-                  return sum.plus(self.addOnPrice(menus_order, add_on));
+                  return sum += Money.$cents(self.addOnPrice(menus_order, add_on));
                 },
-                new Big(0)
+                0
               ));
             },
             0
           );
-          return sum.plus(price.plus(add_on_price).times(quantity[item.id]));
-        }, new Big(0));
+          return sum += (price + add_on_price) * quantity[item.id];
+        }, 0));
     },
     totalWithoutTax: function(menus_orders, index) {
       const self = this;
