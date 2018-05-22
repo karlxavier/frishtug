@@ -29,7 +29,7 @@
           <div class="card-footer card__plan_footer">
             <a href="javascript:void(0)"
               class="btn btn-block btn-brown plan--btns"
-              :class="choosenPlan(plan)"
+              :class="chosenPlan(plan)"
               @click="choosePlan(plan)">
               <i class="fa fa-check"></i>
               Choose {{ plan.attributes.name }}
@@ -75,7 +75,7 @@ export default {
     })
   },
   methods: {
-    choosenPlan: function(plan) {
+    chosenPlan: function(plan) {
       const self = this
       if (plan.id === self.registration_form.plan_id) {
         return "active__plan"
