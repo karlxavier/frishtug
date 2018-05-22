@@ -176,7 +176,6 @@ class RegistrationForm
   def create_a_charge(user)
     amount_to_pay = OrderCalculator.new(user.orders.first).total
     amount_to_pay = user.plan.minimum_charge > amount_to_pay ? user.plan.minimum_charge : amount_to_pay
-    raise amount_to_pay.to_f.inspect
     charge = StripeCharger.new(user, amount_to_pay)
     if charge.run
       user.bill_histories.create!(
