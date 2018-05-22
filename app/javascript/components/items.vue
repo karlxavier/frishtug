@@ -42,7 +42,7 @@
             <div class="row" v-if="items[category.attributes.name]">
               <div class='card col-12 col-custom-255 px-0 border-0 mb-4 mt-1 mr-4'
                 v-for="item in filteredItems(category.attributes.name)" v-bind:key="`${item.id}-${prefix}`">
-                <img v-lazy="imageUrl(item)" class="card-img-top" @click="nutriFacts(item.id, $event)" width="255" height="175">
+                <img v-lazy="imageUrl(item)" class="card-img-top" @click="nutriFacts(item)" width="255" height="175">
                 <div class="card-body px-0 py-1">
                   <h5 class="card-title mb-0 font-family-montserrat">
                     {{ item.attributes.name }}
@@ -105,7 +105,7 @@
         </div>
       </v-tab>
     </vue-tabs>
-    <nutritional-data-modal v-bind:nutri="nutri"></nutritional-data-modal>
+    <nutritional-data-modal v-bind:nutri="nutri" v-bind:item="item"></nutritional-data-modal>
   </div>
 </template>
 
@@ -139,7 +139,13 @@ export default {
       searchText: "",
       sortAsc: true,
       sortBy: "name",
-      nutri: null
+      nutri: null,
+      item: {
+        attributes: {
+          name: "",
+          description: ""
+        }
+      }
     };
   },
   methods: {
@@ -315,8 +321,10 @@ export default {
       this.sortBy = sortBy
       this.sortAsc = !this.sortAsc;
     },
-    nutriFacts: function(item_id) {
+    nutriFacts: function(item) {
       const self = this;
+      const item_id = item.id
+      self.item = item
       axios.interceptors.response.use(response => {
           return response;
       }, error => {
@@ -339,6 +347,9 @@ export default {
       })
       .catch(error => {
           console.log(error.response);
+          if (item.attributes.description != null && item.attributes.description.trim() !== "") {
+            $('#menuNutriFacts').modal('show');
+          }
       });
     }
   }
