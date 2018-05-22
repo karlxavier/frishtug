@@ -29,7 +29,9 @@
           <div class="card-footer card__plan_footer">
             <a href="javascript:void(0)"
               class="btn btn-block btn-brown plan--btns"
+              :class="choosenPlan(plan)"
               @click="choosePlan(plan)">
+              <i class="fa fa-check"></i>
               Choose {{ plan.attributes.name }}
             </a>
           </div>
@@ -73,6 +75,12 @@ export default {
     })
   },
   methods: {
+    choosenPlan: function(plan) {
+      const self = this
+      if (plan.id === self.registration_form.plan_id) {
+        return "active__plan"
+      }
+    },
     parseFloatingNumber: function(num) {
       const val = parseFloat(num);
       return isNaN(val) ? 0 : val;
@@ -94,4 +102,18 @@ export default {
   }
 }
 </script>
+
+<style>
+  i.fa-check {
+    display: none;
+  }
+  .active__plan {
+    background: #ffffff!important;
+    color: #582D11 !important;
+  }
+  .active__plan > i.fa-check {
+    display: inline-block;
+  }
+</style>
+
 
