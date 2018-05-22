@@ -6,6 +6,11 @@
       <%= menu.name.titleize %>
       <%= legend_marker(menu) %>
     </h5>
+    <% if menu.notes.present? %>
+      <p class="card-text font-size-14 text-info">
+        <%= menu.notes %>
+      </p>
+    <% end %>
     <p class="card-text">
       <small class="text-muted">
         <%= to_currency(menu.price) %> / <%= menu.unit.name.capitalize %>
