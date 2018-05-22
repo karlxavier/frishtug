@@ -98,7 +98,7 @@ class StripeCharger
   end
 
   def amount_to_cents
-    ((amount + user.plan.shipping_fee).to_d * 100).to_i
+    (amount.to_r * 100).to_i
   end
 
   def create_a_customer

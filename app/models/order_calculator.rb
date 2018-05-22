@@ -3,12 +3,16 @@ class OrderCalculator
 
   def initialize(order)
     @order = order
+    @user = order.user
+    @minimum_charge = @user.plan.minimum_charge
   end
 
   def total(options = {})
     shipping_charge = options[:skip_shipping_fee] == true ? 0 : shipping_fee
+    total_price = total_item_price
+    total_price = total_price > @minimum_charge ? total_price : @minimum_charge
     sum_of(
-      total_item_price,
+      total_price,
       total_add_ons_price,
       shipping_charge,
       self.class.new(order).total_tax)
@@ -55,7 +59,7 @@ class OrderCalculator
 
   private
 
-  attr_accessor :order
+  attr_accessor :order, :user
 
   def shipping_fee
     fee = Plan.pluck(:id, :shipping_fee).to_h
@@ -66,14 +70,18 @@ class OrderCalculator
     nums.inject(:+)
   end
 
-  def convert_to_cents(price)
-    (price.to_d * 100).to_i
+  def convert_to_cents(num)
+    (num.to_r * 100).to_i
+  end
+
+  def convert_to_dollars(cents)
+    (cents / 100.0).round(2)
   end
 
   def calculate_tax(price)
     tax = (TAX / 100.0).to_d
     price = convert_to_cents(price)
-    ((price * tax) / 100).round(2)
+    convert_to_dollars(price * tax)
   end
 
   def calculate(price, quantity)
@@ -81,7 +89,7 @@ class OrderCalculator
   end
 
   def total_item_price
-    order.menus_orders.map { |m| m.menu_price.to_d * m.quantity }.inject(:+) || 0
+    order.menus_orders.map { |m| convert_to_dollars(convert_to_cents(m.menu_price) * m.quantity) }.inject(:+) || 0
   end
 
   def total_add_ons_price
@@ -89,7 +97,7 @@ class OrderCalculator
     add_on_price = AddOn.pluck_prices(:id)
     order.menus_orders.map do |m|
       add_ons_price = m.add_ons.map { |a| add_on_price[a.to_i] }.inject(:+) || 0
-      total << add_ons_price.to_d * m.quantity
+      total << convert_to_dollars(convert_to_cents(add_ons_price) * m.quantity)
     end
     total.inject(:+) || 0
   end
