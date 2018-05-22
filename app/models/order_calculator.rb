@@ -62,7 +62,6 @@ class OrderCalculator
   end
 
   def sum_of(*nums)
-    raise nums.inspect
     nums.inject(:+)
   end
 
