@@ -9,7 +9,8 @@ class OrderCopier
   def initialize(last_five_orders, user)
     @user = user
     @last_five_orders = last_five_orders
-    @excess = []
+    @excess = {}
+    @taxes = {}
     @messages = []
   end
 
@@ -60,7 +61,7 @@ class OrderCopier
 
   private
 
-  attr_accessor :user, :excess, :messages
+  attr_accessor :user, :excess, :messages, :taxes
 
   def clean_duplicates(dates = [])
     start_date  = parse_date(dates.first).beginning_of_day
@@ -116,7 +117,8 @@ class OrderCopier
         messages << "Not enough stock for #{menu_order.menu.name} in #{user_order.placed_on.strftime('%B %d, %Y')}"
       end
     end
-    excess << OrderCalculator.new(user_order).total_excess(user.plan.limit)
+    excess[user_order.id] = OrderCalculator.new(user_order).total_excess(user.plan.limit)
+    taxes[user_order.id] = OrderCalculator.new(user_order).total_tax
   end
 
   def day_to_skip
@@ -132,14 +134,34 @@ class OrderCopier
 
   def charge_excess!
     return unless excess.length > 0
-    excess_amount = excess.inject(:+).round(2)
+    excess_amount = excess.map { |k,v| v }.inject(:+).round(2)
     charge = StripeCharger.new(user, excess_amount)
     if charge.charge_excess!
-      user.bill_histories.create!(
-        amount_paid: excess_amount,
-        description: "Excess Charge!",
-        billed_at: Time.current
-      )
+      excess.map do |key, value|
+        user.bill_histories.create!(
+          order_id: key,
+          amount_paid: excess_amount,
+          description: "Excess Charge",
+          billed_at: Time.current
+        )
+      end
+      charge_tax!
+    end
+  end
+
+  def charge_tax!
+    return unless taxes.length > 0
+    tax_amount = taxes.map { |k,v| v }.inject(:+).round(2)
+    charge = StripeCharger.new(user, tax_amount)
+    if charge.charge_tax!
+      taxes.map do |key, value|
+        user.bill_histories.create!(
+          order_id: key,
+          amount_paid: excess_amount,
+          description: "Tax Charge",
+          billed_at: Time.current
+        )
+      end
     end
   end
 end
