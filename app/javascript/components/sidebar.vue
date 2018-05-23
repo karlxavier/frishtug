@@ -181,7 +181,8 @@ export default {
       if (this.plan.interval !== 'month') {
         return false
       }
-      return totalPlusAddOn(order.menus_orders_attributes) > plan.limit
+      const total = this.totalPlusAddOn(order.menus_orders_attributes)
+      return  total > plan.limit
     },
     remainingCredits: function(order, index) {
       const self = this;
