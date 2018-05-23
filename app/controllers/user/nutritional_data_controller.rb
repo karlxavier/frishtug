@@ -3,6 +3,7 @@ class User::NutritionalDataController < User::BaseController
   respond_to :js
 
   def index
+    @menu = Menu.find(params[:menu_id])
   end
 
   private

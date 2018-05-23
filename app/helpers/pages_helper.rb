@@ -21,14 +21,14 @@ module PagesHelper
   end
 
   def image_asset(obj, options = {})
-    return no_image_asset unless obj.asset_id?
+    return no_image_asset(options) unless obj.asset_id?
     options[:fetch_format] = :auto
     options[:quality] = :auto
     cl_image_tag obj.asset.image, options
   end
 
-  def no_image_asset
-    image_tag(asset_pack_path('packs/images/no-image.svg'), size: '255x175')
+  def no_image_asset(options = {})
+    image_tag asset_pack_path('packs/images/no-image.svg'), options
   end
 
   def random_background

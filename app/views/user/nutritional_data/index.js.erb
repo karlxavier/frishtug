@@ -3,7 +3,15 @@
     $('#nutritional-data-modal .modal-body')
     .html('<%= j render 'nutritional_data' %>');
     $('#nutritional-data-modal .modal-title')
-      .html('<%= @nutritional_data.menu.name %>')
+      .html('<%= @menu.name %>');
     $('#nutritional-data-modal').modal('show');
-  }())
+  }());
+<% else %>
+  (function() {
+    $('#nutritional-data-modal .modal-body')
+    .html('<%= j render 'description' %>');
+    $('#nutritional-data-modal .modal-title')
+      .html('<%= @menu.name %>');
+    $('#nutritional-data-modal').modal('show');
+  }());
 <% end %>

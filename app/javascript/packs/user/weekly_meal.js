@@ -13,7 +13,7 @@ const showScrollTopBtn = () => {
   if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
     scrollTopbtn.style.display = 'block'
     if (mealSideBar.style.display === "block") {
-      scrollTopbtn.style.right = "30rem"
+      scrollTopbtn.style.right = "35rem"
     } else {
       scrollTopbtn.style.right = "1rem"
     }
