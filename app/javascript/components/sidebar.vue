@@ -182,7 +182,7 @@ export default {
         return false
       }
       const total = this.totalPlusAddOn(order.menus_orders_attributes)
-      return  total > plan.limit
+      return  total > this.plan.limit
     },
     remainingCredits: function(order, index) {
       const self = this;
