@@ -3,8 +3,8 @@ class OrderCalculator
 
   def initialize(order)
     @order = order
-    @user = order.user
-    @minimum_charge = @user.plan.minimum_charge
+    @user = order&.user
+    @minimum_charge = @user&.plan&.minimum_charge || 0
   end
 
   def total(options = {})
