@@ -3,7 +3,11 @@ class OrderCalculator
 
   def initialize(order)
     @order = order
-    @user = User.find(order.user_id)
+    @user = if @order.respond_to?(:each)
+      @order.first.user
+    else
+      @order.user
+    end
     @minimum_charge = @user&.plan&.minimum_charge || 0
   end
 
