@@ -3,7 +3,7 @@ class OrderCalculator
 
   def initialize(order)
     @order = order
-    @user = order&.user
+    @user = User.find(order.user_id)
     @minimum_charge = @user&.plan&.minimum_charge || 0
   end
 
