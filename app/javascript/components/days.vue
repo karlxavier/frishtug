@@ -97,7 +97,15 @@ export default {
       if (self.$store.state.selected_dates.length > 0) {
         self.$emit("next-tab");
       } else {
-        swal("Opps...", `Please select a ${message}.`, "error");
+        swal({
+          type: "error",
+          title: "Oops...",
+          text: `Please select a ${message}.`,
+          confirmButtonText: "Ok",
+          confirmButtonColor: "#582D11",
+          confirmButtonClass: "btn btn-brown text-uppercase",
+          buttonsStyling: false
+        })
         return;
       }
     },

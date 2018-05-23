@@ -66,7 +66,15 @@ export default {
       if (isValid) {
         return self.$emit('on-next-tab')
       } else {
-        swal('Opps..', 'Please fill all the required fields', 'error')
+        swal({
+          type: "error",
+          title: "Oops...",
+          text: "Please fill all the required fields",
+          confirmButtonText: "Ok",
+          confirmButtonColor: "#582D11",
+          confirmButtonClass: "btn btn-brown text-uppercase",
+          buttonsStyling: false
+        })
         return
       }
     }

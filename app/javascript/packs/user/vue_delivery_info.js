@@ -196,7 +196,7 @@ if (el) {
         if (!this.zipcodes.includes(zip)) {
           swal({
             type: "error",
-            title: "Oppss..",
+            title: "Oops...",
             text: "We don't deliver to your zip code",
             confirmButtonText: "Continue",
             confirmButtonColor: "#582D11",

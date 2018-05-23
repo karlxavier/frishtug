@@ -2,15 +2,15 @@
   <form id="payment_method_form">
     <div class="errors" v-if="error_messages.length > 0">
       <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <strong>Opps!..</strong>
+        <strong>Oops!..</strong>
         {{ error_messages }}
       </div>
     </div>
     <div class="form-check form-check-inline" v-if="mode === 'new'">
       <label class="form-check-label">
-        <input type="radio" 
-          name="payment_method" 
-          value="credit_card" 
+        <input type="radio"
+          name="payment_method"
+          value="credit_card"
           v-model="payment_method"
           class="form-check-input"
           checked>
@@ -19,9 +19,9 @@
     </div>
     <div class=" form-check form-check-inline" v-if="mode === 'new'">
       <label class="form-check-label">
-        <input type="radio" 
-        name="payment_method" 
-        value="checking" 
+        <input type="radio"
+        name="payment_method"
+        value="checking"
         v-model="payment_method"
         class="form-check-input">
         Check

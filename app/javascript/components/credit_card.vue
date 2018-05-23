@@ -151,7 +151,7 @@ export default {
       if (current_date > card_date) {
         swal({
           type: "error",
-          title: "Opps..",
+          title: "Oops...",
           text: "Your card is expired!",
           confirmButtonText: "Ok",
           confirmButtonColor: "#582D11",
@@ -172,7 +172,7 @@ export default {
       } else {
         swal({
           type: "error",
-          title: "Opps..",
+          title: "Oops..",
           text: "Please fill all the required fields",
           confirmButtonText: "Ok",
           confirmButtonColor: "#582D11",

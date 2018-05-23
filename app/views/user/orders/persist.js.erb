@@ -24,7 +24,7 @@
 	<% end %>
 <% else %>
 	swal({
-		title: 'Opps...',
+		title: 'Oops...',
 		text: "<%= @command.errors[:charge].join(', ') %>",
 		type: 'error',
 		confirmButtonText: 'Done',

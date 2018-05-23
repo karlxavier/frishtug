@@ -1,9 +1,13 @@
 <% if @order.errors.present? %>
-  swal(
-    'Opps..',
-    '<%= @order.errors.full_message.join(', ') %>',
-    'error'
-  );
+  swal({
+    type: "error",
+    title: "Oops...",
+    text: '<%= @order.errors.full_message.join(', ') %>',
+    confirmButtonText: "Ok",
+    confirmButtonColor: "#582D11",
+    confirmButtonClass: "btn btn-brown text-uppercase",
+    buttonsStyling: false
+  });
 <% else %>
   swal({
     title: 'Success',

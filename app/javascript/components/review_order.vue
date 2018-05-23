@@ -185,7 +185,7 @@ export default {
           pulse_loader.stop();
           swal({
             type: "error",
-            title: "Opps...",
+            title: "Oops...",
             text: response.error.message,
             confirmButtonText: "Ok",
             confirmButtonColor: "#582D11",
