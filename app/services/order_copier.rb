@@ -157,7 +157,7 @@ class OrderCopier
       taxes.map do |key, value|
         user.bill_histories.create!(
           order_id: key,
-          amount_paid: excess_amount,
+          amount_paid: tax_amount,
           description: "Tax Charge",
           billed_at: Time.current
         )
