@@ -46,4 +46,5 @@ namespace :user do
   resources :invitations, only: :create
   resources :set_active_addresses, only: :index
   resources :nutritional_data, only: :index
+  resources :plans, only: :index
 end

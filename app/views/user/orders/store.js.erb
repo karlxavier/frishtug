@@ -3,5 +3,5 @@ var counter = document.querySelector('.counter-for--<%= @menu.name.parameterize 
 container.innerHTML = '<%= j render @order %>';
 
 <% if @menu_size.present? %>
-  counter.innerHTML = '<%= @menu_size %>';
+  counter.innerHTML = '<%= @menu_size || 0 %>';
 <% end %>

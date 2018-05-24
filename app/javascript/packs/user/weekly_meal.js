@@ -81,7 +81,8 @@ const addOnsHandler = (e) => {
 
 const modalHandler = (event) => {
   const menu_id = event.target.dataset.menuId
-  if (menu_id) {
+  const showDescription = event.target.dataset.showDescription
+  if (menu_id && showDescription) {
     Rails.ajax({
       url: `/user/nutritional_data?menu_id=${menu_id}`,
       type: 'GET'

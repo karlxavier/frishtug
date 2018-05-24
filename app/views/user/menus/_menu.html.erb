@@ -4,7 +4,8 @@
 %>
 <div class="card col-md-3 px-0 border-0 mb-4 mt-1 mx-3" data-meal-id="<%= menu.id %>" data-meal-price="<%= menu.price %>" data-meal-name="<%= menu.name %>">
   <%= image_asset(menu, class: 'card-img-top card-modal-btn', width: 255, height: 175, data: {
-      "menu_id": menu.id
+      "menu_id": menu.id,
+      "show_description": true
     }, style: "cursor: pointer;") %>
   <div class="card-body px-0 py-1">
     <h4 class="card-title mb-0">

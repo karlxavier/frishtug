@@ -2,6 +2,13 @@ class User::OrdersController < User::BaseController
   before_action :set_order, :set_menu, :set_cart, only: [:store, :remove]
   respond_to :js
 
+  def show
+    @order = Order.find(params[:id])
+    render json: {
+      data: @order
+    }, status: :ok
+  end
+
   def store
     if @cart.place_order(@menu, quantity, add_on_id)
       respond_with(@order, @menu, menu_size)
