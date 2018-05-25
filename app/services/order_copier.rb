@@ -117,7 +117,7 @@ class OrderCopier
         messages << "Not enough stock for #{menu_order.menu.name} in #{user_order.placed_on.strftime('%B %d, %Y')}"
       end
     end
-    excess[user_order.id] = OrderCalculator.new(user_order).total_excess(user.plan.limit)
+    excess[user_order.id] = OrderCalculator.new(user_order).total_excess
     taxes[user_order.id] = OrderCalculator.new(user_order).total_tax
   end
 

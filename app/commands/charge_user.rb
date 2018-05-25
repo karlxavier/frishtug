@@ -90,7 +90,7 @@ class ChargeUser
 
   def calculate_payment(type)
     calculations_type = {
-      'excess' => OrderCalculator.new(order).total_excess(plan_limit),
+      'excess' => OrderCalculator.new(order).total_excess,
       'tax' => OrderCalculator.new(order).total_tax,
       'charge' => OrderCalculator.new(order).total
     }

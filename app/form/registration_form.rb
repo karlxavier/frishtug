@@ -128,30 +128,30 @@ class RegistrationForm
         param[:order_date] = Time.current
         order = user.orders.create!(param)
         order.processing!
-        # excess = OrderCalculator.new(order).total_excess(user.plan.limit)
-        # tax = OrderCalculator.new(order).total_tax
-        # total = OrderCalculator.new(user.orders.first).total
+        excess = OrderCalculator.new(order).total_excess
+        tax = OrderCalculator.new(order).total_tax
+        total = OrderCalculator.new(user.orders.first).total
 
-        # order.bill_histories.create!(
-        #   user_id: user.id,
-        #   amount_paid: excess,
-        #   description: "Excess Charge",
-        #   billed_at: Time.current
-        # ) if excess >= 0.50 && user.plan.interval == 'month'
+        order.bill_histories.create!(
+          user_id: user.id,
+          amount_paid: excess,
+          description: "Excess Charge",
+          billed_at: Time.current
+        ) if excess >= 0.50 && user.plan.interval == 'month'
 
-        # order.bill_histories.create!(
-        #   user_id: user.id,
-        #   amount_paid: tax,
-        #   description: "Tax Charge",
-        #   billed_at: Time.current
-        # ) if tax >= 0.50 && user.plan.interval == 'month'
+        order.bill_histories.create!(
+          user_id: user.id,
+          amount_paid: tax,
+          description: "Tax Charge",
+          billed_at: Time.current
+        ) if tax >= 0.50 && user.plan.interval == 'month'
 
-        # order.bill_histories.create!(
-        #   user_id: user.id,
-        #   amount_paid: total,
-        #   description: "Order Charge",
-        #   billed_at: Time.current
-        # ) if total >= 0.50 && user.plan.interval != 'month'
+        order.bill_histories.create!(
+          user_id: user.id,
+          amount_paid: total,
+          description: "Order Charge",
+          billed_at: Time.current
+        ) if total >= 0.50 && user.plan.interval != 'month'
       else
         errors.add(:base, 'Order place on is blank')
         raise ActiveRecord::StatementInvalid
@@ -205,7 +205,7 @@ class RegistrationForm
 
   def check_limit_and_charge(user)
     plan_limit = user.plan.limit
-    excess_amount = OrderCalculator.new(user.orders).get_excess(plan_limit)
+    excess_amount = OrderCalculator.new(user.orders).get_excess
     return if excess_amount < 0.50 || excess_amount.zero?
     ExcessChargeWorker.perform_at(user.orders.first.placed_on, user.id, excess_amount)
   end

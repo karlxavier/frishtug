@@ -13,7 +13,7 @@ module Computable
 
   def excess
     return 0 unless menus_orders.present?
-    OrderCalculator.new(self).total_excess(self.user.plan.limit)
+    OrderCalculator.new(self).total_excess
   end
 
   def shipping_fee

@@ -8,7 +8,8 @@ class OrderCalculator
     else
       @order.user
     end
-    @minimum_charge = @user&.plan&.minimum_charge || 0
+    @minimum_charge = @user.plan.minimum_charge
+    @limit = @user.plan.limit
   end
 
   def total(options = {})
@@ -30,19 +31,19 @@ class OrderCalculator
     sum_of(total_item_price, total_add_ons_price)
   end
 
-  def total_excess(plan_limit)
-    return 0 if plan_limit.blank?
+  def total_excess
+    return 0 unless @limit.present? && @limit > 0
     total = sum_of(total_item_price, total_add_ons_price)
-    total - plan_limit
+    total - @limit
   end
 
-  def get_excess(plan_limit)
+  def get_excess
     orders = @order
     excess = []
     orders.each do |order|
       total = self.class.new(order).total_without_shipping
-      if total > plan_limit
-        excess << total - plan_limit
+      if total > @limit
+        excess << total - @limit
       end
     end
     excess.inject(:+) || 0
