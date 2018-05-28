@@ -34,7 +34,8 @@ class OrderCalculator
   def total_excess
     return 0 unless @limit.present? && @limit > 0
     total = sum_of(total_item_price, total_add_ons_price)
-    total - @limit
+    return 0 if total < @limit
+    excess = total - @limit
   end
 
   def get_excess
