@@ -135,6 +135,7 @@ class OrderCopier
   def charge_excess!
     return unless excess.length > 0
     excess_amount = excess.map { |k,v| v }.inject(:+).round(2)
+    return create_pending_charge('excess', excess_amount) unless excess_amount >= 0.50
     charge = StripeCharger.new(user, excess_amount)
     if charge.charge_excess!
       excess.map do |key, value|
@@ -152,6 +153,7 @@ class OrderCopier
   def charge_tax!
     return unless taxes.length > 0
     tax_amount = taxes.map { |k,v| v }.inject(:+).round(2)
+    return create_pending_charge('tax', tax_amount) unless tax_amount >= 0.50
     charge = StripeCharger.new(user, tax_amount)
     if charge.charge_tax!
       taxes.map do |key, value|
@@ -163,5 +165,18 @@ class OrderCopier
         )
       end
     end
+  end
+
+  def create_pending_charge(type, amount)
+    return if amount < 0
+    pending_charges = {
+      "excess" => user.pending_excess_charges,
+      "tax" => user.pending_tax_charges
+    }
+
+    pending_charges[type].create!(
+      amount: @amount_to_pay, 
+      remarks: "#{type.titleize} amount of $ #{@amount_to_pay} for order @ #{order.placed_on.stftime('%B %d, %Y')}"
+    )
   end
 end

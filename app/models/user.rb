@@ -44,6 +44,8 @@ class User < ApplicationRecord
   has_one :referrer, dependent: :destroy
   has_one :candidate, dependent: :destroy
   has_one :order_preference, dependent: :destroy
+  has_many :pending_tax_charges, dependent: :destroy
+  has_many :pending_excess_charges, dependent: :destroy
 
   validates :first_name, :last_name, presence: true
   validates :email, uniqueness: true

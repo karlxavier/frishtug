@@ -53,7 +53,7 @@ class ChargeUser
 
   def charge_excess!
     calculate_payment('excess')
-    return order unless amount_valid?
+    return create_pending_charge('excess') unless amount_valid?
     stripe = StripeCharger.new(user, @amount_to_pay, order)
     if stripe.charge_excess!
       create_bill_history('Excess Charge')
@@ -66,7 +66,7 @@ class ChargeUser
 
   def charge_tax!
     calculate_payment('tax')
-    return order unless amount_valid?
+    return create_pending_charge('tax') unless amount_valid?
     stripe = StripeCharger.new(user, @amount_to_pay, order)
     if stripe.charge_tax!
       create_bill_history('Tax Charge')
@@ -75,6 +75,20 @@ class ChargeUser
       errors.add(:charge, stripe.errors.full_messages.join(', '))
     end
     nil
+  end
+
+  def create_pending_charge(type)
+    return order if amount_is_negative?
+    pending_charges = {
+      "excess" => user.pending_excess_charges,
+      "tax" => user.pending_tax_charges
+    }
+
+    pending_charges[type].create!(
+      amount: @amount_to_pay, 
+      remarks: "#{type.titleize} amount of $ #{@amount_to_pay} for order @ #{order.placed_on.stftime('%B %d, %Y')}"
+    )
+    order
   end
 
   def create_bill_history(description)
@@ -105,6 +119,10 @@ class ChargeUser
     @amount_to_pay = deduct_pending_credit(amount)
   end
 
+  def amount_is_negative?
+    @amount_to_pay < 0
+  end
+
   def amount_valid?
     @amount_to_pay >= STRIPE_MINIMUM_AMOUNT
   end
@@ -116,7 +134,7 @@ class ChargeUser
   def deduct_pending_credit(amount)
     return amount unless pending_credit.present?
 
-    pending_amount = pending_credit.amount || 0
+    pending_amount = pending_credit&.amount || 0
     total = 0
 
     return unless pending_amount > 0

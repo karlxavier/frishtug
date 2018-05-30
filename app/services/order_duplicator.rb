@@ -27,8 +27,8 @@ class OrderDuplicator
     order_to_copy.menus_orders.each do |menu_order|
       stock = Stock.new(menu_order.menu_id, menu_order.quantity)
       unless stock.empty?
-        new_order.menus_orders.create!(
-          menu_id: menu_order.menu_id,
+        item = new_order.menus_orders.where(menu_id: menu_order.menu_id).first_or_create
+        item.update_attributes(
           quantity: menu_order.quantity,
           add_ons: menu_order.add_ons
         )
