@@ -15,6 +15,7 @@ class PendingTaxCharge < PendingCharge
         customer: self.user.stripe_customer_id,
         description: description
       )
+      tax_charge.destroy_all
     end
   end
 end

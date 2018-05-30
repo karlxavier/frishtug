@@ -15,6 +15,7 @@ class PendingExcessCharge < PendingCharge
         customer: self.user.stripe_customer_id,
         description: description
       )
+      excess_charge.destroy_all
     end
   end
 end
