@@ -35,9 +35,8 @@ class User::OrdersController < User::BaseController
 
   def persist
     @order = Order.find(order_id)
-    @recorder = RecordLedger.new(current_user, @order)
-    status = @recorder.record!
-    if @order.fresh? && status
+    @command = ChargeUser.call(current_user, @order)
+    if @order.fresh? && @command.status
       @order.update_columns(order_date: Time.current, status: :processing)
     end
     respond_with(@order)

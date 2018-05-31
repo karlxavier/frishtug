@@ -17,7 +17,7 @@ class ChargeUser
   attr_reader :order, :user
 
   def charge_user!
-    subscribed? ? charge_excess! : charge!
+    subscribed? ? create_ledger! : charge!
   end
 
   def subscribed?
@@ -47,6 +47,15 @@ class ChargeUser
       return order
     else
       errors.add(:charge, stripe.errors.full_messages.join(', '))
+    end
+    nil
+  end
+
+  def create_ledger!
+    if RecordLedger.new(user, order).record!
+      return order
+    else
+      errors.add(:record, "cannot create a pending bill")
     end
     nil
   end
@@ -85,7 +94,7 @@ class ChargeUser
     }
 
     pending_charges[type].create!(
-      amount: @amount_to_pay, 
+      amount: @amount_to_pay,
       remarks: "#{type.titleize} amount of $ #{@amount_to_pay} for order @ #{order.placed_on.strftime('%B %d, %Y')}"
     )
     order
