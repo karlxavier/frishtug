@@ -1,5 +1,5 @@
 class User::LedgersController < User::BaseController
-  before_action :set_unpaid_bills
+  before_action :set_unpaid_bills, :user_must_be_subscribed!
   def index
     @ledgers = @unpaid_bills.unpaid.page(page).per(10)
     @total = @unpaid_bills.total
@@ -43,6 +43,13 @@ class User::LedgersController < User::BaseController
     type = { "TaxLedger" => "tax", "ExcessLedger" => "excess"}
     @unpaid_bills.each do |bill|
       RecordPayments.call(bill.order, bill.amount, type[bill.type])
+    end
+  end
+
+  def user_must_be_subscribed!
+    unless current_user.subscribed?
+      flash[:error] = "You are not subscribe to any plan"
+      redirect_back fallback_location: user_dashboard_index_path
     end
   end
 end
