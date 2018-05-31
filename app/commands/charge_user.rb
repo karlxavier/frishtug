@@ -86,7 +86,7 @@ class ChargeUser
 
     pending_charges[type].create!(
       amount: @amount_to_pay, 
-      remarks: "#{type.titleize} amount of $ #{@amount_to_pay} for order @ #{order.placed_on.stftime('%B %d, %Y')}"
+      remarks: "#{type.titleize} amount of $ #{@amount_to_pay} for order @ #{order.placed_on.strftime('%B %d, %Y')}"
     )
     order
   end
