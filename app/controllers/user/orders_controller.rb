@@ -1,6 +1,6 @@
 class User::OrdersController < User::BaseController
   before_action :set_order, :set_menu, :set_cart, only: [:store, :remove]
-  respond_to :js
+  respond_to :js, only: :persist
 
   def show
     @order = Order.find(params[:id])
@@ -11,13 +11,25 @@ class User::OrdersController < User::BaseController
 
   def store
     if @cart.place_order(@menu, quantity, add_on_id)
-      respond_with(@order, @menu, menu_size)
+      render json: {
+        sub_total: @order.sub_total,
+        excess: @order.excess,
+        tax: @order.total_tax,
+        shipping_fee: @order.shipping_fee,
+        total: @order.total
+      }, status: :ok
     end
   end
 
   def remove
     if @cart.remove_order(@menu, quantity, add_on_id)
-      respond_with(@order, @menu, menu_size)
+      render json: {
+        sub_total: @order.sub_total,
+        excess: @order.excess,
+        tax: @order.total_tax,
+        shipping_fee: @order.shipping_fee,
+        total: @order.total
+      }, status: :ok
     end
   end
 
@@ -34,7 +46,7 @@ class User::OrdersController < User::BaseController
     @order = Order.find(order_id)
     cancel_order = CancelOrder.new(@order, current_user)
     if cancel_order.run
-      respond_with(@order)
+      redirect_back fallback_location: :back
     end
   end
 
@@ -42,7 +54,7 @@ class User::OrdersController < User::BaseController
     @order = Order.find(order_id)
     uncancel_order = UncancelOrder.new(@order, current_user)
     if uncancel_order.run
-      respond_with(@order)
+      redirect_back fallback_location: :back
     end
   end
 

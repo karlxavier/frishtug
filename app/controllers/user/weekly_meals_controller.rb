@@ -1,7 +1,7 @@
 class User::WeeklyMealsController < User::BaseController
   before_action :user_can_order?, :check_order!, :check_schedule!, :set_new_order, only: :new
   before_action :set_order_for_edit, :editable?, only: :edit
-  before_action :set_category_and_menus, :set_orders_for_option_select, only: %i[new edit]
+  before_action :set_orders_for_option_select, only: %i[new edit]
   before_action :user_has_schedule?, :set_date_range, :set_date, only: :index
   respond_to :js, only: :category
   START_DATE = Date.current.beginning_of_week(:sunday)

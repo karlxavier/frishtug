@@ -1,24 +1,4 @@
-<%= render 'meal_form', { categories: @categories, menus: @menus, orders: @orders , category_id: @category} %>
-
-<% if false %>
-  <%= tag.div class: 'row', id: 'orders-form', data: {
-    orders: @orders.to_json(only: [:id]),
-    schedule: params[:schedule].to_json
-  } do %>
-    <div class="col-md-9">
-      <items 
-      v-bind:items="items"
-      @add-item="addItem"
-      @remove-item="removeItem"
-      @add-add-on="addAddOn"
-      @remove-add-on="removeAddOn">
-      </items>
-    </div>
-    <div class="col-md-3">
-      <sidebar v-bind:order="order" v-bind:unreduce_items="unreduce_items"></sidebar>
-    </div>
-  <% end %>
-  <%= content_for :footer_js do %>
-    <%= javascript_pack_tag "user/weekly_meals_form" %>
-  <% end %>
+<%# render 'meal_form', { categories: @categories, menus: @menus, orders: @orders , category_id: @category} %>
+<% if true %>
+  <%= render 'form' %>
 <% end %>

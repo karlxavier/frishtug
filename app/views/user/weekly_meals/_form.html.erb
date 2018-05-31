@@ -1,0 +1,124 @@
+<%= tag.div class: 'row', id: 'orders-form', data: {
+    orders: @orders.to_json,
+    menus_orders_attributes: @orders.menus_orders.to_json,
+    charges: {
+      tax: @orders.total_tax,
+      excess: @orders.excess,
+      shipping_fee: @orders.shipping_fee,
+      sub_total: @orders.sub_total,
+      total: @orders.total
+    }.to_json,
+    schedule: params[:schedule].to_json
+  } do %>
+    <div 
+      role="main" 
+      id="meal-form__container"
+      :class="sidebar_shown === false ? 'col-12 col-md-12 col-lg-12' : 'col-8 col-md-8 col-lg-8'">
+      <div class="row header py-4 meal-form__header border-bottom-grey mb-4">
+        <div class="col-3 dark-font-color">
+          <%= back_to_index_link(action_name.upcase) %>
+          MEAL PLAN
+        </div>
+        <div class="col-9">
+          <div class="sidebar-controls float-right ml-4">
+            <a href="javascript:void(0)" class="btn btn-outline-dark show-sidebar" v-show="!sidebar_shown" @click="sidebar_shown = true">Show Meals</a>
+          </div>
+          <div class="float-right ml-4 col-6 <%= 'd-none' if action_name == 'edit' %>">
+            <%= form_with url: user_duplicate_meals_path(date: params[:date], order: @orders.id),
+              class: 'form-inline', local: true do |f| %>
+              <div class="input-group">
+                <%= f.select :order_id,
+                  @user_order_options,
+                  {}, class: 'form-control font-size-14' %>
+                <div class="input-group-append">
+                  <%= f.button class: 'btn btn-brown', data: {
+                    toggle: 'tooltip',
+                    placement: 'top'
+                  }, title: 'Duplicate Meal' do %>
+                    <i class="fa fa-copy"></i> Duplicate Meal
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+          <div class="float-right">
+            <%= format_date_AABBDD(params[:date]) %>
+          </div>
+        </div>
+      </div>
+      <% unless action_name == 'edit' || !current_user.subscribed? %>
+        <div class="row mb-3">
+          <div class="col">
+            <ul class="nav nav-tabs">
+              <% @available_dates.each do |date| %>
+                <% url = new_user_weekly_meal_path(
+                              date: date, schedule: params[:schedule], current_date: params[:date]) %>
+                <li class="nav-item">
+                  <a class="nav-link <%= 'active' if params[:date] == date.to_s %>"
+                    href="<%= url if date.to_s != params[:date] %>">
+                    <%= date.to_date.strftime('%^A') %>
+                  </a>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      <% end %>
+      <items 
+      v-bind:items="items"
+      v-bind:order="order"
+      @add-item="addItem"
+      @remove-item="removeItem"
+      @add-add-on="addAddOn"
+      @remove-add-on="removeAddOn">
+      </items>
+    </div>
+    <div class="col-4 col-md-4 col-lg-4 weekly-meal-sidebar fixed-rigth px-0" role="sidebar" id="sidebar" style="top: 5.4rem; background: #fff;" v-show="sidebar_shown">
+      <sidebar 
+      v-bind:order="order" 
+      v-bind:unreduce_items="unreduce_items"
+      v-bind:tax="tax"
+      v-bind:total="total"
+      v-bind:sub_total="sub_total"
+      v-bind:excess="excess"
+      v-bind:shipping_fee="shipping_fee"
+      @add-item="addItem"
+      @remove-item="removeItem"
+      @on-sidebar-hide="sidebar_shown = false"
+      @on-save-meal="saveOrder">
+        <div slot="pending_credit">
+          <%= display_pending_credits(@orders) %>
+        </div>
+        <div slot="undo_and_cancel">
+          <% if @orders.cancelled? %>
+            <div class="row mt-4">
+              <div class="col">
+                <div class="alert alert-warning">
+                  Order has been cancelled for delivery!
+                </div>
+                <% is_disabled = "disabled" unless @orders.menus.present? %>
+                <%= link_to 'Undo Cancellation',
+                  undo_cancel_user_orders_path(order_id: @orders.id, format: :js),
+                  class: "btn btn-info text-uppercase btn-block #{is_disabled}",
+                  remote: false %>
+              </div>
+            </div>
+          <% else %>
+            <div class="row mt-4">
+              <div class="col">
+                <% is_disabled = "disabled" unless @orders.menus.present? %>
+                <%= link_to 'Cancel Delivery',
+                  cancel_user_orders_path(order_id: @orders.id, format: :js),
+                  class: "btn btn-warning text-uppercase btn-block #{is_disabled}",
+                  remote: false %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </sidebar>
+    </div>
+  <% end %>
+  <%= content_for :footer_js do %>
+    <%= javascript_pack_tag "user/weekly_meals_form" %>
+    <%= stylesheet_pack_tag "user/weekly_meals_form" %>
+  <% end %>

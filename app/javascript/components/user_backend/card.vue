@@ -31,7 +31,7 @@
             -
           </a>
           <span class="meal-counter">
-            {{ counter }}
+            {{ showCounter() }}
           </span>
           <a href="javascript:void(0)"
             class="ctrl-btns btn btn-brown meal-ctrl-btns-minus rounded-0 cart-controls__remove"
@@ -71,12 +71,21 @@ export default {
   },
   data: () =>{
     return {
-      counter: 0,
-      disable_add: false
+      disable_add: false,
+      counter: 0
     }
   },
-  props: ["item"],
+  props: {
+    item: { type: Object, required: true },
+    quantity: { type: Number, required: true }
+  },
   methods: {
+    showCounter: function() {
+      if (this.quantity != null) {
+        return this.counter = this.quantity
+      }
+      return this.counter
+    },
     addAddOn: function(add_on_id, item, event) {
       if (event.target.checked) {
         this.$emit('add-add-on', add_on_id, item)

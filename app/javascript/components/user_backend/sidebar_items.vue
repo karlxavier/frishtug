@@ -51,7 +51,7 @@ export default {
   computed: {
     name: function() {
       const self = this;
-      const found = self.unreduce_items.filter(i => i.id === self.item.menu_id);
+      const found = self.unreduce_items.filter(i => i.id === String(self.item.menu_id));
       if (found.length > 0) {
         return found[0].attributes.name;
       } else {

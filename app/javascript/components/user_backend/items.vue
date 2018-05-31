@@ -43,40 +43,54 @@
               <card 
               v-for="item in filteredItems(category.attributes.name)" v-bind:key="`${item.id}`" 
               v-bind:item="item"
+              v-bind:quantity="quantities[item.id] || 0"
               @add-item="addItem"
               @remove-item="removeItem"
               @add-add-on="addAddOn"
               @remove-add-on="removeAddOn"
+              @on-image-click="nutriFacts"
               ></card>
             </div>
           </div>
         </div>
       </v-tab>
     </vue-tabs>
+    <nutritional-data-modal v-bind:nutri="nutri" v-bind:item="item"></nutritional-data-modal>
   </div>
 </template>
 
 <script>
+import GoToTop from '../go_to_top'
 import { VueTabs, VTab } from "vue-nav-tabs";
 import NutritionalDataModal from "../nutritional_data_modal";
 import Card from "./card"
+import lodash from "lodash";
+import axios from 'axios';
 export default {
   components: {
     VueTabs,
     VTab,
     NutritionalDataModal,
-    Card
+    Card,
+    GoToTop
   },
   data: () => {
     return {
-      counter: 0,
       searchText: "",
       sortAsc: true,
       sortBy: "name",
       menu_categories: null
     }
   },
-  props: ["items"],
+  props: ["items", "order"],
+  computed: {
+    quantities: function() {
+      return this.order.menus_orders_attributes.reduce( (obj, item) => {
+        obj[item.menu_id] = item.quantity
+        return obj
+      }, {})
+    },
+  },
   mounted() {
     const self = this
     Rails.ajax({
@@ -116,6 +130,37 @@ export default {
     addAddOn: function(add_on_id, item) {
       this.$emit('add-add-on', add_on_id, item)
     },
+    nutriFacts: function(item) {
+      const self = this;
+      const item_id = item.id
+      self.item = item
+      axios.interceptors.response.use(response => {
+          return response;
+      }, error => {
+          if (error.response.status === 404) {
+              console.log('Err-404 menu dont have nutritional data');
+          }
+          return Promise.reject(error.response);
+      });
+
+      axios({
+        method: 'GET',
+        url: `/api/v1/nutritional_data/${item_id}`,
+        headers: {
+          'X-CSRF-Token': document.querySelector("meta[name=csrf-token]").content
+        }
+      })
+      .then(response => {
+        self.nutri = response.data;
+        $('#menuNutriFacts').modal('show');
+      })
+      .catch(error => {
+          console.log(error.response);
+          if (item.attributes.description != null && item.attributes.description.trim() !== "") {
+            $('#menuNutriFacts').modal('show');
+          }
+      });
+    }
   }
 }
 </script>
