@@ -66,9 +66,17 @@
               </div>
               <hr>
               <div>
+                <h6>
+                  Sub Total
+                  <span class="meal-total float-right">
+                    {{ totalPlusAddOn(order.menus_orders_attributes) | to_currency }}
+                  </span>
+                </h6>
+              </div>
+              <div>
                 <h6 class="font-weight-bold">
                   Total
-                  <span class="meal-total float-right mb-4">
+                  <span class="meal-total float-right">
                     {{ totalPlusAddOnAndTax(order.menus_orders_attributes) | to_currency }}
                   </span>
                 </h6>
