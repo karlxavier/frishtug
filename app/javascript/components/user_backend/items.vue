@@ -60,7 +60,6 @@
 </template>
 
 <script>
-import GoToTop from '../go_to_top'
 import { VueTabs, VTab } from "vue-nav-tabs";
 import NutritionalDataModal from "../nutritional_data_modal";
 import Card from "./card"
@@ -71,8 +70,7 @@ export default {
     VueTabs,
     VTab,
     NutritionalDataModal,
-    Card,
-    GoToTop
+    Card
   },
   data: () => {
     return {
@@ -80,7 +78,8 @@ export default {
       sortAsc: true,
       sortBy: "name",
       menu_categories: null,
-      item: {}
+      item: {},
+      nutri: null
     }
   },
   props: ["items", "order"],

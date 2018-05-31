@@ -72,6 +72,7 @@
       @add-add-on="addAddOn"
       @remove-add-on="removeAddOn">
       </items>
+      <go-to-top v-bind:right="getRightPosition()"></go-to-top>
     </div>
     <div class="col-4 col-md-4 col-lg-4 weekly-meal-sidebar fixed-rigth px-0" role="sidebar" id="sidebar" style="top: 5.4rem; background: #fff;" v-show="sidebar_shown">
       <sidebar 

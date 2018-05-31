@@ -2,6 +2,7 @@ import Vue from "vue/dist/vue.esm";
 import Items from "../../components/user_backend/items";
 import Sidebar from "../../components/user_backend/sidebar";
 import VueLazyload from "vue-lazyload";
+import GoToTop from '../../components/go_to_top';
 
 Vue.use(VueLazyload);
 const node = document.querySelector("#orders-form");
@@ -23,11 +24,13 @@ if (node) {
       total: null,
       shipping_fee: null,
       excess: null,
-      sidebar_shown: false
+      sidebar_shown: false,
+      loaded: false
     },
     components: {
       Items,
-      Sidebar
+      Sidebar,
+      GoToTop
     },
     mounted() {
       const self = this
@@ -48,6 +51,7 @@ if (node) {
             return list;
           }, {});
           self.sidebar_shown = true
+          self.loaded = true
         }
       })
 
@@ -58,6 +62,13 @@ if (node) {
       self.populateCharge(JSON.parse(node.dataset.charges))
     },
     methods: {
+      getRightPosition: function() {
+        if (this.sidebar_shown) {
+          return 30
+        } else {
+          return 2
+        }
+      },
       addItem: function(item, quantity) {
         const self = this;
         const item_id = item.id;
