@@ -11,7 +11,7 @@ class OrderDuplicator
   def run
     copy_values_to(@order)
     @order.processing!
-    ChargeUser.call(@order, @order.user)
+    RecordLedger.new(@order.user, @order).record!
     true
   end
 

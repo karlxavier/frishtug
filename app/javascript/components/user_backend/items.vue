@@ -79,7 +79,8 @@ export default {
       searchText: "",
       sortAsc: true,
       sortBy: "name",
-      menu_categories: null
+      menu_categories: null,
+      item: {}
     }
   },
   props: ["items", "order"],

@@ -1,8 +1,8 @@
-<% if @command.success? %>
+<% if @order.processing? %>
 	<% if action_name == 'edit' %>
 	swal({
 		title: 'Success',
-		text: "Youre order is complete",
+		text: "Youre order is complete. Please check your pending charges",
 		type: 'success',
 		confirmButtonText: 'Done',
 		confirmButtonClass: 'btn btn-brown text-uppercase',
@@ -15,7 +15,7 @@
 	<% else %>
 	swal({
 		title: 'Success',
-		text: "Youre order is complete.",
+		text: "Youre order is complete. Please check your pending charges",
 		type: 'success',
 		confirmButtonText: 'Done',
 		confirmButtonClass: 'btn btn-brown text-uppercase',
@@ -25,7 +25,7 @@
 <% else %>
 	swal({
 		title: 'Oops...',
-		text: "<%= @command.errors[:charge].join(', ') %>",
+		text: "Something went wrong",
 		type: 'error',
 		confirmButtonText: 'Done',
 		confirmButtonClass: 'btn btn-brown text-uppercase',

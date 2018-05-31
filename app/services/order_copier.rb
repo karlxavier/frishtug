@@ -9,8 +9,6 @@ class OrderCopier
   def initialize(last_five_orders, user)
     @user = user
     @last_five_orders = last_five_orders
-    @excess = {}
-    @taxes = {}
     @messages = []
   end
 
@@ -26,8 +24,8 @@ class OrderCopier
         user_order = @user.orders.create!(order_params(dates[index], order))
         create_menus_orders(user_order, order)
         user_order.processing!
+        RecordLedger.new(user, user_order).record!
       end
-      charge_excess!
     end
     true
   rescue ActiveRecord::StatementInvalid => e
@@ -117,8 +115,6 @@ class OrderCopier
         messages << "Not enough stock for #{menu_order.menu.name} in #{user_order.placed_on.strftime('%B %d, %Y')}"
       end
     end
-    excess[user_order.id] = OrderCalculator.new(user_order).total_excess
-    taxes[user_order.id] = OrderCalculator.new(user_order).total_tax
   end
 
   def day_to_skip
@@ -130,53 +126,5 @@ class OrderCopier
     if user.schedule.sunday_to_thursday?
       return WDAY_TO_SKIP[:friday]
     end
-  end
-
-  def charge_excess!
-    return unless excess.length > 0
-    excess_amount = excess.map { |k,v| v }.inject(:+).round(2)
-    return create_pending_charge('excess', excess_amount) unless excess_amount >= 0.50
-    charge = StripeCharger.new(user, excess_amount)
-    if charge.charge_excess!
-      excess.map do |key, value|
-        user.bill_histories.create!(
-          order_id: key,
-          amount_paid: value,
-          description: "Excess Charge",
-          billed_at: Time.current
-        )
-      end
-      charge_tax!
-    end
-  end
-
-  def charge_tax!
-    return unless taxes.length > 0
-    tax_amount = taxes.map { |k,v| v }.inject(:+).round(2)
-    return create_pending_charge('tax', tax_amount) unless tax_amount >= 0.50
-    charge = StripeCharger.new(user, tax_amount)
-    if charge.charge_tax!
-      taxes.map do |key, value|
-        user.bill_histories.create!(
-          order_id: key,
-          amount_paid: value,
-          description: "Tax Charge",
-          billed_at: Time.current
-        )
-      end
-    end
-  end
-
-  def create_pending_charge(type, amount)
-    return if amount < 0
-    pending_charges = {
-      "excess" => user.pending_excess_charges,
-      "tax" => user.pending_tax_charges
-    }
-
-    pending_charges[type].create!(
-      amount: @amount_to_pay, 
-      remarks: "#{type.titleize} amount of $ #{@amount_to_pay} for order @ #{order.placed_on.stftime('%B %d, %Y')}"
-    )
   end
 end

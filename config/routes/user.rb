@@ -47,4 +47,9 @@ namespace :user do
   resources :set_active_addresses, only: :index
   resources :nutritional_data, only: :index
   resources :plans, only: :index
+  resources :ledgers, only: :index do
+    collection do
+      get :pay
+    end
+  end
 end

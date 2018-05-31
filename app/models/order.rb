@@ -37,6 +37,9 @@ class Order < ApplicationRecord
   has_many :search_results, as: :searchable
   has_one :pending_credit, dependent: :destroy
   scope :completed, -> { where.not(delivered_at: nil) }
+  has_many :ledgers, dependent: :destroy
+  has_many :tax_ledgers, dependent: :destroy
+  has_many :excess_ledgers, dependent: :destroy
 
   accepts_nested_attributes_for :menus_orders, allow_destroy: true
 

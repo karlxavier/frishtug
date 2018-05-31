@@ -1,0 +1,34 @@
+<h4 class="text-uppercase font-size-18">
+  Pending Bills
+  <span class="float-right">
+    <%= link_to pay_user_ledgers_path, class: "btn btn-matterhorn #{'disabled' if @total == 0}" do %>
+      Pay <%= to_currency @total %>
+    <% end %>
+  </span>
+</h4>
+<table class="table table-sm mt-4">
+  <thead>
+    <tr>
+      <td>Order Date</td>
+      <td>Amount</td>
+      <td>Type</td>
+      <td>Status</td>
+    </tr>
+  </thead>
+  <tbody>
+    <% @ledgers.each do |ledger| %>
+      <tr class="<%= ledger.id %>">
+        <td><%= ledger.order.placed_on.strftime('%B %d, %Y') %></td>
+        <td><%= to_currency(ledger.amount) %></td>
+        <td><%= ledger.type.gsub('Ledger', '') %></td>
+        <td><%= ledger.status.titleize %></td>
+      </tr>
+    <% end %>
+    <% unless @ledgers.present? %>
+      <tr class="none">
+        <td colspan="3" class="text-center"><small class="text-muted">No pending bills</small></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= paginate @ledgers %>

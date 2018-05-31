@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180530033201) do
+ActiveRecord::Schema.define(version: 20180531024909) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -224,6 +224,19 @@ ActiveRecord::Schema.define(version: 20180530033201) do
     t.index ["inventory_id"], name: "index_inventory_transactions_on_inventory_id"
   end
 
+  create_table "ledgers", force: :cascade do |t|
+    t.decimal "amount", precision: 8, scale: 2
+    t.bigint "order_id"
+    t.string "type"
+    t.bigint "user_id"
+    t.integer "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_ledgers_on_order_id"
+    t.index ["type"], name: "index_ledgers_on_type"
+    t.index ["user_id"], name: "index_ledgers_on_user_id"
+  end
+
   create_table "menu_categories", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -312,17 +325,6 @@ ActiveRecord::Schema.define(version: 20180530033201) do
     t.index ["order_date"], name: "index_orders_on_order_date"
     t.index ["series_number"], name: "index_orders_on_series_number"
     t.index ["user_id"], name: "index_orders_on_user_id"
-  end
-
-  create_table "pending_charges", force: :cascade do |t|
-    t.decimal "amount", precision: 8, scale: 2
-    t.string "remarks"
-    t.string "type"
-    t.bigint "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["type"], name: "index_pending_charges_on_type"
-    t.index ["user_id"], name: "index_pending_charges_on_user_id"
   end
 
   create_table "pending_credits", force: :cascade do |t|
@@ -486,6 +488,8 @@ ActiveRecord::Schema.define(version: 20180530033201) do
   add_foreign_key "credit_cards", "users"
   add_foreign_key "inventories", "menus"
   add_foreign_key "inventory_transactions", "inventories"
+  add_foreign_key "ledgers", "orders"
+  add_foreign_key "ledgers", "users"
   add_foreign_key "menus", "assets"
   add_foreign_key "menus", "menu_categories"
   add_foreign_key "menus", "units"
@@ -496,7 +500,6 @@ ActiveRecord::Schema.define(version: 20180530033201) do
   add_foreign_key "nutritional_data", "menus"
   add_foreign_key "order_preferences", "users"
   add_foreign_key "orders", "users"
-  add_foreign_key "pending_charges", "users"
   add_foreign_key "pending_credits", "orders"
   add_foreign_key "pending_credits", "users"
   add_foreign_key "referrers", "users"

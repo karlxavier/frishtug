@@ -16,7 +16,7 @@ class StripeCharger
       description: "Single Order Charge for #{@user.full_name} <#{@user.email}>"
     )
     true
-  rescue Stripe::CardError => e
+  rescue => e
     errors.add(:base, e.message)
     false
   end
@@ -30,7 +30,7 @@ class StripeCharger
       description: charge_description("Excess")
     )
     true
-  rescue Stripe::CardError => e
+  rescue => e
     errors.add(:base, e.message)
     create_user_notification(e, "excess_charge")
     false
@@ -44,7 +44,7 @@ class StripeCharger
       description: charge_description("Tax")
     )
     response
-  rescue Stripe::CardError => e
+  rescue => e
     errors.add(:base, e.message)
     create_user_notification(e, "tax_charge")
     false
@@ -58,7 +58,7 @@ class StripeCharger
       description: charge_description("Shipping")
     )
     response
-  rescue Stripe::CardError => e
+  rescue => e
     errors.add(:base, e.message)
     create_user_notification(e, "shipping_charge")
     false
