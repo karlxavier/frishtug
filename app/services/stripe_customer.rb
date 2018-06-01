@@ -11,7 +11,7 @@ class StripeCustomer
       stripe_customer_id: customer.id
     )
     true
-  rescue Stripe::InvalidRequestError => e
+  rescue => e
     errors.add(:base, e.message)
     false
   end

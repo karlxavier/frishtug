@@ -188,15 +188,12 @@ class RegistrationForm
   end
 
   def create_subscription(user)
-    stripe_subscription = StripeSubscriptioner.new(user)
-    if stripe_subscription.run
+    customer = StripeCustomer.new(user)
+    if customer.create
       user.approved = true
+      user.subscribe_at = user.orders.first.placed_on.beginning_of_day
       user.save
-      user.bill_histories.create!(
-        amount_paid: user.plan.price,
-        description: 'Subscription Payment!',
-        billed_at: Time.current
-      )
+      SubscriptionWorker.perform_at(user.orders.first.placed_on.beginning_of_day, user.id)
     else
       errors.add(:base, stripe_subscription.errors.full_messages.join(', '))
       raise ActiveRecord::StatementInvalid
@@ -207,13 +204,13 @@ class RegistrationForm
     plan_limit = user.plan.limit
     excess_amount = OrderCalculator.new(user.orders).get_excess
     return if excess_amount < 0.50 || excess_amount.zero?
-    ExcessChargeWorker.perform_at(user.orders.first.placed_on, user.id, excess_amount)
+    ExcessChargeWorker.perform_at(user.orders.first.placed_on.beginning_of_day, user.id, excess_amount)
   end
 
   def check_tax_and_charge(user)
     tax_amount = OrderCalculator.new(user.orders).total_orders_tax
     return if tax_amount < 0.50 || tax_amount.zero?
-    TaxChargeWorker.perform_at(user.orders.first.placed_on, user.id, tax_amount)
+    TaxChargeWorker.perform_at(user.orders.first.placed_on.beginning_of_day, user.id, tax_amount)
   end
 
 
