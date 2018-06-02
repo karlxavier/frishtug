@@ -46,6 +46,7 @@ class Order < ApplicationRecord
   before_create :set_series_number
   after_create :set_sku, :create_pending_credit
   before_save :run_inventory_accounter, :re_account_on_failed_payment
+  after_update :check_total_amount
   before_destroy :re_account_inventory, prepend: true
 
   def menu_quantity(menu)
@@ -136,5 +137,15 @@ class Order < ApplicationRecord
 
   def set_series_number
     self[:series_number] = SeriesCreator.new(self).create
+  end
+
+  def check_total_amount
+    return unless self.saved_change_to_total_price?
+    return unless self.total_price_before_last_save > self.total_price
+    user.pending_credits.create!(
+      amount: self.total_price_was - self.total_price,
+      activation_date: Time.current,
+      placed_on_date: self.placed_on
+    )
   end
 end

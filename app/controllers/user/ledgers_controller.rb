@@ -43,7 +43,13 @@ class User::LedgersController < User::BaseController
     type = { "TaxLedger" => "tax", "ExcessLedger" => "excess"}
     @unpaid_bills.each do |bill|
       RecordPayments.call(bill.order, bill.amount, type[bill.type])
+      update_total_price(bill.order)
     end
+  end
+
+  def update_total_price(order)
+    order.total_price = OrderCalculator.new(order).total
+    order.save
   end
 
   def user_must_be_subscribed!

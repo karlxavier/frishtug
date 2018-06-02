@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180531024909) do
+ActiveRecord::Schema.define(version: 20180602034940) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -322,9 +322,21 @@ ActiveRecord::Schema.define(version: 20180531024909) do
     t.string "payment_details"
     t.string "route_started"
     t.integer "payment_status"
+    t.decimal "total_price", precision: 8, scale: 2, default: "0.0"
     t.index ["order_date"], name: "index_orders_on_order_date"
     t.index ["series_number"], name: "index_orders_on_series_number"
     t.index ["user_id"], name: "index_orders_on_user_id"
+  end
+
+  create_table "pending_charges", force: :cascade do |t|
+    t.decimal "amount", precision: 8, scale: 2
+    t.string "remarks"
+    t.string "type"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["type"], name: "index_pending_charges_on_type"
+    t.index ["user_id"], name: "index_pending_charges_on_user_id"
   end
 
   create_table "pending_credits", force: :cascade do |t|
@@ -500,6 +512,7 @@ ActiveRecord::Schema.define(version: 20180531024909) do
   add_foreign_key "nutritional_data", "menus"
   add_foreign_key "order_preferences", "users"
   add_foreign_key "orders", "users"
+  add_foreign_key "pending_charges", "users"
   add_foreign_key "pending_credits", "orders"
   add_foreign_key "pending_credits", "users"
   add_foreign_key "referrers", "users"

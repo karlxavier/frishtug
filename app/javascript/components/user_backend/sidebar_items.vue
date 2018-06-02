@@ -15,7 +15,7 @@
         </span>
         <a href="javascript:void(0)"
           class="add-meal mx-1 chocolate-font-color"
-          @click="$emit('add-item', item, item.quantity + 1)">
+          @click="addItem(item)">
           <i class="fa fa-plus-square-o"></i>
         </a>
       </div>
@@ -81,6 +81,35 @@ export default {
     }
   },
   methods: {
+    addItem: function(item) {
+      const self = this
+      const outOfStock = response => {
+        swal({
+          type: response.status,
+          title: "Error",
+          text: response.message,
+          confirmButtonText: "Ok",
+          confirmButtonColor: "#582D11",
+          confirmButtonClass: "btn btn-brown text-uppercase",
+          buttonsStyling: false
+        });
+      };
+
+      const checkInventory = (id, quantity) => {
+        return new Promise((resolve, reject) => {
+          Rails.ajax({
+            url: `/inventories?menu_id=${id}&quantity=${quantity}`,
+            type: "GET",
+            success: resolve,
+            error: reject
+          });
+        });
+      };
+
+      checkInventory(item.menu_id, item.quantity + 1).then(function(response) {
+        self.$emit('add-item', item, item.quantity + 1)
+      }, outOfStock);
+    },
     addOnName: function(item, add_on_id) {
       const self = this;
       const found = self.unreduce_items.filter(i => i.id === item.menu_id);

@@ -60,46 +60,6 @@ class ChargeUser
     nil
   end
 
-  def charge_excess!
-    calculate_payment('excess')
-    return create_pending_charge('excess') unless amount_valid?
-    stripe = StripeCharger.new(user, @amount_to_pay, order)
-    if stripe.charge_excess!
-      create_bill_history('Excess Charge')
-      charge_tax!
-    else
-      errors.add(:charge, stripe.errors.full_messages.join(', '))
-    end
-    nil
-  end
-
-  def charge_tax!
-    calculate_payment('tax')
-    return create_pending_charge('tax') unless amount_valid?
-    stripe = StripeCharger.new(user, @amount_to_pay, order)
-    if stripe.charge_tax!
-      create_bill_history('Tax Charge')
-      return order
-    else
-      errors.add(:charge, stripe.errors.full_messages.join(', '))
-    end
-    nil
-  end
-
-  def create_pending_charge(type)
-    return order if amount_is_negative?
-    pending_charges = {
-      "excess" => user.pending_excess_charges,
-      "tax" => user.pending_tax_charges
-    }
-
-    pending_charges[type].create!(
-      amount: @amount_to_pay,
-      remarks: "#{type.titleize} amount of $ #{@amount_to_pay} for order @ #{order.placed_on.strftime('%B %d, %Y')}"
-    )
-    order
-  end
-
   def create_bill_history(description)
     order.bill_histories.create!(
       amount_paid: @amount_to_pay,

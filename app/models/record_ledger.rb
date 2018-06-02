@@ -8,6 +8,9 @@ class RecordLedger
     record_tax(calculate_tax)
     record_excess(calculate_excess)
     true
+  rescue => e
+    Rails.logger.fatal e.message
+    false
   end
 
   private
@@ -23,19 +26,17 @@ class RecordLedger
   end
 
   def record_tax(amount)
-    return if amount <= 0
     tax_record = user.tax_ledgers.where(order_id: order.id, status: %i[pending_payment payment_failed]).first
 
-    tax_record = user.tax_ledgers.create(order_id: order.id, status: :pending_payment) unless tax_record.present? 
+    tax_record = user.tax_ledgers.create(order_id: order.id, status: :pending_payment) unless tax_record.present?
 
     tax_record.update_attributes(amount: amount)
   end
 
   def record_excess(amount)
-    return if amount <= 0
     excess_record = user.excess_ledgers.where(order_id: order.id, status: %i[pending_payment payment_failed]).first
 
-    excess_record = user.excess_ledgers.create(order_id: order.id, status: :pending_payment) unless excess_record.present? 
+    excess_record = user.excess_ledgers.create(order_id: order.id, status: :pending_payment) unless excess_record.present?
 
     excess_record.update_attributes(amount: amount)
   end

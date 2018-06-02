@@ -1,5 +1,6 @@
 class User::OrdersController < User::BaseController
-  before_action :set_order, :set_menu, :set_cart, only: [:store, :remove]
+  before_action :set_order, :set_menu, :set_cart, :set_order_to_fresh, only: [:store, :remove]
+  before_action :set_order_by_id, only: [:persist, :cancel, :undo_cancel]
   respond_to :js, only: :persist
 
   def show
@@ -34,7 +35,6 @@ class User::OrdersController < User::BaseController
   end
 
   def persist
-    @order = Order.find(order_id)
     @command = ChargeUser.call(@order, current_user)
     if @order.fresh? && @command.success?
       @order.update_columns(order_date: Time.current, status: :processing)
@@ -43,7 +43,6 @@ class User::OrdersController < User::BaseController
   end
 
   def cancel
-    @order = Order.find(order_id)
     cancel_order = CancelOrder.new(@order, current_user)
     if cancel_order.run
       redirect_back fallback_location: :back
@@ -51,7 +50,6 @@ class User::OrdersController < User::BaseController
   end
 
   def undo_cancel
-    @order = Order.find(order_id)
     uncancel_order = UncancelOrder.new(@order, current_user)
     if uncancel_order.run
       redirect_back fallback_location: :back
@@ -59,6 +57,10 @@ class User::OrdersController < User::BaseController
   end
 
   private
+
+  def set_order_by_id
+    @order = Order.find(order_id)
+  end
 
   def order_id
     params[:order_id]
@@ -86,6 +88,10 @@ class User::OrdersController < User::BaseController
 
   def set_cart
     @cart = ShoppingCart.new(@order)
+  end
+
+  def set_order_to_fresh
+    @order.fresh! unless @order.fresh?
   end
 
   def menu_size
