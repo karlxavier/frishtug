@@ -139,9 +139,9 @@ class Order < ApplicationRecord
     self[:series_number] = SeriesCreator.new(self).create
   end
 
-  def check_total_amount
-    return unless self.saved_change_to_total_price?
-    return unless self.total_price_before_last_save > self.total_price
+  def :check_total_amount
+    current_total = OrderCalculator.new(self).total
+    return if self.total_price == current_total
     user.pending_credits.create!(
       amount: self.total_price_was - self.total_price,
       activation_date: Time.current,
