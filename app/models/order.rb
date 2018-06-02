@@ -139,7 +139,7 @@ class Order < ApplicationRecord
     self[:series_number] = SeriesCreator.new(self).create
   end
 
-  def :check_total_amount
+  def check_total_amount
     current_total = OrderCalculator.new(self).total
     return if self.total_price == current_total
     user.pending_credits.create!(
