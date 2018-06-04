@@ -5,8 +5,8 @@ class RecordLedger
   end
 
   def record!
-    record_tax(calculate_tax)
-    record_excess(calculate_excess)
+    return record_with_pending_credit if @order.pending_credit.present?
+    record_both_tax_and_excess
     true
   rescue => e
     Rails.logger.fatal e.message
@@ -16,6 +16,28 @@ class RecordLedger
   private
 
   attr_reader :user, :order
+
+  def record_with_pending_credit
+    total = deduct_pending_credit
+    if total > 0
+      record_excess(total)
+      true
+    end
+  end
+
+  def record_both_tax_and_excess
+    record_tax(calculate_tax)
+    record_excess(calculate_excess)
+  end
+
+  def deduct_pending_credit
+    credit = order.pending_credit.amount
+    tax = calculate_tax
+    excess = calculate_excess
+    tax_and_excess_total = tax + excess
+    total = credit - tax_and_excess_total
+    total < 0 ? total.abs : 0
+  end
 
   def calculate_tax
     CalculateAmount.call(user, order, 'tax').result

@@ -12,8 +12,8 @@ class User::LedgersController < User::BaseController
       customer: current_user.stripe_customer_id,
       description: "Payment for bills"
     )
-    @unpaid_bills.update_all(status: :paid)
     create_bill_history
+    @unpaid_bills.update_all(status: :paid)
     redirect_back fallback_location: :back, notice: 'Payment successful'
   rescue => e
     flash[:error] = e.message
@@ -42,8 +42,9 @@ class User::LedgersController < User::BaseController
   def create_bill_history
     type = { "TaxLedger" => "tax", "ExcessLedger" => "excess"}
     @unpaid_bills.each do |bill|
-      RecordPayments.call(bill.order, bill.amount, type[bill.type])
-      update_total_price(bill.order)
+      order = Order.find(bill.order_id)
+      RecordPayments.call(order, bill.amount, type[bill.type])
+      update_total_price(order)
     end
   end
 

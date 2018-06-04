@@ -18,6 +18,6 @@ class PendingCredit < ApplicationRecord
 
   def self.activate_on(date)
     return nil unless date.present?
-    where('activation_date <= ?', date.end_of_day).first
+    where('activation_date <= ?', date.end_of_day)
   end
 end

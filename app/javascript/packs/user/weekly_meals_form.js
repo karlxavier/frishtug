@@ -3,12 +3,14 @@ import Items from "../../components/user_backend/items";
 import Sidebar from "../../components/user_backend/sidebar";
 import VueLazyload from "vue-lazyload";
 import GoToTop from '../../components/go_to_top';
+import toCurrency from "../lib/to_currency";
 
 Vue.use(VueLazyload);
 const node = document.querySelector("#orders-form");
 const order_data = JSON.parse(node.dataset.orders)
 const menus_orders = JSON.parse(node.dataset.menusOrdersAttributes)
 const charges = JSON.parse(node.dataset.charges)
+const pending_credits = JSON.parse(node.dataset.pendingCredits)
 order_data.menus_orders_attributes = menus_orders
 
 if (node) {
@@ -25,7 +27,12 @@ if (node) {
       shipping_fee: null,
       excess: null,
       sidebar_shown: false,
-      loaded: false
+      loaded: false,
+      pending_credits: pending_credits,
+      selected_credit: null
+    },
+    filters: {
+      to_currency: toCurrency
     },
     components: {
       Items,
@@ -58,10 +65,20 @@ if (node) {
       if (self.order.menus_orders_attributes.length > 0) {
         self.order.menus_orders_attributes.forEach(item => item.menu_id = String(item.menu_id))
       }
-
       self.populateCharge(JSON.parse(node.dataset.charges))
     },
     methods: {
+      setCredit: function(credit) {
+        const self = this
+        Rails.ajax({
+          url: `/user/set_credit?order_id=${self.order.id}&pending_credit_id=${credit.id}`,
+          type: 'GET',
+          success: function() {
+            self.selected_credit = credit.id
+            credit.order_id = self.order.id
+          }
+        })
+      },
       getRightPosition: function() {
         if (this.sidebar_shown) {
           return 30

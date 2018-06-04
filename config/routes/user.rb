@@ -52,4 +52,5 @@ namespace :user do
       get :pay
     end
   end
+  resources :set_credit, only: :index
 end
