@@ -19,12 +19,12 @@ class SubscriptionWorker
       subscribe_at: subscription_start,
       subscription_expires_at: subscription_end
     )
-    create_bill_history
+    create_bill_history(user)
   end
 
   private
 
-    def create_bill_history
+    def create_bill_history(user)
       user.bill_histories.create!(
         amount_paid: user.plan.price,
         description: 'Subscription Payment!',
