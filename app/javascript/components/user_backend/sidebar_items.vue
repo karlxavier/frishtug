@@ -26,7 +26,7 @@
         {{ total_price | to_currency }}
       </div>
     </div>
-    <div class="row order-list-items px-3" v-for="add_on in item.add_ons" v-bind:key="`item_add_ons_${add_on}_${item.id}`">
+    <div class="row order-list-items px-3" v-for="add_on in item.add_ons" v-bind:key="`item_add_ons_${add_on}__${item.id}`">
       <div class="col-7 px-0 text-left text-truncate">
         <strong>{{ addOnName(item, add_on) }}</strong>
       </div>
@@ -55,7 +55,7 @@ export default {
       if (found.length > 0) {
         return found[0].attributes.name;
       } else {
-        return "Not Found Item";
+        return "Item not found";
       }
     },
     quantity: function() {
@@ -113,11 +113,14 @@ export default {
     addOnName: function(item, add_on_id) {
       const self = this;
       const found = self.unreduce_items.filter(i => i.id === item.menu_id);
+      console.log(found)
       if (found.length > 0) {
         const add_on = found[0].meta.add_ons.filter(
-          add_on => add_on.id === add_on_id
+          add_on => add_on.id == add_on_id
         );
         return add_on[0].name;
+      } else {
+        return "Item not found"
       }
     },
     addOnPrice: function(item, add_on_id) {
@@ -125,9 +128,11 @@ export default {
       const found = self.unreduce_items.filter(i => i.id === item.menu_id);
       if (found.length > 0) {
         const add_on = found[0].meta.add_ons.filter(a => {
-          return a.id === add_on_id;
+          return a.id == add_on_id;
         });
-        return add_on[0].price;
+        const price = Money.$cents(add_on[0].price);
+        const total = price * item.quantity;
+        return Money.$dollar(total);
       }
     },
   }

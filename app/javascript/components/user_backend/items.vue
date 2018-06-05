@@ -44,6 +44,7 @@
               v-for="item in filteredItems(category.attributes.name)" v-bind:key="`${item.id}`" 
               v-bind:item="item"
               v-bind:quantity="quantities[item.id] || 0"
+              v-bind:add_on_ids="add_on_ids[item.id] || null"
               @add-item="addItem"
               @remove-item="removeItem"
               @add-add-on="addAddOn"
@@ -90,6 +91,12 @@ export default {
         return obj
       }, {})
     },
+    add_on_ids: function() {
+      return this.order.menus_orders_attributes.reduce( (obj, item) => {
+        obj[item.menu_id] = item.add_ons
+        return obj
+      }, {})
+    }
   },
   mounted() {
     const self = this

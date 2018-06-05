@@ -51,6 +51,7 @@
                 :name="add_on.name"
                 :id="`add_on_${add_on.id}_${item.id}`"
                 @click="addAddOn(add_on.id, item, $event)"
+                :checked="isChecked(add_on.id)"
                 >
                 {{ add_on.name }}
               </label>
@@ -77,9 +78,17 @@ export default {
   },
   props: {
     item: { type: Object, required: true },
-    quantity: { type: Number, required: true }
+    quantity: { type: Number, required: true },
+    add_on_ids: { type: Array, required: false }
   },
   methods: {
+    isChecked: function(add_on_id) {
+      if (this.add_on_ids) {
+        return this.add_on_ids.includes(String(add_on_id))
+      } else {
+        false
+      }
+    },
     showCounter: function() {
       if (this.quantity != null) {
         return this.counter = this.quantity

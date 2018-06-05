@@ -149,18 +149,34 @@ if (node) {
       },
       removeAddOn: function(add_on_id, item) {
         const self = this
+        const add_id = String(add_on_id)
         for (let menus_order of self.order.menus_orders_attributes) {
-          if (menus_order.menu_id === item.id && menus_order.add_ons.includes(add_on_id)) {
-            const index = menus_order.add_ons.indexOf(add_on_id);
+          if (menus_order.menu_id === item.id && menus_order.add_ons.includes(add_id)) {
+            const index = menus_order.add_ons.indexOf(add_id);
             menus_order.add_ons.splice(index, 1);
+            Rails.ajax({
+              url:  `/user/orders/remove?date=${self.order.placed_on}&menu_id=${item.id}&add_on_id=${add_id}`,
+              type: 'GET',
+              success: function(response) {
+                self.populateCharge(response)
+              }
+            })
           }
         }
       },
       addAddOn: function(add_on_id, item) {
         const self = this
+        const add_id = String(add_on_id)
         for (let menus_order of self.order.menus_orders_attributes) {
-          if (menus_order.menu_id === item.id && !menus_order.add_ons.includes(add_on_id)) {
-            menus_order.add_ons.push(add_on_id)
+          if (menus_order.menu_id === item.id && !menus_order.add_ons.includes(add_id)) {
+            menus_order.add_ons.push(add_id)
+            Rails.ajax({
+              url:  `/user/orders/store?date=${self.order.placed_on}&menu_id=${item.id}&add_on_id=${add_on_id}`,
+              type: 'GET',
+              success: function(response) {
+                self.populateCharge(response)
+              }
+            })
           }
         }
       },

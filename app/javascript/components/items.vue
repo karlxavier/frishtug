@@ -91,6 +91,7 @@
                             :name="add_on.name"
                             :id="`add_on_${add_on.id}_${item.id}_${prefix}`"
                             @click="toggleAddOn(add_on.id, item, date, $event)"
+                            :checked="isAddOnChecked(add_on.id, item, date)"
                             >
                             {{ add_on.name }}
                           </label>
@@ -149,6 +150,22 @@ export default {
     };
   },
   methods: {
+    isAddOnChecked: function(add_on_id, item, date) {
+      const self = this
+      const found_order = self.registration_form.orders.filter(
+        m => m.order_date === date
+      );
+      if (found_order.length > 0) {
+        const found_item = found_order[0].menus_orders_attributes.filter(
+          m => m.menu_id === item.id
+        );
+        if (found_item.length > 0) {
+          return found_item[0].add_ons.includes(add_on_id)
+        }
+      }
+
+      return false
+    },
     displayQuantity: function(item, date) {
       const self = this;
       const found_order = self.registration_form.orders.filter(

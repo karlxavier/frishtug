@@ -409,7 +409,9 @@ export default {
         const add_on = found[0].meta.add_ons.filter(a => {
           return a.id === add_on_id;
         });
-        return add_on[0].price;
+        const price = Money.$cents(add_on[0].price);
+        const total = price * item.quantity
+        return Money.$dollar(total)
       }
     },
     hasTaxableItems: function(menus_orders) {
@@ -469,7 +471,7 @@ export default {
             },
             0
           );
-          return sum += (price + add_on_price) * quantity[item.id];
+          return sum += (price * quantity[item.id]) + add_on_price;
         }, 0));
     },
     totalWithoutTax: function(menus_orders, index) {
