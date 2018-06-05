@@ -100,7 +100,8 @@ class ScanovatorApi
         cell2: nil,
         eadd: order.user.email,
         order_id: order.id,
-        notes: nil
+        notes: nil,
+        delivery_date: order.placed_on
       })
     end
   end
