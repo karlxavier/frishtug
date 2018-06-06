@@ -55,9 +55,8 @@ class ChargeUser
     if RecordLedger.new(user, order).record!
       return order
     else
-      errors.add(:record, "cannot create a pending bill")
+      return order
     end
-    nil
   end
 
   def create_bill_history(description)
