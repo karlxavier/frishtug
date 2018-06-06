@@ -56,9 +56,9 @@ class RecordLedger
   end
 
   def record_excess(amount)
-    excess_record = user.excess_ledgers.where(order_id: order.id, status: %i[pending_payment payment_failed]).first
+    excess_record = user.additional_ledgers.where(order_id: order.id, status: %i[pending_payment payment_failed]).first
 
-    excess_record = user.excess_ledgers.create(order_id: order.id, status: :pending_payment) unless excess_record.present?
+    excess_record = user.additional_ledgers.create(order_id: order.id, status: :pending_payment) unless excess_record.present?
 
     excess_record.update_attributes(amount: amount)
   end

@@ -46,7 +46,7 @@ class User < ApplicationRecord
   has_one :order_preference, dependent: :destroy
   has_many :ledgers, dependent: :destroy
   has_many :tax_ledgers, dependent: :destroy
-  has_many :excess_ledgers, dependent: :destroy
+  has_many :additional_ledgers, dependent: :destroy
 
   validates :first_name, :last_name, presence: true
   validates :email, uniqueness: true
