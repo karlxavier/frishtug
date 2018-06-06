@@ -16,6 +16,16 @@
 </template>
 
 <script>
+const ADDRESS_COMPONENTS = {
+		street_number: 'short_name',
+		route: 'long_name',
+		locality: 'long_name',
+		administrative_area_level_1: 'short_name',
+		administrative_area_level_2: 'county',
+		country: 'long_name',
+		postal_code: 'short_name',
+		sublocality_level_1: 'long_name'
+};
 import VueGoogleAutocomplete from 'vue-google-autocomplete';
 export default {
 	name: 'LabelEdit',
@@ -46,21 +56,41 @@ export default {
 			this.edit = true;
 			this.label = this.text;
 		},
-    getAddressResult: function(data, placeResultData, id) {
+    getAddressResult: function(place, placeResultData, id) {
       const self = this
 			const currentAddress = self.address
+			const data = self.formatResult(placeResultData)
 
       if (data.street_number != null) {
         currentAddress.line1 = `${data.street_number} ${data.route}`
       } else {
         currentAddress.line1 = data.route
-      }
-      currentAddress.city = data.locality
+			}
+			
+			if (data.hasOwnProperty('locality')) {
+				currentAddress.city = data.locality
+			} else {
+				currentAddress.city = data.sublocality_level_1
+			}
+      
       currentAddress.zip_code = data.postal_code
 			currentAddress.state = data.administrative_area_level_1
 			self.label = currentAddress.line1
       self.edit = false
-    }
+		},
+		formatResult: function(place) {
+				let returnData = {};
+				for (let i = 0; i < place.address_components.length; i++) {
+						let addressType = place.address_components[i].types[0];
+						if (ADDRESS_COMPONENTS[addressType]) {
+								let val = place.address_components[i][ADDRESS_COMPONENTS[addressType]];
+								returnData[addressType] = val;
+						}
+				}
+				returnData['latitude'] = place.geometry.location.lat();
+				returnData['longitude'] = place.geometry.location.lng();
+				return returnData
+		},
 	},
 	computed: {
 		vplaceholder: function(){
