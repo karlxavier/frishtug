@@ -142,10 +142,11 @@ class Order < ApplicationRecord
   def check_total_amount
     current_total = OrderCalculator.new(self).total
     return unless self.total_price > current_total
-    user.pending_credits.create!(
+    pending_credit = user.pending_credits.where(placed_on_date: self.placed_on).first_or_create
+    
+    pending_credit.update_attributes(
       amount: self.total_price - current_total,
-      activation_date: Time.current,
-      placed_on_date: self.placed_on
+      activation_date: Time.current
     )
   end
 end
