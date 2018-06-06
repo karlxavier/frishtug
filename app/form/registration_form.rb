@@ -118,7 +118,8 @@ class RegistrationForm
   end
 
   def create_referrer(user)
-    user.create_referrer!(group_code: SecureRandom.urlsafe_base64(10))
+    referrer = user.create_referrer!(group_code: SecureRandom.urlsafe_base64(10)
+    )
   end
 
   def create_orders(user)

@@ -36,7 +36,7 @@
                 v-bind:class="{'is-invalid': $v.registration_form.email.$error}"
                 name="email"
                 placeholder="Email*"
-                v-model.lazy.trim="registration_form.email"
+                v-model.trim="registration_form.email"
                 @input="$v.registration_form.email.$touch">
             <div class="invalid-feedback email--error"  v-show="$v.registration_form.email.email !== true">
               Invalid email format.
@@ -115,7 +115,7 @@ export default {
   },
   methods: {
     validate: function(event) {
-      if (event.target.value.trim() === '') {
+      if (event.target.value === '') {
         event.target.classList.add('is-invalid')
         return false
       } else {
@@ -145,7 +145,7 @@ export default {
     verifyEmail: function() {
       const self = this
 
-      if (self.registration_form.email.trim() === '') {
+      if (self.registration_form.email === '') {
         swal({
           type: "error",
           title: "Error",

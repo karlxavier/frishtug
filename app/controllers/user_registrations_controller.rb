@@ -14,7 +14,7 @@ class UserRegistrationsController < ApplicationController
       render json: {
         status: 'success',
         redirect_to: user_dashboard_index_path,
-        group_code: current_user.referrer&.group_code
+        group_code: current_user&.referrer&.group_code
       }, status: :ok
     else
       render json: {

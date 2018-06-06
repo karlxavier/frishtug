@@ -3,9 +3,8 @@
       <div class="modal-dialog modal-md modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="modalTitle" v-if="nutri">{{ nutri.menu_name }}</h5>
-            <h5 class="modal-title" id="modalTitle" v-else>
-              {{ item.attributes.name }}
+            <h5 class="modal-title" id="modalTitle">
+              {{ item_name }}
             </h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
@@ -13,7 +12,7 @@
           </div>
           <div class="modal-body">
             <div class="row">
-              <div class="col-md-12" v-if="nutri">
+              <div class="col-md-12" v-if="nutri !== null && typeof nutri === 'object'">
                   <section class="performance-facts">
                     <header class="performance-facts__header">
                       <h2 class="performance-facts__title">Nutrition Facts</h2>
@@ -163,7 +162,7 @@
               </div>
 
               <div class="col-md-12">
-                {{ item.attributes.description }}
+                {{ item_description }}
               </div>
             </div>
           </div>
@@ -180,6 +179,22 @@ export default {
   props: {
     nutri: { type: Object, required: false },
     item: { type: Object, required: true }
+  },
+  computed: {
+    item_name: function() {
+      if (this.item.hasOwnProperty('attributes')) {
+        return this.item.attributes.name
+      } else {
+        return ''
+      }
+    },
+    item_description: function() {
+      if (this.item.hasOwnProperty('attributes')) {
+        return this.item.attributes.description
+      } else {
+        return ''
+      }
+    }
   }
 }
 </script>
