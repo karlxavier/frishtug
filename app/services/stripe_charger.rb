@@ -27,12 +27,12 @@ class StripeCharger
       amount: to_cents(amount),
       currency: 'usd',
       customer: @user.stripe_customer_id,
-      description: charge_description("Excess")
+      description: charge_description("Additional")
     )
     true
   rescue => e
     errors.add(:base, e.message)
-    create_user_notification(e, "excess_charge")
+    create_user_notification(e, "additional_charge")
     false
   end
 

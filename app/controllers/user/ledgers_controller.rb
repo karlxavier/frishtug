@@ -40,7 +40,7 @@ class User::LedgersController < User::BaseController
   end
 
   def create_bill_history
-    type = { "TaxLedger" => "tax", "ExcessLedger" => "excess"}
+    type = { "TaxLedger" => "tax", "AdditionalLedger" => "excess"}
     @unpaid_bills.each do |bill|
       order = Order.find(bill.order_id)
       RecordPayments.call(order, bill.amount, type[bill.type])
