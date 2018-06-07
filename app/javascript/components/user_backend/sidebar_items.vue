@@ -7,7 +7,7 @@
       <div class="col-3 px-0 text-center">
         <a href="javascript:void(0)"
           class="remove-meal mx-1 chocolate-font-color"
-          @click="$emit('remove-item', item, item.quantity - 1)">
+          @click="removeItem(item)">
           <i class="fa fa-minus-square-o"></i>
         </a>
         <span class="quantity">
@@ -81,6 +81,14 @@ export default {
     }
   },
   methods: {
+    removeItem: function(item) {
+      const quantity = item.quantity - 1
+      if (quantity < 0) {
+        $emit('remove-item', item, 0)
+      } else {
+        $emit('remove-item', item, quantity)
+      }
+    },
     addItem: function(item) {
       const self = this
       const outOfStock = response => {

@@ -16,7 +16,7 @@ class User::OrdersController < User::BaseController
         sub_total: @order.sub_total,
         excess: @order.excess,
         tax: @order.total_tax,
-        shipping_fee: @order.shipping_fee,
+        shipping_fee: current_user.subscribed? ? nil : @order.shipping_fee,
         total: @order.total
       }, status: :ok
     end
@@ -28,7 +28,7 @@ class User::OrdersController < User::BaseController
         sub_total: @order.sub_total,
         excess: @order.excess,
         tax: @order.total_tax,
-        shipping_fee: @order.shipping_fee,
+        shipping_fee: current_user.subscribed? ? nil : @order.shipping_fee,
         total: @order.total
       }, status: :ok
     end
