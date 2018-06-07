@@ -25,7 +25,7 @@ module User::NotificationsHelper
   def display_pending_credits_notification
     credits = current_user.ledgers.unpaid
     return nil unless credits.present?
-    content_tag :div, class: 'alert alert-danger' do
+    content_tag :div, class: 'alert alert-danger font-size-18' do
       ("You have pending charges that you still need to pay " +
       link_to('click here.', user_ledgers_path)).html_safe
     end
