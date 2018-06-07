@@ -14,6 +14,14 @@ module DateTimeHelper
     Time.at(number).strftime(format)
   end
 
+  def renewal_at(subscription)
+    if subscription.present?
+      "Renewal on #{time_at(subscription.current_period_end, '%B %d, %Y')}"
+    else
+      "Subscription will be active on #{current_user.subscribe_at.strftime('%B %d, %Y')}"
+    end
+  end
+
   def format_date_AABBDD(date)
     date.to_date.strftime('%^a, %^b %d')
   end

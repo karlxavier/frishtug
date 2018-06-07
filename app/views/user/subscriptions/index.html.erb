@@ -2,14 +2,13 @@
   <div class="row">
     <div class="col-6">
       <h4 class="font-size-18 text-uppercase">Subscriptions</h4>
-
       <% if @plan.present? && !@plan.interval.nil? %>
         <div class="card-container" style='width: 18rem;'>
           <div class="card mb-4 user-plan-card">
             <div class="card-body">
               <span>PLAN: <%= @plan.name %></span>
               <%= @plan.short_description.html_safe %>
-              <p>Renewal on <%= time_at(@subscription&.current_period_end, '%B %d, %Y') %></p>
+              <p><%= renewal_at(@subscription) %></p>
             </div>
           </div>
           <button class="btn btn-brown text-uppercase" data-toggle="modal" data-target="#cancel_subscription">Cancel Subscription</button>
