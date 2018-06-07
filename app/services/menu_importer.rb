@@ -103,7 +103,7 @@ class MenuImporter
     invalid_keys = []
 
     REQUIRED_KEYS.each do |key|
-      invalid_keys.push(key) unless row[key.to_sym].present?
+      invalid_keys.push(key) if row[key.to_sym].nil?
     end
     return true if invalid_keys.empty?
 

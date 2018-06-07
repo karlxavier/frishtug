@@ -10,7 +10,6 @@ class ImportWorker
     if @menu_importer.run
       @doc.destroy
     else
-      @doc.destroy
       raise @menu_importer.errors.full_messages.join(', ')
     end
   end
