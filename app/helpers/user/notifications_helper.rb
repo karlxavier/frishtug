@@ -21,4 +21,13 @@ module User::NotificationsHelper
       "You must complete your group to avail group discount. You only have #{pluralize(current_user.total_members + 1, 'person')} in your group."
     end
   end
+
+  def display_pending_credits_notification
+    credits = current_user.ledgers.unpaid
+    return nil unless credits.present?
+    content_tag :div, class: 'alert alert-danger' do
+      ("You have pending charges that you still need to pay " +
+      link_to('click here.', user_ledgers_path)).html_safe
+    end
+  end
 end

@@ -4,7 +4,7 @@
     charges: {
       tax: @orders.total_tax,
       excess: @orders.excess,
-      shipping_fee: @orders.shipping_fee,
+      shipping_fee: current_user.subscribed? ? nil : @orders.shipping_fee,
       sub_total: @orders.sub_total,
       total: @orders.total
     }.to_json,
