@@ -31,7 +31,6 @@ class ScanovatorApi
   class << self
     def new_order order
       return unless address_allowed?(order)
-      return unless valid_address?(order)
       response = get("/new_order?#{new_order_query(order)}")
       OpenStruct.new(JSON.parse(response.body))
     end
