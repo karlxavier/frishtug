@@ -43,15 +43,4 @@
 
 <%= content_for :footer_js do %>
   <%= javascript_pack_tag 'user/meal_copier' %>
-  <script type="text/javascript">
-    Rails.ajax({
-      url: '/api/v1/items',
-      type: 'GET',
-      success: function(response) {
-        if (sessionStorage.getItem('items') === null) {
-          sessionStorage.setItem('items', JSON.stringify(response.data));
-        }
-      }
-    })
-  </script>
 <% end %>

@@ -38,6 +38,17 @@
       </div>
     </div>
     <%= yield :footer_js %>
+    <script type="text/javascript">
+      if (sessionStorage.getItem('items') === null) {
+        Rails.ajax({
+          url: '/api/v1/items',
+          type: 'GET',
+          success: function(response) {
+              sessionStorage.setItem('items', JSON.stringify(response.data));
+          }
+        })
+      };
+    </script>
     <script src="https://use.fontawesome.com/69863dce90.js"></script>
   </body>
 </html>
