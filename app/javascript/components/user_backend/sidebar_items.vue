@@ -84,9 +84,9 @@ export default {
     removeItem: function(item) {
       const quantity = item.quantity - 1
       if (quantity < 0) {
-        $emit('remove-item', item, 0)
+        this.$emit('remove-item', item, 0)
       } else {
-        $emit('remove-item', item, quantity)
+        this.$emit('remove-item', item, quantity)
       }
     },
     addItem: function(item) {

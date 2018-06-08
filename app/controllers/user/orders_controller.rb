@@ -39,6 +39,7 @@ class User::OrdersController < User::BaseController
     if @order.fresh? && @command.success?
       @order.update_columns(order_date: Time.current, status: :processing)
     end
+    @order.fresh! if @order.menus_orders.size == 0
     @order.touch
     respond_with(@order)
   end

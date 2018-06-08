@@ -42,25 +42,42 @@ if (node) {
     mounted() {
       const self = this
       self.schedule = JSON.parse(node.dataset.schedule)
-  
-      Rails.ajax({
-        url: '/api/v1/items',
-        type: 'GET',
-        success: function(response) {
-          self.unreduce_items = response.data
-          self.items = Array.from(response.data).reduce((list, item) => {
-            if (list.hasOwnProperty(item.attributes.menu_category.name)) {
-              list[item.attributes.menu_category.name].push(item);
-            } else {
-              list[item.attributes.menu_category.name] = [];
-              list[item.attributes.menu_category.name].push(item);
-            }
-            return list;
-          }, {});
-          self.sidebar_shown = true
-          self.loaded = true
-        }
-      })
+      
+      if (sessionStorage.getItem('items') === null) {
+        Rails.ajax({
+          url: '/api/v1/items',
+          type: 'GET',
+          success: function(response) {
+            sessionStorage.setItem('items', JSON.stringify(response.data))
+            self.unreduce_items = response.data
+            self.items = Array.from(response.data).reduce((list, item) => {
+              if (list.hasOwnProperty(item.attributes.menu_category.name)) {
+                list[item.attributes.menu_category.name].push(item);
+              } else {
+                list[item.attributes.menu_category.name] = [];
+                list[item.attributes.menu_category.name].push(item);
+              }
+              return list;
+            }, {});
+            self.sidebar_shown = true
+            self.loaded = true
+          }
+        })
+      } else {
+        const parsedItems = JSON.parse(sessionStorage.getItem('items'))
+        self.unreduce_items = parsedItems
+        self.items = Array.from(parsedItems).reduce((list, item) => {
+          if (list.hasOwnProperty(item.attributes.menu_category.name)) {
+            list[item.attributes.menu_category.name].push(item);
+          } else {
+            list[item.attributes.menu_category.name] = [];
+            list[item.attributes.menu_category.name].push(item);
+          }
+          return list;
+        }, {});
+        self.sidebar_shown = true
+        self.loaded = true
+      }
 
       if (self.order.menus_orders_attributes.length > 0) {
         self.order.menus_orders_attributes.forEach(item => item.menu_id = String(item.menu_id))
