@@ -409,8 +409,9 @@ export default {
         const add_on = found[0].meta.add_ons.filter(a => {
           return a.id === add_on_id;
         });
-        const price = Money.$cents(add_on[0].price);
+        const price = Money.$cents(Number(add_on[0].price));
         const total = price * item.quantity
+        console.log(Money.$dollar(total))
         return Money.$dollar(total)
       }
     },
@@ -456,23 +457,23 @@ export default {
         obj[i.menu_id] = i.quantity;
         return obj;
       }, {});
-     return Money.$dollar(self.unreduce_items
+    
+      const add_on_price = menus_orders.reduce(
+      (sum, menus_order) => {
+        return sum += menus_order.add_ons.reduce(
+          (sum, add_on) => {
+            return sum += Money.$cents(self.addOnPrice(menus_order, add_on));
+          },
+          0)
+        },
+      0);
+
+      return Money.$dollar(self.unreduce_items
         .filter(i => item_ids.includes(i.id))
         .reduce((sum, item) => {
           const price = Money.$cents(parseFloat(item.attributes.price))
-          const add_on_price = menus_orders.reduce(
-            (add_on_sum, menus_order) => {
-              return (add_on_sum += menus_order.add_ons.reduce(
-                (sum, add_on) => {
-                  return sum += Money.$cents(self.addOnPrice(menus_order, add_on));
-                },
-                0
-              ));
-            },
-            0
-          );
-          return sum += (price * quantity[item.id]) + add_on_price;
-        }, 0));
+          return sum += (price * quantity[item.id]);
+        }, 0) + add_on_price);
     },
     totalWithoutTax: function(menus_orders, index) {
       const self = this;
