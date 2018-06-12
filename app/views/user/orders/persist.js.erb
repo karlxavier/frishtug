@@ -1,4 +1,4 @@
-<% if @order.processing? %>
+<% if %w(fresh processing).include?(@order.status) %>
 	<% if action_name == 'edit' %>
 	swal({
 		title: 'Success',
@@ -25,7 +25,7 @@
 <% else %>
 	swal({
 		title: 'Oops...',
-		text: "Something went wrong %>",
+		text: "Something went wrong",
 		type: 'error',
 		confirmButtonText: 'Done',
 		confirmButtonClass: 'btn btn-brown text-uppercase',
