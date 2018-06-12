@@ -15,6 +15,5 @@ class Admin::ScanovatorsController < Admin::BaseController
 
   def set_date
     @date = Date.parse(params[:date])
-    @date += 1.day
   end
 end
