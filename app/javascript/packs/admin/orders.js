@@ -17,7 +17,7 @@ const vm = new Vue({
     today: [],
     in_transit: [],
     completed: [],
-    page: 1,
+    page: 2,
     date: el.dataset.date
   },
   mounted: function() {
