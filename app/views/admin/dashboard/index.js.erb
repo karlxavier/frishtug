@@ -1,1 +1,2 @@
-$(".orders_today_list").append('<%= j render partial: 'orders_today', collection: @active_orders, as: :order %>');
+$("#today_list").append('<%= j render partial: 'orders_today', collection: @active_orders, as: :order %>');
+dashboardVM.$mount('#frishtug_orders');

@@ -1,8 +1,16 @@
 class FetchOrdersStatus
+
+  def initialize(date = nil)
+    @current_time = if date.nil?
+      Time.current
+    else
+      Time.zone.parse(date)
+    end
+  end
+
   def run
-    current_time = Time.current
-    return if current_time.saturday?
-    range = DateRange.new(current_time.beginning_of_day, current_time.end_of_day)
+    return if @current_time.saturday?
+    range = DateRange.new(@current_time.beginning_of_day, @current_time.end_of_day)
     order_ids = Order.placed_between?(range).map(&:id)
     response = ScanovatorApi.fetch_group(order_ids)
     return true if response.state == 'fail'

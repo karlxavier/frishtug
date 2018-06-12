@@ -1,31 +1,58 @@
-import VueTabs from 'vue-nav-tabs'
-import Vue from 'vue/dist/vue.esm'
-import swal from 'sweetalert2'
+import VueTabs from 'vue-nav-tabs';
+import Vue from 'vue/dist/vue.esm';
+import TodaysList from '../../components/admin_backend/todays_list';
+import swal from 'sweetalert2';
 
 // Components
 Vue.use(VueTabs)
 
 const el = document.querySelector('#frishtug_orders')
 
-const orders = new Vue({
+const vm = new Vue({
   el: el,
+  components: {
+    TodaysList
+  },
   data: {
-
+    today: [],
+    in_transit: [],
+    completed: [],
+    page: 1,
+    date: el.dataset.date
+  },
+  mounted: function() {
+    const self = this
+    Rails.ajax({
+      url: `/admin/dashboard.json?date=${self.date}`,
+      type: 'GET',
+      success: function(response) {
+        self.today = response
+      }
+    })
   },
   methods: {
-    showDetails: function(id) {
-      const viewBtn = document.querySelector(`#view-${id}`)
-      const div = document.querySelector(`#order-${id}`)
-      div.classList.remove('d-none')
-      div.classList.add('show')
-      viewBtn.classList.add('d-none')
-    },
-    hideDetails: function(id) {
-      const viewBtn = document.querySelector(`#view-${id}`)
-      const div = document.querySelector(`#order-${id}`)
-      div.classList.remove('show')
-      div.classList.add('d-none')
-      viewBtn.classList.remove('d-none')
+    viewMore: function() {
+      const self = this
+      const counter = self.page++
+      Rails.ajax({
+        url: `/admin/dashboard.json?date=${self.date}&page=${counter}`,
+        type: 'GET',
+        success: function(response) {
+          if (response.length > 0) {
+            self.today.push(...response)
+          } else {
+            swal({
+              type: "success",
+              title: "The End",
+              text: "Youve reach the end.",
+              confirmButtonText: "Ok",
+              confirmButtonColor: "#582D11",
+              confirmButtonClass: "btn btn-brown text-uppercase",
+              buttonsStyling: false
+            })
+          }
+        }
+      })
     }
   }
 })

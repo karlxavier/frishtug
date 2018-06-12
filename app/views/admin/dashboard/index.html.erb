@@ -36,16 +36,18 @@
   </div>
 </div>
 <%= card_container do %>
-  <div id="frishtug_orders" class="admin__tabs">
+  <div id="frishtug_orders" class="admin__tabs" data-date="<%= params[:date] %>">
     <vue-tabs>
       <v-tab title="TODAY (<%= @order_query.active_orders.size %>)">
         <h5 class="mt-3 font-size-16 mx-3 current_sales_header font-family-montserrat-medium">
           <%= current_sale_date(@date) %> - Current Sales <%= to_currency(@order_query.current_sales) %>
         </h5>
         <div class="orders_today_list mb-4">
-          <%= render partial: 'orders_today', collection: @active_orders, as: :order %>
+          <div v-for="order in today">
+            <todays-list v-bind:order="order"></todays-list>
+          </div>
           <div class="text-center mt-4">
-            <a href="javascript:void(0)" class="burlywood-font-color font-size-14 view__more">View more</a>
+            <a href="javascript:void(0)" class="burlywood-font-color font-size-14" @click="viewMore">View more</a>
           </div>
         </div>
       </v-tab>

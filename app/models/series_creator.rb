@@ -8,7 +8,11 @@ class SeriesCreator
 
   def create
     last_series_number =
-      Order.placed_between?(@range).order('series_number DESC')                 .first&.series_number || 0
-    last_series_number + 1
+      Order.placed_between?(@range).pluck(:series_number).uniq.sort.last
+    if last_series_number.nil?
+      return 1
+    else
+      return last_series_number + 1
+    end
   end
 end

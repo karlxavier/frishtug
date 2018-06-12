@@ -23,7 +23,7 @@ class OrderQuery
 
   def in_transit
     @orders = Order.includes(:user)
-    results = filtered_orders.where(delivery_status: :in_transit)
+    results = filtered_orders.where.not(eta: [nil, ''])
                              .placed_between?(@date_range)
 
     class << self
