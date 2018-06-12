@@ -17,6 +17,8 @@ class Admin::InventoryController < Admin::BaseController
   def set_date_range
     @date = Time.current
     @date_range = set_range
+    @start_date = @date_range.start_date
+    @end_date = @date_range.end_date
   end
 
   def set_range
@@ -24,12 +26,22 @@ class Admin::InventoryController < Admin::BaseController
       DateRange.new(@date.beginning_of_week, @date.end_of_week)
     elsif params[:monthly]
       DateRange.new(@date.beginning_of_month, @date.end_of_month)
-    elsif params[:start_date] && params[:end_date]
-      start_date = Time.zone.parse(params[:start_date])
-      end_date = Time.zone.parse(params[:end_date])
-      DateRange.new(start_date.beginning_of_day, end_date.end_of_day)
+    elsif start_date || end_date
+      DateRange.new(parse_date(start_date).beginning_of_day, parse_date(end_date).end_of_day)
     else
       DateRange.new(@date.beginning_of_day, @date.end_of_day)
     end
+  end
+
+  def start_date
+    params[:start_date]
+  end
+
+  def end_date
+    params[:end_date] != 'undefined' ? params[:end_date] : start_date
+  end
+
+  def parse_date(date)
+    Time.zone.parse(date)
   end
 end

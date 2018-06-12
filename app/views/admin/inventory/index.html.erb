@@ -7,7 +7,7 @@
         <% elsif params[:monthly] %>
           <%= "Month of #{@date.beginning_of_week.strftime('%B')}" %>
         <% elsif params[:start_date] && params[:end_date] %>
-          <%= "Custom - #{Time.zone.parse(params[:start_date]).strftime('%B %d')} to #{Time.zone.parse(params[:end_date]).strftime('%B %d')}"%>
+          <%= "Custom - #{@start_date.strftime('%B %d')} to #{@end_date.strftime('%B %d')}"%>
         <% else %>
           <%= @date.today? ? "Today - #{@date.strftime('%B %d')}" : @date.strftime('%B %d') %>
         <% end %>
