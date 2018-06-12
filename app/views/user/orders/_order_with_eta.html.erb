@@ -13,7 +13,7 @@
   </div>
   <div class="col">
     <span class="font-family-montserrat-medium">
-      ETA - <span class="eta-container"><%= @scanovator.data.first.eta.to_date.strftime('%I:%M%P') %></span>
+      ETA - <span class="eta-container"><%= @scanovator.data.first.eta.to_date&.strftime('%I:%M%P') %></span>
     </span>
     <p class="mb-1 font-size-14"><%= order.user.street_address %></p>
     <p class="font-size-14">
