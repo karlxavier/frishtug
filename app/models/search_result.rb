@@ -2,7 +2,7 @@
 #
 # Table name: search_results
 #
-#  searchable_id   :integer
+#  searchable_id   :bigint(8)
 #  searchable_type :text
 #  term            :string
 #

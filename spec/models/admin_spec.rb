@@ -2,7 +2,7 @@
 #
 # Table name: admins
 #
-#  id                 :integer          not null, primary key
+#  id                 :bigint(8)        not null, primary key
 #  email              :string           default(""), not null
 #  encrypted_password :string           default(""), not null
 #  sign_in_count      :integer          default(0)
@@ -16,6 +16,7 @@
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #
+
 RSpec.describe Admin, type: :model do
   pending "add some examples to (or delete) #{__FILE__}"
 end

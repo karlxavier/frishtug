@@ -2,9 +2,9 @@
 #
 # Table name: contact_numbers
 #
-#  id           :integer          not null, primary key
+#  id           :bigint(8)        not null, primary key
 #  phone_number :string
-#  user_id      :integer
+#  user_id      :bigint(8)
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #

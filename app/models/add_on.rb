@@ -2,12 +2,12 @@
 #
 # Table name: add_ons
 #
-#  id               :integer          not null, primary key
+#  id               :bigint(8)        not null, primary key
 #  name             :string
-#  menu_category_id :integer
+#  menu_category_id :bigint(8)
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
-#  menu_id          :integer
+#  menu_id          :bigint(8)
 #
 
 # Class names

@@ -2,8 +2,8 @@
 #
 # Table name: inventories
 #
-#  id           :integer          not null, primary key
-#  menu_id      :integer
+#  id           :bigint(8)        not null, primary key
+#  menu_id      :bigint(8)
 #  location     :string
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null

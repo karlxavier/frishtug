@@ -2,8 +2,8 @@
 #
 # Table name: shipping_charges
 #
-#  id         :integer          not null, primary key
-#  order_id   :integer
+#  id         :bigint(8)        not null, primary key
+#  order_id   :bigint(8)
 #  charge_id  :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null

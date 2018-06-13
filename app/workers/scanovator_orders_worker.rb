@@ -5,8 +5,8 @@ class ScanovatorOrdersWorker
     "cancelled",
     "refunded",
     "fulfilled",
-    "fresh", 
-    "pending_payment", 
+    "fresh",
+    "pending_payment",
     "payment_failed"
   ].freeze
 
@@ -15,10 +15,13 @@ class ScanovatorOrdersWorker
     orders = Order.placed_between?(range)
     orders.each do |order|
       next if SKIPPABLE_STATUS.include?(order.status)
+      next if order.is_rollover
       scanovator_api = ScanovatorApi.new_order(order)
       next unless scanovator_api.present?
       if scanovator_api.error
         Rails.logger.info scanovator_api.error
+      else
+        order.update_attributes(is_rollover: true)
       end
     end
   end

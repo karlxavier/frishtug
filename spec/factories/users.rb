@@ -2,7 +2,7 @@
 #
 # Table name: users
 #
-#  id                      :integer          not null, primary key
+#  id                      :bigint(8)        not null, primary key
 #  email                   :string           default(""), not null
 #  encrypted_password      :string           default(""), not null
 #  reset_password_token    :string
@@ -17,7 +17,7 @@
 #  updated_at              :datetime         not null
 #  first_name              :string
 #  last_name               :string
-#  plan_id                 :integer
+#  plan_id                 :bigint(8)
 #  stripe_token            :string
 #  subscribe_at            :datetime
 #  subscription_expires_at :datetime

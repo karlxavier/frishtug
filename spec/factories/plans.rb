@@ -2,7 +2,7 @@
 #
 # Table name: plans
 #
-#  id                     :integer          not null, primary key
+#  id                     :bigint(8)        not null, primary key
 #  name                   :string
 #  description            :text
 #  price                  :decimal(8, 2)
@@ -19,6 +19,7 @@
 #  short_description      :string(150)
 #  limit                  :decimal(8, 2)
 #  minimum_credit_allowed :decimal(8, 2)
+#  minimum_charge         :decimal(8, 2)    default(0.0)
 #
 
 FactoryBot.define do

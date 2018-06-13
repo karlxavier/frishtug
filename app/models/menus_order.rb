@@ -2,9 +2,9 @@
 #
 # Table name: menus_orders
 #
-#  id         :integer          not null, primary key
-#  menu_id    :integer
-#  order_id   :integer
+#  id         :bigint(8)        not null, primary key
+#  menu_id    :bigint(8)
+#  order_id   :bigint(8)
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  quantity   :integer

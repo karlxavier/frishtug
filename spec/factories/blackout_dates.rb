@@ -2,7 +2,7 @@
 #
 # Table name: blackout_dates
 #
-#  id          :integer          not null, primary key
+#  id          :bigint(8)        not null, primary key
 #  month       :string
 #  day         :integer
 #  description :string

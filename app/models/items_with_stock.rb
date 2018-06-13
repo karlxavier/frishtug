@@ -2,18 +2,18 @@
 #
 # Table name: items_with_stocks
 #
-#  menu_id            :integer
+#  menu_id            :bigint(8)
 #  name               :string
 #  price              :decimal(8, 2)
 #  published          :boolean
 #  unit_size          :integer
-#  unit_id            :integer
+#  unit_id            :bigint(8)
 #  item_number        :string
 #  tax                :boolean
 #  description        :text
-#  asset_id           :integer
+#  asset_id           :bigint(8)
 #  quantity           :integer
-#  menu_category_id   :integer
+#  menu_category_id   :bigint(8)
 #  menu_category_name :string
 #  display_order      :integer
 #  diet_categories    :string           is an Array

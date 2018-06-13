@@ -87,6 +87,7 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'spring-commands-rspec'
   gem 'figaro'
+  gem 'annotate'
 end
 
 group :test do

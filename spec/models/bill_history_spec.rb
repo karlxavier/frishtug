@@ -2,9 +2,9 @@
 #
 # Table name: bill_histories
 #
-#  id          :integer          not null, primary key
-#  order_id    :integer
-#  user_id     :integer
+#  id          :bigint(8)        not null, primary key
+#  order_id    :bigint(8)
+#  user_id     :bigint(8)
 #  amount_paid :decimal(8, 2)
 #  billed_at   :datetime
 #  description :string

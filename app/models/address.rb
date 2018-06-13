@@ -2,7 +2,7 @@
 #
 # Table name: addresses
 #
-#  id               :integer          not null, primary key
+#  id               :bigint(8)        not null, primary key
 #  line1            :string
 #  line2            :string
 #  front_door       :string
@@ -10,13 +10,13 @@
 #  state            :string
 #  zip_code         :string
 #  addressable_type :string
-#  addressable_id   :integer
+#  addressable_id   :bigint(8)
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  location_at      :integer
+#  status           :integer
 #  latitude         :float
 #  longitude        :float
-#  status           :integer
 #
 
 # Column names

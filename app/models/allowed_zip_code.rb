@@ -2,11 +2,11 @@
 #
 # Table name: allowed_zip_codes
 #
-#  id         :integer          not null, primary key
+#  id         :bigint(8)        not null, primary key
 #  zip        :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  store_id   :integer
+#  store_id   :bigint(8)
 #
 
 class AllowedZipCode < ApplicationRecord

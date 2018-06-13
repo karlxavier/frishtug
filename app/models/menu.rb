@@ -2,11 +2,11 @@
 #
 # Table name: menus
 #
-#  id               :integer          not null, primary key
+#  id               :bigint(8)        not null, primary key
 #  name             :string
 #  price            :decimal(8, 2)
-#  unit_id          :integer
-#  menu_category_id :integer
+#  unit_id          :bigint(8)
+#  menu_category_id :bigint(8)
 #  published_at     :datetime
 #  published        :boolean
 #  created_at       :datetime         not null
@@ -15,7 +15,7 @@
 #  item_number      :string
 #  tax              :boolean          default(FALSE)
 #  description      :text
-#  asset_id         :integer
+#  asset_id         :bigint(8)
 #  notes            :string
 #
 

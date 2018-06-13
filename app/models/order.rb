@@ -2,8 +2,8 @@
 #
 # Table name: orders
 #
-#  id              :integer          not null, primary key
-#  user_id         :integer
+#  id              :bigint(8)        not null, primary key
+#  user_id         :bigint(8)
 #  placed_on       :datetime
 #  eta             :string
 #  delivered_at    :datetime
@@ -18,6 +18,8 @@
 #  payment_details :string
 #  route_started   :string
 #  payment_status  :integer
+#  total_price     :decimal(8, 2)    default(0.0)
+#  is_rollover     :boolean
 #
 
 # Column names
