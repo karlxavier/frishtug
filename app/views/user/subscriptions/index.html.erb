@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-6">
       <h4 class="font-size-18 text-uppercase">Subscriptions</h4>
-      <% if @plan.present? && !@plan.interval.nil? %>
+      <% if current_user.subscribed? %>
         <div class="card-container" style='width: 18rem;'>
           <div class="card mb-4 user-plan-card">
             <div class="card-body">

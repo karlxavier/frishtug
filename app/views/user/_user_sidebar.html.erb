@@ -22,11 +22,9 @@
       <li class="nav-item <%= active?(user_delivery_information_index_path) %>">
         <%= nav_link 'Delivery Information', user_delivery_information_index_path %>
       </li>
-      <% if current_user.subscribed? %>
-        <li class="nav-item <%= active?(user_subscriptions_path) %>">
-          <%= nav_link 'Subscription', user_subscriptions_path %>
-        </li>
-      <% end %>
+      <li class="nav-item <%= active?(user_subscriptions_path) %>">
+        <%= nav_link 'Subscription', user_subscriptions_path %>
+      </li>
       <li class="nav-item <%= active?(user_payment_informations_path) %>">
         <%= nav_link 'Payment Information', user_payment_informations_path %>
       </li>
