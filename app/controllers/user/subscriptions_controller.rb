@@ -1,5 +1,6 @@
 class User::SubscriptionsController < User::BaseController
   respond_to :js, only: :cancel
+  before_action :is_subscripion!
 
   def index
     @plan = current_user.plan
@@ -90,5 +91,11 @@ class User::SubscriptionsController < User::BaseController
       status: status,
       message: message
     }
+  end
+
+  def is_subscription!
+    unless current_user.subscribed?
+      redirect_back fallback_location: :back, notice: 'You\'re no in a subscription plan!'
+    end
   end
 end
