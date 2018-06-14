@@ -16,7 +16,7 @@ class Ledger < ApplicationRecord
   enum status: %i[pending_payment paid payment_failed]
   belongs_to :order
   belongs_to :user
-  after_save :destroy_zero_amount
+  after_save :destroy_zero_amount, :update_order
 
   def self.unpaid
     where.not(status: :paid)
@@ -32,5 +32,14 @@ class Ledger < ApplicationRecord
     if self.amount == 0
       self.destroy
     end
+  end
+
+  def update_order
+    types = { "TaxLedger" => "tax", "AdditionalLedger" => "excess"}
+    order = Order.find(self.order_id)
+    RecordPayments.call(order, self.amount, types[self.type])
+    order.update_columns(status: :processing)
+    order.total_price = OrderCalculator.new(order).total
+    order.save
   end
 end

@@ -54,6 +54,13 @@
           </div>
         </div>
         <hr>
+        <div class="row review-step__margin-b25 clearfix">
+          <div class="col">
+            <strong class="font-size-14 font-family-lato-bold">
+              Note: <small>For all Tax and Additional charges, you will need to finalize the payment at the Pending Charges link.</small>
+            </strong>
+          </div>
+        </div>
       </div>
       <div class="col-12 text-center">
         <a href="javascript:void(0)"
@@ -240,5 +247,3 @@ export default {
   margin: 2rem 0;
 }
 </style>
-
-

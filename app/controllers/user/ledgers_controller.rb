@@ -12,8 +12,7 @@ class User::LedgersController < User::BaseController
       customer: current_user.stripe_customer_id,
       description: "Payment for bills"
     )
-    create_bill_history
-    @unpaid_bills.update_all(status: :paid)
+    @unpaid_bills.find_each { |b| b.update_attributes(status: :paid) }
     redirect_back fallback_location: :back, notice: 'Payment successful'
   rescue => e
     flash[:error] = e.message
@@ -37,20 +36,6 @@ class User::LedgersController < User::BaseController
 
   def orders_placed
     order_ids = @unpaid_bills.pluck(:order_id)
-  end
-
-  def create_bill_history
-    type = { "TaxLedger" => "tax", "AdditionalLedger" => "excess"}
-    @unpaid_bills.each do |bill|
-      order = Order.find(bill.order_id)
-      RecordPayments.call(order, bill.amount, type[bill.type])
-      update_total_price(order)
-    end
-  end
-
-  def update_total_price(order)
-    order.total_price = OrderCalculator.new(order).total
-    order.save
   end
 
   def user_must_be_subscribed!

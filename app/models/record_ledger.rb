@@ -26,8 +26,16 @@ class RecordLedger
   end
 
   def record_both_tax_and_excess
-    record_tax(calculate_tax)
-    record_excess(calculate_excess)
+    tax = calculate_tax
+    excess = calculate_excess
+    record_tax(tax)
+    record_excess(excess)
+
+    if tax > 0 || excess > 0
+      order.pending_payment!
+    else
+      order.update_columns(status: :processing)
+    end
   end
 
   def deduct_pending_credit

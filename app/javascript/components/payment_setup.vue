@@ -3,8 +3,7 @@
     <div class="col-md-6 col-md-offset-4 text-center payment-step__body">
           <h4 class="text-uppercase">Payment</h4>
           <span class="font-family-lato font-size-16 text-center payment-step__gateway_text">
-            We use <a href="https://stripe.com">Stripe</a> for payment lorem ipsum dolor sit amet tin consecitur lorem
-            uipsum dolor site sephi reyur ale dolorem.
+            We use <a href="https://stripe.com">Stripe</a> for payment.
           </span>
           <br>
           <div class="form-check form-check-inline payment_methods text-left mt-1 mb-1"
@@ -46,4 +45,3 @@ export default {
   }
 }
 </script>
-

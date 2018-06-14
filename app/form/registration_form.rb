@@ -143,6 +143,7 @@ class RegistrationForm
     )
     if user.plan.interval == 'month'
       create_subscription(user)
+      PendingChargeMailer.first_notice(user_id: user.id, delivery_date: user.orders.first.placed_on)
     else
       create_a_charge(user)
     end

@@ -36,8 +36,8 @@ class User::OrdersController < User::BaseController
 
   def persist
     @command = ChargeUser.call(@order, current_user)
-    if @order.fresh? && @command.success?
-      @order.update_columns(order_date: Time.current, status: :processing)
+    if @command.success?
+      @order.update_columns(order_date: Time.current)
     end
     @order.fresh! if @order.menus_orders.size == 0
     @order.touch
