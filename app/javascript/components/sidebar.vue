@@ -411,7 +411,6 @@ export default {
         });
         const price = Money.$cents(Number(add_on[0].price));
         const total = price * item.quantity
-        console.log(Money.$dollar(total))
         return Money.$dollar(total)
       }
     },
@@ -457,7 +456,7 @@ export default {
         obj[i.menu_id] = i.quantity;
         return obj;
       }, {});
-    
+
       const add_on_price = menus_orders.reduce(
       (sum, menus_order) => {
         return sum += menus_order.add_ons.reduce(

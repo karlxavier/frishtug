@@ -148,9 +148,35 @@ export default {
         }
       }
 
+      const getAddOnPrice = (item) => {
+        const add_ons = items.reduce((arr, item) => {
+          arr.push(...item.meta.add_ons)
+          return arr
+        }, [])
+
+
+        const item_ids = add_ons.reduce( (arr, a) => {
+          if (item.add_ons.includes(a.id)) {
+            arr.push(a.menu_id)
+          }
+          return arr
+        }, [])
+
+        const uniq_item_ids = Array.from(new Set(item_ids))
+        const found = items.filter(data => uniq_item_ids.includes(Number(data.id)))
+        if (found.length > 0) {
+          const price = found.reduce((sum, i) => {
+            return sum += Money.$cents(parseFloat(i.attributes.price))
+          }, 0)
+          return Money.$dollar(price * item.quantity);
+        } else {
+          return 0;
+        }
+      }
+
       orders.forEach(order => {
         const total = Money.$dollar(order.menus_orders_attributes.reduce((sum, item) => {
-          return sum += Money.$cents(getPrice(item));
+          return sum += Money.$cents(getPrice(item)) + Money.$cents(getAddOnPrice(item));
         }, 0))
         if (total > self.plan.limit && self.plan.interval === 'month') {
           additional += Number((total - self.plan.limit).toFixed(2))
