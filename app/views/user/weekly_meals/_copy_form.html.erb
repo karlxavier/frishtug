@@ -1,6 +1,6 @@
 <h6>Copy Week</h6>
 <div class="row">
-  <% if @to_options.present? %>
+  <% if @from_options.any? { |i| !i.nil? } %>
     <%= form_with url: user_copy_meals_path, local: true do |f| %>
       <div class="col">
         <div class="form-group row">
@@ -20,7 +20,7 @@
     <% end %>
   <% else %>
     <div class="col">
-      <small>Create your first 5 orders, In order to activate copying of weekly meals</small>
+      <small>Create your first 5 orders and pending charges must be completed, In order to activate copying of weekly meals</small>
     </div>
   <% end %>
 </div>

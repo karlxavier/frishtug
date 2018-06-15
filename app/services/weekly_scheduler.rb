@@ -9,6 +9,7 @@ class WeeklyScheduler < ScheduleMaker
   end
 
   def get_schedules_for_selection!
+    return [] unless @orders.present?
     @orders.order(placed_on: :asc).in_groups_of(5, false).map do |o|
       create_array_of_dates(o)
     end
