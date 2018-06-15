@@ -17,6 +17,6 @@ class Api::V1::VerifyUsersController < Api::V1::BaseController
   end
 
   def email
-    params[:email]
+    params[:email]&.downcase
   end
 end

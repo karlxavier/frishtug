@@ -61,6 +61,7 @@ class User < ApplicationRecord
   delegate :phone_number, :id, to: :contact_number, prefix: true, allow_nil: true
 
   after_create :delete_inactive_entry!
+  before_save :downcase_email!
 
   def self.in_locations(locations)
     joins(:addresses).merge(Address.search_list(locations))
@@ -138,5 +139,9 @@ class User < ApplicationRecord
 
     def delete_inactive_entry!
       InactiveUser.find_by_email(self.email)&.destroy
+    end
+
+    def downcase_email!
+      self.email.downcase!
     end
 end
