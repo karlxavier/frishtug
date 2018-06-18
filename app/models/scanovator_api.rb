@@ -3,7 +3,7 @@ class ScanovatorApi
   include ActiveModel::Validations
   include HTTParty
 
-  base_uri 'barcoder-cyf.herokuapp.com/public'
+  base_uri 'https://barcoder-cyf.herokuapp.com/public'
   debug_output $stdout unless Rails.env.production?
 
   STORE_ID = 10#Store.first._id.freeze

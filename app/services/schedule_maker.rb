@@ -6,7 +6,7 @@ class ScheduleMaker
     @schedule = user.schedule.try(:option)
     @subscription_start = user.subscribe_at
     @subscription_end = user.subscription_expires_at
-    @orders = user.orders.processing
+    @orders = user.orders
   end
 
   private

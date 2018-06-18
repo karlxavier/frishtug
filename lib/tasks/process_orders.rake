@@ -10,7 +10,11 @@ namespace :process_orders do
       "payment_failed"
     ].freeze
 
+    SKIPPABLE_DATES = BlackoutDate.pluck_dates.freeze
+
     current_date = Time.current
+
+    return if SKIPPABLE_DATES.include?(current_date.strftime('%B %d'))
     range = DateRange.new(current_date.beginning_of_day, current_date.end_of_day)
 
     orders = Order.placed_between?(range)
