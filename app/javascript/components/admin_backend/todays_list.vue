@@ -8,7 +8,7 @@
         </h5>
       </div>
       <div class="col">
-        Order #: {{ order.id }}
+        Order #: {{ order.id }} &nbsp; Is Rollovered: {{ order.is_rollover }}
       </div>
     </div>
     <div class="row">
