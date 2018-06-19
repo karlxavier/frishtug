@@ -51,7 +51,8 @@ class OrderCalculator
 
   def total_tax
     taxable_items = order.menus_orders.select { |m| m.menu.tax == true }
-    taxable_items.map {|o| calculate_tax(o.menu_price) * o.quantity }.inject(:+) || 0
+    total = taxable_items.map {|o| calculate_tax(o.menu_price) * o.quantity }.inject(:+) || 0
+    total + total_add_ons_tax
   end
 
   def total_orders_tax
@@ -103,6 +104,19 @@ class OrderCalculator
     order.menus_orders.map do |m|
       add_ons_price = m.add_ons.map { |a| add_on_price[a.to_i] }.inject(:+) || 0
       total << convert_to_dollars(convert_to_cents(add_ons_price) * m.quantity)
+    end
+    total.inject(:+) || 0
+  end
+
+  def total_add_ons_tax
+    total = []
+    order.menus_orders.map do |m|
+      menu_ids = AddOn.where(id: m.add_ons).pluck(:menu_id).compact
+      menus = Menu.where(id: menu_ids, tax: true)
+      next if menus.size <= 0
+      menus.each do |menu|
+        total << convert_to_dollars(convert_to_cents(calculate_tax(menu.price)) * m.quantity)
+      end
     end
     total.inject(:+) || 0
   end
