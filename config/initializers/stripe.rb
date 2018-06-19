@@ -30,15 +30,6 @@ StripeEvent.configure do |events|
       end
     end
 
-    if event.type == 'invoice.created'
-      invoice_data = event.data.object
-      user = User.find_by_stripe_customer_id(invoice_data.customer)
-      if user
-        invoice = Stripe::Invoice.retrieve(invoice_data.id)
-        invoice.pay
-      end
-    end
-
     if event.type == 'invoice.payment_succeeded'
       invoice_data = event.data.object
       user = User.find_by_stripe_customer_id(invoice_data.customer)
