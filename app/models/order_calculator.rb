@@ -14,17 +14,16 @@ class OrderCalculator
 
   def total(options = {})
     shipping_charge = options[:skip_shipping_fee] == true ? 0 : shipping_fee
-    total_price = total_item_price
+    total_price = total_item_price + total_add_ons_price
     total_price = total_price > @minimum_charge ? total_price : @minimum_charge
     sum_of(
       total_price,
-      total_add_ons_price,
       shipping_charge,
       self.class.new(order).total_tax)
   end
 
   def total_without_shipping
-    sum_of(total_item_price, total_add_ons_price)
+    sum_of(total_item_price, )
   end
 
   def total_without_tax
