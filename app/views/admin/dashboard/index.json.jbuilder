@@ -1,5 +1,5 @@
 json.array! @active_orders do |order|
-  json.(order, :id, :placed_on, :series_number, :sku, :delivery_status, :remarks)
+  json.(order, :id, :placed_on, :series_number, :sku, :delivery_status, :remarks, :updated_at)
 
   json.user do
     json.full_name order.user.full_name

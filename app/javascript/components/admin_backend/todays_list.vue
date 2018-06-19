@@ -70,7 +70,7 @@
         ].filter(Boolean).join(', ')
       },
       placed_on() {
-        return moment(this.order.placed_on).format('H:mm a')
+        return moment(this.order.updated_at).format('H:mm a')
       }
     }
   }
