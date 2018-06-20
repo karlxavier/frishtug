@@ -129,7 +129,7 @@ class RegistrationForm
         param[:order_date] = Time.current
         order = user.orders.create!(param)
         order.processing!
-        RecordLedger.new(user, order).record!
+        RecordLedger.new(user, order).record! if user.plan.interval == 'month'
       else
         errors.add(:base, 'Order place on is blank')
         raise ActiveRecord::StatementInvalid
@@ -143,9 +143,24 @@ class RegistrationForm
     )
     if user.plan.interval == 'month'
       create_subscription(user)
-      PendingChargeMailer.first_notice(user_id: user.id, delivery_date: user.orders.first.placed_on)
+      PendingChargeMailer.first_notice(user_id: user.id, delivery_date: user.orders.first.placed_on).deliver
+      charge_monthly_shipping(user) if user.plan.per_month?
     else
       create_a_charge(user)
+    end
+  end
+
+  def charge_monthly_shipping(user)
+    charge = StripeCharger.new(user, user.plan.shipping_fee)
+    if charge.charge_shipping
+      user.bill_histories.create!(
+        amount_paid: user.plan.shipping_fee,
+        description: 'Shipping Charge',
+        billed_at: Time.current,
+      )
+    else
+      errors.add(:base, charge.errors.full_message.join(', '))
+      raise ActiveRecord::StatementInvalid
     end
   end
 
@@ -153,11 +168,14 @@ class RegistrationForm
     amount_to_pay = OrderCalculator.new(user.orders.first).total
     charge = StripeCharger.new(user, amount_to_pay)
     if charge.run
-      user.bill_histories.create!(
-        amount_paid: amount_to_pay,
-        description: 'Single Order Charge!',
-        billed_at: Time.current
-      )
+      user.orders.each do |order|
+        order.bill_histories.create!(
+          amount_paid: amount_to_pay,
+          description: 'Order Charge',
+          billed_at: Time.current,
+          user_id: user.id
+        )
+      end
     else
       errors.add(:base, charge.errors.full_message.join(', '))
       raise ActiveRecord::StatementInvalid

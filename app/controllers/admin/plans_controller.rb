@@ -76,7 +76,8 @@ class Admin::PlansController < Admin::BaseController
       :shipping_note,
       :limit,
       :minimum_credit_allowed,
-      :minimum_charge
+      :minimum_charge,
+      :shipping_charge_type
     )
   end
 end

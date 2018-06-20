@@ -20,6 +20,7 @@
 #  limit                  :decimal(8, 2)
 #  minimum_credit_allowed :decimal(8, 2)
 #  minimum_charge         :decimal(8, 2)    default(0.0)
+#  shipping_charge_type   :integer          default(0)
 #
 
 # Column names
@@ -27,6 +28,7 @@
 class Plan < ApplicationRecord
   include Subscribable
   enum shipping: %i[free paid]
+  enum shipping_charge_type: %i[not_available per_order per_month]
   validates :name, :price, presence: true
   validates :name, uniqueness: true
   scope :subscriptions, -> { where(interval: 'month') }

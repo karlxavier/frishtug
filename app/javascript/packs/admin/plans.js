@@ -2,12 +2,15 @@ const init = () => {
   const shippingSelect = document.querySelector('.plan-shipping')
   const shippingFeeInput = document.querySelector('.plan-shipping-fee')
   const shippingNoteInput = document.querySelector('.plan-shipping-note')
+  const shippingTypeInput = document.querySelector('.plan-shipping-type')
 
   const showAdditionalInputs = () => {
     shippingFeeInput.classList.remove('d-none')
     shippingFeeInput.classList.add('animated')
     shippingNoteInput.classList.remove('d-none')
     shippingNoteInput.classList.add('animated')
+    shippingTypeInput.classList.remove('d-none')
+    shippingTypeInput.classList.add('animated')
   }
 
   const hideAdditionalInputs = () => {
@@ -15,6 +18,8 @@ const init = () => {
     shippingFeeInput.classList.remove('animated')
     shippingNoteInput.classList.add('d-none')
     shippingNoteInput.classList.remove('animated')
+    shippingTypeInput.classList.add('d-none')
+    shippingTypeInput.classList.remove('animated')
   }
 
   if (shippingSelect) {

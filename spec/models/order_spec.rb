@@ -19,7 +19,7 @@
 #  route_started   :string
 #  payment_status  :integer
 #  total_price     :decimal(8, 2)    default(0.0)
-#  is_rollover     :boolean
+#  is_rollover     :boolean          default(FALSE)
 #
 
 require 'rails_helper'

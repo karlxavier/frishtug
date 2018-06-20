@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180613042401) do
+ActiveRecord::Schema.define(version: 20180620032327) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -370,6 +370,7 @@ ActiveRecord::Schema.define(version: 20180613042401) do
     t.decimal "limit", precision: 8, scale: 2
     t.decimal "minimum_credit_allowed", precision: 8, scale: 2
     t.decimal "minimum_charge", precision: 8, scale: 2, default: "0.0"
+    t.integer "shipping_charge_type", default: 0
     t.index ["stripe_plan_id"], name: "index_plans_on_stripe_plan_id"
   end
 

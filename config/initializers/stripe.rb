@@ -44,6 +44,15 @@ StripeEvent.configure do |events|
             subscription_expires_at: subscription_end
           )
           OrderCopierWorker.perform_at(1.hour.from_now, user.id)
+          if user.plan.per_month?
+            charge = StripeCharger.new(user, user.plan.shipping_fee)
+            charge.charge_shipping
+            user.bill_histories.create!(
+              amount_paid: user.plan.shipping_fee,
+              description: 'Shipping Charge',
+              billed_at: Time.current,
+            )
+          end
         else
           user.orders.where.not(status: [:fresh, :fulfilled, :completed, :failed]).update_all(status: :processing)
         end
