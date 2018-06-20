@@ -1,6 +1,6 @@
 module Groupable
   extend ActiveSupport::Concern
-  TOTAL_MEMBERS_COUNT_FOR_DISCOUNT=1.freeze
+  TOTAL_MEMBERS_COUNT_FOR_DISCOUNT=4.freeze
 
   def referrer?
     !!self.referrer
