@@ -4,7 +4,7 @@ class RecordLedger
     @order = order
   end
 
-  def record!(notify_user:)
+  def record!(notify_user: false)
     record_with_pending_credit if @order.pending_credit.present?
     record_both_tax_and_excess unless @order.pending_credit.present?
     send_notification if notify_user == true
