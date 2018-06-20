@@ -79,7 +79,7 @@ class Order < ApplicationRecord
   end
 
   def self.active_orders
-    where.not(status: [:fresh, :fulfilled, nil])
+    joins(:menus_orders).where.not(status: [:fresh, :fulfilled, nil]).group('orders.id').having('count(menus_orders) >= 1')
   end
 
   def self.not_placed_between?(range)
