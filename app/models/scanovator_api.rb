@@ -6,7 +6,7 @@ class ScanovatorApi
   base_uri 'https://barcoder-cyf.herokuapp.com/public'
   debug_output $stdout unless Rails.env.production?
 
-  STORE_ID = 10#Store.first._id.freeze
+  STORE_ID = Store.first._id.freeze
   STORE_CODE = Store.first._code.freeze
   ALLOWED_ZIP_CODES = AllowedZipCode.pluck(:zip).freeze
   ERROR_CODES = {

@@ -5,9 +5,7 @@ namespace :process_orders do
       "cancelled",
       "refunded",
       "fulfilled",
-      "fresh",
-      "pending_payment",
-      "payment_failed"
+      "fresh"
     ].freeze
 
     SKIPPABLE_DATES = BlackoutDate.pluck_dates.freeze
