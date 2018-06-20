@@ -4,9 +4,10 @@ class RecordLedger
     @order = order
   end
 
-  def record!
-    return record_with_pending_credit if @order.pending_credit.present?
-    record_both_tax_and_excess
+  def record!(notify_user:)
+    record_with_pending_credit if @order.pending_credit.present?
+    record_both_tax_and_excess unless @order.pending_credit.present?
+    send_notification if notify_user == true
     true
   rescue => e
     Rails.logger.fatal e.message
@@ -17,11 +18,14 @@ class RecordLedger
 
   attr_reader :user, :order
 
+  def send_notification
+    PendingChargeMailer.notify(user_id: user.id, order_id: order.id).deliver
+  end
+
   def record_with_pending_credit
     total = deduct_pending_credit
     if total > 0
       record_excess(total)
-      true
     end
   end
 

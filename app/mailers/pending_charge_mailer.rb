@@ -6,4 +6,10 @@ class PendingChargeMailer < ApplicationMailer
     @delivery_date = delivery_date
     mail(to: @user.email, subject: "You still need to complete the pending charges before you get your delivery.")
   end
+
+  def notify(user_id:, order_id:)
+    @user = User.find(user_id)
+    @order = Order.find(order_id)
+    mail(to: @user.email, subject: "Pending Charge Notice")
+  end
 end

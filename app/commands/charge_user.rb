@@ -52,7 +52,7 @@ class ChargeUser
   end
 
   def create_ledger!
-    if RecordLedger.new(user, order).record!
+    if RecordLedger.new(user, order).record!(notify_user: true)
       return order
     else
       return order

@@ -1,6 +1,6 @@
 <template>
   <div class='card col-12 col-custom-255 px-0 border-0 mb-4 mt-1 mr-4'>
-    <img v-lazy="imageUrl(item)" class="card-img-top" @click="$emit('on-image-click', item)" width="255" height="175" style="cursor: pointer;">
+    <img :src="imageUrl(item)" class="card-img-top" @click="$emit('on-image-click', item)" width="255" height="175" style="cursor: pointer;">
     <div class="card-body px-0 py-1">
       <h5 class="card-title mb-0 font-family-montserrat">
         {{ item.attributes.name }}
