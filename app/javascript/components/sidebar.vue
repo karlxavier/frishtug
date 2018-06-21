@@ -85,7 +85,7 @@
                 <small class="alert alert-warning d-flex" style="font-size: 9px; width: 100%;">
                   <i class="fa fa-exclamation-circle font-size-24 pr-1" aria-hidden="true"></i>
                   You have exceeded your plan limit of $ {{ plan.limit }} for {{ order.order_date | to_dddd }}.
-                  Any excess will be charge directly to your account.
+                  Once you finalize your order you will need to pay the extra charges at the Pending Charges link in your dashboard.
                 </small>
               </div>
               <div v-if="hasAvailableCredit(order, index)">

@@ -11,8 +11,8 @@
     <div id="sidebar-list" class="px-3 pb-4" style="height: calc(100vh - 10.5rem);overflow: hidden;overflow-y: auto;">
       <div class="order--list--container mt-4" v-if="order">
         <div v-for="item in order.menus_orders_attributes" :key="item.menu_id">
-          <sidebar-items 
-            v-bind:item="item" 
+          <sidebar-items
+            v-bind:item="item"
             v-bind:unreduce_items="unreduce_items"
             @add-item="addItem"
             @remove-item="removeItem"
@@ -68,7 +68,7 @@
         <small class="alert alert-warning d-flex" style="font-size: 9px; width: 100%;" v-if="has_excess">
           <i class="fa fa-exclamation-circle font-size-24 pr-1" aria-hidden="true"></i>
           You have exceeded your plan limit of $ {{ plan.limit }}.
-          Any excess will be charge directly to your account.
+          Once you finalize your order you will need to pay the extra charges at the Pending Charges link in your dashboard.
         </small>
 
         <small class="alert alert-info d-flex" style="font-size: 10px; width: 100%;" v-if="has_remaining_credits">
@@ -80,7 +80,7 @@
       <div class="pending_credits_notice">
         <slot name="pending_credit"></slot>
       </div>
-      
+
       <div class="row mt-4">
         <div class="col">
           <a href="javascript:void(0)" class="btn btn-brown btn--save-meal-plan btn-block" @click="$emit('on-save-meal')">
@@ -213,4 +213,3 @@ export default {
     margin: 0.5rem 1rem;
   }
 </style>
-
