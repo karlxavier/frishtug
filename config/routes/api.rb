@@ -12,7 +12,11 @@ namespace :api do
     resources :selected_dates, only: :index
     resources :check_codes, only: :index
     resources :user_registrations, only: :create
-    resources :taxs, only: :index
+    resources :taxs, only: :index do
+      collection do
+        get :calculate
+      end
+    end
     resources :address, only: :index
     resources :server_time, only: :index
     resources :bill_histories, only: :index

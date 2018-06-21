@@ -1,5 +1,4 @@
 class OrderCalculator
-  TAX = Tax.first.rate
 
   def initialize(order)
     @order = order
@@ -77,17 +76,15 @@ class OrderCalculator
   end
 
   def convert_to_cents(num)
-    (num.to_r * 100).to_i
+    MoneyConverter.new(num).to_cents
   end
 
   def convert_to_dollars(cents)
-    (cents / 100.0).round(2)
+    MoneyConverter.new(cents).to_dollars
   end
 
   def calculate_tax(price)
-    tax = (TAX / 100.0).to_d
-    price = convert_to_cents(price)
-    convert_to_dollars(price * tax)
+    TaxCalculator.new(price).calculate
   end
 
   def calculate(price, quantity)

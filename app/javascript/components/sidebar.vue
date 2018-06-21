@@ -414,11 +414,51 @@ export default {
         return Money.$dollar(total)
       }
     },
+    addOns: function() {
+      return this.unreduce_items.reduce((arr, item) => {
+        arr.push(...item.meta.add_ons)
+        return arr
+      }, [])
+    },
+    addOnItems: function() {
+      const self = this
+      const add_ons = self.addOns().reduce( (newList, add_on) => {
+        if (add_on.hasOwnProperty('menu_id')) {
+          newList.push(add_on.menu_id)
+        }
+        return newList
+      }, [])
+
+      return self.unreduce_items.filter(item => add_ons.includes(Number(item.id)))
+    },
+    taxableAddOns: function() {
+      const self = this
+      const item_ids = self.addOns().reduce( (arr, i) => {
+        arr.push(i.menu_id)
+        return arr
+      }, [])
+
+      return self.unreduce_items.filter(item => {
+        if (item_ids.includes(Number(item.id))) {
+          return item.attributes.tax === true
+        }
+      })
+    },
     hasTaxableItems: function(menus_orders) {
       const self = this;
       const item_ids = menus_orders.map(mo => mo.menu_id);
+      const add_on_ids = menus_orders.reduce( (arr, mo) => {
+        arr.push(...mo.add_ons)
+        return arr
+      }, [])
+      const add_on_item_ids = self.addOns().map(i => {
+        if(add_on_ids.includes(i.id)) { return i.menu_id }
+      })
+
+      const uniq_ids = Array.from(new Set(add_on_item_ids))
+
       const taxed = item => {
-        if (item_ids.includes(item.id)) {
+        if (item_ids.includes(item.id) || uniq_ids.includes(Number(item.id))){
           return item.attributes.tax === true;
         }
       };
@@ -426,22 +466,51 @@ export default {
     },
     taxPrice: function(menus_orders) {
       const self = this;
+      const tax = self.tax / 100
       const item_ids = menus_orders.map(mo => mo.menu_id);
+      const item_add_ons = menus_orders.reduce( (obj, mo) => {
+        obj[mo.menu_id] = mo.add_ons
+        return obj
+      }, {})
+
       const quantity = menus_orders.reduce((obj, i) => {
         obj[i.menu_id] = i.quantity;
         return obj;
       }, {});
+
+      const addOnTax = menus_orders.reduce( (total_tax, item) => {
+        if (item_add_ons[item.menu_id]) {
+          const add_ons = self.addOns().filter( a => item_add_ons[item.menu_id].includes(a.id))
+
+          const ids = Array.from(new Set(add_ons.map(a => a.menu_id)))
+
+          const total = self.taxableAddOns().reduce( (sum, i) => {
+            if (ids.includes(Number(i.id))) {
+              const price = Money.$cents(parseFloat(i.attributes.price))
+              sum += Money.$tax(price, tax) * quantity[item.menu_id]
+              return sum
+            } else {
+              return sum += 0
+            }
+          }, 0)
+
+          return total_tax += Money.$dollar(total)
+        } else {
+          return total_tax += 0
+        }
+      }, 0)
+
       const taxed = item => {
         return item.attributes.tax === true;
       };
+
       return Money.$dollar(self.unreduce_items
         .filter(i => item_ids.includes(i.id))
         .filter(taxed)
         .reduce((sum, item) => {
-          const tax = self.tax / 100;
           const price = Money.$cents(parseFloat(item.attributes.price))
-          return sum += Money.$tax(price, tax) * quantity[item.id];
-        }, 0))
+          return sum += Money.$tax(price, tax) * quantity[item.id]
+        }, 0) + Money.$cents(addOnTax))
     },
     totalPlusAddOnAndTax: function(menus_orders) {
       const self = this;

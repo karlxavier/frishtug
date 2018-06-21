@@ -184,6 +184,25 @@ export default {
       })
       return additional
     },
+    addOns: function() {
+      return this.$store.state.items.reduce((arr, item) => {
+        arr.push(...item.meta.add_ons)
+        return arr
+      }, [])
+    },
+    taxableAddOns: function() {
+      const self = this
+      const item_ids = self.addOns().reduce( (arr, i) => {
+        arr.push(i.menu_id)
+        return arr
+      }, [])
+
+      return self.$store.state.items.filter(item => {
+        if (item_ids.includes(Number(item.id))) {
+          return item.attributes.tax === true
+        }
+      })
+    },
     totalTax: function() {
       const self = this
       const taxable_items = self.$store.state.items.filter(item => {
@@ -200,10 +219,33 @@ export default {
         return Money.$dollar(Money.$tax(price_in_cents, taxPercent) * quantity)
       };
 
+      const calculateAddOnTax = (menus_order) => {
+        const tax = self.tax / 100.0
+        if (menus_order.add_ons.length > 0) {
+          const add_ons = self.addOns().filter( a => menus_order.add_ons.includes(a.id))
+
+          const ids = Array.from(new Set(add_ons.map(a => a.menu_id)))
+
+          const total = self.taxableAddOns().reduce( (sum, i) => {
+            if (ids.includes(Number(i.id))) {
+              const price = Money.$cents(parseFloat(i.attributes.price))
+              sum += Money.$tax(price, tax) * menus_order.quantity
+              return sum
+            } else {
+              return sum += 0
+            }
+          }, 0)
+
+          return Money.$dollar(total)
+        } else {
+          return 0
+        }
+      }
+
       const total = self.registration_form.orders.reduce((total, order) => {
         return total += order.menus_orders_attributes.reduce(
           (sum, menu_order) => {
-            return sum += Money.$cents(calculate_tax(taxable_items[menu_order.menu_id], menu_order.quantity))
+            return sum += Money.$cents(calculate_tax(taxable_items[menu_order.menu_id], menu_order.quantity)) + Money.$cents(calculateAddOnTax(menu_order))
           },
           0
         );
