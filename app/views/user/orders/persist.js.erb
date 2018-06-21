@@ -1,26 +1,30 @@
 <% if %w(fresh processing pending_payment).include?(@order.status) %>
 	<% if action_name == 'edit' %>
-	swal({
-		title: 'Success',
-		text: "Youre order is complete. Please check your pending charges",
-		type: 'success',
-		confirmButtonText: 'Done',
-		confirmButtonClass: 'btn btn-brown text-uppercase',
-		buttonsStyling: false
-	}).then(function (result) {
-		if (result) {
-			window.location = '<%= user_weekly_meals_path %>';
-		}
-	});
+		swal({
+			title: 'Success',
+			text: "Your order is completed",
+			type: 'success',
+			confirmButtonText: 'Done',
+			confirmButtonClass: 'btn btn-brown text-uppercase',
+			buttonsStyling: false
+		}).then(function (result) {
+			if (result) {
+				window.location = '<%= user_weekly_meals_path %>';
+			}
+		});
 	<% else %>
-	swal({
-		title: 'Success',
-		text: "Youre order is complete. Please check your pending charges",
-		type: 'success',
-		confirmButtonText: 'Done',
-		confirmButtonClass: 'btn btn-brown text-uppercase',
-		buttonsStyling: false
-	});
+		swal({
+			title: 'Success',
+			text: "Your order is completed",
+			type: 'success',
+			confirmButtonText: 'Done',
+			confirmButtonClass: 'btn btn-brown text-uppercase',
+			buttonsStyling: false
+		}).then(function (result) {
+			if (result) {
+				window.location = '<%= user_weekly_meals_path %>';
+			}
+		});
 	<% end %>
 <% else %>
 	swal({
