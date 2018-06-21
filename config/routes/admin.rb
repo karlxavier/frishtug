@@ -15,7 +15,7 @@ namespace :admin do
   resources :configs
   resources :inventory, only: :index
   resources :calendars, only: :index
-  resources :scanovators, only: :create
+  resources :scanovators, only: %i[create index]
   resources :assets, only: %i[index create destroy]
   resources :clients, only: %i[index show]
   resources :orders, only: %i[show edit update]

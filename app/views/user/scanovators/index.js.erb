@@ -1,4 +1,6 @@
 (function() {
   var el = document.querySelector('.eta-container');
-  el.innerHTML = '<%= @response.data.first.eta.to_date.strftime("%I:%M%P") %>';
+  if (el) {
+    el.innerHTML = '<%= @response.data.first.eta.to_date.strftime("%I:%M%P") %>';
+  }
 }());

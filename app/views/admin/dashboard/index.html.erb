@@ -36,7 +36,7 @@
   </div>
 </div>
 <%= card_container do %>
-  <div id="frishtug_orders" class="admin__tabs" data-date="<%= params[:date] %>">
+  <div id="frishtug_orders" class="admin__tabs" data-date="<%= params[:date] %>" data-current-date="<%= Time.current.to_date %>" data-meal="<%= params[:meal] %>" data-location="<%= params[:location] %>">
     <vue-tabs>
       <v-tab title="TODAY (<%= @order_query.active_orders.size %>)">
         <h5 class="mt-3 font-size-16 mx-3 current_sales_header font-family-montserrat-medium">
