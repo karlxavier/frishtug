@@ -1,7 +1,12 @@
 <template>
   <div>
-    <vue-tabs type="pills" @tab-change="handleTabChange">
-      <v-tab v-for="category in menu_categories" v-bind:key="`${category.id}`" :title="category.attributes.name">
+    <div class="row">
+      <div class="col-5 mb-4">
+        <input type="text" v-model="searchText" icon="search" class="form-control" placeholder="Search menu.." @input="filterItems"/>
+      </div>
+    </div>
+    <vue-tabs type="pills">
+      <v-tab v-for="category in filtered_categories" v-bind:key="`${category.id}`" :title="category.attributes.name">
         <ul class="nav justify-content-center my-4">
           <li class="nav-item mx-2">
             <strong class="text-uppercase">Legend</strong>
@@ -24,11 +29,8 @@
           </li>
         </ul>
         <div class="row" :id="`${category.id}`">
-          <div class="col-5 mb-4">
-            <input type="text" v-model="searchText" icon="search" class="form-control" placeholder="Search menu.."/>
-          </div>
           <div class="col-6 mb-4">
-            <ul class="list-inline list-unstyled float-right" role="tablist">
+            <ul class="list-inline list-unstyled" role="tablist">
               <li class="list-inline-item">Order by</li>
               <li class="list-inline-item">
                 <a href="javascript:void(0)" class="btn btn-sm btn-matterhorn-outline-circled font-size-14" @click="invertSort('name')">Name</a>
@@ -39,9 +41,9 @@
             </ul>
           </div>
           <div class="container-fluid">
-            <div class="row" v-if="items[category.attributes.name]">
-              <card 
-              v-for="item in filteredItems(category.attributes.name)" v-bind:key="`${item.id}`" 
+            <div class="row" v-if="filtered_items[category.attributes.name]">
+              <card
+              v-for="item in sortItems(filtered_items[category.attributes.name])" v-bind:key="`${item.id}`"
               v-bind:item="item"
               v-bind:quantity="quantities[item.id] || 0"
               v-bind:add_on_ids="add_on_ids[item.id] || null"
@@ -80,7 +82,9 @@ export default {
       sortBy: "name",
       menu_categories: null,
       item: {},
-      nutri: null
+      filtered_items: {},
+      nutri: null,
+      filtered_categories: []
     }
   },
   props: ["items", "order"],
@@ -105,21 +109,47 @@ export default {
       type: "GET",
       success: function(response) {
         self.menu_categories = response.data
+        self.filtered_categories = self.menu_categories
       }
     });
+    self.filtered_items = self.items
   },
 
   methods: {
-    filteredItems: function(cats_name) {
-      const items = this.items[cats_name].filter(item => {
-        return item.attributes.name.toLowerCase().includes(this.searchText.toLowerCase());
-      });
+    filterItems: function() {
+      const self = this
+      if (self.searchText.length <= 0) { return self.items }
+      const list = Object.values(self.items).reduce( (a, i) => {
+        a.push(...i)
+        return a
+      }, [])
+      const items = list.filter(i => i.attributes.name.toLowerCase().includes(self.searchText.toLowerCase()))
 
-      let ascDesc = this.sortAsc ? 1 : -1;
-      return items.sort((a, b) => ascDesc * a.attributes[this.sortBy].localeCompare(b.attributes[this.sortBy]));
+      const category_names = items.map(i => i.attributes.menu_category.name)
+
+      self.filtered_categories = self.menu_categories.filter( i => {
+        return category_names.includes(i.attributes.name)
+      })
+
+      self.filtered_items = items.reduce((list, item) => {
+              if (list.hasOwnProperty(item.attributes.menu_category.name)) {
+                list[item.attributes.menu_category.name].push(item);
+              } else {
+                list[item.attributes.menu_category.name] = [];
+                list[item.attributes.menu_category.name].push(item);
+              }
+              return list;
+            }, {});
     },
-    handleTabChange(tabIndex, newTab, oldTab){
-      this.searchText = "";
+    sortItems: function(items) {
+      return items
+      if(items) {
+        const items_list = Array.from(items)
+        let ascDesc = this.sortAsc ? 1 : -1;
+        return items_list.sort((a, b) => ascDesc * a.attributes[this.sortBy].localeCompare(b.attributes[this.sortBy]));
+      } else {
+        return items
+      }
     },
     invertSort(sortBy) {
       this.sortBy = sortBy

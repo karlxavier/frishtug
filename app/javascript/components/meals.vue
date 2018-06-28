@@ -9,7 +9,8 @@
               v-bind:menu_categories="menu_categories"
               v-bind:items="items"
               v-bind:dates="dates"
-              v-bind:registration_form="registration_form">
+              v-bind:registration_form="registration_form"
+              @input="filterItems">
             </scheduled-order>
             <a href="javascript:void(0)"
               class="btn btn-outline-dark btn-sm font-size-12 shopping-cart__shown_btn"
@@ -33,7 +34,8 @@
                   v-bind:menu_categories="menu_categories"
                   v-bind:items="items"
                   v-bind:dates="dates"
-                  v-bind:registration_form="registration_form">
+                  v-bind:registration_form="registration_form"
+                  @input="filterItems">
                 </single-order>
           </div>
         </div>
@@ -84,7 +86,8 @@ export default {
       date_names: null,
       dates: [],
       unreduce_items: [],
-      show_sidebar: true
+      show_sidebar: true,
+      temp_items: {}
     }
   },
   methods: {
@@ -93,6 +96,36 @@ export default {
     },
     showShoppingCart: function() {
       console.log('test')
+    },
+    invertSort(sortBy) {
+      this.sortBy = sortBy
+      this.sortAsc = !this.sortAsc;
+    },
+    filterItems: function(search_term) {
+      const self = this
+      const items = self.unreduce_items.filter(item => {
+        return item.attributes.name.toLowerCase().includes(search_term.toLowerCase());
+      });
+      const filtered_categories = items.map(i => i.attributes.menu_category.name)
+
+      if (items.length > 0) {
+        self.menu_categories = self.$store.state.menu_categories.filter(cat => {
+          return filtered_categories.includes(cat.attributes.name);
+        })
+
+        self.items = Array.from(items).reduce((list, item) => {
+          if (list.hasOwnProperty(item.attributes.menu_category.name)) {
+            list[item.attributes.menu_category.name].push(item);
+          } else {
+            list[item.attributes.menu_category.name] = [];
+            list[item.attributes.menu_category.name].push(item);
+          }
+          return list;
+        }, {});
+      } else {
+        self.menu_categories = self.$store.state.menu_categories;
+        self.items = self.temp_items;
+      }
     }
   },
   mounted: function() {
@@ -111,6 +144,7 @@ export default {
         }
         return list;
       }, {});
+      self.temp_items = self.items
     }
 
     if (self.$store.state.items.length > 0) {

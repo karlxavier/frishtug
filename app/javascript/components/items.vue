@@ -24,11 +24,8 @@
           </li>
         </ul>
         <div class="row" :id="`${category.id}`">
-          <div class="col-5 mb-4">
-            <input type="text" v-model="searchText" icon="search" class="form-control" placeholder="Search menu.."/>
-          </div>
           <div class="col-6 mb-4">
-            <ul class="list-inline list-unstyled float-right" role="tablist">
+            <ul class="list-inline list-unstyled" role="tablist">
               <li class="list-inline-item">Order by</li>
               <li class="list-inline-item">
                 <a href="javascript:void(0)" class="btn btn-sm btn-matterhorn-outline-circled font-size-14" @click="invertSort('name')">Name</a>
@@ -41,7 +38,7 @@
           <div class="container-fluid">
             <div class="row" v-if="items[category.attributes.name]">
               <div class='card col-12 col-custom-255 px-0 border-0 mb-4 mt-1 mr-4'
-                v-for="item in filteredItems(category.attributes.name)" v-bind:key="`${item.id}-${prefix}`">
+                v-for="item in sortItems(category.attributes.name)" v-bind:key="`${item.id}-${prefix}`">
                 <img :src="imageUrl(item)" class="card-img-top" @click="nutriFacts(item)" width="255" height="175" style="cursor: pointer;">
                 <div class="card-body px-0 py-1">
                   <h5 class="card-title mb-0 font-family-montserrat">
@@ -137,7 +134,6 @@ export default {
   data: () => {
     return {
       counter: 0,
-      searchText: "",
       sortAsc: true,
       sortBy: "name",
       nutri: null,
@@ -323,11 +319,8 @@ export default {
         return asset.image.card.url;
       }
     },
-    filteredItems: function(cats_name) {
-      const items = this.items[cats_name].filter(item => {
-        return item.attributes.name.toLowerCase().includes(this.searchText.toLowerCase());
-      });
-
+    sortItems: function(cat_name) {
+      const items = Array.from(this.items[cat_name])
       let ascDesc = this.sortAsc ? 1 : -1;
       return items.sort((a, b) => ascDesc * a.attributes[this.sortBy].localeCompare(b.attributes[this.sortBy]));
     },

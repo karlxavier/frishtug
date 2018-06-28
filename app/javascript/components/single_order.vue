@@ -1,5 +1,11 @@
 <template>
-  <div class="row" v-show="menu_categories">
+  <div>
+    <div class="row">
+      <div class="col-5 mb-4">
+        <input type="text" v-model="search_term" icon="search" class="form-control" placeholder="Search menu.." @input="$emit('input', search_term)"/>
+      </div>
+    </div>
+    <div class="row" v-show="menu_categories">
     <div class="col meals__container" id="meals-tab-container">
       <items
         v-bind:menu_categories="menu_categories"
@@ -9,6 +15,7 @@
         v-bind:registration_form="registration_form">
       </items>
     </div>
+  </div>
   </div>
 </template>
 
