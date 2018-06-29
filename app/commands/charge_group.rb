@@ -20,7 +20,8 @@ class ChargeGroup
     return false if user.is_entitled_for_discount?
     return false if order.shipping_charge.present?
     charge = StripeCharger.new(user, 5)
-    if charge.charge_shipping
+    response = charge.charge_shipping
+    if response
       return order.create_shipping_charge!(charge_id: response.id)
     else
       errors.add(:charge, charge.errors)
