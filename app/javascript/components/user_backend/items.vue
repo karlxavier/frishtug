@@ -3,6 +3,7 @@
     <div class="row">
       <div class="col-5 mb-4">
         <input type="text" v-model="searchText" icon="search" class="form-control" placeholder="Search menu.." @input="filterItems"/>
+        <p v-if="filtered_categories.length === 0">No result for {{ searchText }}</p>
       </div>
     </div>
     <vue-tabs type="pills">
@@ -41,9 +42,9 @@
             </ul>
           </div>
           <div class="container-fluid">
-            <div class="row" v-if="filtered_items[category.attributes.name]">
+            <div class="row" v-if="filtered_items_list[category.attributes.name]">
               <card
-              v-for="item in sortItems(filtered_items[category.attributes.name])" v-bind:key="`${item.id}`"
+              v-for="item in sortItems(filtered_items_list[category.attributes.name])" v-bind:key="`${item.id}`"
               v-bind:item="item"
               v-bind:quantity="quantities[item.id] || 0"
               v-bind:add_on_ids="add_on_ids[item.id] || null"
@@ -100,6 +101,14 @@ export default {
         obj[item.menu_id] = item.add_ons
         return obj
       }, {})
+    },
+    filtered_items_list: function() {
+      const object_is_empty = Object.keys(this.filtered_items).length === 0
+      if (object_is_empty) {
+        return this.items
+      } else {
+        return this.filtered_items
+      }
     }
   },
   mounted() {
@@ -118,7 +127,7 @@ export default {
   methods: {
     filterItems: function() {
       const self = this
-      if (self.searchText.length <= 0) { return self.items }
+      if (self.searchText.length <= 0) { self.filtered_items = {} }
       const list = Object.values(self.items).reduce( (a, i) => {
         a.push(...i)
         return a

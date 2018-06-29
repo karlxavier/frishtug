@@ -76,6 +76,6 @@ Rails.application.configure do
   config.action_controller.perform_caching = true
   config.cache_store = :dalli_store
   config.session_store = :dalli_store
-  config.action_controller.asset_host = 'https://frishtug-staging.herokuapp.com'
+  config.action_controller.asset_host = 'http://localhost:5000'
   config.action_mailer.asset_host = config.action_controller.asset_host
 end
