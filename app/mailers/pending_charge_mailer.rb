@@ -12,4 +12,10 @@ class PendingChargeMailer < ApplicationMailer
     @order = Order.find(order_id)
     mail(to: @user.email, subject: "Pending Charge Notice")
   end
+
+  def daily_notify(user_id:, dates:)
+    @user = User.find(user_id)
+    @dates = dates
+    mail(to: @user.email, subject: "Pending Charge Notice")
+  end
 end

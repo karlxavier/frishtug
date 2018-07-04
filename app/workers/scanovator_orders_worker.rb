@@ -5,7 +5,9 @@ class ScanovatorOrdersWorker
     "cancelled",
     "refunded",
     "fulfilled",
-    "fresh"
+    "fresh",
+    "pending_payment",
+    "payment_failed"
   ].freeze
 
   def perform(placed_date)
