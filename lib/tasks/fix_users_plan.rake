@@ -1,6 +1,7 @@
 namespace :fix_users_plan do
   desc "Renewal for subscribe users"
   task run: :environment do
+    CURRENT_TIME=Time.current.freeze
     subscribed_users =
       User.where.not(subscribe_at: nil)
 
