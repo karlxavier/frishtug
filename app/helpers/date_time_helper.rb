@@ -17,7 +17,7 @@ module DateTimeHelper
   def renewal_at(subscription)
     return nil unless current_user.subscribed?
     if subscription.present?
-      "Renewal on #{time_at(subscription.current_period_end, '%B %d, %Y')}"
+      "Renewal on #{time_at(current_user.subscription_expires_at, '%B %d, %Y')}"
     else
       "Subscription will be active on #{current_user.subscribe_at.strftime('%B %d, %Y')}"
     end
