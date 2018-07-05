@@ -24,7 +24,7 @@ class RenewalWorker
 
       user.update_attributes(
         stripe_subscription_id: new_subscription.id,
-        subscribed_at: Time.zone.at(subscription.billing_cycle_anchor))
+        subscribed_at: Time.zone.at(new_subscription.billing_cycle_anchor))
 
       OrderCopierWorker.perform_async(user.id)
     end
