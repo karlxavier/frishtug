@@ -4,7 +4,6 @@ class User::CopyMealsController < User::BaseController
   def create
     @last_five_orders = current_user.orders.where(id: params[:from].split(','))
     @order_copier = OrderCopier.new(@last_five_orders, current_user)
-
     if @order_copier.copy_to(params[:to].split(','))
       flash[:success] = 'Copy successful!'
       flash[:notice] = @order_copier.notices.join(', ') if @order_copier.notices.present?

@@ -8,7 +8,7 @@ class OrderCopier
   }
   def initialize(last_five_orders, user)
     @user = user
-    @last_five_orders = last_five_orders
+    @last_five_orders = last_five_orders.order(placed_on: :asc)
     @messages = []
   end
 
@@ -18,10 +18,11 @@ class OrderCopier
 
   def copy_to(dates = [])
     ActiveRecord::Base.transaction do
-      clean_duplicates(dates)
+      dates_list = dates.sort
+      clean_duplicates(dates_list)
       @last_five_orders.each_with_index do |order, index|
-        next unless dates[index].present?
-        user_order = @user.orders.create!(order_params(dates[index], order))
+        next unless dates_list[index].present?
+        user_order = @user.orders.create!(order_params(dates_list[index], order))
         create_menus_orders(user_order, order)
         user_order.processing!
         RecordLedger.new(user, user_order).record!
