@@ -13,11 +13,9 @@ class SubscriptionWorker
     )
 
     subscription_start = Time.zone.at(subscription.billing_cycle_anchor)
-    subscription_end = Time.zone.at(subscription.current_period_end)
     user.update_attributes(
       stripe_subscription_id: subscription.id,
-      subscribe_at: subscription_start,
-      subscription_expires_at: subscription_end
+      subscribe_at: subscription_start
     )
     create_bill_history(user)
   end

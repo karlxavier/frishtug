@@ -61,7 +61,7 @@ class User < ApplicationRecord
   delegate :phone_number, :id, to: :contact_number, prefix: true, allow_nil: true
 
   after_create :delete_inactive_entry!
-  before_save :downcase_email!
+  before_save :downcase_email!, :generate_expiry_date
 
   def self.in_locations(locations)
     joins(:addresses).merge(Address.search_list(locations))
@@ -143,5 +143,10 @@ class User < ApplicationRecord
 
     def downcase_email!
       self.email.downcase!
+    end
+
+    def generate_expiry_date
+      return if self.subscribe_at.nil?
+      self.subscription_expires_at = MonthScheduler.new(self).create_full_month!.last
     end
 end
