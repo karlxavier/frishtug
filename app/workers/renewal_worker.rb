@@ -8,6 +8,7 @@ class RenewalWorker
 
     subscribed_users.find_each do |user|
       next if user.subscription_expires_at >= CURRENT_TIME
+      plan_id = user.plan_id
 
       old_subscription =
         Stripe::Subscription.retrieve(user.stripe_subscription_id)
@@ -24,9 +25,19 @@ class RenewalWorker
 
       user.update_attributes(
         stripe_subscription_id: new_subscription.id,
-        subscribe_at: Time.zone.at(new_subscription.billing_cycle_anchor))
+        subscribe_at: Time.zone.at(new_subscription.billing_cycle_anchor),
+        plan_id: plan_id)
 
       OrderCopierWorker.perform_async(user.id)
+      if user.plan.per_month?
+        charge = StripeCharger.new(user, user.plan.shipping_fee)
+        charge.charge_shipping
+        user.bill_histories.create!(
+          amount_paid: user.plan.shipping_fee,
+          description: 'Shipping Charge',
+          billed_at: Time.current,
+        )
+      end
     end
   end
 end

@@ -25,6 +25,12 @@ class StripeSubscriptioner
   def cancel
     subscription = retrieve
     subscription.delete
+    user.update_attributes(
+      stripe_subscription_id: nil,
+      subscribe_at: nil,
+      subscription_expires_at: nil,
+      plan_id: nil
+    )
     true
   rescue Stripe::InvalidRequestError => e
     logger.error "Stripe error while canceling the subscription: #{e.message}"
