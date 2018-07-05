@@ -1,5 +1,5 @@
 <template>
-  <div class="modal fade" id="menuNutriFacts" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+  <div class="modal fade" :id="modal_id" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
       <div class="modal-dialog modal-md modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -178,7 +178,8 @@
 export default {
   props: {
     nutri: { type: Object, required: false },
-    item: { type: Object, required: true }
+    item: { type: Object, required: true },
+    id: { type: String, required: true }
   },
   computed: {
     item_name: function() {
@@ -194,6 +195,9 @@ export default {
       } else {
         return ''
       }
+    },
+    modal_id: function() {
+      return this.id
     }
   }
 }

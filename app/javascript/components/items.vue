@@ -103,7 +103,7 @@
         </div>
       </v-tab>
     </vue-tabs>
-    <nutritional-data-modal v-bind:nutri="nutri" v-bind:item="item"></nutritional-data-modal>
+    <nutritional-data-modal v-bind:nutri="nutri" v-bind:item="item" v-bind:id="`nutritional-modal-${prefix}`"></nutritional-data-modal>
   </div>
 </template>
 
@@ -353,12 +353,12 @@ export default {
       })
       .then(response => {
         self.nutri = response.data;
-        $('#menuNutriFacts').modal('show');
+        $(`#nutritional-modal-${self.prefix}`).modal('show');
       })
       .catch(error => {
           console.log(error.response);
           if (item.attributes.description != null && item.attributes.description.trim() !== "") {
-            $('#menuNutriFacts').modal('show');
+            $(`#nutritional-modal-${self.prefix}`).modal('show');
           }
       });
     }
