@@ -39,7 +39,7 @@ class ChargeUser
   end
 
   def charge!
-    calculate_payment('charge')
+    calculate_payment
     return order unless amount_valid?
     stripe = StripeCharger.new(user, @amount_to_pay)
     if stripe.run
@@ -71,20 +71,9 @@ class ChargeUser
     order
   end
 
-  def calculate_payment(type)
-    calculations_type = {
-      'excess' => OrderCalculator.new(order).total_excess,
-      'tax' => OrderCalculator.new(order).total_tax,
-      'charge' => OrderCalculator.new(order).total
-    }
-
-    charge_description = {
-      'excess' => "Excess Charge",
-      'tax' => "Tax Charge",
-      'charge' => "Order Charge"
-    }
-    amount = calculations_type[type]
-    amount -= last_bill_amount(charge_description[type])
+  def calculate_payment
+    amount = OrderCalculator.new(order).total
+    amount -= last_bill_amount('Order Charge')
     @amount_to_pay = deduct_pending_credit(amount)
   end
 
