@@ -44,6 +44,7 @@ class ChargeUser
     stripe = StripeCharger.new(user, @amount_to_pay)
     if stripe.run
       create_bill_history('Order Charge')
+      order.update_columns(status: :processing)
       return order
     else
       errors.add(:charge, stripe.errors.full_messages.join(', '))
@@ -96,7 +97,7 @@ class ChargeUser
   end
 
   def pending_credit
-    user.pending_credits.activate_on(order.placed_on)
+    order.pending_credit
   end
 
   def deduct_pending_credit(amount)
@@ -108,13 +109,9 @@ class ChargeUser
     return unless pending_amount > 0
     total = pending_amount - amount
     if total < 0
-      pending_credit.destroy
       create_pending_remarks(pending_amount)
       return total.abs
     else
-      pending_credit.amount = total
-      pending_credit.save
-      remarks_amount = amount - pending_amount
       create_pending_remarks(remarks_amount.abs)
       return 0
     end
