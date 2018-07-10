@@ -23,6 +23,7 @@ module User::NotificationsHelper
   end
 
   def display_pending_credits_notification
+    return nil unless current_user.subscribed?
     credits = current_user.ledgers.unpaid
     return nil unless credits.present?
     content_tag :div, class: 'alert alert-danger font-size-18' do
