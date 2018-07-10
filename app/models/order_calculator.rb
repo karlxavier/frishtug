@@ -7,8 +7,8 @@ class OrderCalculator
     else
       @order.user
     end
-    @minimum_charge = @user.plan.minimum_charge
-    @limit = @user.plan.limit
+    @minimum_charge = @user.plan&.minimum_charge || 0
+    @limit = @user.plan&.limit || 0
   end
 
   def total(options = {})
