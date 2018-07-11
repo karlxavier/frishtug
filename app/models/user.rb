@@ -131,8 +131,12 @@ class User < ApplicationRecord
     counter % 20 == 0
   end
 
+  def not_completed_orders
+    orders.fresh.where("placed_on >= ?", Time.current.beginning_of_day)
+  end
+
   def has_fresh_orders?
-    orders.fresh.count > 0
+    not_completed_orders.count > 0
   end
 
   private
