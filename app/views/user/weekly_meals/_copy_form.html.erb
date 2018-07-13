@@ -1,6 +1,6 @@
 <h6>Copy Week</h6>
 <div class="row">
-  <% if @from_options.any? { |i| !i.nil? } %>
+  <% if @from_options.any? { |i| !i.nil? } && @to_options.size != 0 %>
     <%= form_with url: user_copy_meals_path, local: true do |f| %>
       <div class="col">
         <div class="form-group row">
