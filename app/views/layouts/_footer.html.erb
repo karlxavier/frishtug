@@ -6,22 +6,22 @@
           <%= link_to 'Home', root_path, class: 'footer-nav__items__links' %>
         </li>
         <li class="footer-nav__items">
-          <%= link_to 'How It Works', root_path, class: 'footer-nav__items__links' %>
+          <%= link_to 'How It Works', page_path(id: 'how_it_works'), class: 'footer-nav__items__links' %>
         </li>
         <li class="footer-nav__items">
-          <%= link_to 'Plans', root_path, class: 'footer-nav__items__links' %>
+          <%= link_to 'Plans', page_path(id: 'plans'), class: 'footer-nav__items__links' %>
         </li>
         <li class="footer-nav__items">
-          <%= link_to 'Menus', root_path, class: 'footer-nav__items__links' %>
+          <%= link_to 'Menus', page_path(id: 'the_menu'), class: 'footer-nav__items__links' %>
         </li>
         <li class="footer-nav__items">
-          <%= link_to 'Contact Us', root_path, class: 'footer-nav__items__links' %>
+          <%= link_to 'Contact Us', page_path(id: 'contact_us'), class: 'footer-nav__items__links' %>
         </li>
         <li class="footer-nav__items">
-          <%= link_to 'Sign Up', root_path, class: 'footer-nav__items__links' %>
+          <%= link_to 'Sign Up', user_registrations_path, class: 'footer-nav__items__links' %>
         </li>
         <li class="footer-nav__items">
-          <%= link_to 'Login', root_path, class: 'footer-nav__items__links' %>
+          <%= link_to 'Login', new_user_session_path, class: 'footer-nav__items__links' %>
         </li>
       </ul>
     </div>
