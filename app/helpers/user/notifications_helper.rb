@@ -17,8 +17,16 @@ module User::NotificationsHelper
   def display_incomplete_group_notification
     return nil unless current_user.in_a_group?
     return nil if current_user.is_entitled_for_discount?
-    content_tag :div, class: 'alert alert-info' do
-      "You must complete your group to avail group discount. You only have #{pluralize(current_user.total_members + 1, 'person')} in your group."
+    if current_user.members.size < 4
+      return content_tag :div, class: 'alert alert-info' do
+        "You must complete your group to avail group discount. You only have #{pluralize(current_user.total_members + 1, 'person')} in your group."
+      end
+    end
+
+    unless current_user.equal_group_address?
+      return content_tag :div, class: 'alert alert-info' do
+        "You're members must have the same active address as your address for your group to not be charge for shipping"
+      end
     end
   end
 
