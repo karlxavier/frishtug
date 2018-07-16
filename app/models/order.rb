@@ -45,11 +45,12 @@ class Order < ApplicationRecord
 
   accepts_nested_attributes_for :menus_orders, allow_destroy: true
 
-  before_create :set_series_number
-  after_create :set_sku, :create_pending_credit
-  before_save :run_inventory_accounter, :re_account_on_failed_payment
-  after_touch :check_total_amount
-  before_destroy :re_account_inventory, prepend: true
+  before_create   :set_series_number
+  after_create    :set_sku
+  after_save      :create_pending_credit
+  before_save     :run_inventory_accounter, :re_account_on_failed_payment
+  after_touch     :check_total_amount
+  before_destroy  :re_account_inventory, prepend: true
 
   def menu_quantity(menu)
     item =
@@ -121,10 +122,10 @@ class Order < ApplicationRecord
     return unless blackout_dates.include?(placed_on&.strftime('%B %d'))
     total = OrderCalculator.new(self).total
     return unless total > 0
-    user.pending_credits.create!(
+    pending_credit = user.pending_credits.where(placed_on_date: self.placed_on).first_or_create
+    pending_credit.update_attributes(
       amount: OrderCalculator.new(self).total,
-      activation_date: user.orders.first.placed_on + 28.days,
-      placed_on_date: placed_on
+      activation_date: user.orders.first.placed_on + 28.days
     )
   end
 
