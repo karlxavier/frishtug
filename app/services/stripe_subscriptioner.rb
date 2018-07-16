@@ -8,7 +8,11 @@ class StripeSubscriptioner
   def run
     customer = find_or_create_stripe_customer
     subscription = subscribe_customer(customer.id)
-    update_user(customer.id, subscription)
+    user.update_attributes(
+      stripe_customer_id: customer.id,
+      stripe_subscription_id: subscription.id,
+      subscribe_at: Time.current
+    )
     true
   rescue Stripe::StripeError => e
     errors.add(:base, e.message)
@@ -61,14 +65,6 @@ class StripeSubscriptioner
       return true
     end
     false
-  end
-
-  def update_user(customer_id, subscription)
-    user.update_attributes(
-      stripe_customer_id: customer_id,
-      stripe_subscription_id: subscription.id,
-      subscribe_at: Time.at(subscription.billing_cycle_anchor)
-    )
   end
 
   def create_stripe_customer
