@@ -22,6 +22,7 @@ class OrderCopierWorker
           add_ons: menu_order.add_ons
         )
       end
+      RecordLedger.new(user, new_order).record!
       order.fulfilled!
     end
   end
