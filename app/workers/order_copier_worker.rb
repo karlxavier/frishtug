@@ -16,12 +16,16 @@ class OrderCopierWorker
       )
 
       order.menus_orders.each do |menu_order|
-        new_order.menus_orders.create!(
-          menu_id: menu_order.menu_id,
-          quantity: menu_order.quantity,
-          add_ons: menu_order.add_ons
-        )
+        stock = Stock.new(menu_order.menu_id, menu_order.quantity)
+        unless stock.empty?
+          new_order.menus_orders.create!(
+            menu_id: menu_order.menu_id,
+            quantity: menu_order.quantity,
+            add_ons: menu_order.add_ons
+          )
+        end
       end
+      
       RecordLedger.new(user, new_order).record!
       order.fulfilled!
     end
