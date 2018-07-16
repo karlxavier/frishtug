@@ -18,47 +18,6 @@ StripeEvent.configure do |events|
       end
     end
 
-    if event.type == 'invoice.upcoming'
-      invoice = event.data.object
-      user = User.find_by_stripe_customer_id(invoice.customer)
-      if user
-        user.user_notifications.create!({
-          title: 'Subscription Notice!',
-          body: 'This is a notice to remind you that your subscription is scheduled for automatic charge.',
-          timeout: 5
-        })
-      end
-    end
-
-    # if event.type == 'invoice.payment_succeeded'
-    #   invoice_data = event.data.object
-    #   user = User.find_by_stripe_customer_id(invoice_data.customer)
-    #   data = invoice_data.lines.data[0]
-    #   if user && data.type == 'subscription'
-    #     subscription_start = Time.zone.at(data.period.start)
-    #     subscription_end = Time.zone.at(data.period.end)
-    #     if user.subscribe_at != subscription_start
-    #       user.update_attributes(
-    #         stripe_subscription_id: data.id,
-    #         subscribe_at: subscription_start,
-    #         subscription_expires_at: subscription_end
-    #       )
-    #       OrderCopierWorker.perform_at(1.hour.from_now, user.id)
-    #       if user.plan.per_month?
-    #         charge = StripeCharger.new(user, user.plan.shipping_fee)
-    #         charge.charge_shipping
-    #         user.bill_histories.create!(
-    #           amount_paid: user.plan.shipping_fee,
-    #           description: 'Shipping Charge',
-    #           billed_at: Time.current,
-    #         )
-    #       end
-    #     else
-    #       user.orders.where.not(status: [:fresh, :fulfilled, :completed, :failed]).update_all(status: :processing)
-    #     end
-    #   end
-    # end
-
     if event.type == 'invoice.payment_failed'
       invoice_data = event.data.object
       user = User.find_by_stripe_customer_id(invoice_data.customer)

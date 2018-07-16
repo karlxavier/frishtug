@@ -15,7 +15,11 @@ class ScheduleMaker
 
   def start_date
     return subscription_start if subscription_start.present?
-    user.last(20).first.placed_on
+    if user.orders.size % 20 == 0
+      user.orders.last(20).first.placed_on
+    else
+      user.orders.first.placed_on
+    end
   end
 
   def generate_schedule(days = 20)

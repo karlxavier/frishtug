@@ -11,11 +11,9 @@ class SubscriptionWorker
         }
       ]
     )
-
-    subscription_start = Time.zone.at(subscription.billing_cycle_anchor)
     user.update_attributes(
       stripe_subscription_id: subscription.id,
-      subscribe_at: subscription_start
+      subscribe_at: Time.current
     )
     create_bill_history(user)
   end

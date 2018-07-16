@@ -11,7 +11,7 @@ module Groupable
   end
 
   def members
-    return nil unless referrer?
+    return self.candidate.referrer.candidates unless referrer?
     self.referrer.candidates
   end
 
