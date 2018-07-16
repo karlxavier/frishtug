@@ -37,8 +37,16 @@
           <% end %>
         </tbody>
       </table>
-      <strong class="font-size-14 float-right">
-        Total: <em><span class="font-size-18"><%= total_cost(@order) %></span></em>
-      </strong>
+      <div class="d-flex flex-column font-size-14">
+        <strong class="align-self-end">
+          Tax: <em><span class="font-size-18"><%= @order.total_tax %></span></em>
+        </strong>
+        <strong class="align-self-end">
+          Sub Total: <em><span class="font-size-18"><%= @order.sub_total %></span></em>
+        </strong>
+        <strong class="align-self-end">
+          Total: <em><span class="font-size-18"><%= @order.total %></span></em>
+        </strong>
+      </div>
     </div>
   </div>
