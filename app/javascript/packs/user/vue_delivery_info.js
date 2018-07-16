@@ -76,6 +76,10 @@ if (el) {
           data => data.attributes.zip
         );
       });
+
+      if (self.addresses[0].location_at === "multiple_workplaces") {
+        self.show = true;
+      }
     },
     methods: {
       verifyAddress: function() {
@@ -177,6 +181,10 @@ if (el) {
             address._delete = 1
           }
         })
+      },
+      deleteAddress: function(address, index) {
+        if(address.id !== null) return address._delete = 1;
+        this.addresses.splice(index, 1);
       },
       addAddress: () => {
         userDelivery.addresses.push({
