@@ -17,7 +17,7 @@
       :class="sidebar_shown === false ? 'col-12 col-md-12 col-lg-12' : 'col-8 col-md-8 col-lg-8'">
       <div class="row header py-4 meal-form__header border-bottom-grey mb-4">
         <div class="col-3 dark-font-color">
-          <%= back_to_index_link(action_name.upcase) %>
+          <%= back_to_index_link(action_name.upcase, schedule: params[:schedule]) %>
           MEAL PLAN
         </div>
         <div class="col-9">

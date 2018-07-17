@@ -1,38 +1,49 @@
 <%
   orders_list = @orders.in_groups_of(5, false)
+  schedule = params[:schedule]
+  active_tab = ["active"]
+  active_panel = ["show active"]
+  %w[first second third fourth].each_with_index do |s, i|
+    if s == schedule && !schedule.nil?
+      active_tab[0] = nil
+      active_panel[0] = nil
+      active_tab[i] = "active"
+      active_panel[i] = "show active"
+    end
+  end
 %>
 <div class="col-8 px-4">
   <ul class="nav nav-tabs" id="myTab" role="tablist">
     <li class="nav-item">
-      <a class="nav-link active" id="first-week" data-toggle="tab" href="#first_week" role="tab" aria-controls="first_week" aria-selected="true">1st week</a>
+      <a class="nav-link <%= active_tab[0] %>" id="first-week" data-toggle="tab" href="#first_week" role="tab" aria-controls="first_week" aria-selected="<%= schedule == 'first'%>">1st week</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" id="profile-tab" data-toggle="tab" href="#second_week" role="tab" aria-controls="profile" aria-selected="false">2nd week</a>
+      <a class="nav-link <%= active_tab[1] %>" id="profile-tab" data-toggle="tab" href="#second_week" role="tab" aria-controls="profile" aria-selected="<%= schedule == 'second'%>">2nd week</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" id="contact-tab" data-toggle="tab" href="#third_week" role="tab" aria-controls="contact" aria-selected="false">3rd week</a>
+      <a class="nav-link <%= active_tab[2] %>" id="contact-tab" data-toggle="tab" href="#third_week" role="tab" aria-controls="contact" aria-selected="<%= schedule == 'third'%>">3rd week</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" id="contact-tab" data-toggle="tab" href="#fourth_week" role="tab" aria-controls="contact" aria-selected="false">4th week</a>
+      <a class="nav-link <%= active_tab[3] %>" id="contact-tab" data-toggle="tab" href="#fourth_week" role="tab" aria-controls="contact" aria-selected="<%= schedule == 'fourth'%>">4th week</a>
     </li>
   </ul>
   <div class="tab-content" id="myTabContent">
-    <div class="tab-pane fade show active" id="first_week" role="tabpanel" aria-labelledby="first-week-tab">
+    <div class="tab-pane fade <%= active_panel[0] %>" id="first_week" role="tabpanel" aria-labelledby="first-week-tab">
       <% orders_list.first.each do |order| %>
         <%= render 'order', order: order %>
       <% end if orders_list.first.present? %>
     </div>
-    <div class="tab-pane fade" id="second_week" role="tabpanel" aria-labelledby="first-week-tab">
+    <div class="tab-pane fade <%= active_panel[1] %>" id="second_week" role="tabpanel" aria-labelledby="first-week-tab">
       <% orders_list.second.compact.each do |order| %>
         <%= render 'order', order: order %>
       <% end if orders_list.second.present? %>
     </div>
-    <div class="tab-pane fade" id="third_week" role="tabpanel" aria-labelledby="first-week-tab">
+    <div class="tab-pane fade <%= active_panel[2] %>" id="third_week" role="tabpanel" aria-labelledby="first-week-tab">
       <% orders_list.third.compact.each do |order| %>
         <%= render 'order', order: order %>
       <% end if orders_list.third.present? %>
     </div>
-    <div class="tab-pane fade" id="fourth_week" role="tabpanel" aria-labelledby="first-week-tab">
+    <div class="tab-pane fade <%= active_panel[3] %>" id="fourth_week" role="tabpanel" aria-labelledby="first-week-tab">
       <% orders_list.fourth.compact.each do |order| %>
         <%= render 'order', order: order %>
       <% end if orders_list.fourth.present? %>

@@ -26,9 +26,20 @@ module User::WeeklyMealsHelper
   def calendar_url(date, active_this_week, active_orders, available_dates)
     url = "javascript:void(0)"
     db_date = date.to_formatted_s(:db)
+    sched_list = %w[first second third fourth]
+    sched = nil
+    if current_user.subscribed?
+      list_length = available_dates.count
+      available_dates.each_with_index do |dates, index|
+        new_index = list_length == 3 ? index + 1 : index
+        if dates.include?(date)
+          sched = sched_list[new_index]
+        end
+      end
+    end
 
     if active_this_week.flatten.include?(db_date) || active_orders.flatten.include?(db_date)
-      return edit_user_weekly_meals_path(date: date)
+      return edit_user_weekly_meals_path(date: date, schedule: sched)
     end
 
     if current_user.schedule.present?
@@ -38,15 +49,6 @@ module User::WeeklyMealsHelper
 
     if date >= Date.current && !date.saturday?
       if current_user.subscribed?
-        sched_list = %w[first second third fourth]
-        list_length = available_dates.count
-        sched = ''
-        available_dates.each_with_index do |dates, index|
-          new_index = list_length == 3 ? index + 1 : index
-          if dates.include?(date)
-            sched = sched_list[new_index]
-          end
-        end
         url = new_user_weekly_meal_path(date: date, schedule: sched) if sched.present?
       else
         url = new_user_weekly_meal_path(date: date)
@@ -71,8 +73,8 @@ module User::WeeklyMealsHelper
     classes.join(' ')
   end
 
-  def back_to_index_link(text)
-    link_to user_weekly_meals_path, class: 'dark-font-color' do
+  def back_to_index_link(text, options)
+    link_to user_weekly_meals_path(options), class: 'dark-font-color' do
       "<i class='fa fa-chevron-left'></i> #{text}".html_safe
     end
   end
