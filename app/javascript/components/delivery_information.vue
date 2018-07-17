@@ -19,6 +19,16 @@
             <div v-else>
               <input type="hidden" v-model.lazy="address.location_at" name="location_at">
             </div>
+            <div class="form-group" v-show="plan.for_type === 'group'">
+              <input type="text"
+                v-model.trim="registration_form.group_code"
+                placeholder="Group Code"
+                class="form-control"
+                v-on:blur="getAddress">
+              <small id="groupCodeHelpBlock" class="form-text text-muted">
+                If your the First one setting up your Group we will supply you with a group code at check out.
+              </small>
+            </div>
             <div class="form-group">
               <label-edit v-bind:text="address.line1" v-bind:placeholder="address.line1" v-bind:address="address"></label-edit>
               <input type="hidden"
@@ -91,16 +101,6 @@
                 </div>
               </div>
             </div>
-          </div>
-          <div class="form-group" v-show="plan.for_type === 'group'">
-            <input type="text"
-              v-model.trim="registration_form.group_code"
-              placeholder="Group Code"
-              class="form-control"
-              v-on:blur="getAddress">
-            <small id="groupCodeHelpBlock" class="form-text text-muted">
-              If your the First one setting up your Group we will supply you with a group code at check out.
-            </small>
           </div>
           <a href="javascript:void(0)"
             class="chocolate-font-color"
