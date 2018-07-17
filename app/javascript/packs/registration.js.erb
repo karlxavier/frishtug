@@ -253,7 +253,7 @@ const vm = new Vue({
     complete: function() {
       const self = this;
       const successHandler = response => {
-        if (self.plan.for_type === "group" && self.registration_form.group_code.length === 0) {
+        if (self.plan.for_type === "group" && self.registration_form.group_code) {
           pulse_loader.stop();
           swal({
             html: `

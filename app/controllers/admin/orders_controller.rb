@@ -11,6 +11,7 @@ class Admin::OrdersController < Admin::BaseController
   def update
     has_menu_items_quantity_changed?
     if @order.update_attributes(order_params)
+      ChargeUser.call(@order, @order.user)
       render json: { status: 'success', order: @order }, status: :ok
     else
       render json: { status: 'error', message: @order.errors.full_messages.join(', ') }, status: :unprocessable_entity
