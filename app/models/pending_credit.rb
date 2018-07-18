@@ -10,6 +10,7 @@
 #  updated_at      :datetime         not null
 #  placed_on_date  :datetime
 #  order_id        :bigint(8)
+#  charge_id       :string
 #
 
 class PendingCredit < ApplicationRecord
@@ -19,5 +20,9 @@ class PendingCredit < ApplicationRecord
   def self.activate_on(date)
     return nil unless date.present?
     where('activation_date <= ?', date.end_of_day)
+  end
+
+  def self.refundable
+    where(order_id: nil)
   end
 end

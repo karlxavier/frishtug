@@ -20,6 +20,7 @@
 #  payment_status  :integer
 #  total_price     :decimal(8, 2)    default(0.0)
 #  is_rollover     :boolean          default(FALSE)
+#  charge_id       :string
 #
 
 require 'rails_helper'

@@ -35,6 +35,9 @@
         <li class="nav-item <%= active?(user_ledgers_path) %>">
           <%= nav_link 'Pending Charges', user_ledgers_path %>
         </li>
+        <li class="nav-item <%= active?(user_refundable_credits_path) %>">
+          <%= nav_link 'Refundable Credits', user_refundable_credits_path %>
+        </li>
       <% end %>
     </ul>
   </div>

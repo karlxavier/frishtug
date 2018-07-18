@@ -20,6 +20,7 @@
 #  payment_status  :integer
 #  total_price     :decimal(8, 2)    default(0.0)
 #  is_rollover     :boolean          default(FALSE)
+#  charge_id       :string
 #
 
 # Column names
@@ -125,7 +126,8 @@ class Order < ApplicationRecord
     pending_credit = user.pending_credits.where(placed_on_date: self.placed_on).first_or_create
     pending_credit.update_attributes(
       amount: OrderCalculator.new(self).total,
-      activation_date: user.orders.first.placed_on + 28.days
+      activation_date: user.orders.first.placed_on + 28.days,
+      charge_id: self.charge_id
     )
   end
 
@@ -149,7 +151,8 @@ class Order < ApplicationRecord
 
     pending_credit.update_attributes(
       amount: self.total_price - current_total,
-      activation_date: Time.current
+      activation_date: Time.current,
+      charge_id: self.charge_id
     )
   end
 end

@@ -10,6 +10,7 @@
 #  status     :integer
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  charge_id  :string
 #
 
 class AdditionalLedger < Ledger

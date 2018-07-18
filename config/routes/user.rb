@@ -53,4 +53,5 @@ namespace :user do
     end
   end
   resources :set_credit, only: :index
+  resources :refundable_credits, only: %i[index update]
 end

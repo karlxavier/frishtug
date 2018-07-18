@@ -20,7 +20,7 @@
 #  limit                  :decimal(8, 2)
 #  minimum_credit_allowed :decimal(8, 2)
 #  minimum_charge         :decimal(8, 2)    default(0.0)
-#  shipping_charge_type   :integer          default(0)
+#  shipping_charge_type   :integer          default("not_available")
 #
 
 # Column names

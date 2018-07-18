@@ -10,6 +10,7 @@
 #  status     :integer
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  charge_id  :string
 #
 
 class Ledger < ApplicationRecord
@@ -44,6 +45,7 @@ class Ledger < ApplicationRecord
     RecordPayments.call(order, self.amount, types[self.type])
     order.update_columns(status: :processing)
     order.total_price = OrderCalculator.new(order).total
+    order.charge_id = self.charge_id
     order.save
   end
 end

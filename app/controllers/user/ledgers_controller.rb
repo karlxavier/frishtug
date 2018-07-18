@@ -6,13 +6,13 @@ class User::LedgersController < User::BaseController
   end
 
   def pay
-    Stripe::Charge.create(
+    charge = Stripe::Charge.create(
       amount: amount_to_cents,
       currency: 'usd',
       customer: current_user.stripe_customer_id,
       description: "Payment for bills"
     )
-    @unpaid_bills.find_each { |b| b.update_attributes(status: :paid) }
+    @unpaid_bills.find_each { |b| b.update_attributes(status: :paid, charge_id: charge.id) }
     redirect_back fallback_location: :back, notice: 'Payment successful'
   rescue => e
     flash[:error] = e.message

@@ -1,0 +1,23 @@
+<h4 class="text-uppercase font-size-18">
+  Refundable Credits
+</h4>
+<div class="row">
+  <div class="col-5">
+    <% unless @refundables.empty? %>
+      <ul class="list-group list-group-flush">
+        <% @refundables.each do |i| %>
+          <li class="list-group-item">
+            <%= to_currency(i.amount) %>
+            <div class="float-right">
+              <%= button_to user_refundable_credit_path(i), method: :put, class: 'btn btn-brown text-uppercase' do %>
+                Refund
+              <% end %>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      Nothing to refund
+    <% end %>
+  </div>
+</div>

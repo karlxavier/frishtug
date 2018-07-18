@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180620032327) do
+ActiveRecord::Schema.define(version: 20180718053704) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -232,6 +232,7 @@ ActiveRecord::Schema.define(version: 20180620032327) do
     t.integer "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "charge_id"
     t.index ["order_id"], name: "index_ledgers_on_order_id"
     t.index ["type"], name: "index_ledgers_on_type"
     t.index ["user_id"], name: "index_ledgers_on_user_id"
@@ -324,6 +325,7 @@ ActiveRecord::Schema.define(version: 20180620032327) do
     t.integer "payment_status"
     t.decimal "total_price", precision: 8, scale: 2, default: "0.0"
     t.boolean "is_rollover", default: false
+    t.string "charge_id"
     t.index ["order_date"], name: "index_orders_on_order_date"
     t.index ["series_number"], name: "index_orders_on_series_number"
     t.index ["user_id"], name: "index_orders_on_user_id"
@@ -348,6 +350,7 @@ ActiveRecord::Schema.define(version: 20180620032327) do
     t.datetime "updated_at", null: false
     t.datetime "placed_on_date"
     t.bigint "order_id"
+    t.string "charge_id"
     t.index ["order_id"], name: "index_pending_credits_on_order_id"
     t.index ["user_id"], name: "index_pending_credits_on_user_id"
   end
