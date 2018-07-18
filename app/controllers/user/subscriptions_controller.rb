@@ -10,6 +10,7 @@ class User::SubscriptionsController < User::BaseController
     @canceler = SubscriptionCanceler.new(current_user, params[:body])
     if @canceler.run
       remove_referrer
+      remove_candidate
       @response_msg = response_msg('success', 'Successfuly canceled subscription')
       respond_with(@response_msg)
     else
@@ -63,6 +64,12 @@ class User::SubscriptionsController < User::BaseController
     return unless current_user.referrer?
     return unless current_user&.plan&.group?
     current_user.referrer.destroy
+  end
+
+  def remove_candidate
+    return unless current_user.candidate?
+    return unless current_user&.plan&.group?
+    current_user.candidate.destroy
   end
 
   def create_referrer
