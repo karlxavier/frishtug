@@ -5,7 +5,7 @@
       <div class="row justify-content-center">
         <div class="col-10">
           <div v-for="(address, index) in registration_form.addresses" v-bind:key="`address_${index}`">
-            <div class="form-group row" v-if="index === 0">
+            <div class="form-group row" v-if="index === 0 && plan.for_type !== 'group'">
               <div class="col-3">
                 <strong>I am:</strong>
               </div>
