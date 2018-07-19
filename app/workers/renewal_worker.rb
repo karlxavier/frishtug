@@ -1,6 +1,6 @@
 class RenewalWorker
   include Sidekiq::Worker
-  CURRENT_TIME=Time.current.freeze
+  CURRENT_TIME=Time.current.beginning_of_day.freeze
 
   def perform
     subscribed_users =
@@ -9,7 +9,7 @@ class RenewalWorker
     subscribed_users.find_each do |user|
       next if user.stripe_subscription_id.nil?
       next if user.subscription_expires_at.nil?
-      next if user.subscription_expires_at >= CURRENT_TIME
+      next if user.subscription_expires_at.beginning_of_day >= CURRENT_TIME
       plan_id = user.plan_id
 
       old_subscription =
