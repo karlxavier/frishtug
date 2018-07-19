@@ -8,6 +8,7 @@ class RenewalWorker
 
     subscribed_users.find_each do |user|
       next if user.stripe_subscription_id.nil?
+      next if user.subscription_expires_at
       next if user.subscription_expires_at >= CURRENT_TIME
       plan_id = user.plan_id
 
