@@ -22,6 +22,25 @@
       <% end %>
     </div>
 
+    <% if current_user.plan.group? && current_user.in_a_group? == false %>
+      <div class="col-6">
+        <h4 class="font-size-18 text-uppercase">Generate a group code</h4>
+        <%= button_to "Generate code", user_groups_path, class: 'btn btn-brown text-uppercase' %>
+        <hr>
+        <h4 class="font-size-18 text-uppercase">Join a group</h4>
+        <%= form_with url: join_user_groups_path, local: true do |f| %>
+          <div class="form-group row">
+            <div class="col-9">
+              <%= f.text_field :group_code, class: 'form-control', placeholder: 'Enter group code' %>
+            </div>
+            <div class="col">
+              <%= f.submit 'Join', class: 'btn btn-brown text-uppercase' %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
 
     <% if current_user.referrer? %>
       <div class="col-6">
@@ -37,11 +56,12 @@
             </div>
           </div>
         <% end %>
-        <ul class="unstyled-list">
+        <ul class="list-group">
           <% current_user.members.each do |member| %>
-            <li>
+            <li class="list-group-item border-0">
               <%= member.user.full_name %>
               <%= member.user_email %>
+              <%= button_to "Remove", user_candidate_path(member), method: :delete, data: { confirm: 'Are you sure?' } , class: 'btn btn-sm btn-brown text-uppercase', form_class: 'float-right' %>
             </li>
           <% end %>
         </ul>

@@ -54,4 +54,10 @@ namespace :user do
   end
   resources :set_credit, only: :index
   resources :refundable_credits, only: %i[index update]
+  resources :candidates, only: :destroy
+  resources :groups, only: :create do
+    collection do 
+      post :join
+    end
+  end
 end
