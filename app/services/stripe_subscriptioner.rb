@@ -82,19 +82,11 @@ class StripeSubscriptioner
   def subscribe_customer(customer_id)
     Stripe::Subscription.create(
       customer: customer_id,
-      billing_cycle_anchor: billing_cycle_anchor,
-      prorate: false,
       items: [
         {
           plan: user.plan.stripe_plan_id
         }
       ]
     )
-  end
-
-  def billing_cycle_anchor
-    first_placed_order = user.orders.first.placed_on
-    return Time.current.to_i if first_placed_order < Time.current
-    first_placed_order.to_i
   end
 end

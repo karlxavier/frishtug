@@ -61,15 +61,15 @@ class User::SubscriptionsController < User::BaseController
   end
 
   def remove_referrer
-    return unless current_user.referrer?
-    return unless current_user&.plan&.group?
-    current_user.referrer.destroy
+    if current_user.referrer?
+      current_user.referrer.destroy
+    end
   end
 
   def remove_candidate
-    return unless current_user.candidate?
-    return unless current_user&.plan&.group?
-    current_user.candidate.destroy
+    if current_user.candidate?
+      current_user.candidate.destroy
+    end
   end
 
   def create_referrer

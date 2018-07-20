@@ -50,7 +50,7 @@ class Order < ApplicationRecord
   after_create    :set_sku
   after_save      :create_pending_credit
   before_save     :run_inventory_accounter, :re_account_on_failed_payment
-  after_touch     :check_total_amount
+  after_touch     :create_refundable_credit
   before_destroy  :re_account_inventory, prepend: true
 
   def menu_quantity(menu)
@@ -119,16 +119,7 @@ class Order < ApplicationRecord
   end
 
   def create_pending_credit
-    blackout_dates = BlackoutDate.pluck_dates
-    return unless blackout_dates.include?(placed_on&.strftime('%B %d'))
-    total = OrderCalculator.new(self).total
-    return unless total > 0
-    pending_credit = user.pending_credits.where(placed_on_date: self.placed_on).first_or_create
-    pending_credit.update_attributes(
-      amount: OrderCalculator.new(self).total,
-      activation_date: user.orders.first.placed_on + 28.days,
-      charge_id: self.charge_id
-    )
+    CreateRefundForBlackoutDate.new(self).process
   end
 
   def run_inventory_accounter
@@ -144,15 +135,7 @@ class Order < ApplicationRecord
     self[:series_number] = SeriesCreator.new(self).create
   end
 
-  def check_total_amount
-    current_total = OrderCalculator.new(self).total
-    return unless self.total_price > current_total
-    pending_credit = user.pending_credits.where(placed_on_date: self.placed_on, order_id: nil).first_or_create
-
-    pending_credit.update_attributes(
-      amount: self.total_price - current_total,
-      activation_date: Time.current,
-      charge_id: self.charge_id
-    )
+  def create_refundable_credit
+    CreateRefundableCredit.new(self).process
   end
 end
