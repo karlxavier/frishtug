@@ -56,15 +56,17 @@
             </div>
           </div>
         <% end %>
-        <ul class="list-group">
-          <% current_user.members.each do |member| %>
-            <li class="list-group-item border-0">
-              <%= member.user.full_name %>
-              <%= member.user_email %>
-              <%= button_to "Remove", user_candidate_path(member), method: :delete, data: { confirm: 'Are you sure?' } , class: 'btn btn-sm btn-brown text-uppercase', form_class: 'float-right' %>
-            </li>
-          <% end %>
-        </ul>
+        <div style="max-height: 600px; overflow-y: auto;">
+          <ul class="list-group">
+            <% current_user.members.each do |member| %>
+              <li class="list-group-item border-0">
+                <%= member.user.full_name %>
+                <%= member.user_email %>
+                <%= button_to "Remove", user_candidate_path(member), method: :delete, data: { confirm: 'Are you sure?' } , class: 'btn btn-sm btn-brown text-uppercase', style: 'font-size: 10px;', form_class: 'float-right' %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
       </div>
     <% end %>
   </div>
