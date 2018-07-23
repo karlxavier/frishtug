@@ -25,7 +25,7 @@ class RenewalWorker
 
       user.update_attributes(
         stripe_subscription_id: new_subscription.id,
-        subscribe_at: Time.current,
+        subscribe_at: CURRENT_TIME + 1.day,
         plan_id: plan_id)
 
       OrderCopierWorker.perform_async(user.id)

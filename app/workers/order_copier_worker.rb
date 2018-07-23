@@ -11,8 +11,7 @@ class OrderCopierWorker
       new_order = user.orders.create!(
         placed_on: full_month_dates[index],
         order_date: Time.current,
-        remarks: order.remarks,
-        status: :processing
+        remarks: order.remarks
       )
 
       order.menus_orders.each do |menu_order|
@@ -26,6 +25,7 @@ class OrderCopierWorker
         end
       end
       
+      new_order.processing!
       RecordLedger.new(user, new_order).record!
       order.fulfilled!
     end
