@@ -5,6 +5,8 @@
         <th>Full Name</th>
         <th>Suggestion</th>
         <th>Suggestion For</th>
+        <th>Time</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -13,6 +15,7 @@
           <td><%= suggestion.user.full_name %></td>
           <td><%= suggestion.body %></td>
           <td><%= suggestion_for(suggestion) %></td>
+          <td><%= time_ago_in_words(suggestion.created_at) %> ago</td>
           <td><%= link_to 'Show', admin_suggestion_path(suggestion), class: 'chocolate-font-color' %></td>
         </tr>
       <% end %>

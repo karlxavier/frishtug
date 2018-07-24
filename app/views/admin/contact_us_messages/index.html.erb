@@ -1,0 +1,25 @@
+<%= card_container do %>
+  <table class="table table-sm">
+    <thead>
+      <tr>
+        <th>Full Name</th>
+        <th>Email</th>
+        <th>Message</th>
+        <th>Time</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @contact_us_messages.each do |contact| %>
+        <tr>
+          <td><%= contact.full_name %></td>
+          <td><%= contact.email %></td>
+          <td><%= contact.message.truncate(50) %></td>
+          <td><%= time_ago_in_words(contact.created_at) %> ago</td>
+          <td><%= link_to 'Show', admin_contact_us_message_path(contact), class: 'chocolate-font-color' %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= paginate @contact_us_messages %>
+<% end %>

@@ -1,0 +1,19 @@
+<%= card_container do %>
+  <div class="row mx-0">
+    <div class="col">
+      <h6>
+      From: <%= "#{@contact_us_message.full_name}<#{@contact_us_message.email}>" %>
+      </h6>
+      <small>
+        Date: <%= time_ago_in_words(@contact_us_message.created_at ) %> ago
+      </small>      
+    </div>
+  </div>
+  <div class="row mx-0 mt-3">
+    <div class="col-6">
+      <p>
+        <%= @contact_us_message.message %>
+      </p>
+    </div>
+  </div>
+<% end %>
