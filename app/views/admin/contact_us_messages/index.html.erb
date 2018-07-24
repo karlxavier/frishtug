@@ -14,7 +14,7 @@
         <tr>
           <td><%= contact.full_name %></td>
           <td><%= contact.email %></td>
-          <td><%= contact.message.truncate(50) %></td>
+          <td><%= strip_tags(contact.message).truncate(50) %></td>
           <td><%= time_ago_in_words(contact.created_at) %> ago</td>
           <td><%= link_to 'Show', admin_contact_us_message_path(contact), class: 'chocolate-font-color' %></td>
         </tr>
