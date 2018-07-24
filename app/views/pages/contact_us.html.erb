@@ -25,7 +25,7 @@
         </div>
       </div>
       <h5>Send Us a Message</h5>
-      <%= form_with scope: :contact_us, url: contact_us_path, local: true do |f| %>
+      <%= form_with scope: :contact_us_message, url: contact_us_path, local: true do |f| %>
         <div class="form-group row">
           <div class="col">
             <%= f.text_field :first_name, class: 'form-control', placeholder: 'First Name*', required: true %>
