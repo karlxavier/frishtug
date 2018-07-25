@@ -1,0 +1,23 @@
+<% unless @order.errors.present? %>
+  swal({
+    title: 'Success',
+    text: "Your order is completed",
+    type: 'success',
+    confirmButtonText: 'Done',
+    confirmButtonClass: 'btn btn-brown text-uppercase',
+    buttonsStyling: false
+  }).then(function (result) {
+    if (result) {
+      window.location = '<%= user_create_new_months_path %>';
+    }
+  });
+<% else %>
+	swal({
+		title: 'Oops...',
+		text: "Something went wrong",
+		type: 'error',
+		confirmButtonText: 'Done',
+		confirmButtonClass: 'btn btn-brown text-uppercase',
+		buttonsStyling: false
+	});
+<% end %>

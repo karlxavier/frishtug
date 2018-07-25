@@ -25,6 +25,7 @@ class OrderCopier
         user_order = @user.orders.create!(order_params(dates_list[index], order))
         create_menus_orders(user_order, order)
         user_order.processing!
+        user_order.reduce_stock!
         RecordLedger.new(user, user_order).record!
       end
     end

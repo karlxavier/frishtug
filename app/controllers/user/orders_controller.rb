@@ -1,7 +1,7 @@
 class User::OrdersController < User::BaseController
   before_action :set_order, :set_menu, :set_cart, :set_order_to_fresh, only: [:store, :remove]
-  before_action :set_order_by_id, only: [:persist, :cancel, :undo_cancel]
-  respond_to :js, only: :persist
+  before_action :set_order_by_id, only: [:persist, :cancel, :undo_cancel, :persist_template]
+  respond_to :js, only: [:persist, :persist_template]
 
   def show
     @order = Order.find(params[:id])
@@ -41,6 +41,11 @@ class User::OrdersController < User::BaseController
     end
     @order.fresh! if @order.menus_orders.size == 0
     @order.touch
+    respond_with(@order)
+  end
+
+  def persist_template
+    @order.save
     respond_with(@order)
   end
 
@@ -93,7 +98,7 @@ class User::OrdersController < User::BaseController
   end
 
   def set_order_to_fresh
-    @order.fresh! unless @order.fresh?
+    @order.fresh! unless @order.fresh? || @order.template?
   end
 
   def menu_size

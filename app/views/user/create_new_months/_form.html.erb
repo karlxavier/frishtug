@@ -1,0 +1,92 @@
+<%= tag.div class: 'row', id: 'orders-form', data: {
+    orders: order.to_json,
+    menus_orders_attributes: order.menus_orders.to_json,
+    charges: {
+      tax: order.total_tax,
+      excess: order.excess,
+      shipping_fee: current_user.subscribed? ? nil : order.shipping_fee,
+      sub_total: order.sub_total,
+      total: order.total
+    }.to_json,
+    pending_credits: current_user.pending_credits.activate_on(order.placed_on).where(order_id: [order.id, nil]).to_json,
+    schedule: params[:schedule].to_json,
+  } do %>
+    <div 
+      role="main" 
+      id="meal-form__container"
+      :class="sidebar_shown === false ? 'col-12 col-md-12 col-lg-12' : 'col-8 col-md-8 col-lg-8'">
+      <div class="row header py-4 meal-form__header border-bottom-grey mb-4">
+        <div class="col-3 dark-font-color">
+          <%= back_to_create_new_month_link(action_name.upcase, schedule: params[:schedule]) %>
+          MEAL PLAN
+        </div>
+        <div class="col-9">
+          <div class="sidebar-controls float-right ml-4">
+            <a href="javascript:void(0)" class="btn btn-outline-dark show-sidebar" v-show="!sidebar_shown" @click="sidebar_shown = true">Show Meals</a>
+          </div>
+          <% if action_name != 'edit' %>
+            <div class="float-right ml-4 col-6">
+              <%= form_with url: user_duplicate_meals_path(date: params[:date], order: order.id),
+                class: 'form-inline', local: true do |f| %>
+                <div class="input-group">
+                  <%= f.select :order_id,
+                    @user_order_options,
+                    {}, class: 'form-control font-size-14' %>
+                  <div class="input-group-append">
+                    <%= f.button class: 'btn btn-brown', data: {
+                      toggle: 'tooltip',
+                      placement: 'top'
+                    }, title: 'Duplicate Meal' do %>
+                      <i class="fa fa-copy"></i> Duplicate Meal
+                    <% end %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+          <div class="float-right">
+            <%= format_date_AABBDD(params[:date]) %>
+          </div>
+        </div>
+      </div>
+      <items 
+      v-bind:items="items"
+      v-bind:order="order"
+      @add-item="addItem"
+      @remove-item="removeItem"
+      @add-add-on="addAddOn"
+      @remove-add-on="removeAddOn">
+      </items>
+      <go-to-top v-bind:right="getRightPosition()"></go-to-top>
+    </div>
+    <div class="col-4 col-md-4 col-lg-4 weekly-meal-sidebar fixed-rigth px-0" role="sidebar" id="sidebar" style="top: 5.4rem; background: #fff;" v-show="sidebar_shown">
+      <sidebar 
+      v-bind:order="order" 
+      v-bind:unreduce_items="unreduce_items"
+      v-bind:tax="tax"
+      v-bind:total="total"
+      v-bind:sub_total="sub_total"
+      v-bind:excess="excess"
+      v-bind:shipping_fee="shipping_fee"
+      @add-item="addItem"
+      @remove-item="removeItem"
+      @on-sidebar-hide="sidebar_shown = false"
+      @on-save-meal="saveOrder">
+        <div class="row mx-0" slot="pending_credit" v-show="pending_credits.length > 0">
+          <ul class="list-unstyled">
+            <li>Available Credits</li>
+            <li v-for="credit in pending_credits">
+              <input type="radio" name="credits" :value="credit.id"  :id="`credit-${credit.id}`" :checked="credit.order_id === order.id" @click="setCredit(credit)">
+              <label :for="`credit-${credit.id}`">
+                {{ credit.amount | to_currency }}
+              </label>
+            </li>
+          </ul>
+        </div>
+      </sidebar>
+    </div>
+  <% end %>
+  <%= content_for :footer_js do %>
+    <%= javascript_pack_tag "user/weekly_meals_form" %>
+    <%= stylesheet_pack_tag "user/weekly_meals_form" %>
+  <% end %>

@@ -5,7 +5,8 @@ module User::WeeklyMealsHelper
   end
 
   def is_ordering?
-    controller_name == 'weekly_meals' && action_name.in?(['new', 'edit'])
+    controller_name == 'weekly_meals' && action_name.in?(['new', 'edit']) ||
+    controller_name == 'create_new_months' && action_name.in?(['new', 'edit'])
   end
 
   def copy_menu_checkbox(order_preference)

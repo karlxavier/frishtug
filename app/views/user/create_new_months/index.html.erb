@@ -1,0 +1,39 @@
+<h4 class="text-uppercase font-size-18">Setup next month meals</h4>
+<div class="row">
+  <div class="col-md-4">
+    <h6 class="text-muted"><%= "#{@schedules.first.strftime('%B')} to #{@schedules.last.strftime('%B')}" %></h6>
+    <%= calendar @schedules.first do |date| %>
+      <%
+        url = new_user_create_new_month_path(date: date)
+        klass = "active"
+        if @order_dates.include?(date)
+          url = edit_user_create_new_months_path(date: date)
+          klass = "bg-success"
+        end
+      %>
+      <%= link_to_if @schedules.include?(date), 
+        date.strftime('%d'), 
+        url, 
+        class: klass do %>
+        <%= link_to date.strftime('%d'), '#' %>
+      <% end %>
+    <% end %>
+
+    <%= calendar @schedules.last do |date| %>
+      <%
+        url = new_user_create_new_month_path(date: date)
+        klass = "active"
+        if @order_dates.include?(date)
+          url = edit_user_create_new_months_path(date: date)
+          klass = "bg-success"
+        end
+      %>
+      <%= link_to_if @schedules.include?(date), 
+        date.strftime('%d'), 
+        url, 
+        class: klass do %>
+        <%= link_to date.strftime('%d'), '#' %>
+      <% end %>
+    <% end %>
+  </div>
+</div>

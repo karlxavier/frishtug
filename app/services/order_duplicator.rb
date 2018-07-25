@@ -10,7 +10,9 @@ class OrderDuplicator
 
   def run
     copy_values_to(@order)
+    return true if @order.template?
     @order.processing!
+    @order.reduce_stock!
     RecordLedger.new(@order.user, @order).record!
     true
   end

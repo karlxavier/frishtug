@@ -28,9 +28,11 @@
 class Order < ApplicationRecord
   include Computable
   include UserDelegator
-  enum status: %i[processing completed failed cancelled refunded fulfilled fresh pending_payment payment_failed]
+
+  enum status: %i[processing completed failed cancelled refunded fulfilled fresh pending_payment payment_failed template]
   enum delivery_status: %i[in_transit received address_not_found]
   enum payment_status: %i[unpaid paid]
+
   belongs_to :user
   has_many :menus_orders, dependent: :destroy
   has_many :menus, through: :menus_orders
@@ -39,17 +41,17 @@ class Order < ApplicationRecord
   has_one :shipping_charge, dependent: :destroy
   has_many :search_results, as: :searchable
   has_one :pending_credit, dependent: :destroy
-  scope :completed, -> { where.not(delivered_at: nil) }
   has_many :ledgers, dependent: :destroy
   has_many :tax_ledgers, dependent: :destroy
   has_many :additional_ledgers, dependent: :destroy
 
+  scope :completed, -> { where.not(delivered_at: nil) }
+  scope :not_empty, -> { joins(:menus_orders).group(:placed_on).having('count(menus_orders.id) > 0')}
   accepts_nested_attributes_for :menus_orders, allow_destroy: true
 
   before_create   :set_series_number
-  after_create    :set_sku
-  after_save      :create_pending_credit
-  before_save     :run_inventory_accounter, :re_account_on_failed_payment
+  after_save      :create_pending_credit, :set_sku
+  before_save     :re_account_on_failed_payment
   after_touch     :create_refundable_credit
   before_destroy  :re_account_inventory, prepend: true
 
@@ -81,7 +83,7 @@ class Order < ApplicationRecord
   end
 
   def self.active_orders
-    joins(:menus_orders).where.not(status: [:fresh, :fulfilled, nil]).group('orders.id').having('count(menus_orders) >= 1')
+    joins(:menus_orders).where.not(status: [:fresh, :fulfilled, :template, nil]).group('orders.id').having('count(menus_orders) >= 1')
   end
 
   def self.not_placed_between?(range)
@@ -108,6 +110,10 @@ class Order < ApplicationRecord
     order(placed_on: :asc).pluck(:placed_on).map {|p| p&.strftime('%Y-%m-%d')}.in_groups_of(5,false)
   end
 
+  def reduce_stocks!
+    InventoryAccounter.new(self).run if processing?
+  end
+
   private
 
   def re_account_on_failed_payment
@@ -119,11 +125,7 @@ class Order < ApplicationRecord
   end
 
   def create_pending_credit
-    CreateRefundForBlackoutDate.new(self).process
-  end
-
-  def run_inventory_accounter
-    InventoryAccounter.new(self).run if processing? && status_changed?
+    CreateRefundForBlackoutDate.new(self).process unless template?
   end
 
   def set_sku

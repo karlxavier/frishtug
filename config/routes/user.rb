@@ -34,6 +34,7 @@ namespace :user do
       get :persist
       get :cancel
       get :undo_cancel
+      get :persist_template
     end
   end
   resources :set_default_payments, only: :create
@@ -58,6 +59,11 @@ namespace :user do
   resources :groups, only: :create do
     collection do 
       post :join
+    end
+  end
+  resources :create_new_months, only: %i[index create new] do
+    collection do
+      get :edit
     end
   end
 end

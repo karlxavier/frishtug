@@ -37,7 +37,7 @@ class ShoppingCart
         menus_order.quantity += quantity.to_f
         menus_order.save
 
-        return true if order.fresh?
+        return true if order.fresh? || order.template?
         stock.reduce
         StockAccounter.new(stock, order.placed_on).increase
         true
@@ -54,7 +54,7 @@ class ShoppingCart
       add_on = AddOn.find(add_on_id)
       menus_order.add_ons << add_on.id
 
-      return if order.fresh?
+      return if order.fresh? || order.template?
       stock = Stock.new(add_on.menu_id, menus_order.quantity)
       stock.reduce
       StockAccounter.new(stock, order.placed_on).increase
@@ -71,7 +71,7 @@ class ShoppingCart
       return if add_on_index.nil?
       menus_order.add_ons.delete_at(add_on_index)
 
-      return if order.fresh?
+      return if order.fresh? || order.template?
       stock = Stock.new(add_on.menu_id, menus_order.quantity)
       stock.return
       StockAccounter.new(stock, order.placed_on).decrease
@@ -85,7 +85,7 @@ class ShoppingCart
       end
 
 
-      return true if order.fresh?
+      return true if order.fresh? || order.template?
       stock = Stock.new(menu_id, quantity)
       stock.return
       StockAccounter.new(stock, order.placed_on).decrease

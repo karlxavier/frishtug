@@ -207,8 +207,14 @@ if (node) {
       },
       saveOrder: function() {
         const self = this
+        let url = `/user/orders/persist?order_id=${self.order.id}`
+
+        if (self.order.status == 'template') {
+          url = `/user/orders/persist_template?order_id=${self.order.id}`
+        }
+
         Rails.ajax({
-          url: `/user/orders/persist?order_id=${self.order.id}`,
+          url: url,
           type: "GET"
         })
       }

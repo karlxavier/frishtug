@@ -1,4 +1,15 @@
+<% 
+  first_date = Date.current
+  second_date = Date.current.next_month
 
+  if @date.present?
+    first_date = @date
+    second_date = @date.next_month
+  elsif @orders.present?
+    first_date = @orders.first[:placed_on].to_date
+    second_date = @orders.first[:placed_on].to_date.next_month
+  end
+%>
 <%= content_tag :div, class: 'alert alert-info helper-alert' do %>
   To set up the rest of the weekly meals, click to copy your weekly meals below, or click on each date to select your selection, in each date you will also have the option of copying a single day.
 <% end %>
@@ -7,7 +18,7 @@
     <%= render partial: 'user/weekly_meals/calendar', locals: {
       active_this_week: @active_this_week,
       active_orders: @active_orders,
-      calendar_date: @orders.present? ? @orders.first[:placed_on].to_date : Date.current,
+      calendar_date: first_date,
       available_dates: @available_dates,
       disable_right_control: false,
       disable_left_control: false
@@ -16,7 +27,7 @@
     <%= render partial: 'user/weekly_meals/calendar', locals: {
       active_this_week: @active_this_week,
       active_orders: @active_orders,
-      calendar_date: @orders.present? ? @orders.first[:placed_on].to_date.next_month : Date.current.next_month,
+      calendar_date: second_date,
       available_dates: @available_dates,
       disable_right_control: true,
       disable_left_control: true
