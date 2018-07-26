@@ -44,7 +44,8 @@ class CreateRefundableCredit
     pending_credit.update_attributes(
       amount: refundable_amount,
       activation_date: Time.current,
-      charge_id: order.charge_id
+      charge_id: order.charge_id,
+      remarks: "Credit from order date #{order.placed_on.strftime('%B %d, %Y')}"
     )
   end
 end

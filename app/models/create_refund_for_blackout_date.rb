@@ -36,7 +36,8 @@ class CreateRefundForBlackoutDate
     pending_credit.update_attributes(
       amount: total,
       activation_date: user.orders.first.placed_on + 28.days,
-      charge_id: retrieve_invoice.charge
+      charge_id: retrieve_invoice.charge,
+      remarks: "Blackout date for #{order.placed_on&.strftime('%B %d, %Y')}"
     )
   end
 end
