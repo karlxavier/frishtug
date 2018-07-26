@@ -37,7 +37,7 @@ class CreateRefundForBlackoutDate
       amount: total,
       activation_date: user.orders.first.placed_on + 28.days,
       charge_id: retrieve_invoice.charge,
-      remarks: "Blackout date for #{order.placed_on&.strftime('%B %d, %Y')}"
+      remarks: "Black-out date #{order.placed_on&.strftime('%B %d, %Y')}"
     )
   end
 end
