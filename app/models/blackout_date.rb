@@ -11,9 +11,17 @@
 #
 
 class BlackoutDate < ApplicationRecord
+  after_create :process_affected_orders
+
   class << self
     def pluck_dates
       pluck(:month, :day).map { |d| "#{d[0]} #{d[1] >= 10 ? d[1] : "0#{d[1]}"}" }
     end
+  end
+
+  private
+
+  def process_affected_orders
+    BlackoutAffectedOrdersWorker.perform_async(self.id)
   end
 end
