@@ -1,11 +1,19 @@
 class OrderCopierWorker
   include Sidekiq::Worker
 
-  def perform(user_id)
+  def perform(user_id, old_start_date, old_end_date)
+    start_date = Time.zone.parse(old_start_date)
+    end_date = Time.zone.parse(old_end_date)
+    old_range = DateRange.new(start_date.beginning_of_day, end_date.end_of_day)
     user = User.find(user_id)
-    return unless user.orders.count % 20 == 0
     full_month_dates = MonthScheduler.new(user).create_full_month!
-    orders = user.orders.where(status: [:completed, :processing]).last(20)
+    orders = user.orders.placed_between?(old_range).
+                where(status: [:processing, :completed, :cancelled]).
+                order(placed_on: :asc)
+
+    return if orders.length == 0
+    return unless orders.length % 20 == 0
+
     20.times do |index|
       order = orders[index]
       range = DateRange.new(

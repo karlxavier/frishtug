@@ -8,11 +8,8 @@ class StripeSubscriptioner
   def run
     customer = find_or_create_stripe_customer
     subscription = subscribe_customer(customer.id)
-    user.update_attributes(
-      stripe_customer_id: customer.id,
-      stripe_subscription_id: subscription.id,
-      subscribe_at: Time.current
-    )
+    create_schedule(user)
+    update_user_subscription(customer, subscription)
     true
   rescue Stripe::StripeError => e
     errors.add(:base, e.message)
@@ -29,12 +26,7 @@ class StripeSubscriptioner
   def cancel
     subscription = retrieve
     subscription.delete
-    user.update_attributes(
-      stripe_subscription_id: nil,
-      subscribe_at: nil,
-      subscription_expires_at: nil,
-      plan_id: nil
-    )
+    update_cancelled_subscription
     true
   rescue Stripe::InvalidRequestError => e
     logger.error "Stripe error while canceling the subscription: #{e.message}"
@@ -45,6 +37,29 @@ class StripeSubscriptioner
   private
 
   attr_accessor :user
+
+  def update_cancelled_subscription
+    user.update_attributes(
+      stripe_subscription_id: nil,
+      subscribe_at: nil,
+      subscription_expires_at: nil,
+      plan_id: nil
+    )
+  end
+
+  def update_user_subscription(customer, subscription)
+    user.update_attributes(
+      stripe_customer_id: customer.id,
+      stripe_subscription_id: subscription.id,
+      subscribe_at: Time.current
+    )
+  end
+
+  def create_schedule(user)
+    schedule = Schedule.where(user_id: user.id).first_or_create!(option: :monday_to_friday)
+    schedule.start_date = Time.current
+    schedule.save
+  end
 
   def find_or_create_stripe_customer
     if existing_stripe_customer?

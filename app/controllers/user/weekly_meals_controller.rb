@@ -7,11 +7,11 @@ class User::WeeklyMealsController < User::BaseController
   START_DATE = Date.current.beginning_of_week(:sunday)
 
   def index
-    order = current_user.orders
-    @active_this_week = order.placed_between?(@date_range).pluck_placed_on
-    @active_orders = order.active_orders.pluck_placed_on.last(20)
-    @completed = order.completed.pluck_placed_on
-    @orders = order.pending_deliveries
+    @orders = current_user.orders
+    @active_this_week = @orders.placed_between?(@date_range).pluck_placed_on
+    @active_orders = current_user.get_current_subscription_orders.pluck_placed_on
+    @completed = @orders.completed.pluck_placed_on
+    @orders = current_user.get_current_subscription_orders.pending_deliveries
     @order_preference = current_user.order_preference
     if current_user.subscribed?
       weekly_scheduler = WeeklyScheduler.new(current_user)

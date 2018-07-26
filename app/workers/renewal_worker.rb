@@ -8,6 +8,8 @@ class RenewalWorker
 
     subscribed_users.find_each do |user|
       next if user.stripe_subscription_id.nil?
+      old_start_date = user.subscribe_at
+      old_end_date = user.subscription_expires_at
       plan_id = user.plan_id
 
       old_subscription =
@@ -28,7 +30,7 @@ class RenewalWorker
         subscribe_at: CURRENT_TIME + 1.day,
         plan_id: plan_id)
 
-      OrderCopierWorker.perform_async(user.id)
+      OrderCopierWorker.perform_async(user.id, old_start_date, old_end_date)
       if user.plan.per_month?
         charge = StripeCharger.new(user, user.plan.shipping_fee)
         charge.charge_shipping

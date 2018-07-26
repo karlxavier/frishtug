@@ -126,9 +126,23 @@ class User < ApplicationRecord
   end
 
   def orders_completed?
-    counter = orders.where(status: [:processing, :completed, :cancelled]).count
+    counter = self.get_current_subscription_orders.size
     return false if counter.zero?
     counter % 20 == 0
+  end
+
+  def get_current_subscription_orders
+    if self.subscribed?
+      start_day = self.subscribe_at.beginning_of_day
+      end_day = self.subscription_expires_at.end_of_day
+      range = DateRange.new(start_day, end_day)
+      orders.placed_between?(range).
+            where(status: [:processing, :completed, :cancelled, :pending_payment]).
+            order(placed_on: :asc)
+    else
+      orders.where(status: [:processing, :completed, :cancelled]).
+      order(placed_on: :asc)
+    end
   end
 
   def not_completed_orders

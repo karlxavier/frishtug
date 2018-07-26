@@ -62,7 +62,7 @@ class Order < ApplicationRecord
   end
 
   def self.pending_deliveries
-    self.active_orders.order(placed_on: :asc).includes(menus: [:menu_category]).map do |o|
+    includes(menus: [:menu_category]).map do |o|
       with_shipping = o.user.plan.interval == 'month'
       {
         placed_on: o.placed_on,
