@@ -9,16 +9,16 @@ class StripeCharger
 
   def run
     create_a_customer unless @user.stripe_customer_id.present?
-    Stripe::Charge.create(
+    response = Stripe::Charge.create(
       amount: amount_to_cents,
       currency: 'usd',
       customer: @user.stripe_customer_id,
       description: "Single Order Charge for #{@user.full_name} <#{@user.email}>"
     )
-    true
+    { success: true, response: response }
   rescue => e
     errors.add(:base, e.message)
-    false
+    { success: false, response: nil }
   end
 
   def charge_excess!

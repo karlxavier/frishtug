@@ -41,10 +41,13 @@ class ChargeUser
   def charge!
     calculate_payment
     return order unless amount_valid?
-    stripe = StripeCharger.new(user, @amount_to_pay)
-    if stripe.run
+    stripe = StripeCharger.new(user, @amount_to_pay).run
+    if stripe[:success]
       create_bill_history('Order Charge')
-      order.update_columns(status: :processing)
+      order.update_attributes(
+        status: :processing,
+        charge_id: stripe[:response].id
+      )
       return order
     else
       errors.add(:charge, stripe.errors.full_messages.join(', '))

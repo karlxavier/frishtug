@@ -167,8 +167,8 @@ class RegistrationForm
 
   def create_a_charge(user)
     amount_to_pay = OrderCalculator.new(user.orders.first).total
-    charge = StripeCharger.new(user, amount_to_pay)
-    if charge.run
+    charge = StripeCharger.new(user, amount_to_pay).run
+    if charge[:success]
       user.orders.each do |order|
         order.bill_histories.create!(
           amount_paid: amount_to_pay,
@@ -176,6 +176,7 @@ class RegistrationForm
           billed_at: Time.current,
           user_id: user.id
         )
+        order.update_attributes(charge_id: charge[:response].id)
       end
     else
       errors.add(:base, charge.errors.full_message.join(', '))
