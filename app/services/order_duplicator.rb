@@ -12,7 +12,7 @@ class OrderDuplicator
     copy_values_to(@order)
     return true if @order.template?
     @order.processing!
-    @order.reduce_stock!
+    @order.reduce_stocks!
     RecordLedger.new(@order.user, @order).record!
     true
   end

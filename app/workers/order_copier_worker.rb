@@ -33,7 +33,7 @@ class OrderCopierWorker
       end
       
       new_order.processing!
-      new_order.reduce_stock!
+      new_order.reduce_stocks!
       RecordLedger.new(user, new_order).record!
       order.fulfilled!
     end
