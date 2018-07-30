@@ -57,5 +57,6 @@ class CreateRefundableCredit
       charge_id: order.charge_id,
       remarks: "Credit from order date #{order.placed_on.strftime('%B %d, %Y')}"
     )
+    order.update_attributes(total_price: current_total)
   end
 end
