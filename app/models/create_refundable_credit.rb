@@ -25,6 +25,10 @@ class CreateRefundableCredit
     OrderCalculator.new(order).total
   end
 
+  def total_refundable_amount
+    order.ledgers.paid.where(charge_id: order.charge_id).map(&:amount).inject(:+)
+  end
+
   def limit
     user.plan.limit
   end
@@ -34,10 +38,16 @@ class CreateRefundableCredit
   end
 
   def refundable_amount
-    total - current_total
+    refund_total = total - current_total
+    if refund_total > total_refundable_amount
+      total_refundable_amount
+    else
+      refund_total
+    end
   end
 
   def create_a_refund
+    return if refundable_amount <= 0
     pending_credit = user.pending_credits.
       where(placed_on_date: order.placed_on, order_id: nil).first_or_create
 
