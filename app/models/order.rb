@@ -125,7 +125,7 @@ class Order < ApplicationRecord
   end
 
   def create_pending_credit
-    CreateRefundForBlackoutDate.new(self).process unless template?
+    CreateRefundForBlackoutDate.new(self).process unless template? || fresh?
   end
 
   def set_sku

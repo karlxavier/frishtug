@@ -16,6 +16,7 @@ class CreateRefundForBlackoutDate
   private
 
   def valid?
+    return false unless user.subscribed?
     return false if total <= 0
     return false unless BLACKOUT_DATES.include?(order.placed_on&.strftime('%B %d'))
     true

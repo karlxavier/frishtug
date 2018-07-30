@@ -5,6 +5,7 @@ class User::WeeklyMealsController < User::BaseController
   before_action :user_has_schedule?, :set_date_range, :set_date, only: :index
   respond_to :js, only: :category
   START_DATE = Date.current.beginning_of_week(:sunday)
+  BLACKOUT_DATES = BlackoutDate.pluck_dates.freeze
 
   def index
     @orders = current_user.orders
@@ -111,6 +112,10 @@ class User::WeeklyMealsController < User::BaseController
     placed_on.to_date == Date.current
   end
 
+  def is_blackout_date?
+    BLACKOUT_DATES.include?(placed_on.strftime('%B %d'))
+  end
+
   def editable?
     if is_today?
       flash[:error] = 'Too late to edit your meal for today.'
@@ -124,6 +129,11 @@ class User::WeeklyMealsController < User::BaseController
 
     if is_yesterday?
       flash[:error] = 'Too late to edit your delivered meal.'
+      redirect_back fallback_location: user_weekly_meals_path
+    end
+
+    if is_blackout_date?
+      flash[:error] = 'Cant edit black-out date.'
       redirect_back fallback_location: user_weekly_meals_path
     end
   end
