@@ -11,6 +11,8 @@
 #  placed_on_date  :datetime
 #  order_id        :bigint(8)
 #  charge_id       :string
+#  remarks         :string
+#  status          :integer          default("pending_refund")
 #
 
 FactoryBot.define do

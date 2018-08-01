@@ -4,7 +4,8 @@
       <tr>
         <th>Full Name</th>
         <th>Amount</th>
-        <th>Credit Activation Date</th>
+        <th>Order Date</th>
+        <th>Status</th>
       </tr>
     </thead>
     <tbody>
@@ -12,10 +13,24 @@
         <tr>
           <td><%= pending_credit.user.full_name %></td>
           <td><%= to_currency(pending_credit.amount) %></td>
-          <td><%= pending_credit.activation_date.strftime('%B %d, %Y @ %I:%M %p') %></td>
+          <td><%= pending_credit.placed_on_date&.strftime('%B %d, %Y') %></td>
+          <td class="<%= pending_credit.status  %>">
+            <%= pending_credit.status.humanize %>
+          </td>
         </tr>
       <% end %>
     </tbody>
   </table>
   <%= paginate @pending_credits %>
+<% end %>
+
+<%= content_for :header_js do %>
+  <style lang="css">
+    .pending_refund {
+      color: var(--secondary);
+    } 
+    .refunded {
+      color: var(--cyan);
+    }
+  </style>
 <% end %>

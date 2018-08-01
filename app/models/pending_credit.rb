@@ -11,9 +11,12 @@
 #  placed_on_date  :datetime
 #  order_id        :bigint(8)
 #  charge_id       :string
+#  remarks         :string
+#  status          :integer          default("pending_refund")
 #
 
 class PendingCredit < ApplicationRecord
+  enum status: %i[pending_refund refunded]
   belongs_to :user
   belongs_to :order, optional: true
 

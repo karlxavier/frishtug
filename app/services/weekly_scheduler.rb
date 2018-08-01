@@ -38,8 +38,7 @@ class WeeklyScheduler < ScheduleMaker
   end
 
   def removable_dates
-    user.orders
-        .where.not(status: [:fulfilled, nil]).pluck(:placed_on).map(&:to_date)
+    user.orders.where.not(status: [:fulfilled, nil]).pluck(:placed_on).compact.map(&:to_date)
   end
 
   def format_date(date)

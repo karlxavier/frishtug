@@ -34,11 +34,18 @@ class CreateRefundForBlackoutDate
   def create_a_refund
     pending_credit = user.pending_credits.where(placed_on_date: order.placed_on).first_or_create
 
-    pending_credit.update_attributes(
-      amount: total,
-      activation_date: user.orders.first.placed_on + 28.days,
-      charge_id: retrieve_invoice.charge,
-      remarks: "Black-out date #{order.placed_on&.strftime('%B %d, %Y')}"
-    )
+    if retrieve_invoice.nil?
+      CreateBlackoutRefundWorker.perform_at(user.subscribe_at, order.id)
+      return
+    end
+
+    unless pending_credit.refunded?
+      pending_credit.update_attributes(
+        amount: total,
+        activation_date: user.orders.first.placed_on + 28.days,
+        charge_id: retrieve_invoice.charge,
+        remarks: "Black-out date #{order.placed_on&.strftime('%B %d, %Y')}"
+      )
+    end
   end
 end

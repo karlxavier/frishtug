@@ -1,16 +1,19 @@
 class MoveOrdersSchedule
   prepend SimpleCommand
-  ORDER_STATUSES_TO_SKIP = [
-    "completed",
-    "fullfilled",
-    "failed",
-    "refunded"
+  BLACKOUT_DATES = BlackoutDate.pluck_dates.map { |d| Time.zone.parse(d) }.freeze
+  ORDER_STATUSES_TO_SKIP = %i[
+    completed
+    fulfilled
+    failed
+    refunded
+    template
   ].freeze
 
   def initialize(user)
     @user = user
-    @orders = user.orders
-    @schedules ||= MonthScheduler.new(user).create_full_month!
+    @orders = user.orders.where.not(placed_on: BLACKOUT_DATES, status: ORDER_STATUSES_TO_SKIP)
+    month ||= MonthScheduler.new(user).create_full_month!
+    @schedules = month - BLACKOUT_DATES.map(&:to_date)
   end
 
   def call
@@ -22,13 +25,8 @@ class MoveOrdersSchedule
   attr_accessor :orders, :user, :schedules
 
   def move_order_schedule!
-    orders.each_with_index do |order, index|
-      next if ORDER_STATUSES_TO_SKIP.include?(order.status)
-      move_order(order, index)
+    schedules.length.times do |index|
+      orders[index]&.update_attributes(placed_on: schedules[index])
     end
-  end
-
-  def move_order(order, index)
-    order.update_attributes(placed_on: schedules[index])
   end
 end

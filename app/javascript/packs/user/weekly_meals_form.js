@@ -10,7 +10,6 @@ const node = document.querySelector("#orders-form");
 const order_data = JSON.parse(node.dataset.orders)
 const menus_orders = JSON.parse(node.dataset.menusOrdersAttributes)
 const charges = JSON.parse(node.dataset.charges)
-const pending_credits = JSON.parse(node.dataset.pendingCredits)
 order_data.menus_orders_attributes = menus_orders
 
 if (node) {
@@ -28,7 +27,6 @@ if (node) {
       excess: null,
       sidebar_shown: false,
       loaded: false,
-      pending_credits: pending_credits,
       selected_credit: null
     },
     filters: {
@@ -85,17 +83,6 @@ if (node) {
       self.populateCharge(JSON.parse(node.dataset.charges))
     },
     methods: {
-      setCredit: function(credit) {
-        const self = this
-        Rails.ajax({
-          url: `/user/set_credit?order_id=${self.order.id}&pending_credit_id=${credit.id}`,
-          type: 'GET',
-          success: function() {
-            self.selected_credit = credit.id
-            credit.order_id = self.order.id
-          }
-        })
-      },
       getRightPosition: function() {
         if (this.sidebar_shown) {
           return 30

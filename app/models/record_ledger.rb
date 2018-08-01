@@ -5,8 +5,7 @@ class RecordLedger
   end
 
   def record!(notify_user: false)
-    record_with_pending_credit if @order.pending_credit.present?
-    record_both_tax_and_excess unless @order.pending_credit.present?
+    record_both_tax_and_excess
     send_notification if notify_user == true
     true
   rescue => e
@@ -22,13 +21,6 @@ class RecordLedger
     PendingChargeMailer.notify(user_id: user.id, order_id: order.id).deliver
   end
 
-  def record_with_pending_credit
-    total = deduct_pending_credit
-    if total > 0
-      record_excess(total)
-    end
-  end
-
   def record_both_tax_and_excess
     tax = calculate_tax
     excess = calculate_excess
@@ -40,15 +32,6 @@ class RecordLedger
     else
       order.update_columns(status: :processing)
     end
-  end
-
-  def deduct_pending_credit
-    credit = order.pending_credit.amount
-    tax = calculate_tax
-    excess = calculate_excess
-    tax_and_excess_total = tax + excess
-    total = credit - tax_and_excess_total
-    total < 0 ? total.abs : 0
   end
 
   def calculate_tax

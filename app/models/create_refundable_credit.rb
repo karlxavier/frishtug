@@ -49,12 +49,11 @@ class CreateRefundableCredit
   def create_a_refund
     return if refundable_amount <= 0
     pending_credit = user.pending_credits.
-      where(placed_on_date: order.placed_on, order_id: nil).first_or_create
+      where(placed_on_date: order.placed_on, charge_id: order.charge_id).first_or_create
 
     pending_credit.update_attributes(
       amount: refundable_amount,
       activation_date: Time.current,
-      charge_id: order.charge_id,
       remarks: "Credit from order date #{order.placed_on.strftime('%B %d, %Y')}"
     )
     order.update_attributes(total_price: current_total)

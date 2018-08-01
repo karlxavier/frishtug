@@ -10,7 +10,7 @@ class User::RefundableCreditsController < User::BaseController
       charge: @pending_credit.charge_id,
       amount: to_cents(@pending_credit.amount)
     )
-    @pending_credit.destroy
+    @pending_credit.refunded!
     redirect_back fallback_location: :back, notice: 'Refund successful'
   rescue => e
     flash[:error] = e.message
