@@ -9,6 +9,7 @@
             <th>Email</th>
             <th>Contact Number</th>
             <th>Plan</th>
+            <th>Created At</th>
             <th></th>
           </tr>
         </thead>
@@ -25,6 +26,7 @@
               </td>
               <td><%= user.contact_number_phone_number %></td>
               <td><%= user.plan_name %></td>
+              <td><%= user.created_at.strftime('%B %d, %Y @ %I:%M %P') %></td>
               <td>
                 <%= link_to admin_client_path(user), class: 'chocolate-font-color' do %>
                   <i class="fa fa-eye"></i> View
