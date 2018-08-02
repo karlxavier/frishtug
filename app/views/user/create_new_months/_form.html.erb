@@ -8,7 +8,6 @@
       sub_total: order.sub_total,
       total: order.total
     }.to_json,
-    pending_credits: current_user.pending_credits.activate_on(order.placed_on).where(order_id: [order.id, nil]).to_json,
     schedule: params[:schedule].to_json,
   } do %>
     <div 
@@ -72,17 +71,6 @@
       @remove-item="removeItem"
       @on-sidebar-hide="sidebar_shown = false"
       @on-save-meal="saveOrder">
-        <div class="row mx-0" slot="pending_credit" v-show="pending_credits.length > 0">
-          <ul class="list-unstyled">
-            <li>Available Credits</li>
-            <li v-for="credit in pending_credits">
-              <input type="radio" name="credits" :value="credit.id"  :id="`credit-${credit.id}`" :checked="credit.order_id === order.id" @click="setCredit(credit)">
-              <label :for="`credit-${credit.id}`">
-                {{ credit.amount | to_currency }}
-              </label>
-            </li>
-          </ul>
-        </div>
       </sidebar>
     </div>
   <% end %>
