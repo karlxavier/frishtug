@@ -10,7 +10,7 @@ class WeeklyScheduler < ScheduleMaker
 
   def get_schedules_for_selection!
     return [] unless @orders.present?
-    @orders.order(placed_on: :asc).in_groups_of(5, false).map do |o|
+    @orders.placed_between?(range).order(placed_on: :asc).in_groups_of(5, false).map do |o|
       create_array_of_dates(o)
     end
   end
@@ -18,6 +18,13 @@ class WeeklyScheduler < ScheduleMaker
   private
 
   attr_accessor :user
+
+  def range
+    start_date = user.subscribe_at.beginning_of_day
+    end_date = user.subscription_expires_at.end_of_day
+    range = DateRange.new(start_date, end_date)
+    range
+  end
 
   def create_array_of_dates(list)
     list = list.compact

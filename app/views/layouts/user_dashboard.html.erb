@@ -29,6 +29,7 @@
       <div class="row mb-4">
         <%= render 'user/user_sidebar' unless is_ordering? %>
         <div class="<%= main_container_class %>" id="main-container" role="main-container">
+          <%= display_notifications %>
           <%= display_incomplete_plan_notification %>
           <%= display_incomplete_group_notification %>
           <%= display_pending_credits_notification %>
@@ -58,6 +59,10 @@
       <% if @current_order.present? %>
         setInterval(pollScanovator, 10000);
       <% end %>
+
+      setTimeout(function() {
+        $('.notification-alert').alert('close');
+      }, 50000);
     </script>
     <script src="https://use.fontawesome.com/69863dce90.js"></script>
   </body>

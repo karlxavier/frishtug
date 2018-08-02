@@ -1,4 +1,25 @@
 module User::NotificationsHelper
+  def display_notifications
+    notifications = Notification.all
+    if notifications
+      content = notifications.map do |notification|
+        "<strong class='alert-heading'>#{notification.title}</strong>
+        <p>#{notification.body}</p>"
+      end
+      content_tag :div, class: 'alert notification-alert alert-info alert-dismissible fade show' do
+        ("
+          #{content.join(' ')}
+          <button type='button' class='close' data-dismiss='alert' aria-label='Close'>
+            <span aria-hidden='true'>&times;</span>
+          </button>
+        ").html_safe
+      end
+    else
+      nil
+    end
+  end
+
+
   def display_incomplete_plan_notification
     return nil unless current_user.plan
     return nil if current_user.plan.interval != 'month'

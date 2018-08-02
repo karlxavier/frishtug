@@ -36,6 +36,7 @@ class Menu < ApplicationRecord
   validates :name, uniqueness: true
   validate :sanitize_price
   before_save :generate_item_number_from_first_letters_of_name
+  before_save :recalculate_all_active_orders, :notify_users_for_price_change, if: :will_save_change_to_price?
 
   scope :filter_by_category, -> (category_id) { where(menu_category_id: category_id) }
 
@@ -112,5 +113,19 @@ class Menu < ApplicationRecord
 
   def first_letters_of_name
     self[:name].downcase.split.map(&:chr).join
+  end
+
+  def notify_users_for_price_change
+    expiry = Time.current + 6.days
+    title = self.price_was > self.price ? "Price Drop" : "Price Increase"
+    Notification.create(
+      title: title, 
+      body: "Price changes for #{self.name} from #{"$%.2f" % self.price_was} to #{"$%.2f" % self.price}", 
+      expiry: expiry
+    )
+  end
+
+  def recalculate_all_active_orders
+    RecalculateOrdersWorker.perform_async(self.id)
   end
 end
