@@ -8,7 +8,7 @@
         klass = "active"
         if @order_dates.include?(date)
           url = edit_user_create_new_months_path(date: date)
-          klass = "bg-success"
+          klass = "bg-success text-white"
         end
       %>
       <%= link_to_if @schedules.include?(date), 
@@ -25,7 +25,7 @@
         klass = "active"
         if @order_dates.include?(date)
           url = edit_user_create_new_months_path(date: date)
-          klass = "bg-success"
+          klass = "bg-success text-white"
         end
       %>
       <%= link_to_if @schedules.include?(date), 
