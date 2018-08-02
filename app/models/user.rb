@@ -165,6 +165,6 @@ class User < ApplicationRecord
 
     def generate_expiry_date
       return if self.subscribe_at.nil?
-      self.subscription_expires_at = MonthScheduler.new(self).create_full_month!.last
+      self.subscription_expires_at = (MonthScheduler.new(self).create_full_month!.last + 1.day).beginning_of_day
     end
 end

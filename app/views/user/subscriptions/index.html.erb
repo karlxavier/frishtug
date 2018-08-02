@@ -11,7 +11,8 @@
               <p><%= renewal_at(@subscription) %></p>
             </div>
           </div>
-          <button class="btn btn-brown text-uppercase" data-toggle="modal" data-target="#cancel_subscription">Cancel Subscription</button>
+          <button class="btn btn-danger text-uppercase" data-toggle="modal" data-target="#cancel_subscription">Cancel</button>
+          <%= link_to_if(current_user.stripe_subscription_id.present?, "Change", user_change_subscriptions_path, class: 'btn btn-brown text-uppercase') {} %>
           <br>
           <%= link_to 'Show bill history', user_bill_histories_path, class: 'font-size-14 chocolate-font-color' %>
         </div>

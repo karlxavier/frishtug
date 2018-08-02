@@ -23,9 +23,12 @@
   </div>
   <div class="card-footer card__plan_footer">
     <% if plan.for_type != 'group' %>
-      <%= link_to_btn "Choose #{plan.name}", subscribe_user_subscriptions_path(id: plan.id), 'btn-brown plan--btns' %>
+      <%= button_to form_url, class: 'btn text-uppercase btn-brown plan--btns'  do %>
+        <%= hidden_field_tag :id, plan.id %>
+        <%= "Choose #{plan.name}" %>
+      <% end %>
     <% else %>
-      <%= form_with url: user_subscriptions_path,
+      <%= form_with url: form_url,
         local: true do |f| %>
         <%= f.hidden_field :id, value: plan.id %>
         <div class="form-group">

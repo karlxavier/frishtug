@@ -46,7 +46,7 @@ class User::SubscriptionsController < User::BaseController
     if @subscription.run
       create_candidate if is_valid
       create_referrer unless is_valid
-      redirect_to user_subscriptions_path
+      redirect_to user_subscriptions_path, notice: 'Subscription successful'
     else
       remove_plan
       flash[:error] = @subscription.errors.full_messages.join(', ')
