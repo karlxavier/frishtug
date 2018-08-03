@@ -105,13 +105,6 @@
             <div class="row mt-4">
               <div class="col">
                 <% is_disabled = "disabled" unless @orders.menus.present? %>
-                <div 
-                  class="alert alert-info alert-dismissible small fade show" role="alert">
-                  When canceling your order you will not get credit for the rest of the subscriptions days
-                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
                 <%= link_to 'Cancel Delivery',
                   cancel_user_orders_path(order_id: @orders.id, format: :js),
                   class: "btn btn-warning text-uppercase btn-block #{is_disabled}",

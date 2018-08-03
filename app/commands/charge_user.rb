@@ -43,7 +43,7 @@ class ChargeUser
     return order unless amount_valid?
     stripe = StripeCharger.new(user, @amount_to_pay).run
     if stripe[:success]
-      create_bill_history('Order Charge')
+      create_bill_history('Order Charge', stripe[:response].id)
       order.update_attributes(
         status: :processing,
         charge_id: stripe[:response].id
@@ -63,12 +63,13 @@ class ChargeUser
     end
   end
 
-  def create_bill_history(description)
+  def create_bill_history(description, charge_id)
     order.bill_histories.create!(
       amount_paid: @amount_to_pay,
       user: user,
       description: description,
-      billed_at: order.placed_on
+      billed_at: order.placed_on,
+      charge_id: charge_id
     )
     order.paid!
     order
@@ -77,7 +78,7 @@ class ChargeUser
   def calculate_payment
     amount = OrderCalculator.new(order).total
     amount -= last_bill_amount('Order Charge')
-    @amount_to_pay = deduct_pending_credit(amount)
+    @amount_to_pay = amount
   end
 
   def amount_is_negative?
@@ -86,32 +87,5 @@ class ChargeUser
 
   def amount_valid?
     @amount_to_pay >= STRIPE_MINIMUM_AMOUNT
-  end
-
-  def pending_credit
-    order.pending_credit
-  end
-
-  def deduct_pending_credit(amount)
-    return amount unless pending_credit.present?
-
-    pending_amount = pending_credit&.amount || 0
-    total = 0
-
-    return unless pending_amount > 0
-    total = pending_amount - amount
-    if total < 0
-      create_pending_remarks(pending_amount)
-      return total.abs
-    else
-      create_pending_remarks(remarks_amount.abs)
-      return 0
-    end
-  end
-
-  def create_pending_remarks(amount)
-    return if amount <= 0
-    order.remarks = "Used pending credit amount of #{amount.to_f}"
-    order.save
   end
 end

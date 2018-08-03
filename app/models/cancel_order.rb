@@ -6,11 +6,7 @@ class CancelOrder
 
   def run
     if @order.cancelled!
-      @user.pending_credits.create!(
-        amount: OrderCalculator.new(@order).total,
-        activation_date: next_months_first_day,
-        order_id: @order.id
-      )
+      CreateRefundForCanceledOrder.new(@order, @user).process
       true
     end
   end

@@ -26,13 +26,9 @@ class CreateRefundForBlackoutDate
     OrderCalculator.new(order).total
   end
 
-  def retrieve_invoice
-    Stripe::Invoice.all(customer: user.stripe_customer_id, limit: 100).data.
-      keep_if { |s| s[:subscription] == user.stripe_subscription_id }.first
-  end
-
   def create_a_refund
-    if retrieve_invoice.nil?
+    retrieve_invoice = SubscriptionInvoice.new(user).get_invoice
+    unless retrieve_invoice.success
       CreateBlackoutRefundWorker.perform_at(user.subscribe_at, order.id)
       return
     end
@@ -43,7 +39,7 @@ class CreateRefundForBlackoutDate
       pending_credit.update_attributes(
         amount: total,
         activation_date: user.orders.first.placed_on + 28.days,
-        charge_id: retrieve_invoice.charge,
+        charge_id: retrieve_invoice.response.charge,
         remarks: "Black-out date #{order.placed_on&.strftime('%B %d, %Y')}"
       )
     end

@@ -6,8 +6,17 @@ class UncancelOrder
 
   def run
     if @order.update_column(:status, :processing)
-      pending_credits = PendingCredit.where(order_id: @order.id)
-      pending_credits.map { |c| c.destroy }
+      pending_credits = @user.pending_credits.where(order_id: @order.id)
+      total = 0
+      pending_credits.each do |credit|
+        charge_id = credit.charge_id
+        if credit.refunded?
+          total += credit.amount
+          @order.bill_histories.where(charge_id: charge_id).first.destroy
+        end
+        credit.destroy
+      end
+      ChargeUser.call(@order, @user) if total > 0
       true
     end
   end

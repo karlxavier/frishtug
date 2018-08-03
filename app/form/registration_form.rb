@@ -174,7 +174,8 @@ class RegistrationForm
           amount_paid: amount_to_pay,
           description: 'Order Charge',
           billed_at: Time.current,
-          user_id: user.id
+          user_id: user.id,
+          charge_id: charge[:response].id
         )
         order.update_attributes(charge_id: charge[:response].id)
       end
