@@ -6,26 +6,27 @@
     <% unless @refundables.empty? %>
       <ul class="list-group">
         <% @refundables.each do |i| %>
-          <li class="list-group-item d-flex flex-row justify-content-between">
-            <div class="amount">
-              <strong>Amount: </strong>
-              <p class="text-secondary">
-                <%= to_currency(i.amount) %>
-              </p>
+          <li class="list-group-item d-flex flex-column justify-content-between">
+            <div class="d-flex flex-row justify-content-between">
+              <div class="amount d-flex flex-row">
+                <strong>Amount: </strong>
+                <p class="text-info font-weight-bold ml-2">
+                  <%= to_currency(i.amount) %>
+                </p>
+              </div>
+              <div class="time">
+                <p class="text-secondary">
+                  <%= time_ago_in_words(i.created_at) %> ago.
+                </p>
+              </div>
             </div>
-            <div class="remarks">
+            <div class="remarks d-flex flex-row">
               <strong>Remarks: </strong>
-              <p class="text-secondary">
+              <p class="text-secondary ml-2">
                 <%= i.remarks || "n/a" %>
               </p>
             </div>
-            <div class="time">
-              <strong>Created:</strong>
-              <p class="text-secondary">
-                <%= time_ago_in_words(i.created_at) %> ago.
-              </p>
-            </div>
-            <div class="float-right">
+            <div class="float-right mt-1">
               <%= button_to user_refundable_credit_path(i), method: :put, class: 'btn btn-lg btn-brown text-uppercase' do %>
                 Refund
               <% end %>
