@@ -1,5 +1,4 @@
 class User::RefundableCreditsController < User::BaseController
-  before_action :is_subscribed?
   before_action :set_pending_credit, only: :update
   def index
     @refundables = current_user.pending_credits.pending_refund.page(params[:page]).per(10)
@@ -18,12 +17,6 @@ class User::RefundableCreditsController < User::BaseController
   end
 
   private
-
-  def is_subscribed?
-    unless current_user.subscribed?
-      redirect_back fallback_location: user_dashboard_index_path
-    end
-  end
 
   def set_pending_credit
     @pending_credit = PendingCredit.find(params[:id])

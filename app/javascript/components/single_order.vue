@@ -22,6 +22,11 @@
 <script>
 import Items from './items'
 export default {
+  data: () => {
+    return {
+      search_term: null
+    }
+  },
   components: {
     Items
   },

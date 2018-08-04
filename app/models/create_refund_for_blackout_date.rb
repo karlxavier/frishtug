@@ -16,7 +16,6 @@ class CreateRefundForBlackoutDate
   private
 
   def valid?
-    return false unless user.subscribed?
     return false if total <= 0
     return false unless BLACKOUT_DATES.include?(order.placed_on&.strftime('%B %d'))
     true
@@ -27,10 +26,15 @@ class CreateRefundForBlackoutDate
   end
 
   def create_a_refund
-    retrieve_invoice = SubscriptionInvoice.new(user).get_invoice
-    unless retrieve_invoice.success
-      CreateBlackoutRefundWorker.perform_at(user.subscribe_at, order.id)
-      return
+    if user.subscribed?
+      retrieve_invoice = SubscriptionInvoice.new(user).get_invoice
+      unless retrieve_invoice.success
+        CreateBlackoutRefundWorker.perform_at(user.subscribe_at, order.id)
+        return
+      end
+      charge_id = retrieve_invoice.response.charge
+    else
+      charge_id = order.charge_id
     end
 
     pending_credit = user.pending_credits.where(placed_on_date: order.placed_on).first_or_create
@@ -38,8 +42,8 @@ class CreateRefundForBlackoutDate
     unless pending_credit.refunded?
       pending_credit.update_attributes(
         amount: total,
-        activation_date: user.orders.first.placed_on + 28.days,
-        charge_id: retrieve_invoice.response.charge,
+        activation_date: Time.current,
+        charge_id: charge_id,
         remarks: "Black-out date #{order.placed_on&.strftime('%B %d, %Y')}"
       )
     end
