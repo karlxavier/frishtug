@@ -2,7 +2,7 @@ class User::RefundableCreditsController < User::BaseController
   before_action :is_subscribed?
   before_action :set_pending_credit, only: :update
   def index
-    @refundables = current_user.pending_credits.pending_refund
+    @refundables = current_user.pending_credits.pending_refund.page(params[:page]).per(10)
   end
 
   def update

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module User::NotificationsHelper
   def display_notifications
     notifications = Notification.all
@@ -7,18 +9,15 @@ module User::NotificationsHelper
         <p>#{notification.body}</p>"
       end
       content_tag :div, class: 'alert notification-alert alert-info alert-dismissible fade show' do
-        ("
+        "
           #{content.join(' ')}
           <button type='button' class='close' data-dismiss='alert' aria-label='Close'>
             <span aria-hidden='true'>&times;</span>
           </button>
-        ").html_safe
+        ".html_safe
       end
-    else
-      nil
     end
   end
-
 
   def display_incomplete_plan_notification
     return nil unless current_user.plan
@@ -27,7 +26,7 @@ module User::NotificationsHelper
     days = 20 - current_user.orders.processing.count
     remaining_weeks = days / 5
     remaining_days = days % 5
-    orders_to_complete = "#{pluralize(remaining_weeks, 'week')} #{ "and " + pluralize(remaining_days, 'day') unless remaining_days.zero?}"
+    orders_to_complete = "#{pluralize(remaining_weeks, 'week')} #{'and ' + pluralize(remaining_days, 'day') unless remaining_days.zero?}"
 
     content_tag :div, class: 'alert alert-info' do
       ("You must complete your plan, you still have #{orders_to_complete} to fill " +
@@ -55,8 +54,8 @@ module User::NotificationsHelper
     return nil unless current_user.subscribed?
     credits = current_user.ledgers.unpaid
     return nil unless credits.present?
-    content_tag :div, class: 'alert alert-danger font-size-18' do
-      ("You have pending charges that you still need to pay " +
+    content_tag :div, class: 'alert alert-danger' do
+      ('You have pending charges that you still need to pay ' +
       link_to('click here.', user_ledgers_path)).html_safe
     end
   end

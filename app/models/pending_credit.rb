@@ -28,6 +28,6 @@ class PendingCredit < ApplicationRecord
   end
 
   def self.refundable
-    where(order_id: nil)
+    pending_refund.where(order_id: nil)
   end
 end

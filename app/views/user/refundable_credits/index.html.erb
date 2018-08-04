@@ -6,7 +6,7 @@
     <% unless @refundables.empty? %>
       <ul class="list-group">
         <% @refundables.each do |i| %>
-          <li class="list-group-item d-flex flex-column justify-content-between">
+          <li class="list-group-item d-flex flex-column justify-content-between mt-1">
             <div class="d-flex flex-row justify-content-between">
               <div class="amount d-flex flex-row">
                 <strong>Amount: </strong>
@@ -34,6 +34,9 @@
           </li>
         <% end %>
       </ul>
+      <div class="mt-4">
+        <%= paginate @refundables %>
+      </div>
     <% else %>
       Nothing to refund
     <% end %>
