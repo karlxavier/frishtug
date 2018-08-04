@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class MoneyConverter
-  ONE_CENT = 100.0.freeze
+  ONE_CENT = 100.0
   attr_reader :amount
 
   def initialize(amount)

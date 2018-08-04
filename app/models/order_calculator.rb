@@ -1,11 +1,12 @@
-class OrderCalculator
+# frozen_string_literal: true
 
+class OrderCalculator
   def initialize(order)
     @order = order
     @user = if @order.respond_to?(:each)
-      @order.first.user
-    else
-      @order.user
+              @order.first.user
+            else
+              @order.user
     end
     @minimum_charge = @user.plan&.minimum_charge || 0
     @limit = @user.plan&.limit || 0
@@ -18,11 +19,12 @@ class OrderCalculator
     sum_of(
       total_price,
       shipping_charge,
-      self.class.new(order).total_tax)
+      self.class.new(order).total_tax
+    )
   end
 
   def total_without_shipping
-    sum_of(total_item_price, )
+    sum_of(total_item_price)
   end
 
   def total_without_tax
@@ -41,16 +43,14 @@ class OrderCalculator
     excess = []
     orders.each do |order|
       total = self.class.new(order).total_without_shipping
-      if total > @limit
-        excess << total - @limit
-      end
+      excess << total - @limit if total > @limit
     end
     excess.inject(:+) || 0
   end
 
   def total_tax
     taxable_items = order.menus_orders.select { |m| m.menu.tax == true }
-    total = taxable_items.map {|o| calculate_tax(o.menu_price) * o.quantity }.inject(:+) || 0
+    total = taxable_items.map { |o| calculate_tax(o.menu_price) * o.quantity }.inject(:+) || 0
     total + total_add_ons_tax
   end
 

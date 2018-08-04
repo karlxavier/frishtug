@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: notifications
@@ -16,6 +18,6 @@ class Notification < ApplicationRecord
   private
 
   def delete_on_expiry
-    DeleteNotificationOnExpiryWorker.perform_at(self.expiry, self.id)
+    DeleteNotificationOnExpiryWorker.perform_at(expiry, id)
   end
 end

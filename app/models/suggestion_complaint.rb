@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: suggestion_complaints
@@ -11,8 +13,7 @@
 #
 
 class SuggestionComplaint < ApplicationRecord
-	enum type: { suggestion: 'suggestion', complaint: "complaint", }
+  enum type: { suggestion: 'suggestion', complaint: 'complaint' }
 
-	validates :email, :message, presence: true
-
+  validates :email, :message, presence: true
 end

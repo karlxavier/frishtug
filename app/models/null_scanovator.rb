@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class NullScanovator
   class ToDate
     def to_date
@@ -6,7 +8,7 @@ class NullScanovator
   end
 
   class Time
-    def strftime args
+    def strftime(_args)
       '00:00'
     end
   end

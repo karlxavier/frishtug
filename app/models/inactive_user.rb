@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: inactive_users
@@ -18,9 +20,9 @@ class InactiveUser < ApplicationRecord
   private
 
   def does_user_exists?
-    if User.where(email: self.email).any?
-      errors.add(:base, "User exists!")
-      return false
+    if User.where(email: email).any?
+      errors.add(:base, 'User exists!')
+      false
     end
   end
 end

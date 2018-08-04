@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class StockAccounter
   attr_accessor :stock, :range, :date_begin, :inventory, :transaction
   def initialize(stock, date)
@@ -20,9 +22,7 @@ class StockAccounter
     transaction.save!
     transaction.decrement! :quantity_sold, stock.quantity
 
-    if transaction.quantity_sold <= 0
-      transaction.destroy
-    end
+    transaction.destroy if transaction.quantity_sold <= 0
   end
 
   private
@@ -32,10 +32,10 @@ class StockAccounter
   def set_transaction
     return nil unless inventory.present?
     inventory.inventory_transactions
-                            .where(transaction_date: date_begin)
-                            .first_or_create(
-                              transaction_date: date_begin,
-                              quantity_sold: 0
-                            )
+             .where(transaction_date: date_begin)
+             .first_or_create(
+               transaction_date: date_begin,
+               quantity_sold: 0
+             )
   end
 end

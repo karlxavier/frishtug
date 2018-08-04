@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateRefundableCredit
   attr_reader :user, :order
 
@@ -7,9 +9,7 @@ class CreateRefundableCredit
   end
 
   def process
-    if valid?
-      create_a_refund
-    end
+    create_a_refund if valid?
   end
 
   private
@@ -48,8 +48,8 @@ class CreateRefundableCredit
 
   def create_a_refund
     return if refundable_amount <= 0
-    pending_credit = user.pending_credits.
-      where(placed_on_date: order.placed_on, charge_id: order.charge_id).first_or_create
+    pending_credit = user.pending_credits
+                         .where(placed_on_date: order.placed_on, charge_id: order.charge_id).first_or_create
 
     unless pending_credit.refunded?
       pending_credit.update_attributes(

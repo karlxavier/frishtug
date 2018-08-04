@@ -1,15 +1,17 @@
+# frozen_string_literal: true
+
 class Scanovator
   include Virtus.model
   include ActiveModel::Naming
 
   class DataAttribute < Virtus::Attribute
-    def coerce values
+    def coerce(values)
       values.blank? ? nil : map_data(values)
     end
 
     private
 
-    def map_data entries
+    def map_data(entries)
       entries.map { |h| Scanovator::Data.new(h) }
     end
   end

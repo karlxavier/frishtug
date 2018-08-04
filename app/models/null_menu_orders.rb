@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class NullMenuOrders
   attr_accessor :menu
   def initialize(menu)

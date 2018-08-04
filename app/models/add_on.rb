@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: add_ons
@@ -18,11 +20,11 @@ class AddOn < ApplicationRecord
   validates :name, :menu_category_id, presence: true
 
   def name_with_price
-    "#{name} #{ "($ #{'%.2f' % Menu.find(self.menu_id).price})" if menu_id }".strip
+    "#{name} #{"($ #{format('%.2f', Menu.find(menu_id).price)})" if menu_id}".strip
   end
 
   def price
-    Menu.where(id: self.menu_id).first&.price || 0
+    Menu.where(id: menu_id).first&.price || 0
   end
 
   def self.pluck_prices(column_name)
@@ -34,9 +36,9 @@ class AddOn < ApplicationRecord
 
   def json_string
     {
-      id: self.id,
-      price: self.price,
-      name: self.name
+      id: id,
+      price: price,
+      name: name
     }.to_json
   end
 end

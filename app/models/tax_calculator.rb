@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TaxCalculator
   TAX = Tax.first.rate
   attr_reader :amount, :rate

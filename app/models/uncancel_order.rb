@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UncancelOrder
   def initialize(order, user)
     @order = order

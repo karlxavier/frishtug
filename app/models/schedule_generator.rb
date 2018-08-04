@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ScheduleGenerator
   SCHEDULES = {
     monday_to_friday: 0,

@@ -1,7 +1,7 @@
 module User::NotificationsHelper
   def display_notifications
     notifications = Notification.all
-    if notifications
+    unless notifications.empty?
       content = notifications.map do |notification|
         "<strong class='alert-heading'>#{notification.title}</strong>
         <p>#{notification.body}</p>"

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RecordLedger
   def initialize(user, order)
     @user = user
@@ -8,7 +10,7 @@ class RecordLedger
     record_both_tax_and_excess
     send_notification if notify_user == true
     true
-  rescue => e
+  rescue StandardError => e
     Rails.logger.fatal e.message
     false
   end

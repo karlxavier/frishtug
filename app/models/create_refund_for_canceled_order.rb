@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateRefundForCanceledOrder
   attr_reader :order, :user
 
@@ -28,19 +30,19 @@ class CreateRefundForCanceledOrder
     charge_ids = order.bill_histories.pluck(:charge_id)
     charge_ids.each do |id|
       response = Stripe::Charge.retrieve(id)
-      pending_credit = user.pending_credits.
-        where(placed_on_date: order.placed_on, charge_id: id).first_or_create
-      
+      pending_credit = user.pending_credits
+                           .where(placed_on_date: order.placed_on, charge_id: id).first_or_create
+
       next if pending_credit.refunded?
       next if response.refunded
-      
+
       pending_credit.update_attributes(
         amount: (response.amount / 100.0).to_d,
         activation_date: Time.current,
         remarks: "Credit from order date #{order.placed_on&.strftime('%B %d, %Y')}"
       )
     end
-  rescue => e 
+  rescue StandardError => e
     false
   end
 
@@ -50,14 +52,14 @@ class CreateRefundForCanceledOrder
     total = 0
     create_tax_and_excess_refund if order.charge_id.present?
 
-    if order.sub_total > user.plan.limit
-      total = user.plan.limit
-    else 
-      total = order.sub_total
-    end
+    total = if order.sub_total > user.plan.limit
+              user.plan.limit
+            else
+              order.sub_total
+            end
 
-    pending_credit = user.pending_credits.
-        where(placed_on_date: order.placed_on, charge_id: subscription_invoice.response.charge).first_or_create
+    pending_credit = user.pending_credits
+                         .where(placed_on_date: order.placed_on, charge_id: subscription_invoice.response.charge).first_or_create
 
     unless pending_credit.refunded?
       pending_credit.update_attributes(
@@ -69,8 +71,8 @@ class CreateRefundForCanceledOrder
   end
 
   def create_tax_and_excess_refund
-    pending_credit = user.pending_credits.
-      where(placed_on_date: order.placed_on, charge_id: order.charge_id).first_or_create
+    pending_credit = user.pending_credits
+                         .where(placed_on_date: order.placed_on, charge_id: order.charge_id).first_or_create
 
     unless pending_credit.refunded?
       pending_credit.update_attributes(

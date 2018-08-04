@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module UserDelegator
   extend ActiveSupport::Concern
 
@@ -7,7 +9,7 @@ module UserDelegator
     email
     plan
     addresses
-  ]
+  ].freeze
 
   included do
     delegate *DELEGATABLE_FIELD, to: :user, prefix: true, allow_nil: true

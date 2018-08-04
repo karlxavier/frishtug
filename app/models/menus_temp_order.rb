@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: menus_temp_orders
@@ -18,7 +20,7 @@ class MenusTempOrder < ApplicationRecord
   delegate :name, :id, :price, to: :menu, prefix: true, allow_nil: true
 
   def add_ons_list
-    return nil if self.add_ons.blank?
-    "<small>(#{self.add_ons.map { |a| AddOn.where(id: a).first&.name }.join(', ')})</small>".html_safe
+    return nil if add_ons.blank?
+    "<small>(#{add_ons.map { |a| AddOn.where(id: a).first&.name }.join(', ')})</small>".html_safe
   end
 end

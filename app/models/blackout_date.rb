@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: blackout_dates
@@ -22,6 +24,6 @@ class BlackoutDate < ApplicationRecord
   private
 
   def process_affected_orders
-    BlackoutAffectedOrdersWorker.perform_async(self.id)
+    BlackoutAffectedOrdersWorker.perform_async(id)
   end
 end

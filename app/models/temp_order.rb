@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: temp_orders
@@ -62,15 +64,15 @@ class TempOrder < ApplicationRecord
 
   def save_as_order!(user)
     ActiveRecord::Base.transaction do
-      @order = user.orders.where(placed_on: self.order_date).first_or_create!
+      @order = user.orders.where(placed_on: order_date).first_or_create!
       @order.update!(order_date: Time.current)
-      self.menus_temp_orders.each do |menu_order|
+      menus_temp_orders.each do |menu_order|
         o = @order.menus_orders.where(menu_id: menu_order.menu_id).first_or_create!
         o.quantity = menu_order.quantity
         o.add_ons = menu_order.add_ons
         o.save
       end
-      self.destroy
+      destroy
     end
     @order
   rescue ActiveRecord::StatementInvalid => e

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: plans
@@ -40,7 +42,7 @@ class Plan < ApplicationRecord
   end
 
   def types
-    [['Individual', 'individual'], ['Group', 'group']]
+    [%w[Individual individual], %w[Group group]]
   end
 
   def group?

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # An object that returns the number of weeks in a year
 class Week
   def initialize(year = Date.current.year)

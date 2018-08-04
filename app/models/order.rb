@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: orders
@@ -46,7 +48,7 @@ class Order < ApplicationRecord
   has_many :additional_ledgers, dependent: :destroy
 
   scope :completed, -> { where.not(delivered_at: nil) }
-  scope :not_empty, -> { joins(:menus_orders).group(:placed_on).having('count(menus_orders.id) > 0')}
+  scope :not_empty, -> { joins(:menus_orders).group(:placed_on).having('count(menus_orders.id) > 0') }
   accepts_nested_attributes_for :menus_orders, allow_destroy: true
 
   before_create   :set_series_number
@@ -107,7 +109,7 @@ class Order < ApplicationRecord
   end
 
   def self.pluck_placed_on
-    order(placed_on: :asc).pluck(:placed_on).map {|p| p&.strftime('%Y-%m-%d')}.in_groups_of(5,false)
+    order(placed_on: :asc).pluck(:placed_on).map { |p| p&.strftime('%Y-%m-%d') }.in_groups_of(5, false)
   end
 
   def reduce_stocks!

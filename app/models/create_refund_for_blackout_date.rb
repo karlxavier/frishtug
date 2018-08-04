@@ -1,16 +1,16 @@
+# frozen_string_literal: true
+
 class CreateRefundForBlackoutDate
   BLACKOUT_DATES = BlackoutDate.pluck_dates.freeze
   attr_reader :order, :user
-  
+
   def initialize(order)
     @order = order
     @user = order.user
   end
 
   def process
-    if valid?
-      return create_a_refund
-    end
+    return create_a_refund if valid?
   end
 
   private
@@ -32,7 +32,7 @@ class CreateRefundForBlackoutDate
       CreateBlackoutRefundWorker.perform_at(user.subscribe_at, order.id)
       return
     end
-    
+
     pending_credit = user.pending_credits.where(placed_on_date: order.placed_on).first_or_create
 
     unless pending_credit.refunded?

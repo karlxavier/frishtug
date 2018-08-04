@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: contact_us_messages
@@ -12,7 +14,7 @@
 #
 
 class ContactUsMessage < ApplicationRecord
-  default_scope { order(created_at: :desc)}
+  default_scope { order(created_at: :desc) }
   validates :email, :first_name, :last_name, presence: true
 
   def full_name

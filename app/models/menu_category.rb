@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: menu_categories
@@ -25,9 +27,8 @@ class MenuCategory < ApplicationRecord
 
   after_commit :clear_cache
 
-
   def self.published_menus
-    Rails.cache.fetch([name, "published_menus"], expires_in: 3.hours) do
+    Rails.cache.fetch([name, 'published_menus'], expires_in: 3.hours) do
       includes(:menus).where(part_of_plan: true).where.not(menus: { published_at: nil })
     end
   end

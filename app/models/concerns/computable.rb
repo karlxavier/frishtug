@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Computable
   extend ActiveSupport::Concern
 
@@ -22,7 +24,7 @@ module Computable
 
   def total
     return 0 unless menus_orders.present?
-    with_shipping = self.user.plan.interval == 'month'
+    with_shipping = user.plan.interval == 'month'
     OrderCalculator.new(self).total(skip_shipping_fee: with_shipping)
   end
 end

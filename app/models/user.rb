@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: users
@@ -126,27 +128,27 @@ class User < ApplicationRecord
   end
 
   def orders_completed?
-    counter = self.get_current_subscription_orders.size
+    counter = get_current_subscription_orders.size
     return false if counter.zero?
     counter % 20 == 0
   end
 
   def get_current_subscription_orders
-    if self.subscribed?
-      start_day = self.subscribe_at.beginning_of_day
-      end_day = self.subscription_expires_at.end_of_day
+    if subscribed?
+      start_day = subscribe_at.beginning_of_day
+      end_day = subscription_expires_at.end_of_day
       range = DateRange.new(start_day, end_day)
-      orders.placed_between?(range).
-            where(status: [:processing, :completed, :cancelled, :pending_payment]).
-            order(placed_on: :asc)
+      orders.placed_between?(range)
+            .where(status: %i[processing completed cancelled pending_payment])
+            .order(placed_on: :asc)
     else
-      orders.where(status: [:processing, :completed, :cancelled]).
-      order(placed_on: :asc)
+      orders.where(status: %i[processing completed cancelled])
+            .order(placed_on: :asc)
     end
   end
 
   def not_completed_orders
-    orders.fresh.where("placed_on >= ?", Time.current.beginning_of_day)
+    orders.fresh.where('placed_on >= ?', Time.current.beginning_of_day)
   end
 
   def has_fresh_orders?
@@ -155,16 +157,16 @@ class User < ApplicationRecord
 
   private
 
-    def delete_inactive_entry!
-      InactiveUser.find_by_email(self.email)&.destroy
-    end
+  def delete_inactive_entry!
+    InactiveUser.find_by_email(email)&.destroy
+  end
 
-    def downcase_email!
-      self.email.downcase!
-    end
+  def downcase_email!
+    email.downcase!
+  end
 
-    def generate_expiry_date
-      return if self.subscribe_at.nil?
-      self.subscription_expires_at = (MonthScheduler.new(self).create_full_month!.last + 1.day).beginning_of_day
-    end
+  def generate_expiry_date
+    return if subscribe_at.nil?
+    self.subscription_expires_at = (MonthScheduler.new(self).create_full_month!.last + 1.day).beginning_of_day
+  end
 end

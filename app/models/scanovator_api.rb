@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'uri'
 class ScanovatorApi
   include ActiveModel::Validations
@@ -24,23 +26,23 @@ class ScanovatorApi
 
   attr_accessor :response
 
-  def initialize response
+  def initialize(response)
     @response = response
   end
 
   class << self
-    def new_order order
+    def new_order(order)
       return unless address_allowed?(order)
       response = get("/new_order?#{new_order_query(order)}")
       OpenStruct.new(JSON.parse(response.body))
     end
 
-    def fetch order_id
+    def fetch(order_id)
       response = get("/order_query?store_id=#{STORE_ID}&order_id[]=#{order_id}")
       Scanovator.new(parse(response))
     end
 
-    def fetch_group order_ids
+    def fetch_group(order_ids)
       response = get("/order_query?store_id=#{STORE_ID}&#{format_order_ids(order_ids)}")
       Scanovator.new(parse(response))
     end
@@ -58,9 +60,9 @@ class ScanovatorApi
       ALLOWED_ZIP_CODES.include?(zip)
     end
 
-    def process_response response
+    def process_response(response)
       sanitize_response = strip_tag response
-      if sanitize_response =~ /Error Code/i
+      if /Error Code/i.match?(sanitize_response)
         scanovator = new(sanitize_response)
         scanovator.errors.add(:base, ERROR_CODES[sanitize_response.split(' ')[2]])
         scanovator
@@ -69,22 +71,22 @@ class ScanovatorApi
       end
     end
 
-    def strip_tag html_string
+    def strip_tag(html_string)
       ActionView::Base.full_sanitizer.sanitize(html_string)
     end
 
-    def parse response
+    def parse(response)
       JSON.parse(response.body)
           .with_indifferent_access
           .slice(*Scanovator.attribute_set.map(&:name))
     end
 
-    def format_order_ids order_ids
+    def format_order_ids(order_ids)
       order_ids.map { |id| "order_id[]=#{id}" }.join('&')
     end
 
-    def new_order_query order
-      URI.encode_www_form({
+    def new_order_query(order)
+      URI.encode_www_form(
         store_id: STORE_ID,
         store_code: STORE_CODE,
         fname: order.user.first_name,
@@ -102,7 +104,7 @@ class ScanovatorApi
         notes: nil,
         DeliveryDate: order.placed_on,
         seq: order.series_number
-      })
+      )
     end
   end
 end

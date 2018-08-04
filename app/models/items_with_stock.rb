@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: items_with_stocks
@@ -27,7 +29,7 @@ class ItemsWithStock < ActiveRecord::Base
 
   class << self
     def grouped(attribute)
-      Rails.cache.fetch([self, "grouped"], expires_in: 12.hours) do
+      Rails.cache.fetch([self, 'grouped'], expires_in: 12.hours) do
         includes(
           :unit,
           :asset,
@@ -39,8 +41,8 @@ class ItemsWithStock < ActiveRecord::Base
 
     def refresh
       Scenic
-          .database
-          .refresh_materialized_view(table_name, concurrently: false, cascade: false)
+        .database
+        .refresh_materialized_view(table_name, concurrently: false, cascade: false)
     end
   end
 

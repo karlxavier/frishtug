@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: ledgers
@@ -31,21 +33,19 @@ class Ledger < ApplicationRecord
   private
 
   def destroy_zero_amount
-    if self.amount == 0
-      self.destroy
-    end
+    destroy if amount == 0
   end
 
   def update_order
-    return if ['pending_payment', 'payment_failed'].include?(self.status)
-    return if self.amount.nil?
-    return if self.amount <= 0
-    types = { "TaxLedger" => "tax", "AdditionalLedger" => "excess"}
-    order = Order.find(self.order_id)
-    RecordPayments.call(order, self.amount, types[self.type])
+    return if %w[pending_payment payment_failed].include?(status)
+    return if amount.nil?
+    return if amount <= 0
+    types = { 'TaxLedger' => 'tax', 'AdditionalLedger' => 'excess' }
+    order = Order.find(order_id)
+    RecordPayments.call(order, amount, types[type])
     order.update_columns(status: :processing)
     order.total_price = OrderCalculator.new(order).total
-    order.charge_id = self.charge_id
+    order.charge_id = charge_id
     order.save
   end
 end

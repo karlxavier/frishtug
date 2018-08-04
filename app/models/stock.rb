@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Stock
   attr_accessor :inventory, :quantity
   def initialize(menu_id, quantity)

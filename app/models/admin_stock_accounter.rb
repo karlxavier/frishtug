@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AdminStockAccounter
   def initialize(item, placed_on)
     @item = item
