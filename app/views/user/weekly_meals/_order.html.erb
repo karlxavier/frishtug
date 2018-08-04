@@ -1,6 +1,7 @@
 <%
   list_class = "list-group-item rounded-0 "
   is_complete = true
+  list_class += "list-group-item-danger" if order[:status] == "cancelled"
 
   if current_user.subscribed?
     limit = current_user.plan.limit
@@ -15,9 +16,10 @@
         <%= order[:placed_on].strftime('%a, %b %d') %> <br>
         <em class="font-size-14">Total: <%= to_currency(order[:total]) %></em>
         <%= "<em>(Please complete your order)</em>".html_safe unless is_complete %>
+        <%= "<em>(Cancelled)</em>".html_safe if order[:status] == "cancelled" %>
       </h5>
       <small class="float-right">
-        <%= link_to 'Edit', edit_user_weekly_meals_path(date: order[:placed_on].to_date), class: 'chocolate-font-color' %>
+        <%= link_to_if(order[:status] != "cancelled", 'Edit', edit_user_weekly_meals_path(date: order[:placed_on].to_date), class: 'chocolate-font-color') {} %>
       </small>
     </div>
   </div>

@@ -8,10 +8,10 @@ class User::WeeklyMealsController < User::BaseController
   BLACKOUT_DATES = BlackoutDate.pluck_dates.freeze
 
   def index
-    @orders = current_user.orders
-    @active_this_week = @orders.placed_between?(@date_range).pluck_placed_on
+    orders = current_user.orders
+    @active_this_week = orders.placed_between?(@date_range).pluck_placed_on
     @active_orders = current_user.get_current_subscription_orders.pluck_placed_on
-    @completed = @orders.completed.pluck_placed_on
+    @completed = orders.completed.pluck_placed_on
     @orders = current_user.get_current_subscription_orders.pending_deliveries
     @order_preference = current_user.order_preference
     if current_user.subscribed?
@@ -134,6 +134,11 @@ class User::WeeklyMealsController < User::BaseController
 
     if is_blackout_date?
       flash[:error] = 'Cant edit black-out date.'
+      redirect_back fallback_location: user_weekly_meals_path
+    end
+
+    if @orders.cancelled?
+      flash[:error] = 'Cant edit canceled order.'
       redirect_back fallback_location: user_weekly_meals_path
     end
   end

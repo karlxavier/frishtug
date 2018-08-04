@@ -52,7 +52,7 @@ class User::OrdersController < User::BaseController
   def cancel
     cancel_order = CancelOrder.new(@order, current_user)
     if cancel_order.run
-      redirect_back fallback_location: :back
+      redirect_to user_weekly_meals_path
     end
   end
 

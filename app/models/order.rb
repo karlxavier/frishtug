@@ -68,6 +68,7 @@ class Order < ApplicationRecord
       with_shipping = o.user.plan.interval == 'month'
       {
         placed_on: o.placed_on,
+        status: o.status,
         total: OrderCalculator.new(o).total(skip_shipping_fee: with_shipping),
         menus_orders: o.menus_orders.group_by do |m|
           m.menu.category.name
