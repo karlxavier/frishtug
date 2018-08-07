@@ -18,10 +18,12 @@ class Inventory < ApplicationRecord
   has_many :inventory_transactions, dependent: :destroy
   validates :menu_id, uniqueness: true
   before_save :create_inventory_id
+  scope :running_out, ->(num = 5) { where('quantity <= ?', num) }
 
   private
 
   def create_inventory_id
-    self.inventory_id = SecureRandom.urlsafe_base64(10)
+    return if self.inventory_id.present?
+    self.inventory_id = SecureRandom.urlsafe_base64(10) 
   end
 end

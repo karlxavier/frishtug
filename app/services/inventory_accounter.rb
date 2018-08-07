@@ -41,6 +41,14 @@ class InventoryAccounter
   end
 
   def update_inventory_and_create_transactions
+    menu_ids = order.menus_orders.pluck(:menu_id)
+    out_of_stock = Stock.is_empty?(menu_ids: menu_ids)
+    not_enough_stock = Stock.not_enough?(menus_orders: order.menus_orders)
+    if out_of_stock || not_enough_stock
+      StockWorker.perform_async(order.id)
+      return
+    end
+      
     order.menus_orders.each do |menu_order|
       update_stocks(menu_order.menu_id, menu_order.quantity)
       update_add_ons_inventory(menu_order)

@@ -29,16 +29,16 @@
             <div class="float-right mt-1">
               <%= button_to user_refundable_credit_path(i), method: :put, class: 'btn btn-lg btn-brown text-uppercase' do %>
                 Refund
-              <% end %>
+                <% end %>
             </div>
           </li>
-        <% end %>
+          <% end %>
       </ul>
       <div class="mt-4">
         <%= paginate @refundables %>
       </div>
-    <% else %>
-      Nothing to refund
-    <% end %>
+      <% else %>
+        Nothing to refund
+        <% end %>
   </div>
 </div>

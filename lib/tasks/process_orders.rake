@@ -27,6 +27,7 @@ namespace :process_orders do
         Rails.logger.info scanovator_api.error
       else
         order.update_attributes(is_rollover: true)
+        order.reduce_stocks!
       end
     end
   end

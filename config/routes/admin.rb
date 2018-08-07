@@ -30,4 +30,5 @@ namespace :admin do
   resources :suggestions, only: %i[index show]
   resources :nutritional_data, except: %i[index show]
   resources :contact_us_messages, only: %i[index show]
+  resources :stock_notifications, only: :index
 end

@@ -3,6 +3,7 @@
 *=require trix
 */
 @import "bootstrap";
+@import "toastr";
 
 @media print {
   #printarea {
@@ -13,4 +14,8 @@
     width: 100%;
     background: #fff;
   }
+}
+
+.toast-message {
+  font-size: 14px !important;
 }
