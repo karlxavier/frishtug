@@ -26,6 +26,7 @@
         <thead>
           <tr>
             <th>Items</th>
+            <th>Quantity on hand</th>
             <th class="text-right">Number Sold</th>
           </tr>
         </thead>
@@ -33,6 +34,10 @@
           <% @inventory_transactions.group_by { |i| i.inventory.menu.name }.sort.each do |name, items| %>
             <tr>
               <td><%= name %></td>
+              <td 
+                class="<%= 'text-danger' if items.first.inventory_quantity <= 5 %>">
+                <%= items.first.inventory_quantity %>
+              </td>
               <td class="text-right"><%= items.map(&:quantity_sold).inject(:+) %></td>
             </tr>
           <% end %>

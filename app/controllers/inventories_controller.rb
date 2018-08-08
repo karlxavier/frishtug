@@ -1,5 +1,6 @@
 class InventoriesController < ApplicationController
   before_action :set_inventory
+  
   def index
     price = total_price(@inventory.menu.price, quantity)
     render json: { 

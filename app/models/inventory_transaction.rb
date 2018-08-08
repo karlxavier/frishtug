@@ -16,6 +16,7 @@
 class InventoryTransaction < ApplicationRecord
   belongs_to :inventory
   validates :quantity_sold, :transaction_date, :inventory_id, presence: true
+  delegate :quantity, to: :inventory, prefix: true
 
   class << self
     def between_transaction_date?(range)
