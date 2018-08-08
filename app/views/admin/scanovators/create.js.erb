@@ -1,5 +1,9 @@
-swal(
-  'Success',
-  '<%= @message %>',
-  'success'
-);
+swal({
+  type: "success",
+  title: "Success",
+  text: "<%= @message %>",
+  confirmButtonText: "Ok",
+  confirmButtonColor: "#582D11",
+  confirmButtonClass: "btn btn-brown text-uppercase",
+  buttonsStyling: false
+})

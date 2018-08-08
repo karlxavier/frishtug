@@ -7,7 +7,7 @@ class ScanovatorOrdersWorker
     "fulfilled",
     "fresh",
     "pending_payment",
-    "payment_failed"
+    "payment_failed",
   ].freeze
 
   def perform(placed_date)
@@ -22,6 +22,7 @@ class ScanovatorOrdersWorker
         Rails.logger.info scanovator_api.error
       else
         order.update_attributes(is_rollover: true)
+        order.reduce_stocks!
       end
     end
   end
