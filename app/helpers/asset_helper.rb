@@ -6,7 +6,7 @@ module AssetHelper
   end
 
   def plan_image_path(plan)
-    asset_pack_path "packs/images/#{p.name.downcase.split(" ").join}.png"
+    asset_pack_path "packs/images/#{plan.name.downcase.split(" ").join}.png"
   rescue
     asset_pack_path "packs/images/option4.png"
   end
