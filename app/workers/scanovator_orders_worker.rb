@@ -12,10 +12,11 @@ class ScanovatorOrdersWorker
 
   def perform(placed_date)
     @placed_date = placed_date
-    orders = Order.placed_between?(range)
+    orders = Order.includes(:user).placed_between?(range)
     orders.each do |order|
       next if SKIPPABLE_STATUS.include?(order.status)
       next if order.is_rollover
+
       scanovator_api = ScanovatorApi.new_order(order)
       next unless scanovator_api.present?
       if scanovator_api.error
@@ -23,6 +24,7 @@ class ScanovatorOrdersWorker
       else
         order.update_attributes(is_rollover: true)
         order.reduce_stocks!
+        ChargeGroup.call(order.user, order)
       end
     end
   end

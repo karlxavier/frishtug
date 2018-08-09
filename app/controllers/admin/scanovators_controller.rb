@@ -11,13 +11,14 @@ class Admin::ScanovatorsController < Admin::BaseController
   end
 
   def create
+    formatted_date = @date.strftime("%B %d")
     if @date.saturday?
       @message = "Nothing to process for tomorrow saturday"
-    elsif SKIPPABLE_DATES.include?(@date.strftime('%B %d'))
-      @message = "Nothing to process for Blackout Date #{@date.strftime('%B %d')}"
+    elsif SKIPPABLE_DATES.include?(formatted_date)
+      @message = "Nothing to process for Blackout Date #{formatted_date}"
     else
       ScanovatorOrdersWorker.perform_async(@date)
-      @message = "Process queued for #{@date.to_date}"
+      @message = "Process queued for #{formatted_date}"
     end
     respond_with(@message)
   end
@@ -29,7 +30,7 @@ class Admin::ScanovatorsController < Admin::BaseController
   end
 
   def locations
-    array_of_locations = params[:location]&.split(',')  || []
+    array_of_locations = params[:location]&.split(",") || []
     array_of_locations << search_term_for_location
     array_of_locations.flatten
   end
@@ -39,11 +40,11 @@ class Admin::ScanovatorsController < Admin::BaseController
   end
 
   def meal
-    params[:meal]&.split(',')
+    params[:meal]&.split(",")
   end
 
   def search_term_for_location
-    params[:search_term_for_location]&.split(',') || []
+    params[:search_term_for_location]&.split(",") || []
   end
 
   def get_meal_ids
