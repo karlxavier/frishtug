@@ -36,8 +36,8 @@ class User < ApplicationRecord
   has_many :checkings, dependent: :destroy
   has_many :comments, dependent: :destroy
   has_many :search_results, as: :searchable
-  has_one  :contact_number, dependent: :destroy
-  has_one  :schedule, dependent: :destroy
+  has_one :contact_number, dependent: :destroy
+  has_one :schedule, dependent: :destroy
   belongs_to :plan, optional: true, counter_cache: true
   has_many :orders, dependent: :destroy
   has_many :bill_histories, dependent: :destroy
@@ -76,7 +76,7 @@ class User < ApplicationRecord
   def self.search(search_term)
     term = "%#{search_term}%"
     includes(:plan, :contact_number)
-      .where('last_name ILIKE ? OR first_name ILIKE ?', term, term)
+      .where("last_name ILIKE ? OR first_name ILIKE ?", term, term)
   end
 
   def active_address
@@ -105,6 +105,7 @@ class User < ApplicationRecord
   end
 
   def full_address
+    return "No address" if addresses.active.first.nil?
     <<-EOF
       #{addresses.active.first.line1}
       #{addresses.active.first.line2}
@@ -115,7 +116,7 @@ class User < ApplicationRecord
   end
 
   def street_address
-    [active_address.line1, active_address.line2].reject(&:blank?).join(', ').strip
+    [active_address.line1, active_address.line2].reject(&:blank?).join(", ").strip
   end
 
   def set_default_source(source)
@@ -124,7 +125,7 @@ class User < ApplicationRecord
 
   def subscribed?
     return false unless plan
-    plan.interval == 'month'
+    plan.interval == "month"
   end
 
   def orders_completed?
@@ -148,7 +149,7 @@ class User < ApplicationRecord
   end
 
   def not_completed_orders
-    orders.fresh.where('placed_on >= ?', Time.current.beginning_of_day)
+    orders.fresh.where("placed_on >= ?", Time.current.beginning_of_day)
   end
 
   def has_fresh_orders?
