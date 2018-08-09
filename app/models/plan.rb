@@ -33,23 +33,29 @@ class Plan < ApplicationRecord
   enum shipping_charge_type: %i[not_available per_order per_month]
   validates :name, :price, presence: true
   validates :name, uniqueness: true
-  scope :subscriptions, -> { where(interval: 'month') }
+  scope :subscriptions, -> { where(interval: "month") }
   has_many :users
   has_many :comments, as: :commentable, dependent: :destroy
+  after_create :create_stripe_plan
 
   def self.best_seller
     where.not(users_count: 0).order(users_count: :desc).limit(1).first || NullBestSeller.new
   end
 
   def types
-    [%w[Individual individual], %w[Group group]]
+    [%w[Individual individual], %w[Group group], %w[Party/Meeting party_meeting]]
   end
 
-  def group?
-    self[:for_type] == 'group'
+  %w[group individual party_meeting].each do |type|
+    define_method "#{type}?" do
+      self[:for_type] == type
+    end
   end
 
-  def individual?
-    self[:for_type] == 'individual'
+  private
+
+  def create_stripe_plan
+    return if self.interval != "month"
+    StripePlanner.new(self).run
   end
 end
