@@ -1,0 +1,16 @@
+<%= card_container do %>
+  <table class="table table-sm">
+    <thead>
+      <tr>
+        <th>Zip</th>
+        <th>Price</th>
+        <th>Created at</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= render(@shipping_prices) || "<td class='text-muted text-center' colspan='4'>Add a #{link_to('new', new_admin_shipping_price_path)} shipping price for a zipcode</td>".html_safe %>
+    </tbody>
+  </table>
+  <%= paginate @shipping_prices %>
+<% end %>

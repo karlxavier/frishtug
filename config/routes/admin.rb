@@ -1,6 +1,6 @@
 namespace :admin do
   authenticate :admin do
-    mount Sidekiq::Web => '/sidekiq'
+    mount Sidekiq::Web => "/sidekiq"
   end
   resources :units, except: :show
   resources :menus, except: :show
@@ -31,4 +31,5 @@ namespace :admin do
   resources :nutritional_data, except: %i[index show]
   resources :contact_us_messages, only: %i[index show]
   resources :stock_notifications, only: :index
+  resources :shipping_prices
 end

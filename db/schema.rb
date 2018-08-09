@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180803035938) do
+ActiveRecord::Schema.define(version: 20180809040100) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -422,6 +422,14 @@ ActiveRecord::Schema.define(version: 20180803035938) do
     t.index ["order_id"], name: "index_shipping_charges_on_order_id"
   end
 
+  create_table "shipping_prices", force: :cascade do |t|
+    t.string "zip"
+    t.decimal "price", precision: 8
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["zip"], name: "index_shipping_prices_on_zip"
+  end
+
   create_table "stores", force: :cascade do |t|
     t.integer "_id"
     t.string "_code"
@@ -516,17 +524,11 @@ ActiveRecord::Schema.define(version: 20180803035938) do
   add_foreign_key "assets_stores", "assets"
   add_foreign_key "assets_stores", "stores"
   add_foreign_key "bill_histories", "orders"
-  add_foreign_key "bill_histories", "users"
   add_foreign_key "candidates", "referrers"
-  add_foreign_key "candidates", "users"
   add_foreign_key "checkings", "users"
-  add_foreign_key "comments", "users"
-  add_foreign_key "contact_numbers", "users"
-  add_foreign_key "credit_cards", "users"
   add_foreign_key "inventories", "menus"
   add_foreign_key "inventory_transactions", "inventories"
   add_foreign_key "ledgers", "orders"
-  add_foreign_key "ledgers", "users"
   add_foreign_key "menus", "assets"
   add_foreign_key "menus", "menu_categories"
   add_foreign_key "menus", "units"
@@ -536,12 +538,9 @@ ActiveRecord::Schema.define(version: 20180803035938) do
   add_foreign_key "menus_temp_orders", "temp_orders"
   add_foreign_key "nutritional_data", "menus"
   add_foreign_key "order_preferences", "users"
-  add_foreign_key "orders", "users"
   add_foreign_key "pending_charges", "users"
   add_foreign_key "pending_credits", "orders"
-  add_foreign_key "pending_credits", "users"
   add_foreign_key "referrers", "users"
-  add_foreign_key "schedules", "users"
   add_foreign_key "shipping_charges", "orders"
   add_foreign_key "taxes", "stores"
   add_foreign_key "temp_orders", "users"

@@ -1,0 +1,12 @@
+<div class="row mx-0">
+  <div class="col">
+    <h1 id="title">
+      <%= link_to "Shipping Prices", admin_shipping_prices_path %>
+    </h1>
+  </div>
+  <div class="col">
+    <%= link_to new_admin_shipping_price_path, class: 'header-add-btn float-right light-gray-font-color font-family-montserrat font-size-14' do %>
+      <%= svg_tag 'packs/images/add-icon.svg', class: 'mr-1' %> Add Shipping Price
+    <% end %>
+  </div>
+</div>

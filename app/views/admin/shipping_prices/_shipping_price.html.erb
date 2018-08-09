@@ -1,0 +1,11 @@
+<tr class="<%= shipping_price.id %>">
+  <td><%= shipping_price.zip %></td>
+  <td><%= number_to_currency(shipping_price.price, unit: '$') %></td>
+  <td><%= shipping_price.created_at.to_date %></td>
+  <td>
+    <div class="float-right">
+      <%= link_to '<i class="fa fa-edit mr-1"></i>Edit'.html_safe, edit_admin_shipping_price_path(shipping_price), class: 'btn chocolate-font-color btn-sm' %>
+      <%= link_to '<i class="fa fa-trash mr-1"></i>Destroy'.html_safe, admin_shipping_price_path(shipping_price), class: 'btn chocolate-font-color btn-sm', method: :delete, remote: true, data: { confirm: 'Are you sure?' } %>
+    </div>
+  </td>
+</tr>
