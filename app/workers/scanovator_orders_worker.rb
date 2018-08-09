@@ -12,7 +12,7 @@ class ScanovatorOrdersWorker
 
   def perform(placed_date)
     @placed_date = placed_date
-    orders = Order.includes(:user).placed_between?(range)
+    orders = Order.includes(:user).processing.placed_between?(range)
     orders.each do |order|
       next if SKIPPABLE_STATUS.include?(order.status)
       next if order.is_rollover
