@@ -67,4 +67,5 @@ namespace :user do
       get :edit
     end
   end
+  resources :refund_history, only: :index
 end

@@ -1,0 +1,30 @@
+<h4 class="text-uppercase font-size-18">
+  Refund History
+</h4>
+<div class="row">
+  <div class="col">
+    <% unless @refunds.empty? %>
+      <table class="table table-sm">
+        <thead>
+          <th>Order Date</th>
+          <th>Amount</th>
+          <th>Refund date</th>
+        </thead>
+        <tbody>
+          <% @refunds.each do |refund| %>
+            <tr>
+              <td><%= refund.placed_on_date.to_date.strftime('%b %d, %Y') %></td>
+              <td><%= to_currency(refund.amount) %></td>
+              <td><%= time_ago_in_words(refund.updated_at) %> ago</td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <div class="mt-4">
+        <%= paginate @refunds %>
+      </div>
+      <% else %>
+        Nothing to show
+      <% end %>
+  </div>
+</div>
