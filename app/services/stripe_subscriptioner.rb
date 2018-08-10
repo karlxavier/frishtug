@@ -24,11 +24,15 @@ class StripeSubscriptioner
   end
 
   def cancel
+    unless user.stripe_subscription_id?
+      errors.add :base, "You cant cancell a subscription that is not active."
+      return
+    end
     subscription = retrieve
     subscription.delete
     update_cancelled_subscription
     true
-  rescue Stripe::InvalidRequestError => e
+  rescue => e
     logger.error "Stripe error while canceling the subscription: #{e.message}"
     errors.add :base, e.message
     false
@@ -43,7 +47,7 @@ class StripeSubscriptioner
       stripe_subscription_id: nil,
       subscribe_at: nil,
       subscription_expires_at: nil,
-      plan_id: nil
+      plan_id: nil,
     )
   end
 
@@ -51,7 +55,7 @@ class StripeSubscriptioner
     user.update_attributes(
       stripe_customer_id: customer.id,
       stripe_subscription_id: subscription.id,
-      subscribe_at: Time.current
+      subscribe_at: Time.current,
     )
   end
 
@@ -76,7 +80,7 @@ class StripeSubscriptioner
 
   def user_not_subscribed?
     unless user.stripe_subscription_id?
-      errors.add(:user, 'is not subscribe.')
+      errors.add(:user, "is not subscribe.")
       return true
     end
     false
@@ -86,7 +90,7 @@ class StripeSubscriptioner
     Stripe::Customer.create(
       email: user.email,
       description: description,
-      source: user.stripe_token
+      source: user.stripe_token,
     )
   end
 
@@ -99,9 +103,9 @@ class StripeSubscriptioner
       customer: customer_id,
       items: [
         {
-          plan: user.plan.stripe_plan_id
-        }
-      ]
+          plan: user.plan.stripe_plan_id,
+        },
+      ],
     )
   end
 end
