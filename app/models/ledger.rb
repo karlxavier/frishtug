@@ -46,7 +46,7 @@ class Ledger < ApplicationRecord
       'ShippingChargeLedger': "shipping",
     }
     order = Order.find(order_id)
-    RecordPayments.call(order, amount, types[type])
+    RecordPayments.call(order, amount, types[type.to_sym], charge_id)
     order.update_attributes(
       status: :processing,
       total_price: OrderCalculator.new(order).total,

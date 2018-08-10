@@ -12,10 +12,4 @@ class CancelOrder
       true
     end
   end
-
-  private
-
-  def next_months_first_day
-    Time.current.next_month.beginning_of_month
-  end
 end

@@ -49,7 +49,7 @@ namespace :user do
   resources :set_active_addresses, only: :index
   resources :nutritional_data, only: :index
   resources :plans, only: :index
-  resources :ledgers, only: :index do
+  resources :ledgers, path: "pending_charges", only: :index do
     collection do
       get :pay
     end
@@ -58,7 +58,7 @@ namespace :user do
   resources :refundable_credits, only: %i[index update]
   resources :candidates, only: :destroy
   resources :groups, only: :create do
-    collection do 
+    collection do
       post :join
     end
   end

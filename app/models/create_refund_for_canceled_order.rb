@@ -29,6 +29,7 @@ class CreateRefundForCanceledOrder
   def create_a_refund
     charge_ids = order.bill_histories.pluck(:charge_id)
     charge_ids.each do |id|
+      next if id.nil?
       response = Stripe::Charge.retrieve(id)
       pending_credit = user.pending_credits
                            .where(placed_on_date: order.placed_on, charge_id: id).first_or_create
@@ -39,7 +40,7 @@ class CreateRefundForCanceledOrder
       pending_credit.update_attributes(
         amount: (response.amount / 100.0).to_d,
         activation_date: Time.current,
-        remarks: "Credit from order date #{order.placed_on&.strftime('%B %d, %Y')}"
+        remarks: "Credit from order date #{order.placed_on&.strftime("%B %d, %Y")}",
       )
     end
   rescue StandardError => e
@@ -65,7 +66,7 @@ class CreateRefundForCanceledOrder
       pending_credit.update_attributes(
         amount: total,
         activation_date: Time.current,
-        remarks: "Credit from order date #{order.placed_on&.strftime('%B %d, %Y')}"
+        remarks: "Credit from order date #{order.placed_on&.strftime("%B %d, %Y")}",
       )
     end
   end
@@ -78,7 +79,7 @@ class CreateRefundForCanceledOrder
       pending_credit.update_attributes(
         amount: tax_and_excess_refundable_amount,
         activation_date: Time.current,
-        remarks: "Additional and tax credit from order date #{order.placed_on.strftime('%B %d, %Y')}"
+        remarks: "Additional and tax credit from order date #{order.placed_on.strftime("%B %d, %Y")}",
       )
     end
   end
