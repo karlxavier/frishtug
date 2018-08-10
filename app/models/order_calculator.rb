@@ -7,7 +7,7 @@ class OrderCalculator
               @order.first.user
             else
               @order.user
-    end
+            end
     @minimum_charge = @user.plan&.minimum_charge || 0
     @limit = @user.plan&.limit || 0
   end

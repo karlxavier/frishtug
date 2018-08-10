@@ -34,7 +34,7 @@ class RegistrationForm
 
   validates :first_name, :last_name, :email, :password, presence: true
   validates :phone_number, :payment_method, presence: true
-  validate  :user_email_unique?
+  validate :user_email_unique?
   validates :bank_name, :account_number, :routing_number, presence: true, if: :checking?
   validates :card_number, :month, :year, :cvc, presence: true, if: :credit_card?
   validates :stripe_token, :addresses, :orders, presence: true
@@ -72,7 +72,7 @@ class RegistrationForm
 
   def user_email_unique?
     return false unless User.where(email: email).exists?
-    errors.add(:email, 'is already registered.')
+    errors.add(:email, "is already registered.")
   end
 
   def persist!
@@ -83,11 +83,7 @@ class RegistrationForm
       save_and_charge_payment(user)
     end
     true
-  rescue ActiveRecord::StatementInvalid => e
-    # e.message and e.cause.message  can be helpful
-    errors.add(:base, e.message)
-    false
-  rescue ActiveRecord::RecordInvalid => e
+  rescue => e
     errors.add(:base, e.message)
     false
   end
@@ -100,11 +96,11 @@ class RegistrationForm
     end
 
     user.create_contact_number!(phone_number: phone_number)
-    if user.plan.for_type == 'group'
+    if user.plan.for_type == "group"
       create_referrer(user) unless group_code.present?
       create_candidate(user) if group_code.present?
     end
-    user.create_schedule!(schedule_params) if user.plan.interval === 'month'
+    user.create_schedule!(schedule_params) if user.plan.interval === "month"
   end
 
   def create_candidate(user)
@@ -118,8 +114,7 @@ class RegistrationForm
   end
 
   def create_referrer(user)
-    referrer = user.create_referrer!(group_code: SecureRandom.urlsafe_base64(10)
-    )
+    referrer = user.create_referrer!(group_code: SecureRandom.urlsafe_base64(10))
   end
 
   def create_orders(user)
@@ -128,10 +123,10 @@ class RegistrationForm
         param[:placed_on] = Time.zone.parse(param[:order_date])
         param[:order_date] = Time.current
         order = user.orders.create!(param)
-        order.processing!
-        RecordLedger.new(user, order).record! if user.plan.interval == 'month'
+        order.processing! unless user.plan.party_meeting?
+        RecordLedger.new(user, order).record! if user.plan.interval == "month"
       else
-        errors.add(:base, 'Order place on is blank')
+        errors.add(:base, "Order place on is blank")
         raise ActiveRecord::StatementInvalid
       end
     end
@@ -141,7 +136,7 @@ class RegistrationForm
     payment_method.classify.constantize.create!(
       payment_method_params.merge!(user_id: user.id)
     )
-    if user.plan.interval == 'month'
+    if user.plan.interval == "month"
       create_subscription(user)
       PendingChargeMailer.first_notice(user_id: user.id, delivery_date: user.orders.first.placed_on).deliver
       charge_monthly_shipping(user) if user.plan.per_month?
@@ -155,11 +150,11 @@ class RegistrationForm
     if charge.charge_shipping
       user.bill_histories.create!(
         amount_paid: user.plan.shipping_fee,
-        description: 'Shipping Charge',
+        description: "Shipping Charge",
         billed_at: Time.current,
       )
     else
-      errors.add(:base, charge.errors.full_message.join(', '))
+      errors.add(:base, charge.errors.full_message.join(", "))
       raise ActiveRecord::StatementInvalid
     end
   end
@@ -171,15 +166,16 @@ class RegistrationForm
       user.orders.each do |order|
         order.bill_histories.create!(
           amount_paid: amount_to_pay,
-          description: 'Order Charge',
+          description: "Order Charge",
           billed_at: Time.current,
           user_id: user.id,
-          charge_id: charge[:response].id
+          charge_id: charge[:response].id,
         )
         order.update_attributes(charge_id: charge[:response].id)
+        RecordLedger.new(user, order).record_shipping!
       end
     else
-      errors.add(:base, charge.errors.full_message.join(', '))
+      errors.add(:base, charge.errors.full_message.join(", "))
       raise ActiveRecord::StatementInvalid
     end
   end
@@ -192,7 +188,7 @@ class RegistrationForm
       user.save
       SubscriptionWorker.perform_at(user.orders.first.placed_on.beginning_of_day, user.id)
     else
-      errors.add(:base, stripe_subscription.errors.full_messages.join(', '))
+      errors.add(:base, stripe_subscription.errors.full_messages.join(", "))
       raise ActiveRecord::StatementInvalid
     end
   end
@@ -205,7 +201,7 @@ class RegistrationForm
       password: password,
       password_confirmation: password,
       plan_id: plan_id,
-      stripe_token: stripe_token
+      stripe_token: stripe_token,
     }
   end
 
@@ -217,14 +213,14 @@ class RegistrationForm
       front_door: address[:front_door],
       city: address[:city],
       state: address[:state],
-      zip_code: address[:zip_code]
+      zip_code: address[:zip_code],
     }
   end
 
   def schedule_params
     {
       option: schedule,
-      start_date: start_date
+      start_date: start_date,
     }
   end
 
@@ -239,7 +235,7 @@ class RegistrationForm
       year: year,
       cvc: cvc,
       brand: card_brand,
-      token: stripe_token
+      token: stripe_token,
     }
   end
 
@@ -248,7 +244,7 @@ class RegistrationForm
       bank_name: bank_name,
       account_number: account_number,
       routing_number: routing_number,
-      token: stripe_token
+      token: stripe_token,
     }
   end
 end

@@ -20,7 +20,7 @@
       <tr class="<%= ledger.id %>">
         <td><%= ledger.order.placed_on.strftime('%B %d, %Y') %></td>
         <td><%= to_currency(ledger.amount) %></td>
-        <td><%= ledger.type.gsub('Ledger', '') %></td>
+        <td><%= ledger.type.gsub('Ledger', '').underscore.humanize %></td>
         <td><%= ledger.status.titleize %></td>
       </tr>
     <% end %>

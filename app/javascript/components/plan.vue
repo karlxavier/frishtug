@@ -7,7 +7,7 @@
     <div class="card-deck" style="margin-bottom: 1.7rem;">
       <template v-for="plan in plans">
         <div class="card rounded0 text-center" v-bind:key="plan.id">
-          <img class="card-img-top card__plan_image" :src="images[plan.attributes.name]" alt="Card image cap">
+          <img class="card-img-top card__plan_image" :src="getImgSrc(plan.attributes.name)" alt="Card image cap">
           <div class="card-body card__plan_body">
             <h4 class="card-title">
               {{ plan.attributes.name }}
@@ -42,73 +42,86 @@
 </template>
 
 <script>
-import Option1 from '../packs/images/option1.png'
-import Option2 from '../packs/images/option2.png'
-import Option3 from '../packs/images/option3.png'
-import Option4 from '../packs/images/option4.png'
+import Option1 from '../packs/images/option1.png';
+import Option2 from '../packs/images/option2.png';
+import Option3 from '../packs/images/option3.png';
+import Option4 from '../packs/images/option4.png';
 export default {
   name: 'plan',
   props: {
     registration_form: { type: Object, required: true },
     plan: { type: Object, required: true },
-    charges: { type: Object, required: true },
+    charges: { type: Object, required: true }
   },
   data: () => {
     return {
       plans: null,
       images: {
-        "Option 1": Option1,
-        "Option 2": Option2,
-        "Option 3": Option3,
-        "Option 4": Option4
+        'Option 1': Option1,
+        'Option 2': Option2,
+        'Option 3': Option3,
+        'Option 4': Option4
       }
-    }
+    };
   },
   mounted: function() {
-    const self = this
+    const self = this;
     Rails.ajax({
       url: '/api/v1/plans',
       type: 'GET',
       success: function(response) {
-        self.plans = response.data
+        self.plans = response.data;
       }
-    })
+    });
   },
   methods: {
+    getImgSrc: function(name) {
+      if (this.images.hasOwnProperty(name)) {
+        return this.images[name];
+      } else {
+        return this.images['Option 4'];
+      }
+    },
     parseFloatingNumber: function(num) {
       const val = parseFloat(num);
       return isNaN(val) ? 0 : val;
     },
     choosePlan: function(plan) {
-      this.registration_form.plan_id = plan.id
-      this.plan.name = plan.attributes.name
-      this.plan.for_type = plan.attributes.for_type
-      this.plan.interval = plan.attributes.interval
-      this.plan.limit = this.parseFloatingNumber(plan.attributes.limit)
-      this.plan.minimum = this.parseFloatingNumber(plan.attributes.minimum_credit_allowed)
-      this.charges.shipping_fee = this.parseFloatingNumber(plan.attributes.shipping_fee)
-      this.plan.minimum_charge = this.parseFloatingNumber(plan.attributes.minimum_charge)
+      this.registration_form.plan_id = plan.id;
+      this.plan.name = plan.attributes.name;
+      this.plan.for_type = plan.attributes.for_type;
+      this.plan.interval = plan.attributes.interval;
+      this.plan.limit = this.parseFloatingNumber(plan.attributes.limit);
+      this.plan.minimum = this.parseFloatingNumber(
+        plan.attributes.minimum_credit_allowed
+      );
+      this.charges.shipping_fee = this.parseFloatingNumber(
+        plan.attributes.shipping_fee
+      );
+      this.plan.minimum_charge = this.parseFloatingNumber(
+        plan.attributes.minimum_charge
+      );
 
       if (plan.attributes.interval === 'month') {
-        this.plan.price = this.parseFloatingNumber(plan.attributes.price)
+        this.plan.price = this.parseFloatingNumber(plan.attributes.price);
       }
-      this.$emit('next-tab')
+      this.$emit('next-tab');
     }
   }
-}
+};
 </script>
 
 <style>
-  i.fa-check {
-    display: none;
-  }
-  .active__plan {
-    background: #ffffff!important;
-    color: #582D11 !important;
-  }
-  .active__plan > i.fa-check {
-    display: inline-block;
-  }
+i.fa-check {
+  display: none;
+}
+.active__plan {
+  background: #ffffff !important;
+  color: #582d11 !important;
+}
+.active__plan > i.fa-check {
+  display: inline-block;
+}
 </style>
 
 

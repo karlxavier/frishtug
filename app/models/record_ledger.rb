@@ -10,8 +10,14 @@ class RecordLedger
     record_both_tax_and_excess
     send_notification if notify_user == true
     true
-  rescue StandardError => e
-    Rails.logger.fatal e.message
+  rescue => e
+    false
+  end
+
+  def record_shipping!
+    return unless @user.plan.party_meeting?
+    send_notification if record_shipping_charge
+  rescue => e
     false
   end
 
@@ -37,11 +43,11 @@ class RecordLedger
   end
 
   def calculate_tax
-    CalculateAmount.call(user, order, 'tax').result
+    CalculateAmount.call(user, order, "tax").result
   end
 
   def calculate_excess
-    CalculateAmount.call(user, order, 'excess').result
+    CalculateAmount.call(user, order, "excess").result
   end
 
   def record_tax(amount)
@@ -58,5 +64,19 @@ class RecordLedger
     excess_record = user.additional_ledgers.create(order_id: order.id, status: :pending_payment) unless excess_record.present?
 
     excess_record.update_attributes(amount: amount)
+  end
+
+  def record_shipping_charge
+    shipping = ShippingPrice.find_by_zip(user.active_address.zip_code)
+    return false if shipping.nil?
+
+    shipping_record = user.shipping_charge_ledgers.where(order_id: order.id, status: %i[pending_payment payment_failed paid]).first
+
+    shipping_record = user.shipping_charge_ledgers.create(order_id: order.id, status: :pending_payment) unless shipping_record.present?
+
+    return false if shipping_record.paid?
+    shipping_record.update_attributes(amount: shipping.price)
+    order.pending_payment!
+    true
   end
 end

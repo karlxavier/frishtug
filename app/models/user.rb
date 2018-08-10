@@ -49,6 +49,7 @@ class User < ApplicationRecord
   has_many :ledgers, dependent: :destroy
   has_many :tax_ledgers, dependent: :destroy
   has_many :additional_ledgers, dependent: :destroy
+  has_many :shipping_charge_ledgers, dependent: :destroy
 
   validates :first_name, :last_name, presence: true
   validates :email, uniqueness: true
@@ -143,7 +144,7 @@ class User < ApplicationRecord
             .where(status: %i[processing completed cancelled pending_payment])
             .order(placed_on: :asc)
     else
-      orders.where(status: %i[processing completed cancelled])
+      orders.where(status: %i[processing completed cancelled pending_payment])
             .order(placed_on: :asc)
     end
   end
@@ -169,5 +170,10 @@ class User < ApplicationRecord
   def generate_expiry_date
     return if subscribe_at.nil?
     self.subscription_expires_at = (MonthScheduler.new(self).create_full_month!.last + 1.day).beginning_of_day
+  end
+
+  def notify_admin
+    return unless plan.party_meeting?
+    #notify the admin
   end
 end

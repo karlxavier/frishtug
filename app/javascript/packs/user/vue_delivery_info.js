@@ -59,7 +59,7 @@ if (el) {
       show: false,
       zipcodes: []
     },
-    mounted: function() {
+    mounted: function () {
       const self = this
       const fetchAllowedZip = () => {
         return new Promise(resolve => {
@@ -71,7 +71,7 @@ if (el) {
         });
       };
 
-      fetchAllowedZip().then(function(response) {
+      fetchAllowedZip().then(function (response) {
         self.zipcodes = Array.from(response.data).map(
           data => data.attributes.zip
         );
@@ -82,7 +82,7 @@ if (el) {
       }
     },
     methods: {
-      verifyAddress: function() {
+      verifyAddress: function () {
         const self = this
         let processedAddress = 0
         const address_params = []
@@ -110,7 +110,7 @@ if (el) {
 
         const done = (response) => {
           if (response.valid === false) {
-            const error_message = response.errors.reduce( (list, error) => {
+            const error_message = response.errors.reduce((list, error) => {
               return list += `<li>${error}</li>`
             }, "")
 
@@ -182,8 +182,8 @@ if (el) {
           }
         })
       },
-      deleteAddress: function(address, index) {
-        if(address.id !== null) return address._delete = 1;
+      deleteAddress: function (address, index) {
+        if (address.id !== null) return address._delete = 1;
         this.addresses.splice(index, 1);
       },
       addAddress: () => {
@@ -199,7 +199,7 @@ if (el) {
           _delete: null
         })
       },
-      validateZip: function(event) {
+      validateZip: function (event) {
         const zip = event.target.value
         if (!this.zipcodes.includes(zip)) {
           swal({

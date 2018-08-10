@@ -121,7 +121,7 @@
 
 
 <script>
-import { required } from "vuelidate/lib/validators";
+import { required } from 'vuelidate/lib/validators';
 import LabelEdit from './label_edit';
 export default {
   components: {
@@ -133,7 +133,7 @@ export default {
   },
   data: () => {
     return {
-      location_ats: ["at_home", "at_work", "multiple_workplaces"],
+      location_ats: ['at_home', 'at_work', 'multiple_workplaces'],
       invalids: 0,
       allowed_zip_codes: [],
       autocomplete_hidden: [true]
@@ -141,11 +141,11 @@ export default {
   },
   filters: {
     format: function(text) {
-      const str = text.split("_");
+      const str = text.split('_');
       for (var i = 0; i < str.length; i++) {
         str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
       }
-      return str.join(" ");
+      return str.join(' ');
     }
   },
   validations: {
@@ -175,8 +175,8 @@ export default {
     const fetchAllowedZip = () => {
       return new Promise(resolve => {
         Rails.ajax({
-          url: "/api/v1/allowed_zip_codes",
-          type: "GET",
+          url: '/api/v1/allowed_zip_codes',
+          type: 'GET',
           success: resolve
         });
       });
@@ -188,10 +188,10 @@ export default {
       );
     });
 
-    const node = document.querySelector('.group_code')
+    const node = document.querySelector('.group_code');
     if (node) {
-      self.registration_form.group_code = node.getAttribute('data')
-      self.getAddress()
+      self.registration_form.group_code = node.getAttribute('data');
+      self.getAddress();
     }
   },
   methods: {
@@ -203,22 +203,24 @@ export default {
           url: `/api/v1/get_address?group_code=${group_code}`,
           type: 'GET',
           success: function(response) {
-            const address = response.address
-            self.registration_form.addresses = [{
-              line1: address.line1,
-              line2: address.line2,
-              front_door: address.front_door,
-              city: address.city,
-              state: address.state,
-              zip_code: address.zip_code,
-              location_at: address.location_at
-            }]
+            const address = response.address;
+            self.registration_form.addresses = [
+              {
+                line1: address.line1,
+                line2: address.line2,
+                front_door: address.front_door,
+                city: address.city,
+                state: address.state,
+                zip_code: address.zip_code,
+                location_at: address.location_at
+              }
+            ];
           }
         });
       }
     },
     changeAddress: function(location_at) {
-      if (location_at !== "multiple_workplaces") {
+      if (location_at !== 'multiple_workplaces') {
         const newAddress = [];
         newAddress.push(this.registration_form.addresses[0]);
         this.registration_form.addresses = newAddress;
@@ -230,14 +232,19 @@ export default {
         return self.allowed_zip_codes.includes(address.zip_code);
       });
 
+      if (this.plan.for_type === 'party_meeting') {
+        self.validateAddress();
+        return;
+      }
+
       if (!isValid) {
         swal({
-          type: "error",
-          title: "Oops...",
+          type: 'error',
+          title: 'Oops...',
           text: "We don't deliver to your zip code",
-          confirmButtonText: "Continue",
-          confirmButtonColor: "#582D11",
-          confirmButtonClass: "btn btn-brown text-uppercase",
+          confirmButtonText: 'Continue',
+          confirmButtonColor: '#582D11',
+          confirmButtonClass: 'btn btn-brown text-uppercase',
           buttonsStyling: false
         }).then(response => {
           self.validateAddress();
@@ -251,28 +258,28 @@ export default {
       const group_code = self.registration_form.group_code;
 
       if (group_code === null || group_code.length === 0) {
-        return self.$emit("next-tab");
+        return self.$emit('next-tab');
       }
 
       const responseHandler = response => {
         if (response.is_valid !== true) {
           swal({
-            type: "error",
-            title: "Group Code Invalid",
-            text: "Group code is invalid!",
-            confirmButtonText: "Continue",
-            confirmButtonColor: "#582D11",
-            confirmButtonClass: "btn btn-brown text-uppercase",
+            type: 'error',
+            title: 'Group Code Invalid',
+            text: 'Group code is invalid!',
+            confirmButtonText: 'Continue',
+            confirmButtonColor: '#582D11',
+            confirmButtonClass: 'btn btn-brown text-uppercase',
             buttonsStyling: false
           });
         } else {
-          return self.$emit("next-tab");
+          return self.$emit('next-tab');
         }
       };
 
       Rails.ajax({
         url: `/api/v1/check_codes?group_code=${group_code}`,
-        type: "GET",
+        type: 'GET',
         success: function(response) {
           responseHandler(response);
         }
@@ -280,14 +287,14 @@ export default {
     },
     validateAddress: function() {
       const self = this;
-      let processedAddress = 0
-      const address_params = []
+      let processedAddress = 0;
+      const address_params = [];
 
       const validate_address = address => {
         return new Promise((resolve, reject) => {
           Rails.ajax({
             url: `/api/v1/address?${address}`,
-            type: "GET",
+            type: 'GET',
             success: function(response) {
               resolve(response);
             }
@@ -295,38 +302,48 @@ export default {
         });
       };
 
-      self.registration_form.addresses.forEach( (address, index, array) => {
-        processedAddress++
-        address_params.push(`address[${processedAddress}][line1]=${address.line1}&address[${processedAddress}][line2]=${address.line2}&address[${processedAddress}][city]=${address.city}&address[${processedAddress}][state]=${address.state}&address[${processedAddress}][zip_code]=${address.zip_code}`)
+      self.registration_form.addresses.forEach((address, index, array) => {
+        processedAddress++;
+        address_params.push(
+          `address[${processedAddress}][line1]=${
+            address.line1
+          }&address[${processedAddress}][line2]=${
+            address.line2
+          }&address[${processedAddress}][city]=${
+            address.city
+          }&address[${processedAddress}][state]=${
+            address.state
+          }&address[${processedAddress}][zip_code]=${address.zip_code}`
+        );
       });
 
       validate_address(address_params.join('&')).then(response => {
-        done(response)
-      })
+        done(response);
+      });
 
-      const done = (response) => {
+      const done = response => {
         if (response.valid === false) {
-          const error_message = response.errors.reduce( (list, error) => {
-            return list += `<li>${error}</li>`
-          }, "")
+          const error_message = response.errors.reduce((list, error) => {
+            return (list += `<li>${error}</li>`);
+          }, '');
 
           swal({
-            type: "error",
-            title: "Address Not Valid!",
+            type: 'error',
+            title: 'Address Not Valid!',
             html: `<ul class="list-unstyled">${error_message}</ul>`,
-            confirmButtonText: "Ok",
-            confirmButtonColor: "#582D11",
-            confirmButtonClass: "btn btn-brown text-uppercase",
+            confirmButtonText: 'Ok',
+            confirmButtonColor: '#582D11',
+            confirmButtonClass: 'btn btn-brown text-uppercase',
             buttonsStyling: false
           });
         } else {
           response.data.forEach((data, index) => {
-            self.registration_form.addresses[index].state = data.state
-            self.registration_form.addresses[index].city = data.city
-          })
+            self.registration_form.addresses[index].state = data.state;
+            self.registration_form.addresses[index].city = data.city;
+          });
           self.checkGroupCode();
         }
-      }
+      };
     },
     validate: function() {
       const self = this;

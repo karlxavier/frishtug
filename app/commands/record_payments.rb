@@ -6,8 +6,9 @@ class RecordPayments
     @amount = amount
     @type = type
     @description = {
-      'excess' => "Excess Charge",
-      'tax' => "Tax Charge"
+      'excess': "Excess Charge",
+      'tax': "Tax Charge",
+      'shipping': "Shipping Charge",
     }
   end
 
@@ -16,7 +17,7 @@ class RecordPayments
       amount_paid: @amount,
       user_id: @order.user_id,
       description: @description[@type],
-      billed_at: @order.placed_on
+      billed_at: @order.placed_on,
     )
     @order.paid!
   end

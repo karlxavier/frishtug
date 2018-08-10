@@ -40,12 +40,17 @@ class Ledger < ApplicationRecord
     return if %w[pending_payment payment_failed].include?(status)
     return if amount.nil?
     return if amount <= 0
-    types = { 'TaxLedger' => 'tax', 'AdditionalLedger' => 'excess' }
+    types = {
+      'TaxLedger': "tax",
+      'AdditionalLedger': "excess",
+      'ShippingChargeLedger': "shipping",
+    }
     order = Order.find(order_id)
     RecordPayments.call(order, amount, types[type])
-    order.update_columns(status: :processing)
-    order.total_price = OrderCalculator.new(order).total
-    order.charge_id = charge_id
-    order.save
+    order.update_attributes(
+      status: :processing,
+      total_price: OrderCalculator.new(order).total,
+      charge_id: charge_id,
+    )
   end
 end
