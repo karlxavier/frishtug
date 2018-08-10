@@ -11,7 +11,7 @@
 
 <div class="container mt-48px">
   <div class="card-deck">
-    <% @plans.each do |p| %>
+    <% @plans.first(4).each do |p| %>
       <div class="card rounded0 text-center">
 
           <img class="card__plan_image"

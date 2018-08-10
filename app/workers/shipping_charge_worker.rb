@@ -5,8 +5,9 @@ class ShippingChargeWorker
     shipping = ShippingPrice.find(shipping_price_id)
     party_meeting_plan = Plan.where(for_type: "party_meeting").first
     user_ids = User.joins(:addresses).where(plan_id: party_meeting_plan.id, addresses: {zip_code: shipping.zip.to_s, status: :active}).ids
+    orders = Order.includes(:user).where(user_id: user_ids, status: :pending_payment)
 
-    Order.includes(:user).where(user_id: user_ids).find_each do |order|
+    orders.find_each do |order|
       RecordLedger.new(order.user, order).record_shipping!
     end
   end

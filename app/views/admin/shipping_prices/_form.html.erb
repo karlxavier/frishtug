@@ -2,7 +2,7 @@
   <%= render 'shared/error_explanation', object: @shipping_price %>
   <div class="form-group">
     <%= form.label :zip %>
-    <%= form.number_field :zip, class: 'form-control' %>
+    <%= form.number_field :zip, class: 'form-control', value: params[:zip] %>
   </div>
   <div class="form-group">
     <%= form.label :price %>

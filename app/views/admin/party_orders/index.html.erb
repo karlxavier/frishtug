@@ -1,0 +1,39 @@
+<%= card_container do %>
+  <table class="table table-sm">
+    <thead>
+      <tr>
+        <th>Full Name</th>
+        <th>Order Date</th>
+        <th>Address</th>
+        <th>Status</th>
+        <th>Shipping Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @party_orders.each do |order| %>
+        <tr>
+          <td><%= order.user.full_name %></td>
+          <td><%= order.placed_on.strftime('%b %d, %Y') %></td>
+          <td><%= order.user.full_address %></td>
+          <td class="<%= order.status %>"><%= order.status.titleize %></td>
+          <td><%= 
+          to_currency(
+            ShippingPrice.find_by_zip(order.user.active_address.zip_code.to_i)&.price
+          ) || link_to('New', new_admin_shipping_price_path(zip: order.user.active_address.zip_code.to_i), class: 'btn btn-sm btn-brown text-uppercase') %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= paginate @party_orders %>
+<% end %>
+
+<%= content_for :header_js do %>
+  <style lang="css">
+    .pending_payment {
+      color: var(--orange);
+    } 
+    .processing {
+      color: var(--teal);
+    }
+  </style>
+<% end %>

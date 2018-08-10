@@ -32,4 +32,5 @@ namespace :admin do
   resources :contact_us_messages, only: %i[index show]
   resources :stock_notifications, only: :index
   resources :shipping_prices
+  resources :party_orders, only: :index
 end
