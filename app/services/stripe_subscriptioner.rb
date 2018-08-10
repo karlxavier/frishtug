@@ -25,7 +25,7 @@ class StripeSubscriptioner
 
   def cancel
     unless user.stripe_subscription_id?
-      errors.add :base, "You cant cancell a subscription that is not active."
+      errors.add :base, "You cant cancel a subscription that is not active."
       return
     end
     subscription = retrieve
