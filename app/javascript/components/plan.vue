@@ -5,7 +5,7 @@
       Choose A Plan
     </h3>
     <div class="card-deck" style="margin-bottom: 1.7rem;">
-      <template v-for="plan in plans">
+      <template v-for="(plan, index) in plans.slice(0, 4)">
         <div class="card rounded0 text-center" v-bind:key="plan.id">
           <img class="card-img-top card__plan_image" :src="getImgSrc(plan.attributes.name)" alt="Card image cap">
           <div class="card-body card__plan_body">
@@ -26,7 +26,7 @@
               <span v-html="plan.attributes.description"></span>
             </small>
           </div>
-          <div class="card-footer card__plan_footer">
+          <div class="card-footer card__plan_footer bg-transparent">
             <a href="javascript:void(0)"
               class="btn btn-block btn-brown plan--btns"
               :class="String(registration_form.plan_id) === plan.id ? 'active__plan' : ''"
@@ -35,6 +35,32 @@
               Choose {{ plan.attributes.name }}
             </a>
           </div>
+          <template v-if="index === 3">
+              <div class="card-body card__plan_body">
+                <p class="card-text plan--description">
+                  <span v-html="plans[4].attributes.short_description"></span>
+                </p>
+                <p class="card-text" v-show="plans[4].attributes.shipping === 'free'">
+                  FREE DELIVERY!
+                </p>
+                <p class="card-text" v-show="plans[4].attributes.shipping === 'paid'">
+                  <span v-html="plans[4].attributes.shipping_note"></span>
+                </p>
+                <p class="card-text text-upcase">Note:</p>
+                <small class="card-text text-left card__plan_note_text">
+                  Just a placeholder text
+                </small>
+              </div>
+              <div class="card-footer card__plan_footer bg-transparent">
+                <a href="javascript:void(0)"
+                  class="btn btn-block btn-brown plan--btns"
+                  :class="String(registration_form.plan_id) === plans[4].id ? 'active__plan' : ''"
+                  @click="choosePlan(plans[4])">
+                  <i class="fa fa-check"></i>
+                  Choose Party/Meeting
+                </a>
+              </div>
+          </template>
         </div>
       </template>
     </div>
@@ -55,7 +81,7 @@ export default {
   },
   data: () => {
     return {
-      plans: null,
+      plans: [],
       images: {
         'Option 1': Option1,
         'Option 2': Option2,

@@ -11,7 +11,7 @@
 
 <div class="container mt-48px">
   <div class="card-deck">
-    <% @plans.first(4).each do |p| %>
+    <% @plans.first(4).each_with_index do |p, index| %>
       <div class="card rounded0 text-center">
 
           <img class="card__plan_image"
@@ -36,10 +36,32 @@
               <%= p.description.html_safe %>
             </small>
           </div>
-          <div class="card-footer card__plan_footer">
+          <div class="card-footer card__plan_footer bg-transparent">
             <%= link_to "Choose #{p.name}", user_registrations_path(plan_name: p.name) ,class: 'btn btn-block btn-brown plan--btns' %>
           </div>
-
+          
+          <% if index == 3 %>
+              <div class="card-body">
+                <p class="card-text plan--description">
+                  <%= @plans.last.short_description.html_safe %>
+                </p>
+                <p class="card-text">
+                  <% if @plans.last.free? %>
+                    FREE DELIVERY!
+                  <% else %>
+                    <%= @plans.last.shipping_note %>
+                  <% end %>
+                </p>
+                <p class="card-text text-upcase">Note:</p>
+                <small class="card-text text-left card__plan_note_text">
+                  Just a placeholder text.
+                </small>
+              </div>
+              <div class="card-footer card__plan_footer bg-transparent">
+                <%= link_to "Choose Party/Meeting", user_registrations_path(plan_name: @plans.last.name) ,class: 'btn btn-block btn-brown plan--btns' %>
+              </div>
+          <% end %>
+          
       </div>
     <% end %>
   </div>
