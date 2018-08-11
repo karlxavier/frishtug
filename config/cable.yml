@@ -6,5 +6,5 @@ test:
 
 production:
   adapter: redis
-  url: ENV['REDIS_PROVIDER']
+  url: <%= ENV['REDIS_PROVIDER'] %>
   channel_prefix: frishtug_production
