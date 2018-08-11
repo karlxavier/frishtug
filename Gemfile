@@ -74,6 +74,7 @@ gem 'simple_command'
 
 group :production do
   gem 'newrelic_rpm'
+  gem 'redis'
 end
 
 group :development, :test do

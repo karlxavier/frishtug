@@ -15,7 +15,7 @@
           <td><%= order.user.full_name %></td>
           <td><%= order.placed_on.strftime('%b %d, %Y') %></td>
           <td><%= order.user.full_address %></td>
-          <td class="<%= order.status %>"><%= order.status.titleize %></td>
+          <td class="<%= order&.status %>"><%= order&.status&.titleize %></td>
           <td><%= 
           to_currency(
             ShippingPrice.find_by_zip(order.user.active_address.zip_code.to_i)&.price
