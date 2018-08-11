@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
 ruby '2.4.1'
@@ -42,6 +44,7 @@ gem 'barby'
 gem 'bootsnap', require: false
 gem 'bootstrap', '~> 4.0.0.beta2'
 gem 'carrierwave'
+gem 'clockwork'
 gem 'cloudinary'
 gem 'connection_pool'
 gem 'dalli'
@@ -51,44 +54,43 @@ gem 'geocoder'
 gem 'high_voltage', '~> 3.0.0'
 gem 'httparty'
 gem 'jquery-rails'
+gem 'jsonapi-rails'
+gem 'jwt'
 gem 'kaminari'
 gem 'mini_magick'
+gem 'pg_search'
 gem 'piet'
 gem 'popper_js', '~> 1.12.1'
 gem 'rack-mini-profiler'
+gem 'redis'
 gem 'roo', '~> 2.7', '>= 2.7.1'
 gem 'roo-google'
 gem 'roo-xls'
+gem 'scenic'
 gem 'sidekiq'
 gem 'sidekiq-unique-jobs'
+gem 'simple_command'
 gem 'stripe'
 gem 'stripe_event'
 gem 'trix'
 gem 'virtus'
-gem 'pg_search'
-gem 'scenic'
-gem 'clockwork'
-gem 'jsonapi-rails'
-gem 'jwt'
-gem 'simple_command'
 
 group :production do
   gem 'newrelic_rpm'
-  gem 'redis'
 end
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
+  gem 'annotate'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'database_cleaner'
   gem 'dotenv-rails'
   gem 'factory_bot_rails'
   gem 'faker'
+  gem 'figaro'
   gem 'fuubar'
   gem 'rspec-rails'
   gem 'spring-commands-rspec'
-  gem 'figaro'
-  gem 'annotate'
 end
 
 group :test do
