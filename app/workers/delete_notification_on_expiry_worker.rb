@@ -1,4 +1,4 @@
-class DeleteNotificationOnExpiryWorkerWorker
+class DeleteNotificationOnExpiryWorker
   include Sidekiq::Worker
 
   def perform(notification_id)

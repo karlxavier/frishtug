@@ -65,6 +65,7 @@ class User < ApplicationRecord
 
   after_create :delete_inactive_entry!
   before_save :downcase_email!, :generate_expiry_date
+  after_create_commit :notify_admin
 
   def self.in_locations(locations)
     joins(:addresses).merge(Address.search_list(locations))
@@ -174,6 +175,8 @@ class User < ApplicationRecord
 
   def notify_admin
     return unless plan.party_meeting?
-    #notify the admin
+    ActionCable.server.broadcast 'user_channel', 
+      message: "A new party/meeting order has been created",
+      title: "New user"
   end
 end

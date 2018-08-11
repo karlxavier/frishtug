@@ -29,4 +29,5 @@ Rails.application.routes.draw do
   draw :admin
   draw :user
   draw :api
+  mount ActionCable.server => '/cable'
 end

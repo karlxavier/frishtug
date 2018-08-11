@@ -119,11 +119,15 @@ class Menu < ApplicationRecord
   def notify_users_for_price_change
     expiry = Time.current + 6.days
     title = price_was > price ? 'Price Drop' : 'Price Increase'
-    Notification.create(
+    notification = Notification.create(
       title: title,
       body: "Price changes for #{name} from #{format('$%.2f', price_was)} to #{format('$%.2f', price)}",
       expiry: expiry
     )
+    
+    ActionCable.server.broadcast 'price_channel', 
+      message: notification.body,
+      title: notification.title
   end
 
   def recalculate_all_active_orders

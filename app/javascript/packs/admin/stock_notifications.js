@@ -30,5 +30,4 @@ const stockNotification = () => {
   })
 }
 
-setInterval(stockNotification, five_minutes);
 window.stockNotification = stockNotification;
