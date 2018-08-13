@@ -15,6 +15,7 @@ if (el) {
   })
 
   const addresses_list = JSON.parse(el2.dataset.addresses)
+  const is_party_plan = JSON.parse(el.dataset.isPartyPlan)
 
   const userAddressList = new Vue({
     el: el2,
@@ -201,6 +202,10 @@ if (el) {
       },
       validateZip: function (event) {
         const zip = event.target.value
+        if (is_party_plan === true) {
+          return
+        }
+
         if (!this.zipcodes.includes(zip)) {
           swal({
             type: "error",

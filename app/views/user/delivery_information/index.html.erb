@@ -8,7 +8,8 @@
         class: 'col-md-5',
         id: 'user_delivery_info',
         data: {
-          addresses: @user_addresses_json
+          addresses: @user_addresses_json,
+          is_party_plan: current_user.plan.party_meeting?
         } do %>
         <form class="user_delivery_info">
           <div class="form-group">
