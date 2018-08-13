@@ -175,7 +175,7 @@ class User < ApplicationRecord
 
   def notify_admin
     return unless plan.party_meeting?
-    ActionCable.server.broadcast 'user_channel', 
+    ActionCable.server.broadcast "user_channel",
       message: "A new party/meeting order has been created",
       title: "New user"
   end

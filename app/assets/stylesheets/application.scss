@@ -2,9 +2,9 @@
 *=require_self
 *=require trix
 */
+
 @import "bootstrap";
 @import "toastr";
-
 @media print {
   #printarea {
     position: fixed;
@@ -18,4 +18,33 @@
 
 .toast-message {
   font-size: 14px !important;
+}
+
+.table th {
+  &>a {
+    text-decoration: none;
+    color: var(--secondary);
+  }
+  & .asc:after {
+    content: '';
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 4px solid #333;
+    vertical-align: middle;
+    margin-left: 3px;
+  }
+  & .desc:after {
+    content: '';
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 4px solid #333;
+    vertical-align: middle;
+    margin-left: 3px;
+  }
 }

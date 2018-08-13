@@ -6,10 +6,10 @@
           <tr>
             <th>Full Name</th>
             <th>Full Address</th>
-            <th>Email</th>
+            <th><%= sortable column: 'email' %></th>
             <th>Contact Number</th>
-            <th>Plan</th>
-            <th>Created At</th>
+            <th><%= sortable column: 'plan_id', title: 'Plan' %></th>
+            <th><%= sortable column: 'created_at', title: 'Created At' %></th>
             <th></th>
           </tr>
         </thead>

@@ -3,9 +3,9 @@
     <thead>
       <tr>
         <th>Full Name</th>
-        <th>Email</th>
-        <th>Message</th>
-        <th>Time</th>
+        <th><%= sortable column: 'email' %></th>
+        <th><%= sortable column: 'message' %></th>
+        <th><%= sortable column: 'created_at', title: 'Created At' %></th>
         <th></th>
       </tr>
     </thead>

@@ -1,6 +1,6 @@
 class Admin::SuggestionsController < Admin::BaseController
   def index
-    @suggestions = Comment.all.page(page).per(20)
+    @suggestions = Comment.all.order(created_at: :desc).page(page).per(20)
   end
 
   def show

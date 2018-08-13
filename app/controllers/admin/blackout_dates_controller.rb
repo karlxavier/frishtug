@@ -1,8 +1,9 @@
 class Admin::BlackoutDatesController < Admin::BaseController
   before_action :set_blackout_date, only: %i[edit update destroy]
   respond_to :js, only: :destroy
+
   def index
-    @blackout_dates = BlackoutDate.all.page(page).per(10)
+    @blackout_dates = BlackoutDate.all.order(created_at: :desc).page(page).per(20)
   end
 
   def new
@@ -40,7 +41,7 @@ class Admin::BlackoutDatesController < Admin::BaseController
   end
 
   def blackout_date_params
-    params.require('blackout_date').permit(:month, :day, :description)
+    params.require("blackout_date").permit(:month, :day, :description)
   end
 
   def set_blackout_date

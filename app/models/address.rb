@@ -29,15 +29,16 @@ class Address < ApplicationRecord
   belongs_to :addressable, polymorphic: true, optional: true
   geocoded_by :full_address
   after_validation :geocode
+  before_save :notify_admin, if: :will_save_change_to_zip_code?
 
   def self.search_list(list)
-    search_term = list.join('|')
-    where('line1 ~* ? OR city ~* ? OR state ~* ? OR zip_code in (?)',
+    search_term = list.join("|")
+    where("line1 ~* ? OR city ~* ? OR state ~* ? OR zip_code in (?)",
           search_term, search_term, search_term, list)
   end
 
   def self.search(search_term)
-    where('line1 ~* ? OR city ~* ? OR state ~* ? OR zip_code == ?',
+    where("line1 ~* ? OR city ~* ? OR state ~* ? OR zip_code == ?",
           search_term, search_term, search_term, search_term)
   end
 
@@ -62,16 +63,26 @@ class Address < ApplicationRecord
   end
 
   def full_address
-    [line1, line2, city, state, 'US'].reject(&:blank?).compact.join(', ')
+    [line1, line2, city, state, "US"].reject(&:blank?).compact.join(", ")
   end
 
   private
 
   def print_line2?
-    line2.present? ? ", #{line2}" : ''
+    line2.present? ? ", #{line2}" : ""
   end
 
   def print_front_door_code?
-    front_door.present? ? ", #{front_door}" : ''
+    front_door.present? ? ", #{front_door}" : ""
+  end
+
+  def notify_admin
+    return unless self.active?
+    return if self.zip_code_was.nil?
+    return if self.zip_code_was == self.zip_code
+    user = User.find(self.addressable_id)
+    ActionCable.server.broadcast "user_channel",
+      message: "User #{user.full_name} has change the active address zip_code from #{zip_code_was} to #{zip_code}",
+      title: "User changed address"
   end
 end

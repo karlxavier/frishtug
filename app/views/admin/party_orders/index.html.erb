@@ -3,9 +3,9 @@
     <thead>
       <tr>
         <th>Full Name</th>
-        <th>Order Date</th>
+        <th><%= sortable column: 'placed_on', title: 'Order Date' %></th>
         <th>Address</th>
-        <th>Status</th>
+        <th><%= sortable column: 'status' %></th>
         <th>Shipping Price</th>
       </tr>
     </thead>
