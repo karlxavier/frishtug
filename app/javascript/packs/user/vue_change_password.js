@@ -4,12 +4,12 @@ import ajax from '../lib/ajax_lib'
 const el = document.querySelector('#change_password')
 
 if (el) {
-  const responseHandler = (response) => {
+  const responseHandler = (data) => {
     swal(
       data.status.toUpperCase(),
       data.message,
       data.status
-    )
+    );
   }
 
   const changePass = new Vue({
@@ -22,7 +22,7 @@ if (el) {
       }
     },
     methods: {
-      saveChanges: function() {
+      saveChanges: function () {
         const user = this.user
         const data = new FormData(document.querySelector('form.change_password_form'))
         if (user.new_password === user.confirm_password) {

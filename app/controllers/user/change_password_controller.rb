@@ -7,16 +7,16 @@ class User::ChangePasswordController < User::BaseController
     @user = current_user
     if @user.valid_password?(user_params[:password])
       @user.update_attributes(password: user_params[:confirm_password])
-      sign_in(@user, scope: :user)
-      render json: { status: 'success', message: 'Password updated!' }, status: :ok
+      sign_in(@user, scope: :user, bypass: true)
+      render json: {status: "success", message: "Password updated!"}, status: :ok
     else
-      render json: { status: 'error', message: 'Old password does not match'}, status: :unprocessable_entity
+      render json: {status: "error", message: "Old password does not match"}, status: :unprocessable_entity
     end
   end
 
   private
 
-    def user_params
-      params.fetch(:user, {}).permit(:password, :new_password, :confirm_password)
-    end
+  def user_params
+    params.fetch(:user, {}).permit(:password, :new_password, :confirm_password)
+  end
 end
