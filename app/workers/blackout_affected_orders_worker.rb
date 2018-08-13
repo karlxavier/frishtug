@@ -2,7 +2,7 @@ class BlackoutAffectedOrdersWorker
   include Sidekiq::Worker
 
   def perform(blackout_date_id)
-    blackout_date = BlackoutDate.find(blackout_date_id)
+    blackout_date = BlackoutDate.find_by_id(blackout_date_id)
     if blackout_date
       date = Time.zone.parse("#{blackout_date.month} #{blackout_date.day}")
       range = DateRange.new(date.beginning_of_day, date.end_of_day)

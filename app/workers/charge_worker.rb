@@ -3,7 +3,8 @@ class ChargeWorker
   sidekiq_options unique: :until_executed
 
   def perform(user_id, order_id, amount, type)
-    @user = User.find(user_id)
+    @user = User.find_by_id(user_id)
+    return unless @user
     @amount = amount
     @type = type
     return unless @user.present?
@@ -12,9 +13,9 @@ class ChargeWorker
     @order = order_id.present? ? Order.find(order_id) : nil
     response = Stripe::Charge.create(
       amount: amount_in_cents,
-      currency: 'usd',
+      currency: "usd",
       customer: @user.stripe_customer_id,
-      description: charge_description
+      description: charge_description,
     )
     delete_user_notification if response.id.present?
   end
@@ -28,7 +29,7 @@ class ChargeWorker
   end
 
   def uniq_id
-    [@user.id, @type, @amount].join('_')
+    [@user.id, @type, @amount].join("_")
   end
 
   def amount_in_cents
@@ -37,9 +38,9 @@ class ChargeWorker
 
   def charge_description
     if @order.present?
-      "#{@type} charge for order # #{@order.id} placed on #{@order.placed_on.strftime('%B %d, %Y')}"
+      "#{@type} charge for order # #{@order.id} placed on #{@order.placed_on.strftime("%B %d, %Y")}"
     else
-      "#{@type} charge on #{Time.current.strftime('%B %d, %Y @ %I:%M %P')}"
+      "#{@type} charge on #{Time.current.strftime("%B %d, %Y @ %I:%M %P")}"
     end
   end
 end

@@ -22,7 +22,7 @@ class AddOnsWorker
     return nil if add_ons.blank?
     menu_category = menu.menu_category
     add_on_ids = []
-    add_ons.split('|').each do |add_on|
+    add_ons.split("|").each do |add_on|
       query = add_on_query(add_on)
       add_on_ids << menu_category.add_ons.where(query).first_or_create(query).id
     end
@@ -30,14 +30,14 @@ class AddOnsWorker
   end
 
   def add_on_query(item)
-    add_on = item.strip.split(':')
-    category = MenuCategory.find_by_name('Add-Ons')
-    menu_id = Menu.where('lower(name) = lower(?)', add_on[0].strip).first&.id
+    add_on = item.strip.split(":")
+    category = MenuCategory.find_by_name("Add-Ons")
+    menu_id = Menu.where("lower(name) = lower(?)", add_on[0].strip).first&.id
     if menu_id.present? || add_on.size == 1
       return {
-        name: add_on[0].titleize,
-        menu_id: menu_id
-      }
+               name: add_on[0].titleize,
+               menu_id: menu_id,
+             }
     else
       menu = Menu.create!(
         name: add_on[0],
@@ -47,7 +47,7 @@ class AddOnsWorker
         published: true,
         unit_id: 8,
         unit_size: 1,
-        description: 'Add On',
+        description: "Add On",
         asset_id: nil,
         notes: nil,
         tax: false,
@@ -56,13 +56,13 @@ class AddOnsWorker
         item_number: SecureRandom.hex(5),
         inventory_attributes: {
           quantity: 100,
-          id: nil
-        }
+          id: nil,
+        },
       )
       return {
-        name: add_on[0].titleize,
-        menu_id: menu.id
-      }
+               name: add_on[0].titleize,
+               menu_id: menu.id,
+             }
     end
   end
 end

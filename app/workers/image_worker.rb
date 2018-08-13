@@ -5,7 +5,7 @@ class ImageWorker
 
   def perform(ids, image_urls)
     ids.each_with_index do |id, index|
-      menu = Menu.find(id)
+      menu = Menu.find_by_id(id)
       menu.remote_image_url = image_urls[index]
       Menu.transaction do
         raise "Menu image cannot be save, #{menu.to_param}" unless menu.save
