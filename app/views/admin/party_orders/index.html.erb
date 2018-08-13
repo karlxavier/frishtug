@@ -18,8 +18,8 @@
           <td class="<%= order&.status %>"><%= order&.status&.titleize %></td>
           <td><%= 
           to_currency(
-            ShippingPrice.find_by_zip(order.user.active_address.zip_code.to_i)&.price
-          ) || link_to('New', new_admin_shipping_price_path(zip: order.user.active_address.zip_code.to_i), class: 'btn btn-sm btn-brown text-uppercase') %></td>
+            ShippingPrice.find_by_zip(order.user.active_address.zip_code)&.price
+          ) || link_to('New', new_admin_shipping_price_path(zip: order.user.active_address.zip_code), class: 'btn btn-sm btn-brown text-uppercase') %></td>
         </tr>
       <% end.empty? %>
         <tr>
