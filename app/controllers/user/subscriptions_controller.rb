@@ -11,10 +11,10 @@ class User::SubscriptionsController < User::BaseController
     if @canceler.run
       remove_referrer
       remove_candidate
-      @response_msg = response_msg('success', 'Successfuly canceled subscription')
+      @response_msg = response_msg("success", "Successfuly canceled subscription")
       respond_with(@response_msg)
     else
-      @response_msg = response_msg('error', @canceler.errors.full_messages.join(', '))
+      @response_msg = response_msg("error", @canceler.errors.full_messages.join(", "))
       respond_with(@response_msg)
     end
   end
@@ -23,6 +23,8 @@ class User::SubscriptionsController < User::BaseController
     if current_user.subscribed?
       redirect_to user_subscriptions_path
     end
+    @active_zip_code = current_user.active_address.zip_code
+    @allowed_zip_codes = AllowedZipCode.pluck(:zip)
     @plans = Plan.subscriptions.sort
   end
 
@@ -30,10 +32,10 @@ class User::SubscriptionsController < User::BaseController
     subscribe_to_plan
     @subscription = StripeSubscriptioner.new(current_user)
     if @subscription.run
-      redirect_to user_subscriptions_path, notice: 'Subscription successful'
+      redirect_to user_subscriptions_path, notice: "Subscription successful"
     else
       current_user.update_attributes(plan_id: nil)
-      flash[:error] = @subscription.errors.full_messages.join(', ')
+      flash[:error] = @subscription.errors.full_messages.join(", ")
       redirect_back fallback_location: :back
     end
   end
@@ -46,10 +48,10 @@ class User::SubscriptionsController < User::BaseController
     if @subscription.run
       create_candidate if is_valid
       create_referrer unless is_valid
-      redirect_to user_subscriptions_path, notice: 'Subscription successful'
+      redirect_to user_subscriptions_path, notice: "Subscription successful"
     else
       remove_plan
-      flash[:error] = @subscription.errors.full_messages.join(', ')
+      flash[:error] = @subscription.errors.full_messages.join(", ")
       redirect_back fallback_location: :back
     end
   end
@@ -102,7 +104,7 @@ class User::SubscriptionsController < User::BaseController
   def response_msg(status, message)
     {
       status: status,
-      message: message
+      message: message,
     }
   end
 end
