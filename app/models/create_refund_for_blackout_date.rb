@@ -17,12 +17,16 @@ class CreateRefundForBlackoutDate
 
   def valid?
     return false if total <= 0
-    return false unless BLACKOUT_DATES.include?(order.placed_on&.strftime('%B %d'))
+    return false unless BLACKOUT_DATES.include?(order.placed_on&.strftime("%B %d"))
     true
   end
 
   def total
-    OrderCalculator.new(order).total
+    if user.subscribed?
+      OrderCalculator.new(order).total_without_shipping
+    else
+      OrderCalculator.new(order).total
+    end
   end
 
   def create_a_refund
@@ -44,7 +48,7 @@ class CreateRefundForBlackoutDate
         amount: total,
         activation_date: Time.current,
         charge_id: charge_id,
-        remarks: "Black-out date #{order.placed_on&.strftime('%B %d, %Y')}"
+        remarks: "Black-out date #{order.placed_on&.strftime("%B %d, %Y")}",
       )
     end
   end
