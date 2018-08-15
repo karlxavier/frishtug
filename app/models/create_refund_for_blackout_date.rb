@@ -22,11 +22,7 @@ class CreateRefundForBlackoutDate
   end
 
   def total
-    if user.subscribed?
-      OrderCalculator.new(order).total_without_shipping
-    else
-      OrderCalculator.new(order).total
-    end
+    order.total
   end
 
   def create_a_refund
