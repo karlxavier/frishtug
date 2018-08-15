@@ -21,8 +21,7 @@ if (el) {
   const userAddressList = new Vue({
     el: el2,
     data: {
-      addresses: addresses,
-      is_group_plan: is_group_plan
+      addresses: addresses
     },
     methods: {
       fullAddress: function (address) {
@@ -60,7 +59,8 @@ if (el) {
     data: {
       addresses: addresses,
       show: false,
-      zipcodes: []
+      zipcodes: [],
+      is_group_plan: is_group_plan
     },
     mounted: function () {
       const self = this
@@ -135,19 +135,22 @@ if (el) {
           }
         }
       },
-      saveChanges: () => {
+      saveChanges: function () {
+        const self = this;
         const form = new FormData(document.querySelector('form.user_delivery_info'))
         const data = new Object()
-        data.address = userDelivery.addresses
+        data.address = self.addresses
         ajax.postJson({
           url: '/user/delivery_information',
           data: data,
-          success: (response) => {
-            const data = JSON.parse(response)
-            userAddressList.addresses = data.addresses
+          success: (payload) => {
+            const response = JSON.parse(payload)
+            userAddressList.addresses = response.addresses
+            self.addresses = response.addresses
+            self.addresses.forEach(a => a._delete = null)
             swal({
-              title: data.status.toUpperCase(),
-              text: data.message,
+              title: response.status.toUpperCase(),
+              text: response.message,
               type: "success",
               confirmButtonText: "Ok",
               confirmButtonColor: "#582D11",
@@ -186,7 +189,11 @@ if (el) {
         })
       },
       deleteAddress: function (address, index) {
-        if (address.id !== null) return address._delete = 1;
+        if (address.id !== null) {
+          address._delete = 1;
+          this.saveChanges();
+          return;
+        }
         this.addresses.splice(index, 1);
       },
       addAddress: () => {
