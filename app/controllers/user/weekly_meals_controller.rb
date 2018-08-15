@@ -81,7 +81,7 @@ class User::WeeklyMealsController < User::BaseController
 
   def first_current_order_date
     start_date = Date.current.beginning_of_month
-    end_date = current_user.orders.last.placed_on.to_date
+    end_date = current_user.orders.last&.placed_on&.to_date || start_date.next_month
     range = DateRange.new(start_date, end_date)
     current_user.orders.placed_between?(range).first&.placed_on&.to_date || Date.current
   end

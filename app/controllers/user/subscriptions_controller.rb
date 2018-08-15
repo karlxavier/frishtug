@@ -46,8 +46,8 @@ class User::SubscriptionsController < User::BaseController
     @subscription = StripeSubscriptioner.new(@user)
     is_valid = validate_group_code
     if @subscription.run
-      create_candidate if is_valid
-      create_referrer unless is_valid
+      create_candidate if @user.plan.group? && is_valid
+      create_referrer if @user.plan.group? && !is_valid
       redirect_to user_subscriptions_path, notice: "Subscription successful"
     else
       remove_plan
