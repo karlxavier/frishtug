@@ -1,10 +1,11 @@
 const el = document.querySelector('.filter_container')
 const mealsApplyBtnFilter = document.querySelector('#filter-meal-btn')
 const locationsApplyBtnFilter = document.querySelector('#filter-location-btn')
-const viewMoreBtn = document.querySelector('.view__more')
 let pageCounter = 2
 
-const dateHolder = { date: '' }
+const dateHolder = {
+  date: ''
+}
 
 const renderMore = (event) => {
   event.preventDefault()
@@ -17,7 +18,7 @@ const renderMore = (event) => {
 
 const removeActiveClass = () => {
   const els = document.querySelectorAll('.calendar-links')
-  els.forEach( el => {
+  els.forEach(el => {
     if (el.dataset.date !== dateHolder.date) {
       el.classList.remove('active')
     }
@@ -25,7 +26,7 @@ const removeActiveClass = () => {
 }
 
 const calendarHandler = (event) => {
-  if(event.target.dataset.date) {
+  if (event.target.dataset.date) {
     const target = document.querySelector(event.target.dataset.target)
     dateHolder.date = event.target.dataset.date
     event.target.classList.add('active')
@@ -55,8 +56,8 @@ const removeUrlParameters = (key, uri) => {
 const updateUrlParameters = (uri, key, value) => {
   // remove the hash part before operating on the uri
   var i = uri.indexOf('#');
-  var hash = i === -1 ? ''  : uri.substr(i)
-      uri = i === -1 ? uri : uri.substr(0, i)
+  var hash = i === -1 ? '' : uri.substr(i)
+  uri = i === -1 ? uri : uri.substr(0, i)
 
   const re = new RegExp(`([?&])${key}=.*?(&|$)`, "i")
   const separator = uri.indexOf('?') !== -1 ? "&" : "?"
@@ -75,7 +76,7 @@ const locationHandler = (event) => {
   const inputs = document.querySelectorAll('[name=cities]')
   const cities = []
 
-  Array.from(inputs).forEach( input => {
+  Array.from(inputs).forEach(input => {
     const isCheckBox = input.nodeName === 'INPUT' && input.type === 'checkbox'
     if (isCheckBox && input.checked) {
       cities.push(input.value)
@@ -95,9 +96,9 @@ const mealHandler = (event) => {
   event.preventDefault()
   const inputs = document.querySelectorAll('[name=menus]')
   const mealIds = []
-  Array.from(inputs).forEach( input => {
+  Array.from(inputs).forEach(input => {
     const isCheckBox = input.nodeName === 'INPUT' && input.type === 'checkbox'
-    if(isCheckBox && input.checked) {
+    if (isCheckBox && input.checked) {
       mealIds.push(input.value)
     }
   })
@@ -115,5 +116,4 @@ if (el) {
   el.addEventListener('click', calendarHandler)
   mealsApplyBtnFilter.addEventListener('click', mealHandler)
   locationsApplyBtnFilter.addEventListener('click', locationHandler)
-  viewMoreBtn.addEventListener('click', renderMore)
 }
