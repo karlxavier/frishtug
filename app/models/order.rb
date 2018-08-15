@@ -51,7 +51,7 @@ class Order < ApplicationRecord
   scope :not_empty, -> { joins(:menus_orders).group(:placed_on).having('count(menus_orders.id) > 0') }
   accepts_nested_attributes_for :menus_orders, allow_destroy: true
 
-  before_create   :set_series_number
+  before_commit   :set_series_number
   after_save      :create_pending_credit, :set_sku
   before_save     :re_account_on_failed_payment
   after_touch     :create_refundable_credit
