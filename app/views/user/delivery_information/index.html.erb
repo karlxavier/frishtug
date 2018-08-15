@@ -25,7 +25,7 @@
                 <input class="form-check-input" type="radio" name="address[location_at]" id="at_home" value="at_home" v-model="addresses[0].location_at" v-on:click="hideAddBtn"> At Home
               </label>
             </div>
-            <div class="form-check form-check-inline" v-if="is_group_plan !== false">
+            <div class="form-check form-check-inline" v-if="is_group_plan === false">
               <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="address[location_at]" id="multi_work" value="multiple_workplaces" v-model="addresses[0].location_at" v-on:click="showAddBtn">
                 Multiple Workplaces

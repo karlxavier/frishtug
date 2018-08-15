@@ -193,6 +193,10 @@ export default {
       self.registration_form.group_code = node.getAttribute('data');
       self.getAddress();
     }
+
+    if (this.plan.for_type === 'group') {
+      this.location_ats = ["at_work", "at_home"]
+    }
   },
   methods: {
     getAddress: function() {

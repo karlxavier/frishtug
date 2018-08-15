@@ -89,6 +89,7 @@ if (el) {
         const self = this
         let processedAddress = 0
         const address_params = []
+        const valid_zips = self.addresses.map(a => self.isAllowedZip(a.zip_code))
 
         const validate_address = address => {
           return new Promise((resolve, reject) => {
@@ -101,6 +102,12 @@ if (el) {
             });
           });
         };
+
+        if (!valid_zips.every(i => i === true)) {
+          self.showWeDontDeliverMsg();
+          return;
+        }
+
 
         self.addresses.forEach((address, index, array) => {
           processedAddress++
@@ -209,23 +216,35 @@ if (el) {
           _delete: null
         })
       },
-      validateZip: function (event) {
-        const zip = event.target.value
+      isAllowedZip: function (zip) {
         if (is_party_plan === true) {
-          return
+          return true;
         }
 
         if (!this.zipcodes.includes(zip)) {
-          swal({
-            type: "error",
-            title: "Oops...",
-            text: "We don't deliver to your zip code",
-            confirmButtonText: "Continue",
-            confirmButtonColor: "#582D11",
-            confirmButtonClass: "btn btn-brown text-uppercase",
-            buttonsStyling: false
-          })
+          return false;
+        } else {
+          return true;
         }
+      },
+      validateZip: function (event) {
+        const zip = event.target.value
+        if (this.isAllowedZip(zip)) {
+          return true;
+        } else {
+          this.showWeDontDeliverMsg();
+        }
+      },
+      showWeDontDeliverMsg: function (zip) {
+        swal({
+          type: "error",
+          title: "Oops...",
+          text: "We don't deliver to your zip code",
+          confirmButtonText: "Continue",
+          confirmButtonColor: "#582D11",
+          confirmButtonClass: "btn btn-brown text-uppercase",
+          buttonsStyling: false
+        })
       }
     }
   })
