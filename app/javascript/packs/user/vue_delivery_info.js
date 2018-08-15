@@ -16,11 +16,13 @@ if (el) {
 
   const addresses_list = JSON.parse(el2.dataset.addresses)
   const is_party_plan = JSON.parse(el.dataset.isPartyPlan)
+  const is_group_plan = JSON.parse(el.dataset.isGroupPlan)
 
   const userAddressList = new Vue({
     el: el2,
     data: {
-      addresses: addresses
+      addresses: addresses,
+      is_group_plan: is_group_plan
     },
     methods: {
       fullAddress: function (address) {
