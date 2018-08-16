@@ -5,11 +5,12 @@ class User::ChangeSubscriptionsController < User::BaseController
   end
 
   def create
-    plan = Plan.find(params[:id])
+    @plan = Plan.find(params[:id])
     change_current_subscription
-    current_user.update_attributes(plan_id: plan.id)
-    create_join_group if plan.group?
-    remove_from_group if plan.individual?
+    current_user.update_attributes(plan_id: @plan.id)
+    create_join_group if @plan.group?
+    remove_from_group if @plan.individual?
+    redirect_to user_subscriptions_path, notice: 'Change subscription successful'
   rescue => e
     flash[:error] = e.message
     redirect_back fallback_location: :back
@@ -33,7 +34,7 @@ class User::ChangeSubscriptionsController < User::BaseController
     @subscription.cancel_at_period_end = false
     @subscription.items = [{
         id: @subscription.items.data[0].id,
-        plan: plan.stripe_plan_id,
+        plan: @plan.stripe_plan_id,
     }]
     @subscription.save
   end
@@ -65,7 +66,6 @@ class User::ChangeSubscriptionsController < User::BaseController
     return false unless params[:group_code].present?
     @referrer = Referrer.find_by_group_code(params[:group_code])
     unless @referrer
-      remove_plan
       flash[:error] = "Invalid group code!"
       redirect_back fallback_location: :back
     end
