@@ -33,4 +33,5 @@ namespace :admin do
   resources :stock_notifications, only: :index
   resources :shipping_prices
   resources :party_orders, only: :index
+  resources :cancel_orders, only: :create
 end

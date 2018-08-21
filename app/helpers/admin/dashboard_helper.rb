@@ -37,4 +37,10 @@ module Admin::DashboardHelper
         disable_with: "Processing...",
       }
   end
+
+  def cancel_orders_btn
+    button_to "Cancel Orders Today", admin_cancel_orders_path, class: "btn btn-sm btn-matterhorn-outline-circled font-size-14", method: :post, remote: false, data: {
+      confirm: 'Are you sure?'
+    }
+  end
 end
