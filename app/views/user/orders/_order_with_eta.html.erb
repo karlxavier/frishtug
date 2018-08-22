@@ -4,7 +4,7 @@
       <%= order.id %>
     </span>
     <p class="mb-1 font-size-14">
-      <%= order.user.plan.name %> (<%= order.menus.map(&:name).join(', ') %>)
+      <%= order.user&.plan&.name %> (<%= order.menus.map(&:name).join(', ') %>)
     </p>
     <p class="font-size-14">
       Placed on <%= order.placed_on.strftime('%B %d') %>

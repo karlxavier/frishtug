@@ -9,8 +9,8 @@
         id: 'user_delivery_info',
         data: {
           addresses: @user_addresses_json,
-          is_party_plan: current_user.plan.party_meeting?,
-          is_group_plan: current_user.plan.group?
+          is_party_plan: current_user&.plan&.party_meeting? || false,
+          is_group_plan: current_user&.plan&.group? || false
         } do %>
         <form class="user_delivery_info">
           <div class="form-group">

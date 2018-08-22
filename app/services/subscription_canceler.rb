@@ -32,7 +32,7 @@ class SubscriptionCanceler
   def unsubscribe_user
     user.update_attributes(
       stripe_subscription_id: nil,
-      plan_id: nil
+      plan_id: Plan.where(interval: [nil, ''], for_type: 'individual').take.id
     )
   end
 end

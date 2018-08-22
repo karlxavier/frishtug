@@ -31,7 +31,7 @@
       <li class="nav-item <%= active?(user_bill_histories_path) %>">
         <%= nav_link 'Bill History', user_bill_histories_path %>
       </li>
-      <% if current_user.subscribed? || current_user.plan.party_meeting? %>
+      <% if current_user.subscribed? || current_user&.plan&.party_meeting? %>
         <li class="nav-item <%= active?(user_ledgers_path) %>">
           <%= nav_link 'Pending Charges', user_ledgers_path %>
         </li>

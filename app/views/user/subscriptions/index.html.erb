@@ -23,7 +23,7 @@
       <% end %>
     </div>
 
-    <% if current_user.plan.group? && current_user.in_a_group? == false %>
+    <% if current_user&.plan&.group? && current_user.in_a_group? == false %>
       <div class="col-6">
         <h4 class="font-size-18 text-uppercase">Generate a group code</h4>
         <%= button_to "Generate code", user_groups_path, class: 'btn btn-brown text-uppercase' %>
