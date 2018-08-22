@@ -19,15 +19,9 @@ class PaymentMethodForm
     ActiveRecord::Base.transaction do
       if type == 'credit_card'
         card_or_bank_id = credit_card[:token]
-        cc = CreditCard.find_by_stripe_id(card_or_bank_id)
-        credit_card.delete :token
-        cc.update_attributes!(credit_card)
         update_stripe_customer(card_or_bank_id)
       else
         card_or_bank_id = checking[:token]
-        bank = Checking.find_by_stripe_id(card_or_bank_id)
-        checking.delete :token
-        bank.update_attributes!(checking)
         update_stripe_customer(card_or_bank_id)
       end
     end
@@ -36,6 +30,9 @@ class PaymentMethodForm
     errors.add(:base, e.message)
     false
   rescue ActiveRecord::RecordInvalid => e
+    errors.add(:base, e.message)
+    false
+  rescue => e
     errors.add(:base, e.message)
     false
   end
@@ -81,12 +78,7 @@ class PaymentMethodForm
                 name: credit_card[:name],
                 exp_year: credit_card[:year],
                 exp_month: credit_card[:month],
-                cvc: credit_card[:cvc],
-                address_line1: credit_card[:address_attributes][:line1],
-                address_line2: credit_card[:address_attributes][:line2],
-                address_city: credit_card[:address_attributes][:city],
-                address_zip: credit_card[:address_attributes][:zip_code],
-                address_state: credit_card[:address_attributes][:state]
+                cvc: credit_card[:cvc]
               }
             else
               {
@@ -94,6 +86,16 @@ class PaymentMethodForm
                 account_holder_type: checking[:account_holder_type]
               }
            end
+
+    unless credit_card[:address_attributes][:line1].blank?
+      param.merge!({
+        address_line1: credit_card[:address_attributes][:line1],
+        address_line2: credit_card[:address_attributes][:line2],
+        address_city: credit_card[:address_attributes][:city],
+        address_zip: credit_card[:address_attributes][:zip_code],
+        address_state: credit_card[:address_attributes][:state]
+      })
+    end
     customer.update_source(param, card_or_bank_id, type)
     if customer.errors.count > 0
       errors.add(:base, customer.errors.full_messages.join(', '))
