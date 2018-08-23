@@ -16,7 +16,7 @@
 #
 
 class Ledger < ApplicationRecord
-  enum status: %i[pending_payment paid payment_failed]
+  enum status: %i[pending_payment paid payment_failed cancelled]
   belongs_to :order
   belongs_to :user
   after_save :update_order

@@ -4,7 +4,7 @@ class CancelOrdersWorker
   def perform
     current_time = Time.current
     range = DateRange.new(current_time.beginning_of_day, current_time.end_of_day)
-    orders = Order.placed_between?(range).processing
+    orders = Order.placed_between?(range).where(status: %i[processing payment_failed pending_payment])
     orders.each do |order|
       order.cancelled!
       CreateRefundForCanceledOrder.new(order, order.user).process
