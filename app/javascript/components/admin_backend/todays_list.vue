@@ -5,6 +5,9 @@
         <h5>
           {{ order.series_number }}
           <small class="text-muted">(placed on {{ placed_on }})</small>
+          <span v-bind:class="badgeClass">
+            {{ status }}
+          </span>
         </h5>
       </div>
       <div class="col">
@@ -35,43 +38,63 @@
 </template>
 
 <script>
-  import moment from 'moment'
-  import TodaysDetails from './todays_details'
-  export default {
-    props: ['order'],
-    data: function() {
-     return {
-        shown: false
+import moment from 'moment';
+import TodaysDetails from './todays_details';
+export default {
+  props: ['order'],
+  data: function() {
+    return {
+      shown: false
+    };
+  },
+  components: {
+    TodaysDetails
+  },
+  methods: {
+    viewDetails: function(order) {
+      this.$emit('on-view-details', order.id);
+    }
+  },
+  computed: {
+    badgeClass() {
+      let klass = 'badge badge-pill font-size-12';
+      if (this.order.status === 'processing') {
+        return (klass += ' badge-success');
       }
-    },
-    components: {
-      TodaysDetails
-    },
-    methods: {
-      viewDetails: function(order) {
-        this.$emit('on-view-details', order.id)
+
+      if (this.order.status === 'cancelled') {
+        return (klass += ' badge-warning');
       }
+
+      return (klass += ' badge-secondary');
     },
-    computed: {
-      full_name() {
-        return this.order.user.full_name
-      },
-      email() {
-        return `<${this.order.user.email}>`
-      },
-      address() {
-        return [
-          this.order.user.address.line1,
-          this.order.user.address.line2,
-          this.order.user.address.front_door,
-          this.order.user.address.city,
-          this.order.user.address.state,
-          this.order.user.address.zip_code
-        ].filter(Boolean).join(', ')
-      },
-      placed_on() {
-        return moment(this.order.updated_at).format('H:mm a')
-      }
+    status() {
+      return this.order.status
+        .toUpperCase()
+        .split('_')
+        .join(' ');
+    },
+    full_name() {
+      return this.order.user.full_name;
+    },
+    email() {
+      return `<${this.order.user.email}>`;
+    },
+    address() {
+      return [
+        this.order.user.address.line1,
+        this.order.user.address.line2,
+        this.order.user.address.front_door,
+        this.order.user.address.city,
+        this.order.user.address.state,
+        this.order.user.address.zip_code
+      ]
+        .filter(Boolean)
+        .join(', ');
+    },
+    placed_on() {
+      return moment(this.order.updated_at).format('H:mm a');
     }
   }
+};
 </script>

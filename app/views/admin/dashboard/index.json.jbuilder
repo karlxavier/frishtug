@@ -26,4 +26,5 @@ json.array! @active_orders do |order|
   json.tax order.total_tax
   json.shipping_fee order.shipping_fee unless order.user.subscribed?
   json.total order.total
+  json.status order.status
 end
