@@ -37,7 +37,7 @@ class Ledger < ApplicationRecord
   end
 
   def update_order
-    return if %w[pending_payment payment_failed].include?(status)
+    return if %w[pending_payment payment_failed cancelled].include?(status)
     return if amount.nil?
     return if amount <= 0
     types = {
