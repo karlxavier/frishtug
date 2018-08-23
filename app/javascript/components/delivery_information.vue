@@ -195,7 +195,7 @@ export default {
     }
 
     if (this.plan.for_type === 'group') {
-      this.location_ats = ["at_work", "at_home"]
+      this.location_ats = ['at_work', 'at_home'];
     }
   },
   methods: {
@@ -335,10 +335,17 @@ export default {
             type: 'error',
             title: 'Address Not Valid!',
             html: `<ul class="list-unstyled">${error_message}</ul>`,
-            confirmButtonText: 'Ok',
+            confirmButtonText: 'My address is correct',
             confirmButtonColor: '#582D11',
-            confirmButtonClass: 'btn btn-brown text-uppercase',
+            confirmButtonClass: 'btn btn-brown text-uppercase mr-2',
+            showCancelButton: true,
+            cancelButtonText: 'Cancel',
+            cancelButtonClass: 'btn btn-danger text-uppercase',
             buttonsStyling: false
+          }).then(result => {
+            if (result.value) {
+              self.checkGroupCode();
+            }
           });
         } else {
           response.data.forEach((data, index) => {
