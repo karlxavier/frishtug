@@ -9,6 +9,7 @@ class CreateRefundForCanceledOrder
   end
 
   def process
+    return false unless order.cancelled?
     if user.subscribed?
       create_a_refund_for_subscribed_user
     else
