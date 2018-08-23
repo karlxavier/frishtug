@@ -136,7 +136,6 @@ if (el) {
               cancelButtonClass: "btn btn-danger text-uppercase",
               buttonsStyling: false
             }).then((result) => {
-              console.log('result', result);
               if (result.value) {
                 self.saveChanges();
               } else {
