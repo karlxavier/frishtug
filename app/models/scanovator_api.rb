@@ -102,7 +102,7 @@ class ScanovatorApi
         eadd: order.user.email,
         order_id: order.id,
         notes: nil,
-        delivery_date: order.placed_on,
+        DeliveryDate: order.placed_on.strftime('%F'),
         seq: order.series_number
       )
     end
