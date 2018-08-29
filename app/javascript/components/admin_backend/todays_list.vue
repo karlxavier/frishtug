@@ -69,10 +69,14 @@ export default {
       return (klass += ' badge-secondary');
     },
     status() {
-      return this.order.status
-        .toUpperCase()
-        .split('_')
-        .join(' ');
+      if (!!this.order.status) {
+        return this.order.status
+          .toUpperCase()
+          .split('_')
+          .join(' ');
+      } else {
+        return 'No Status';
+      }
     },
     full_name() {
       return this.order.user.full_name;
