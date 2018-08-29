@@ -70,7 +70,8 @@
       @add-item="addItem"
       @remove-item="removeItem"
       @add-add-on="addAddOn"
-      @remove-add-on="removeAddOn">
+      @remove-add-on="removeAddOn"
+      v-bind:prefix="order">
       </items>
       <go-to-top v-bind:right="getRightPosition()"></go-to-top>
     </div>

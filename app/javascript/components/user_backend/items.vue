@@ -59,15 +59,15 @@
         </div>
       </v-tab>
     </vue-tabs>
-    <nutritional-data-modal v-bind:nutri="nutri" v-bind:item="item"></nutritional-data-modal>
+    <nutritional-data-modal v-bind:nutri="nutri" v-bind:item="item" v-bind:id="'menuNutriFacts'"></nutritional-data-modal>
   </div>
 </template>
 
 <script>
-import { VueTabs, VTab } from "vue-nav-tabs";
-import NutritionalDataModal from "../nutritional_data_modal";
-import Card from "./card"
-import lodash from "lodash";
+import { VueTabs, VTab } from 'vue-nav-tabs';
+import NutritionalDataModal from '../nutritional_data_modal';
+import Card from './card';
+import lodash from 'lodash';
 import axios from 'axios';
 export default {
   components: {
@@ -78,135 +78,150 @@ export default {
   },
   data: () => {
     return {
-      searchText: "",
+      searchText: '',
       sortAsc: true,
-      sortBy: "name",
+      sortBy: 'name',
       menu_categories: null,
       item: {},
       filtered_items: {},
       nutri: null,
       filtered_categories: []
-    }
+    };
   },
-  props: ["items", "order"],
+  props: ['items', 'order'],
   computed: {
     quantities: function() {
-      return this.order.menus_orders_attributes.reduce( (obj, item) => {
-        obj[item.menu_id] = item.quantity
-        return obj
-      }, {})
+      return this.order.menus_orders_attributes.reduce((obj, item) => {
+        obj[item.menu_id] = item.quantity;
+        return obj;
+      }, {});
     },
     add_on_ids: function() {
-      return this.order.menus_orders_attributes.reduce( (obj, item) => {
-        obj[item.menu_id] = item.add_ons
-        return obj
-      }, {})
+      return this.order.menus_orders_attributes.reduce((obj, item) => {
+        obj[item.menu_id] = item.add_ons;
+        return obj;
+      }, {});
     },
     filtered_items_list: function() {
-      const object_is_empty = Object.keys(this.filtered_items).length === 0
+      const object_is_empty = Object.keys(this.filtered_items).length === 0;
       if (object_is_empty) {
-        return this.items
+        return this.items;
       } else {
-        return this.filtered_items
+        return this.filtered_items;
       }
     }
   },
   mounted() {
-    const self = this
+    const self = this;
     Rails.ajax({
-      url: "/api/v1/menu_categories",
-      type: "GET",
+      url: '/api/v1/menu_categories',
+      type: 'GET',
       success: function(response) {
-        self.menu_categories = response.data
-        self.filtered_categories = self.menu_categories
+        self.menu_categories = response.data;
+        self.filtered_categories = self.menu_categories;
       }
     });
-    self.filtered_items = self.items
+    self.filtered_items = self.items;
   },
 
   methods: {
     filterItems: function() {
-      const self = this
-      if (self.searchText.length <= 0) { self.filtered_items = {} }
-      const list = Object.values(self.items).reduce( (a, i) => {
-        a.push(...i)
-        return a
-      }, [])
-      const items = list.filter(i => i.attributes.name.toLowerCase().includes(self.searchText.toLowerCase()))
+      const self = this;
+      if (self.searchText.length <= 0) {
+        self.filtered_items = {};
+      }
+      const list = Object.values(self.items).reduce((a, i) => {
+        a.push(...i);
+        return a;
+      }, []);
+      const items = list.filter(i =>
+        i.attributes.name.toLowerCase().includes(self.searchText.toLowerCase())
+      );
 
-      const category_names = items.map(i => i.attributes.menu_category.name)
+      const category_names = items.map(i => i.attributes.menu_category.name);
 
-      self.filtered_categories = self.menu_categories.filter( i => {
-        return category_names.includes(i.attributes.name)
-      })
+      self.filtered_categories = self.menu_categories.filter(i => {
+        return category_names.includes(i.attributes.name);
+      });
 
       self.filtered_items = items.reduce((list, item) => {
-              if (list.hasOwnProperty(item.attributes.menu_category.name)) {
-                list[item.attributes.menu_category.name].push(item);
-              } else {
-                list[item.attributes.menu_category.name] = [];
-                list[item.attributes.menu_category.name].push(item);
-              }
-              return list;
-            }, {});
+        if (list.hasOwnProperty(item.attributes.menu_category.name)) {
+          list[item.attributes.menu_category.name].push(item);
+        } else {
+          list[item.attributes.menu_category.name] = [];
+          list[item.attributes.menu_category.name].push(item);
+        }
+        return list;
+      }, {});
     },
     sortItems: function(items) {
-      return items
-      if(items) {
-        const items_list = Array.from(items)
+      return items;
+      if (items) {
+        const items_list = Array.from(items);
         let ascDesc = this.sortAsc ? 1 : -1;
-        return items_list.sort((a, b) => ascDesc * a.attributes[this.sortBy].localeCompare(b.attributes[this.sortBy]));
+        return items_list.sort(
+          (a, b) =>
+            ascDesc *
+            a.attributes[this.sortBy].localeCompare(b.attributes[this.sortBy])
+        );
       } else {
-        return items
+        return items;
       }
     },
     invertSort(sortBy) {
-      this.sortBy = sortBy
+      this.sortBy = sortBy;
       this.sortAsc = !this.sortAsc;
     },
     addItem: function(item, quantity) {
-      this.$emit('add-item', item, quantity)
+      this.$emit('add-item', item, quantity);
     },
     removeItem: function(item, quantity) {
-      this.$emit('remove-item', item, quantity)
+      this.$emit('remove-item', item, quantity);
     },
     removeAddOn: function(add_on_id, item) {
-      this.$emit('remove-add-on', add_on_id, item)
+      this.$emit('remove-add-on', add_on_id, item);
     },
     addAddOn: function(add_on_id, item) {
-      this.$emit('add-add-on', add_on_id, item)
+      this.$emit('add-add-on', add_on_id, item);
     },
     nutriFacts: function(item) {
       const self = this;
-      const item_id = item.id
-      self.item = item
-      axios.interceptors.response.use(response => {
+      const item_id = item.id;
+      self.item = item;
+      axios.interceptors.response.use(
+        response => {
           return response;
-      }, error => {
+        },
+        error => {
           if (error.response.status === 404) {
-              console.log('Err-404 menu dont have nutritional data');
+            console.log('Err-404 menu dont have nutritional data');
           }
           return Promise.reject(error.response);
-      });
+        }
+      );
 
       axios({
         method: 'GET',
         url: `/api/v1/nutritional_data/${item_id}`,
         headers: {
-          'X-CSRF-Token': document.querySelector("meta[name=csrf-token]").content
+          'X-CSRF-Token': document.querySelector('meta[name=csrf-token]')
+            .content
         }
       })
-      .then(response => {
-        self.nutri = response.data;
-        $('#menuNutriFacts').modal('show');
-      })
-      .catch(error => {
+        .then(response => {
+          self.nutri = response.data;
+          $('#menuNutriFacts').modal('show');
+        })
+        .catch(error => {
           console.log(error.response);
-          if (item.attributes.description != null && item.attributes.description.trim() !== "") {
+          if (
+            item.attributes.description != null &&
+            item.attributes.description.trim() !== ''
+          ) {
             $('#menuNutriFacts').modal('show');
           }
-      });
+        });
     }
   }
-}
+};
 </script>
