@@ -77,7 +77,7 @@ class Menu < ApplicationRecord
   end
 
   def self.all_published
-    joins(:menu_category).where(published: true)
+    joins(:menu_category).where(published: true).sort { |x,y| x.name <=> y.name }
   end
 
   def self.shopping_lists?(range)

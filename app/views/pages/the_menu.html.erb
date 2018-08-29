@@ -49,7 +49,7 @@
   <div class="row mt-4 mx-0" id="<%= category.name.parameterize %>">
     <div class="container">
       <div class="row justify-content-center menu-items__container_for_five_days">
-        <%= render partial: 'menus/menu', collection: category.menus.has_stock, as: :menu %>
+        <%= render partial: 'menus/menu', collection: category.menus.all_published, as: :menu %>
       </div>
     </div>
   </div>
