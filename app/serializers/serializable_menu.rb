@@ -12,7 +12,8 @@ class SerializableMenu < JSONAPI::Serializable::Resource
              :menu_category,
              :unit,
              :diet_categories,
-             :asset
+             :asset,
+             :display_order
 
     meta do
       {

@@ -25,6 +25,25 @@
 
     <%= content_for :footer_js do %>
       <%= javascript_pack_tag 'admin/nutritional_data' %>
+      <script type="text/javascript">
+        const responseHandler = (response) => {
+          swal(response.status, response.message, response.status)
+        }
+        const update_menu_display_order = (display_order, id) => {
+          url = `<%= admin_menu_display_orders_path %>?id=${id}&display_order=${display_order}`
+
+          Rails.ajax({
+            url: url,
+            type: 'POST',
+            success: function(response) {
+              responseHandler(response);
+            },
+            error: function(response) {
+              responseHandler(response);
+            }
+          });
+        };
+      </script>
     <% end %>
   </div>
 <% end %>

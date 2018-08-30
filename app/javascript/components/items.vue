@@ -108,12 +108,12 @@
 </template>
 
 <script>
-import toCurrency from "../packs/lib/to_currency";
-import { VueTabs, VTab } from "vue-nav-tabs";
-import lodash from "lodash";
+import toCurrency from '../packs/lib/to_currency';
+import { VueTabs, VTab } from 'vue-nav-tabs';
+import lodash from 'lodash';
 import axios from 'axios';
-import NutritionalDataModal from "./nutritional_data_modal";
-import NoImage from "../packs/images/no-image.svg"
+import NutritionalDataModal from './nutritional_data_modal';
+import NoImage from '../packs/images/no-image.svg';
 
 export default {
   filters: {
@@ -135,19 +135,19 @@ export default {
     return {
       counter: 0,
       sortAsc: true,
-      sortBy: "name",
+      sortBy: 'display_order',
       nutri: null,
       item: {
         attributes: {
-          name: "",
-          description: ""
+          name: '',
+          description: ''
         }
       }
     };
   },
   methods: {
     isAddOnChecked: function(add_on_id, item, date) {
-      const self = this
+      const self = this;
       const found_order = self.registration_form.orders.filter(
         m => m.order_date === date
       );
@@ -156,11 +156,11 @@ export default {
           m => m.menu_id === item.id
         );
         if (found_item.length > 0) {
-          return found_item[0].add_ons.includes(add_on_id)
+          return found_item[0].add_ons.includes(add_on_id);
         }
       }
 
-      return false
+      return false;
     },
     displayQuantity: function(item, date) {
       const self = this;
@@ -171,10 +171,10 @@ export default {
         const found_item = found_order[0].menus_orders_attributes.filter(
           m => m.menu_id === item.id
         );
-        return found_item.length > 0 ? found_item[0].quantity : "0";
+        return found_item.length > 0 ? found_item[0].quantity : '0';
       }
 
-      return "0";
+      return '0';
     },
     toggleAddOn: function(add_on_id, item, date, event) {
       const self = this;
@@ -200,7 +200,7 @@ export default {
       });
     },
     addItem: function(item, date, event) {
-      event.target.classList.add('disabled')
+      event.target.classList.add('disabled');
       const self = this;
       const item_id = item.id;
       const order = self.registration_form.orders.find(order => {
@@ -208,14 +208,14 @@ export default {
       });
 
       const outOfStock = response => {
-        event.target.classList.remove('disabled')
+        event.target.classList.remove('disabled');
         swal({
           type: response.status,
-          title: "Error",
+          title: 'Error',
           text: response.message,
-          confirmButtonText: "Ok",
-          confirmButtonColor: "#582D11",
-          confirmButtonClass: "btn btn-brown text-uppercase",
+          confirmButtonText: 'Ok',
+          confirmButtonColor: '#582D11',
+          confirmButtonClass: 'btn btn-brown text-uppercase',
           buttonsStyling: false
         });
       };
@@ -224,7 +224,7 @@ export default {
         return new Promise((resolve, reject) => {
           Rails.ajax({
             url: `/inventories?menu_id=${id}&quantity=${quantity}`,
-            type: "GET",
+            type: 'GET',
             success: resolve,
             error: reject
           });
@@ -240,8 +240,8 @@ export default {
               const qty = self.$store.state.item_quantities[item_id] + 1;
               checkInventory(item_id, qty).then(function(response) {
                 menus_order.quantity += 1;
-                self.$store.commit("increment_item_qty", item_id);
-                event.target.classList.remove('disabled')
+                self.$store.commit('increment_item_qty', item_id);
+                event.target.classList.remove('disabled');
               }, outOfStock);
               return;
             }
@@ -259,19 +259,19 @@ export default {
                 add_ons: []
               });
               if (self.$store.state.item_quantities[item_id]) {
-                self.$store.commit("increment_item_qty", item_id);
+                self.$store.commit('increment_item_qty', item_id);
               } else {
-                self.$store.commit("new_item_qty", item_id);
+                self.$store.commit('new_item_qty', item_id);
               }
-              event.target.classList.remove('disabled')
+              event.target.classList.remove('disabled');
               if (response.notes) {
                 setTimeout(function() {
                   toastr.options = {
-                      closeButton: true,
-                      progressBar: true,
-                      showMethod: 'slideDown',
-                      positionClass: 'toast-bottom-left',
-                      timeOut: 7000
+                    closeButton: true,
+                    progressBar: true,
+                    showMethod: 'slideDown',
+                    positionClass: 'toast-bottom-left',
+                    timeOut: 7000
                   };
                   toastr.warning(response.notes, 'Notes');
                 }, 100);
@@ -282,7 +282,7 @@ export default {
       }
     },
     removeItem: function(item, date, event) {
-      event.target.classList.add('disabled')
+      event.target.classList.add('disabled');
       const self = this;
       const item_id = item.id;
       for (let order of self.registration_form.orders) {
@@ -296,18 +296,18 @@ export default {
               if (menus_order.quantity <= 0) {
                 order.menus_orders_attributes.splice(index, 1);
               }
-              self.$store.commit("decrement_item_qty", item_id);
-              event.target.classList.remove('disabled')
+              self.$store.commit('decrement_item_qty', item_id);
+              event.target.classList.remove('disabled');
               return;
             }
           }
-          event.target.classList.remove('disabled')
+          event.target.classList.remove('disabled');
         }
       }
     },
     dietClass: function(diet) {
       const diet_name = diet.name;
-      const formatted = diet_name.replace(/\s+/g, "-").toLowerCase();
+      const formatted = diet_name.replace(/\s+/g, '-').toLowerCase();
       return `fa fa-star diet-icons ${formatted}`;
     },
     imageUrl: function(item) {
@@ -315,52 +315,85 @@ export default {
       if (asset === null) {
         return NoImage;
       }
-      if (asset.hasOwnProperty("image")) {
+      if (asset.hasOwnProperty('image')) {
         return asset.image.card.url;
       }
     },
     sortItems: function(cat_name) {
-      const items = Array.from(this.items[cat_name])
+      const items = Array.from(this.items[cat_name]);
       let ascDesc = this.sortAsc ? 1 : -1;
-      return items.sort((a, b) => ascDesc * a.attributes[this.sortBy].localeCompare(b.attributes[this.sortBy]));
+      if (this.sortBy === 'display_order') {
+        return items.sort((a, b) => {
+          if (!a.attributes.display_order) {
+            return 1;
+          }
+
+          if (!b.attributes.display_order) {
+            return -1;
+          }
+
+          if (a.attributes.display_order === b.attributes.display_order) {
+            return 0;
+          }
+
+          if (this.sortAsc) {
+            return a.attributes.display_order < b.attributes.display_order
+              ? -1
+              : 1;
+          }
+        });
+      } else {
+        return items.sort(
+          (a, b) =>
+            ascDesc *
+            a.attributes[this.sortBy].localeCompare(b.attributes[this.sortBy])
+        );
+      }
     },
-    handleTabChange(tabIndex, newTab, oldTab){
-      this.searchText = "";
+    handleTabChange(tabIndex, newTab, oldTab) {
+      this.searchText = '';
     },
     invertSort(sortBy) {
-      this.sortBy = sortBy
+      this.sortBy = sortBy;
       this.sortAsc = !this.sortAsc;
     },
     nutriFacts: function(item) {
       const self = this;
-      const item_id = item.id
-      self.item = item
-      axios.interceptors.response.use(response => {
+      const item_id = item.id;
+      self.item = item;
+      axios.interceptors.response.use(
+        response => {
           return response;
-      }, error => {
+        },
+        error => {
           if (error.response.status === 404) {
-              console.log('Err-404 menu dont have nutritional data');
+            console.log('Err-404 menu dont have nutritional data');
           }
           return Promise.reject(error.response);
-      });
+        }
+      );
 
       axios({
         method: 'GET',
         url: `/api/v1/nutritional_data/${item_id}`,
         headers: {
-          'X-CSRF-Token': document.querySelector("meta[name=csrf-token]").content
+          'X-CSRF-Token': document.querySelector('meta[name=csrf-token]')
+            .content
         }
       })
-      .then(response => {
-        self.nutri = response.data;
-        $(`#nutritional-modal-${self.prefix}`).modal('show');
-      })
-      .catch(error => {
+        .then(response => {
+          self.nutri = response.data;
+          $(`#nutritional-modal-${self.prefix}`).modal('show');
+        })
+        .catch(error => {
           console.log(error.response);
-          if (item.attributes.description != null && item.attributes.description.trim() !== "") {
+          if (
+            item.attributes.description != null &&
+            item.attributes.description.trim() !== ''
+          ) {
             $(`#nutritional-modal-${self.prefix}`).modal('show');
           }
-      });
+        });
     }
   }
 };

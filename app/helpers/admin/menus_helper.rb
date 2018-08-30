@@ -17,4 +17,13 @@ module Admin::MenusHelper
      end
     end
   end
+
+  def display_menu_ordering_select_box(menu)
+    menu_size = MenuCategory.find_by_id(menu.menu_category_id)&.menus&.size || 0
+    select_tag "display_order",
+      options_for_select((1..menu_size).map { |n| [n, n] }, selected: menu.display_order),
+      class: 'form-control display_order_selection',
+      include_blank: true,
+      onchange: "update_menu_display_order(this.value, #{menu.id})"
+  end
 end

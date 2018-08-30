@@ -80,7 +80,7 @@ export default {
     return {
       searchText: '',
       sortAsc: true,
-      sortBy: 'name',
+      sortBy: 'display_order',
       menu_categories: null,
       item: {},
       filtered_items: {},
@@ -155,15 +155,36 @@ export default {
       }, {});
     },
     sortItems: function(items) {
-      return items;
-      if (items) {
-        const items_list = Array.from(items);
-        let ascDesc = this.sortAsc ? 1 : -1;
-        return items_list.sort(
-          (a, b) =>
-            ascDesc *
-            a.attributes[this.sortBy].localeCompare(b.attributes[this.sortBy])
-        );
+      const sortedItems = [...items];
+      let ascDesc = this.sortAsc ? 1 : -1;
+      if (sortedItems) {
+        if (this.sortBy === 'display_order') {
+          return sortedItems.sort((a, b) => {
+            if (!a.attributes.display_order) {
+              return 1;
+            }
+
+            if (!b.attributes.display_order) {
+              return -1;
+            }
+
+            if (a.attributes.display_order === b.attributes.display_order) {
+              return 0;
+            }
+
+            if (this.sortAsc) {
+              return a.attributes.display_order < b.attributes.display_order
+                ? -1
+                : 1;
+            }
+          });
+        } else {
+          return sortedItems.sort(
+            (a, b) =>
+              ascDesc *
+              a.attributes[this.sortBy].localeCompare(b.attributes[this.sortBy])
+          );
+        }
       } else {
         return items;
       }

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180809040100) do
+ActiveRecord::Schema.define(version: 20180830013011) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -273,7 +273,9 @@ ActiveRecord::Schema.define(version: 20180809040100) do
     t.text "description"
     t.bigint "asset_id"
     t.string "notes"
+    t.integer "display_order"
     t.index ["asset_id"], name: "index_menus_on_asset_id"
+    t.index ["display_order"], name: "index_menus_on_display_order"
     t.index ["item_number"], name: "index_menus_on_item_number", unique: true
     t.index ["menu_category_id"], name: "index_menus_on_menu_category_id"
     t.index ["unit_id"], name: "index_menus_on_unit_id"
@@ -524,11 +526,17 @@ ActiveRecord::Schema.define(version: 20180809040100) do
   add_foreign_key "assets_stores", "assets"
   add_foreign_key "assets_stores", "stores"
   add_foreign_key "bill_histories", "orders"
+  add_foreign_key "bill_histories", "users"
   add_foreign_key "candidates", "referrers"
+  add_foreign_key "candidates", "users"
   add_foreign_key "checkings", "users"
+  add_foreign_key "comments", "users"
+  add_foreign_key "contact_numbers", "users"
+  add_foreign_key "credit_cards", "users"
   add_foreign_key "inventories", "menus"
   add_foreign_key "inventory_transactions", "inventories"
   add_foreign_key "ledgers", "orders"
+  add_foreign_key "ledgers", "users"
   add_foreign_key "menus", "assets"
   add_foreign_key "menus", "menu_categories"
   add_foreign_key "menus", "units"
@@ -538,9 +546,12 @@ ActiveRecord::Schema.define(version: 20180809040100) do
   add_foreign_key "menus_temp_orders", "temp_orders"
   add_foreign_key "nutritional_data", "menus"
   add_foreign_key "order_preferences", "users"
+  add_foreign_key "orders", "users"
   add_foreign_key "pending_charges", "users"
   add_foreign_key "pending_credits", "orders"
+  add_foreign_key "pending_credits", "users"
   add_foreign_key "referrers", "users"
+  add_foreign_key "schedules", "users"
   add_foreign_key "shipping_charges", "orders"
   add_foreign_key "taxes", "stores"
   add_foreign_key "temp_orders", "users"

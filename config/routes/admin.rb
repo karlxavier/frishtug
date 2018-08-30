@@ -20,6 +20,7 @@ namespace :admin do
   resources :clients, only: %i[index show]
   resources :orders, only: %i[show edit update]
   resources :display_orders, only: :create
+  resources :menu_display_orders, only: :create
   resources :inactive_users, only: :index
   resources :blackout_dates
   resources :email_templates, only: [:index, :create]

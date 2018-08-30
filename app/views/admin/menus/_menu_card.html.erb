@@ -17,6 +17,7 @@
       </a>
     </div>
   </div>
+  <%= display_menu_ordering_select_box(menu) %>
   <% if menu.nutritional_data.present? %>
     <%= link_to "Edit Nutritional Data",
         edit_admin_nutritional_datum_path(

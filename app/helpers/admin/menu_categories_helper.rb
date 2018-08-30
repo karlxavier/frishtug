@@ -7,7 +7,7 @@ module Admin::MenuCategoriesHelper
     end
   end
 
-  def display_ordering_checkbox(menu_category)
+  def display_ordering_select_box(menu_category)
     category_size = MenuCategory.count
     select_tag "display_order",
       options_for_select((1..category_size).map { |n| [n, n] }, selected: menu_category.display_order),
