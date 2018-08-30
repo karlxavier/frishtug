@@ -253,7 +253,7 @@ const vm = new Vue({
     complete: function() {
       const self = this;
       const successHandler = response => {
-        if (self.plan.for_type === "group" && self.registration_form.group_code) {
+        if (self.plan.for_type === "group" && !self.registration_form.group_code) {
           pulse_loader.stop();
           swal({
             html: `
@@ -281,7 +281,7 @@ const vm = new Vue({
                   </div>
                 </div>
               `,
-            showCancelButton: true,
+            showCancelButton: false,
             confirmButtonColor: "#582D11",
             confirmButtonText: "done",
             cancelButtonText: "cancel",
@@ -289,7 +289,7 @@ const vm = new Vue({
             cancelButtonClass: "btn btn-default text-uppercase",
             buttonsStyling: false
           }).then(function(result) {
-            if (result) {
+            if (result.value) {
               sessionStorage.clear();
               window.location.href = response.body.redirect_to;
             }
