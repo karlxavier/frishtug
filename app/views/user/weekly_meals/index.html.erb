@@ -12,7 +12,7 @@
 %>
 <%= content_tag :div, class: 'alert alert-info helper-alert' do %>
   To set up the rest of the weekly meals, click to copy your weekly meals below, or click on each date to select your selection, in each date you will also have the option of copying a single day.
-<% end %>
+<% end if current_user.subscribed? %>
 <div class="row">
   <div class="col-4">
     <%= render partial: 'user/weekly_meals/calendar', locals: {
