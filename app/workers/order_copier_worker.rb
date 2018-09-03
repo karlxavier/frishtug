@@ -2,6 +2,7 @@ class OrderCopierWorker
   include Sidekiq::Worker
 
   def perform(user_id, old_start_date, old_end_date)
+    new_order_ids = []
     start_date = Time.zone.parse(old_start_date)
     end_date = Time.zone.parse(old_end_date)
     old_range = DateRange.new(start_date.beginning_of_day, end_date.end_of_day)
@@ -44,8 +45,28 @@ class OrderCopierWorker
         new_order.processing!
         new_order.reduce_stocks!
         RecordLedger.new(user, new_order).record!
+        new_order_ids << new_order.id
         order.fulfilled!
       end
+
+      return if new_order_ids.empty?
+      
+      unpaid_ledgers = Ledger.where(order_id: new_order_ids, status: :pending_payment)
+
+      return if unpaid_ledgers.empty?
+
+      amount_to_cents = (unpaid_ledgers.total * 100).to_i
+
+      return if amount_to_cents.zero?
+
+      charge = Stripe::Charge.create(
+        amount: amount_to_cents,
+        currency: "usd",
+        customer: user.stripe_customer_id,
+        description: "Payment for bills",
+      )
+
+      unpaid_ledgers.find_each { |b| b.update_attributes(status: :paid, charge_id: charge.id) }
     end
   end
 end
