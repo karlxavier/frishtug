@@ -36,7 +36,7 @@ class Menu < ApplicationRecord
 
   validates :name, :unit_id, :menu_category_id, :price, presence: true
   validates :name, uniqueness: true
-  validates :display_order, uniqueness: { scope: :menu_category_id }
+  validates :display_order, uniqueness: { scope: :menu_category_id }, allow_blank: true
   validate :sanitize_price
   before_save :generate_item_number_from_first_letters_of_name
   before_save :recalculate_all_active_orders, :notify_users_for_price_change, if: :will_save_change_to_price?
