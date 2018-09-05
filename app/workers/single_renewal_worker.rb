@@ -3,6 +3,7 @@ class SingleRenewalWorker
   CURRENT_TIME=Time.current.freeze
 
   def perform(user_id, attempt)
+    return if attempt > 3
     user = User.find(user_id)
 
     return if user.stripe_subscription_id.nil?
@@ -41,7 +42,6 @@ class SingleRenewalWorker
         )
       end
     rescue => e
-      return if attempt >= 3
       attempt += 1
       attempt_time = case attempt
       when 1..2
@@ -49,9 +49,8 @@ class SingleRenewalWorker
       when 3
         8.hours.from_now
       end
-      
+
       SingleRenewalWorker.perform_at(attempt_time, user.id, attempt)
-      next
     end
   end
 end
