@@ -1,6 +1,6 @@
 class RenewalWorker
   include Sidekiq::Worker
-  CURRENT_TIME=Time.current.freeze
+  CURRENT_TIME=(Time.current + 2.days).freeze
 
   def perform
     subscribed_users =
@@ -44,7 +44,7 @@ class RenewalWorker
         end
       rescue => e
         first_attempt = 1
-        SubscriptionFailedMailer.notify(user_id: user.id, error_message: e.message).deliver
+        SubscriptionFailedMailer.notify(user_id: user.id, error_message: e.message, attempt_time: 8.hours.from_now).deliver
         SingleRenewalWorker.perform_at(8.hours.from_now, user.id, first_attempt)
         next
       end

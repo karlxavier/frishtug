@@ -3,8 +3,16 @@ class SingleRenewalWorker
   CURRENT_TIME=Time.current.freeze
 
   def perform(user_id, attempt)
-    return if attempt > 3
     user = User.find(user_id)
+
+    if attempt > 3
+      remove_referrer(user)
+      remove_candidate(user)
+      user.update_attributes(
+        stripe_subscription_id: nil,
+        subscribe_at: nil,
+        plan_id: Plan.where(interval: [nil, ''], for_type: 'individual').take.id)
+    end
 
     return if user.stripe_subscription_id.nil?
     old_start_date = user.subscribe_at
@@ -50,7 +58,21 @@ class SingleRenewalWorker
         8.hours.from_now
       end
 
+      SubscriptionFailedMailer.notify(user_id: user.id, error_message: e.message, attemt_time: attempt_time).deliver
       SingleRenewalWorker.perform_at(attempt_time, user.id, attempt)
+    end
+  end
+
+  private
+  def remove_referrer(current_user)
+    if current_user.referrer?
+      current_user.referrer.destroy
+    end
+  end
+
+  def remove_candidate(current_user)
+    if current_user.candidate?
+      current_user.candidate.destroy
     end
   end
 end
