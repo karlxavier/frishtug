@@ -22,9 +22,13 @@ class SingleRenewalWorker
     begin
       old_subscription =
         Stripe::Subscription.retrieve(user.stripe_subscription_id)
-      old_subscription.delete
+      old_subscription.delete      
+    rescue => e
+      user.update_attributes(stripe_subscription_id: nil)
+    end
 
     
+    begin
       new_subscription = Stripe::Subscription.create(
         :customer => user.stripe_customer_id,
         :items => [
