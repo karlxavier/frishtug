@@ -127,7 +127,7 @@ class User < ApplicationRecord
 
   def subscribed?
     return false unless plan
-    plan.interval == "month"
+    plan&.interval == "month"
   end
 
   def orders_completed?
