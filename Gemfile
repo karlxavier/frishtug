@@ -44,7 +44,7 @@ gem 'barby'
 gem 'bootsnap', require: false
 gem 'bootstrap', '~> 4.0.0.beta2'
 gem 'carrierwave'
-gem 'clockwork'
+gem 'whenever', require: false
 gem 'cloudinary'
 gem 'connection_pool'
 gem 'dalli'
