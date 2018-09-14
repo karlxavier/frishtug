@@ -59,4 +59,22 @@ module User::NotificationsHelper
       link_to('click here.', user_ledgers_path)).html_safe
     end
   end
+
+  def has_pending_charges
+    unpaid_bills = current_user.ledgers.unpaid
+    if unpaid_bills.present?
+      return 'text-danger font-weight-bold'
+    else
+      return nil      
+    end
+  end
+
+  def has_refundable_credits
+    refunds = current_user.pending_credits.pending_refund
+    if refunds.present?
+      return 'text-danger font-weight-bold'
+    else
+      return nil      
+    end
+  end
 end
