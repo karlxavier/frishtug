@@ -11,10 +11,23 @@ class User::SubscriptionsController < User::BaseController
     if @canceler.run
       remove_referrer
       remove_candidate
+      SubscriptionWorkerCanceller.call(user_id: current_user.id)
       @response_msg = response_msg("success", "Successfuly canceled subscription")
       respond_with(@response_msg)
     else
-      @response_msg = response_msg("error", @canceler.errors.full_messages.join(", "))
+      remove_referrer
+      remove_candidate
+      SubscriptionWorkerCanceller.call(user_id: current_user.id)
+      PlanCommenter.call(
+        plan_id: current_user.plan_id, 
+        comment_body: params[:body], 
+        user_id: current_user.id
+      )
+      current_user.update_attributes(
+        stripe_subscription_id: nil,
+        plan_id: Plan.where(interval: [nil, ''], for_type: 'individual').take.id
+      )
+      @response_msg = response_msg("success", "Successfuly canceled subscription")
       respond_with(@response_msg)
     end
   end

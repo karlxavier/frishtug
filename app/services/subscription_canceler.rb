@@ -26,7 +26,11 @@ class SubscriptionCanceler
 
   def create_a_feedback
     return nil if feedback.empty?
-    plan.comments.create!(body: feedback, user_id: user.id)
+    PlanCommenter.call(
+      plan_id: plan.id, 
+      comment_body: feedback,
+      user_id: user.id
+    )
   end
 
   def unsubscribe_user
