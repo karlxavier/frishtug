@@ -17,7 +17,7 @@ class CreateRefundForBlackoutDate
 
   def blackout_date_description
     BlackoutDate.pluck(:month, :day, :description).reduce({}) do |h, value|
-      h["#{value.first} #{value.second}"] = value.last
+      h[Time.zone.parse("#{value.first} #{value.second}").strftime('%B %d')] = value.last
       h
     end
   end
