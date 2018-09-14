@@ -5,9 +5,12 @@
     <%= link_to_btn 'Choose plans', choose_plans_user_subscriptions_path %>
   `;
   $('#cancel_subscription').modal('hide');
+  location.reload();
 <% end %>
 swal(
   '<%= @response_msg[:status].upcase %>',
   '<%= @response_msg[:message] %>',
   '<%= @response_msg[:status] %>'
 );
+
+location.reload();
