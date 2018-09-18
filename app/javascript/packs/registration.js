@@ -19,10 +19,8 @@ import ReviewOrder from "../components/review_order";
 import dotenv from 'dotenv';
 
 
-console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV !== 'production') {
   dotenv.load();
-  console.log('pasok');
 }
 
 // Components
