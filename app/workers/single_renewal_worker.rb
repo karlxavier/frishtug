@@ -2,7 +2,7 @@ class SingleRenewalWorker
   include Sidekiq::Worker
 
   def perform(user_id, attempt, time)
-    CURRENT_TIME = Time.zone.parse(time)
+    current_time = Time.zone.parse(time)
     user = User.find(user_id)
 
     if attempt > 3
@@ -40,7 +40,7 @@ class SingleRenewalWorker
 
       user.update_attributes(
         stripe_subscription_id: new_subscription.id,
-        subscribe_at: CURRENT_TIME,
+        subscribe_at: current_time,
         plan_id: plan_id)
 
       OrderCopierWorker.perform_async(user.id, old_start_date, old_end_date)
@@ -63,7 +63,7 @@ class SingleRenewalWorker
       end
 
       SubscriptionFailedMailer.notify(user_id: user.id, error_message: e.message, attemt_time: attempt_time).deliver
-      SingleRenewalWorker.perform_at(attempt_time, user.id, attempt, CURRENT_TIME)
+      SingleRenewalWorker.perform_at(attempt_time, user.id, attempt, current_time)
     end
   end
 
