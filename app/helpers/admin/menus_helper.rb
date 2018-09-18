@@ -22,7 +22,7 @@ module Admin::MenusHelper
     menu_size = MenuCategory.find_by_id(menu.menu_category_id)&.menus&.size || 0
     select_tag "display_order",
       options_for_select((1..menu_size).map { |n| [n, n] }, selected: menu.display_order),
-      class: 'form-control display_order_selection',
+      class: 'py-1 px-2 bg-white display_order_selection rounded',
       include_blank: true,
       onchange: "update_menu_display_order(this.value, #{menu.id})"
   end
