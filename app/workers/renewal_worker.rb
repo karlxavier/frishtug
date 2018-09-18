@@ -29,7 +29,7 @@ class RenewalWorker
 
         user.update_attributes(
           stripe_subscription_id: new_subscription.id,
-          subscribe_at: CURRENT_TIME + 1.day,
+          subscribe_at: CURRENT_TIME,
           plan_id: plan_id)
 
         OrderCopierWorker.perform_async(user.id, old_start_date, old_end_date)
@@ -45,7 +45,7 @@ class RenewalWorker
       rescue => e
         first_attempt = 1
         SubscriptionFailedMailer.notify(user_id: user.id, error_message: e.message, attempt_time: 8.hours.from_now).deliver
-        SingleRenewalWorker.perform_at(8.hours.from_now, user.id, first_attempt)
+        SingleRenewalWorker.perform_at(8.hours.from_now, user.id, first_attempt, CURRENT_TIME)
         next
       end
     end
