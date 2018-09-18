@@ -16,6 +16,14 @@ import Days from "../components/days";
 import PaymentSetup from "../components/payment_setup";
 import Meals from "../components/meals";
 import ReviewOrder from "../components/review_order";
+import dotenv from 'dotenv';
+
+
+console.log(process.env.NODE_ENV);
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.load();
+  console.log('pasok');
+}
 
 // Components
 Vue.use(VueFormWizard);
@@ -89,7 +97,7 @@ const vm = new Vue({
   el: "#registration_app",
   store: store,
   data: {
-    stripe_key: "<%= STRIPE_PUBLIC_KEY %>",
+    stripe_key: process.env.STRIPE_PUBLISHABLE_KEY,
     charges: {
       total_price: null,
       additional_charges: null,
