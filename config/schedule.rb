@@ -4,6 +4,10 @@ every 1.day, at: '12am' do
   rake 'process_orders:run'
 end
 
+every 1.day, at: '1am' do
+  rake 'charge_group:run'
+end
+
 every 1.day, at: '11pm' do
   rake 'perform_renewal:run'
 end
