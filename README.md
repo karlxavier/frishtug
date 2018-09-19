@@ -6,7 +6,7 @@
 - Postgresql 9.6 or newer
 - [Redis](https://redis.io) (v4)
 - [memcached - a distributed memory object caching system](https://www.memcached.org/)
-- Ruby 2.4.1 ([GitHub - rbenv/rbenv: Groom your app’s Ruby environment](https://github.com/rbenv/rbenv) or [RVM: Ruby Version Manager - RVM Ruby Version Manager - Documentation](https://rvm.io))
+- Ruby 2.4.1 ([GitHub - rbenv/rbenv: Groom your appï¿½s Ruby environment](https://github.com/rbenv/rbenv) or [RVM: Ruby Version Manager - RVM Ruby Version Manager - Documentation](https://rvm.io))
 - Imagemagick
 - Yarn and Npm
 - Foreman for running the app (gem install foreman)
@@ -55,10 +55,15 @@ REDISCLOUD_URL
 REDIS_PROVIDER
 SECRET_KEY_BASE
 SENDGRID_PASSWORD
-SENDGRID_USERNAME     
+SENDGRID_USERNAME
 STRIPE_PUBLISHABLE_KEY
 STRIPE_SECRET_KEY
 STRIPE_SIGNING_SECRET
+```
+
+```sh
+#set node environment to production
+NODE_ENV='production'
 ```
 
 ### Building the site
