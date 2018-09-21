@@ -34,17 +34,20 @@ class ScanovatorApi
     def new_order(order)
       return unless address_allowed?(order)
       response = get("/new_order?#{new_order_query(order)}")
-      OpenStruct.new(JSON.parse(response.body))
+      return OpenStruct.new(JSON.parse(response.body)) unless response.code >= 400
+      self.new('').errors.add(:base, "HTTP ERROR #{response.code}")
     end
 
     def fetch(order_id)
       response = get("/order_query?store_id=#{STORE_ID}&order_id[]=#{order_id}")
-      Scanovator.new(parse(response))
+      return Scanovator.new(parse(response)) unless response.code >= 400
+      Scanovator.new(state: 'fail')
     end
 
     def fetch_group(order_ids)
       response = get("/order_query?store_id=#{STORE_ID}&#{format_order_ids(order_ids)}")
-      Scanovator.new(parse(response))
+      return Scanovator.new(parse(response)) unless response.code >= 400
+      Scanovator.new(state: 'fail')
     end
 
     private

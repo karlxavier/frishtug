@@ -1,3 +1,9 @@
+<% unless order.processing? %>
+  <div class="badge badge-danger"><%= order.status.titleize %></div>
+  <div class="py-2 text-danger">Please settle your pending payments for delivery.</div>
+<% else %>
+  <div class="badge badge-success"><%= order.status.titleize %></div>
+<% end %>
 <div class="row">
   <div class="col">
     <span class="font-family-montserrat-medium">
