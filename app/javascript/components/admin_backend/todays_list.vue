@@ -11,7 +11,13 @@
         </h5>
       </div>
       <div class="col">
-        Order #: {{ order.id }} &nbsp; Is Rollovered: {{ order.is_rollover }}
+        Order #: {{ order.id }} &nbsp; Is Rollovered: 
+        <div v-show="order.is_rollover === true" class="badge badge-pill badge-success">
+          {{ order.is_rollover.toString().toUpperCase() }}
+        </div>
+        <div v-show="order.is_rollover === false" class="badge badge-pill badge-danger">
+          {{ order.is_rollover.toString().toUpperCase() }}
+        </div>
       </div>
     </div>
     <div class="row">
