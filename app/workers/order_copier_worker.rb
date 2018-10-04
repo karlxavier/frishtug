@@ -31,19 +31,15 @@ class OrderCopierWorker
 
         unless new_order.template?
           order.menus_orders.each do |menu_order|
-            stock = Stock.new(menu_order.menu_id, menu_order.quantity)
-            unless stock.empty?
-              new_order.menus_orders.create!(
-                menu_id: menu_order.menu_id,
-                quantity: menu_order.quantity,
-                add_ons: menu_order.add_ons,
-              )
-            end
+            new_order.menus_orders.create!(
+              menu_id: menu_order.menu_id,
+              quantity: menu_order.quantity,
+              add_ons: menu_order.add_ons,
+            )
           end
         end
 
         new_order.processing!
-        new_order.reduce_stocks!
         RecordLedger.new(user, new_order).record!
         new_order_ids << new_order.id
         order.fulfilled!

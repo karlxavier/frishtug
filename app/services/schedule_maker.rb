@@ -30,6 +30,23 @@ class ScheduleMaker
       results << date
       date += 1.day
     end
-    results
+    prune_dates(results)
+  end
+
+  def prune_dates(dates)
+    active_orders = user.orders.pluck(:placed_on).map(&:to_date)
+    pruned_dates = dates - active_orders
+    
+    return dates if pruned_dates.empty?
+    total_iteration = 20 - pruned_dates.length
+    date = pruned_dates.last + 1.day
+
+    return dates unless total_iteration > 0
+    (1..total_iteration).map do |i|
+      date = ScheduleGenerator.new(date, schedule).generate
+      pruned_dates << date
+      date += 1.day
+    end
+    pruned_dates
   end
 end
