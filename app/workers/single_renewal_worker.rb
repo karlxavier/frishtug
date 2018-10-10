@@ -15,8 +15,6 @@ class SingleRenewalWorker
     end
 
     return if user.stripe_subscription_id.nil?
-    old_start_date = user.subscribe_at
-    old_end_date = user.subscription_expires_at
     plan_id = user.plan_id
 
     begin
@@ -43,7 +41,7 @@ class SingleRenewalWorker
         subscribe_at: current_time,
         plan_id: plan_id)
 
-      OrderCopierWorker.perform_async(user.id, old_start_date, old_end_date)
+      OrderCopierWorker.perform_async(user.id)
       if user.plan.per_month?
         charge = StripeCharger.new(user, user.plan.shipping_fee)
         charge.charge_shipping
