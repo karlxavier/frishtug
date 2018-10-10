@@ -188,7 +188,7 @@ class RegistrationForm
       user.save
       SubscriptionWorker.perform_at(user.orders.first.placed_on.beginning_of_day, user.id)
     else
-      errors.add(:base, stripe_subscription.errors.full_messages.join(", "))
+      errors.add(:base, customer.errors.full_messages.join(", "))
       raise ActiveRecord::StatementInvalid
     end
   end

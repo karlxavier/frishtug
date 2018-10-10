@@ -130,6 +130,9 @@ export default {
 
       if (plan.attributes.interval === 'month') {
         this.plan.price = this.parseFloatingNumber(plan.attributes.price);
+        this.registration_form.schedule = 'monday_to_friday';
+      } else {
+        this.registration_form.schedule = null;
       }
       this.$emit('next-tab');
     }

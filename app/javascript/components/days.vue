@@ -89,6 +89,8 @@ export default {
         self.earliest_sunday = response.earliest_sunday;
       }
     });
+
+    self.monday_to_friday_is_active = self.registration_form.schedule === 'monday_to_friday'
   },
   methods: {
     verifySchedule: function() {
