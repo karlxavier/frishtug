@@ -1,6 +1,6 @@
 class RenewalWorker
   include Sidekiq::Worker
-  CURRENT_TIME=(Time.current + 2.days).freeze
+  CURRENT_TIME=(Time.current + 1.day).freeze
 
   def perform
     subscribed_users =
