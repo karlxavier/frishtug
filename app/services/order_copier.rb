@@ -105,16 +105,11 @@ class OrderCopier
 
   def create_menus_orders(user_order, current_order)
     current_order.menus_orders.each do |menu_order|
-      stock = Stock.new(menu_order.menu_id, menu_order.quantity)
-      unless stock.empty?
-        user_order.menus_orders.create!(
-          menu_id: menu_order.menu_id,
-          quantity: menu_order.quantity,
-          add_ons: menu_order.add_ons
-        )
-      else
-        messages << "Not enough stock for #{menu_order.menu.name} in #{user_order.placed_on.strftime('%B %d, %Y')}"
-      end
+      user_order.menus_orders.create!(
+        menu_id: menu_order.menu_id,
+        quantity: menu_order.quantity,
+        add_ons: menu_order.add_ons
+      )
     end
   end
 
