@@ -16,6 +16,7 @@ class ScanovatorOrdersWorker
     orders.each do |order|
       next if SKIPPABLE_STATUS.include?(order.status)
       next if order.is_rollover
+      next if order.user.active_address.nil?
 
       scanovator_api = ScanovatorApi.new_order(order)
       next unless scanovator_api.present?
