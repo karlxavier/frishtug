@@ -139,7 +139,7 @@ class User < ApplicationRecord
   def get_current_subscription_orders
     if subscribed?
       start_day = subscribe_at.beginning_of_day
-      end_day = subscription_expires_at.end_of_day
+      end_day = DateTime::Infinity.new
       range = DateRange.new(start_day, end_day)
       orders.placed_between?(range)
             .where(status: %i[processing completed cancelled pending_payment awaiting_shipment])
