@@ -46,7 +46,7 @@ class ChargeUser
       create_bill_history("Order Charge", stripe[:response].id)
       order.update_attributes(charge_id: stripe[:response].id)
       RecordLedger.new(user, order).record_shipping! if user.plan.party_meeting?
-      order.processing! unless user.plan.party_meeting?
+      order.awaiting_shipment! unless user.plan.party_meeting?
       return order
     else
       errors.add(:charge, stripe.errors.full_messages.join(", "))

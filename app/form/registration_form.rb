@@ -123,7 +123,7 @@ class RegistrationForm
         param[:placed_on] = Time.zone.parse(param[:order_date])
         param[:order_date] = Time.current
         order = user.orders.create!(param)
-        user.plan.party_meeting? ? order.pending_payment! : order.processing!
+        user.plan.party_meeting? ? order.pending_payment! : order.awaiting_shipment!
         RecordLedger.new(user, order).record! if user.plan.interval == "month"
       else
         errors.add(:base, "Order place on is blank")

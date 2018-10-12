@@ -7,7 +7,7 @@ class UncancelOrder
   end
 
   def run
-    if @order.update_column(:status, :processing)
+    if @order.update_column(:status, :awaiting_shipment)
       pending_credits = @user.pending_credits.where(order_id: @order.id)
       total = 0
       pending_credits.each do |credit|

@@ -1,4 +1,4 @@
-<% if %w(fresh processing pending_payment).include?(@order.status) %>
+<% if %w(fresh processing pending_payment awaiting_shipment).include?(@order.status) %>
 	<% if action_name == 'edit' %>
 		swal({
 			title: 'Success',

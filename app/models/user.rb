@@ -142,10 +142,10 @@ class User < ApplicationRecord
       end_day = subscription_expires_at.end_of_day
       range = DateRange.new(start_day, end_day)
       orders.placed_between?(range)
-            .where(status: %i[processing completed cancelled pending_payment])
+            .where(status: %i[processing completed cancelled pending_payment awaiting_shipment])
             .order(placed_on: :asc)
     else
-      orders.where(status: %i[processing completed cancelled pending_payment])
+      orders.where(status: %i[processing completed cancelled pending_payment awaiting_shipment])
             .order(placed_on: :asc)
     end
   end

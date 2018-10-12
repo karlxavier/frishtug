@@ -38,7 +38,7 @@ class RecordLedger
     if tax > 0 || excess > 0
       order.pending_payment!
     else
-      order.update_columns(status: :processing)
+      order.update_columns(status: :awaiting_shipment)
     end
   end
 

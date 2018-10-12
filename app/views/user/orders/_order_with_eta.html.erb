@@ -1,6 +1,10 @@
-<% unless order.processing? %>
+<% unless order.processing? || order.awaiting_shipment? %>
   <div class="badge badge-danger"><%= order.status.titleize %></div>
   <div class="py-2 text-danger">Please settle your pending payments for delivery.</div>
+<% end 
+if order.awaiting_shipment? %>
+  <div class="badge badge-info"><%= order.status.titleize %></div>
+  <div class="py-2 text-info">Order is awaiting to be process</div>
 <% else %>
   <div class="badge badge-success"><%= order.status.titleize %></div>
   <div class="py-2 text-success">Expect delivery withing the day.</div>

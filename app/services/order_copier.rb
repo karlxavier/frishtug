@@ -24,7 +24,7 @@ class OrderCopier
         next unless dates_list[index].present?
         user_order = @user.orders.create!(order_params(dates_list[index], order))
         create_menus_orders(user_order, order)
-        user_order.processing!
+        user_order.awaiting_shipment!
         RecordLedger.new(user, user_order).record!
       end
     end

@@ -23,7 +23,7 @@ StripeEvent.configure do |events|
       user = User.find_by_stripe_customer_id(invoice_data.customer)
       if user
         if invoice_data.next_payment_attempt.nil?
-          user.orders.processing.each do |order|
+          user.orders.where(status: [:processing, :awaiting_shipment]).each do |order|
             order.payment_failed!
           end
         else
@@ -32,7 +32,7 @@ StripeEvent.configure do |events|
             body: "Next payment attempt will be #{Time.zone.at(invoice_data.next_payment_attempt).to_date}. Please update your payment info.",
             timeout: 5
           })
-          user.orders.processing.update_all(status: :pending_payment)
+          user.orders.where(status: [:processing, :awaiting_shipment]).update_all(status: :pending_payment)
         end
       end
     end

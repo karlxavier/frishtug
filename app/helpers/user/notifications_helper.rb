@@ -23,7 +23,7 @@ module User::NotificationsHelper
     return nil unless current_user.plan
     return nil if current_user.plan.interval != 'month'
     return nil if current_user.orders.count >= 20
-    days = 20 - current_user.orders.where(status: [:processing, :pending_payment]).count
+    days = 20 - current_user.orders.where(status: [:processing, :pending_payment, :awaiting_shipment]).count
     remaining_weeks = days / 5
     remaining_days = days % 5
     orders_to_complete = "#{pluralize(remaining_weeks, 'week')} #{'and ' + pluralize(remaining_days, 'day') unless remaining_days.zero?}"
