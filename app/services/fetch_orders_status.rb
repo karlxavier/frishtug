@@ -10,6 +10,7 @@ class FetchOrdersStatus
 
   def run
     return if @current_time.saturday?
+    return unless (5..22).cover? Time.current.hour
     range = DateRange.new(@current_time.beginning_of_day, @current_time.end_of_day)
     order_ids = Order.placed_between?(range).map(&:id)
     response = ScanovatorApi.fetch_group(order_ids)

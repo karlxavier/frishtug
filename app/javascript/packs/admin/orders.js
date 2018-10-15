@@ -31,7 +31,8 @@ const vm = new Vue({
     date: el.dataset.date,
     current_date: el.dataset.currentDate,
     meal: meal,
-    location: location
+    location: location,
+    interval_id: null
   },
   mounted: function() {
     const self = this
@@ -59,7 +60,7 @@ const vm = new Vue({
       })
     }
 
-    setInterval(pollOrders, 10000);
+    self.interval_id = setInterval(pollOrders, 10000);
   },
   methods: {
     viewMore: function() {
@@ -88,5 +89,9 @@ const vm = new Vue({
         }
       })
     }
-  }
+  },
+
+  beforeDestroy() {
+    if (this.interval_id) { clearInterval(this.interval_id) }
+  },
 })
