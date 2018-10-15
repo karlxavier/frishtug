@@ -1,5 +1,6 @@
 class ChargeGroup
   prepend SimpleCommand
+  BLACKOUT_DATES = BlackoutDate.pluck_dates.map { |d| Time.zone.parse(d).to_date }.freeze
 
   def initialize(user, order)
     @user = user
@@ -7,6 +8,7 @@ class ChargeGroup
   end
 
   def call
+    return false if BLACKOUT_DATES.include?(order.placed_on.to_date)
     return false unless order.present?
     charge!
   end
