@@ -139,12 +139,12 @@ export default {
 
       const addOne = date => {
         date.setDate(date.getDate() + 1);
-        return date.getTime();
+        return date.getDate();
       };
 
-      const isDatePlusOne = theDate.getTime() === addOne(currentDate);
+      const isDatePlusOne = theDate.getDate() === addOne(currentDate);
       if (isDatePlusOne) {
-        return self.is_past;
+        return true;
       }
 
       return !self.isNotSaturday(date);
