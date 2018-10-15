@@ -121,7 +121,7 @@ class Order < ApplicationRecord
   end
 
   def self.pluck_placed_on
-    order(placed_on: :asc).pluck(:placed_on).map { |p| p&.strftime('%Y-%m-%d') }.in_groups_of(5, false)
+    order(placed_on: :asc).pluck(:placed_on).last(20).map { |p| p&.strftime('%Y-%m-%d') }.in_groups_of(5, false)
   end
 
   def reduce_stocks!

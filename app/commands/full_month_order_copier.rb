@@ -47,7 +47,7 @@ class FullMonthOrderCopier
       new_order.awaiting_shipment!
       RecordLedger.new(user, new_order).record!
       new_order_ids << new_order.id
-      order.fulfilled!
+      # order.fulfilled!
     end
 
     return if new_order_ids.empty?
