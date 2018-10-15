@@ -89,7 +89,7 @@ class ScanovatorApi
     end
 
     def new_order_query(order)
-      URI.encode_www_form(
+      {
         store_id: STORE_ID,
         store_code: STORE_CODE,
         fname: order.user.first_name,
@@ -105,9 +105,9 @@ class ScanovatorApi
         eadd: order.user.email,
         order_id: order.id,
         notes: nil,
-        DeliveryDate: order.placed_on.strftime('%Y/%m/%d'),
+        DeliveryDate: order.placed_on.strftime('%d/%m/%Y'),
         seq: order.series_number
-      )
+      }.to_query
     end
   end
 end
