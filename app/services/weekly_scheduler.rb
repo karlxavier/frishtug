@@ -1,11 +1,11 @@
 class WeeklyScheduler < ScheduleMaker
 
   def create_schedule!
-    generate_schedule
+    generate_schedule(20, false)
   end
 
   def create_schedule_for_selection!
-    create_selection_from(generate_schedule)
+    create_selection_from(generate_schedule(20, true))
   end
 
   def get_schedules_for_selection!

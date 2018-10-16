@@ -13,6 +13,8 @@
 <%= content_tag :div, class: 'alert alert-info helper-alert' do %>
   To set up the rest of the weekly meals, click to copy your weekly meals below, or click on each date to select your selection, in each date you will also have the option of copying a single day.
 <% end if current_user.subscribed? %>
+
+<%= @available_dates.inspect %>
 <div class="row">
   <div class="col-4">
     <%= render partial: 'user/weekly_meals/calendar', locals: {
@@ -34,7 +36,7 @@
     } %>
 
     <% if current_user.subscribed? %>
-      <%= render 'copy_form' %>
+      <%= render 'copy_form' unless @to_options.nil? %>
       <%= render 'uncomplete_orders' if current_user.has_fresh_orders? %>
     <% end %>
   </div>

@@ -22,7 +22,7 @@ class ScheduleMaker
     end
   end
 
-  def generate_schedule(days = 20)
+  def generate_schedule(days = 20, skip_active = false)
     date = start_date.to_date
     results = []
     (1..days).map do |i|
@@ -30,7 +30,7 @@ class ScheduleMaker
       results << date
       date += 1.day
     end
-    prune_dates(results)
+    prune_dates(results) unless skip_active
   end
 
   def prune_dates(dates)

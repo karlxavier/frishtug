@@ -137,8 +137,13 @@ class User::WeeklyMealsController < User::BaseController
       redirect_back fallback_location: user_weekly_meals_path
     end
 
-    if @orders.cancelled?
+    if @orders&.cancelled?
       flash[:error] = 'Cant edit canceled order.'
+      redirect_back fallback_location: user_weekly_meals_path
+    end
+
+    unless current_user.orders.where(placed_on: placed_on).any?
+      flash[:error] = 'Cant edit not existing order.'
       redirect_back fallback_location: user_weekly_meals_path
     end
   end
@@ -166,7 +171,7 @@ class User::WeeklyMealsController < User::BaseController
 
     options = current_user.orders.map do |o|
       [
-        o.menus_orders.map { |i| "#{i.menu_name} x #{i.quantity}"}.join(', '),
+        o.menus_orders.map { |i| "#{i.menu_name} x #{i.quantity}" }.join(', '),
         o.id
       ]
     end.unshift(["Select meal to copy", nil])

@@ -131,7 +131,7 @@ class User < ApplicationRecord
   end
 
   def orders_completed?
-    counter = get_current_subscription_orders.size
+    counter = get_current_subscription_orders.last(20).size
     return false if counter.zero?
     counter % 20 == 0
   end
