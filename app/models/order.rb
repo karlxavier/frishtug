@@ -50,7 +50,7 @@ class Order < ApplicationRecord
   has_many :menus_orders, dependent: :destroy
   has_many :menus, through: :menus_orders
   has_many :bill_histories, dependent: :destroy
-  has_one :comment, as: :commentable, dependent: :destroy
+  has_many :comments, as: :commentable, dependent: :destroy
   has_one :shipping_charge, dependent: :destroy
   has_many :search_results, as: :searchable
   has_one :pending_credit, dependent: :destroy
