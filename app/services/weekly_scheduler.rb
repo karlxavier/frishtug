@@ -5,6 +5,7 @@ class WeeklyScheduler < ScheduleMaker
   end
 
   def create_schedule_for_selection!
+    @subscription_start = user.orders.order(placed_on: :asc).last(20).first.placed_on
     create_selection_from(generate_schedule(20, true))
   end
 

@@ -30,7 +30,8 @@ class ScheduleMaker
       results << date
       date += 1.day
     end
-    prune_dates(results) unless skip_active
+    return prune_dates(results) unless skip_active
+    results
   end
 
   def prune_dates(dates)

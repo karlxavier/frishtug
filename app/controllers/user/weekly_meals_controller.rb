@@ -41,7 +41,7 @@ class User::WeeklyMealsController < User::BaseController
   def check_schedule!
     return unless current_user.subscribed?
     unless params[:schedule].present?
-      redirect_back fallback_location: user_weekly_meals_path
+      redirect_back fallback_location: user_weekly_meals_path and return
     end
     get_available_dates_from_schedule
     is_date_included?
@@ -58,7 +58,7 @@ class User::WeeklyMealsController < User::BaseController
     parsed_date = parse_date(params[:date])
     unless @available_dates.include?(parsed_date)
       flash[:error] = "#{parsed_date.strftime('%B %d')} is not include on your schedule"
-      redirect_back fallback_location: user_weekly_meals_path
+      redirect_back fallback_location: user_weekly_meals_path and return
     end
   end
 
@@ -119,39 +119,39 @@ class User::WeeklyMealsController < User::BaseController
   def editable?
     if is_today?
       flash[:error] = 'Too late to edit your meal for today.'
-      redirect_back fallback_location: user_weekly_meals_path
+      redirect_back fallback_location: user_weekly_meals_path and return
     end
 
     if is_past_noon?
       flash[:error] = 'Too late for tomorrow, your meal cannot be changed after 11am.'
-      redirect_back fallback_location: user_weekly_meals_path
+      redirect_back fallback_location: user_weekly_meals_path and return
     end
 
     if is_yesterday?
       flash[:error] = 'Too late to edit your delivered meal.'
-      redirect_back fallback_location: user_weekly_meals_path
+      redirect_back fallback_location: user_weekly_meals_path and return
     end
 
     if is_blackout_date?
       flash[:error] = 'Cant edit black-out date.'
-      redirect_back fallback_location: user_weekly_meals_path
+      redirect_back fallback_location: user_weekly_meals_path and return
     end
 
     if @orders&.cancelled?
       flash[:error] = 'Cant edit canceled order.'
-      redirect_back fallback_location: user_weekly_meals_path
+      redirect_back fallback_location: user_weekly_meals_path and return
     end
 
     unless current_user.orders.where(placed_on: placed_on).any?
       flash[:error] = 'Cant edit not existing order.'
-      redirect_back fallback_location: user_weekly_meals_path
+      redirect_back fallback_location: user_weekly_meals_path and return
     end
   end
 
   def user_can_order?
     return unless user_has_completed_the_plan?
     flash[:error] = 'You can\'t create a new order!'
-    redirect_back fallback_location: user_weekly_meals_path
+    redirect_back fallback_location: user_weekly_meals_path and return
   end
 
   def user_has_completed_the_plan?
