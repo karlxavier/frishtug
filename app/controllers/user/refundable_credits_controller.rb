@@ -7,7 +7,7 @@ class User::RefundableCreditsController < User::BaseController
   def update
     if check_available_amount_to_refund
       charge = @pending_credit.charge_id
-    begin
+    else
       charge = @pending_credit.order_charge_id
     end
 
