@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180830013011) do
+ActiveRecord::Schema.define(version: 20181016082237) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -373,6 +373,7 @@ ActiveRecord::Schema.define(version: 20180830013011) do
     t.string "charge_id"
     t.string "remarks"
     t.integer "status", default: 0
+    t.string "order_charge_id"
     t.index ["order_id"], name: "index_pending_credits_on_order_id"
     t.index ["user_id"], name: "index_pending_credits_on_user_id"
   end

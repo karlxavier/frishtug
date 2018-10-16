@@ -5,14 +5,20 @@ class User::RefundableCreditsController < User::BaseController
   end
 
   def update
+    if check_available_amount_to_refund
+      charge = @pending_credit.charge_id
+    begin
+      charge = @pending_credit.order_charge_id
+    end
+
     Stripe::Refund.create(
-      charge: @pending_credit.charge_id,
+      charge: charge,
       amount: to_cents(@pending_credit.amount)
     )
     @pending_credit.refunded!
     redirect_back fallback_location: :back, notice: 'Refund successful'
   rescue => e
-    flash[:error] = e.message
+    flash[:error] = e
     redirect_back fallback_location: :back
   end
 
@@ -24,5 +30,11 @@ class User::RefundableCreditsController < User::BaseController
 
   def to_cents(amount)
     (amount.to_f * 100).to_i
+  end
+
+  def check_available_amount_to_refund
+    res = Stripe::Charge.retrieve(@pending_credit.charge_id)
+    total = res.amount - res.amount_refunded
+    total >= to_cents(@pending_credit.amount)
   end
 end
