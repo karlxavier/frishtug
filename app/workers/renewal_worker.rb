@@ -9,27 +9,9 @@ class RenewalWorker
     subscribed_users.find_each do |user|
       next if user.stripe_subscription_id.nil?
       plan_id = user.plan_id
+      renewal = RenewSubscription.call(user: user, time: CURRENT_TIME)
 
-      begin
-        old_subscription =
-          Stripe::Subscription.retrieve(user.stripe_subscription_id)
-        old_subscription.delete
-
-      
-        new_subscription = Stripe::Subscription.create(
-          :customer => user.stripe_customer_id,
-          :items => [
-            {
-              :plan => user.plan.stripe_plan_id,
-            },
-          ]
-        )
-
-        user.update_attributes(
-          stripe_subscription_id: new_subscription.id,
-          subscribe_at: CURRENT_TIME,
-          plan_id: plan_id)
-
+      unless renewal.errors.any?
         OrderCopierWorker.perform_async(user.id)
         if user.plan.per_month?
           charge = StripeCharger.new(user, user.plan.shipping_fee)
@@ -40,7 +22,7 @@ class RenewalWorker
             billed_at: Time.current,
           )
         end
-      rescue => e
+      else
         first_attempt = 1
         SubscriptionFailedMailer.notify(user_id: user.id, error_message: e.message, attempt_time: 8.hours.from_now).deliver
         SingleRenewalWorker.perform_at(8.hours.from_now, user.id, first_attempt, CURRENT_TIME)
