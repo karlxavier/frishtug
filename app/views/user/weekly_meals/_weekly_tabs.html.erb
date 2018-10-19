@@ -1,5 +1,5 @@
 <%
-  orders_list = @orders.in_groups_of(5, false)
+  orders_list = @orders.last(20).in_groups_of(5, false)
   schedule = params[:schedule]
   active_tab = ["active"]
   active_panel = ["show active"]
