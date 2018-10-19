@@ -81,6 +81,8 @@ class RegistrationForm
       create_user_info(user)
       create_orders(user)
       save_and_charge_payment(user)
+      inactive_user = InactiveUser.find_by_email(user.email)
+      inactive_user.destroy if inactive_user.present?
     end
     true
   rescue => e
