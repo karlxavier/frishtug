@@ -19,6 +19,7 @@
 
 class PendingCredit < ApplicationRecord
   enum status: %i[pending_refund refunded]
+  validates  :amount, uniqueness: { scope: [:user_id, :remarks, :placed_on_date] }
   belongs_to :user
   belongs_to :order, optional: true
 
