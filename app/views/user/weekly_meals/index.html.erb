@@ -36,8 +36,9 @@
 
     <% if current_user.subscribed? %>
       <%= render 'copy_form' unless current_user.orders_completed? %>
-      <%= render 'uncomplete_orders' if current_user.has_fresh_orders? %>
     <% end %>
+    
+    <%= render 'uncomplete_orders' if current_user.has_fresh_orders? %>
   </div>
 
   <% unless current_user.subscribed? %>
