@@ -44,7 +44,13 @@ class CreateRefundForBlackoutDate
       charge_id = order.charge_id
     end
 
-    pending_credit = user.pending_credits.where(placed_on_date: order.placed_on).first_or_create
+    pending_credits = user.pending_credits.where(placed_on_date: order.placed_on)
+
+    if pending_credits.length > 1
+      pending_credits.last.destroy! unless pending_credits.last.refunded?
+    end
+
+    pending_credit = pending_credits.first_or_create
 
     unless pending_credit.refunded?
       pending_credit.update_attributes(
