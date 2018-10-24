@@ -7,7 +7,7 @@ class BlackoutAffectedOrdersWorker
       date = Time.zone.parse("#{blackout_date.month} #{blackout_date.day}")
       range = DateRange.new(date.beginning_of_day, date.end_of_day)
       orders_affected = Order.placed_between?(range)
-      orders_affected.map { |order| order.save }
+      orders_affected.map(&:save)
     end
   end
 end
