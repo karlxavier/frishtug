@@ -35,7 +35,7 @@ class ScheduleMaker
   end
 
   def prune_dates(dates)
-    active_orders = user.orders.where.not(status: :template).pluck(:placed_on).map(&:to_date)
+    active_orders = user.orders.not_template.pluck(:placed_on).map(&:to_date)
     pruned_dates = dates - active_orders
     
     return dates if pruned_dates.empty?

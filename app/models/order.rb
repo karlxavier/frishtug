@@ -59,6 +59,7 @@ class Order < ApplicationRecord
   has_many :additional_ledgers, dependent: :destroy
 
   scope :completed, -> { where.not(delivered_at: nil) }
+  scope :not_template, -> { where.not(status: :template) }
   scope :not_empty, -> { joins(:menus_orders).group(:placed_on).having('count(menus_orders.id) > 0') }
   accepts_nested_attributes_for :menus_orders, allow_destroy: true
 
