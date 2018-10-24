@@ -27,6 +27,8 @@ class FullMonthOrderCopier
         full_month_dates[index].beginning_of_day,
         full_month_dates[index].end_of_day
       )
+      
+      user.orders.template.has_empty_orders.destroy_all
 
       new_order = user.orders.placed_between?(range).first_or_create!(
         placed_on: full_month_dates[index],

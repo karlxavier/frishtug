@@ -61,6 +61,7 @@ class Order < ApplicationRecord
   scope :completed, -> { where.not(delivered_at: nil) }
   scope :not_template, -> { where.not(status: :template) }
   scope :not_empty, -> { joins(:menus_orders).group(:placed_on).having('count(menus_orders.id) > 0') }
+  scope :has_empty_orders, -> { left_outer_joins(:menus_orders).where('menus_orders.id IS NULL') }
   accepts_nested_attributes_for :menus_orders, allow_destroy: true
 
   after_create    :set_series_number
