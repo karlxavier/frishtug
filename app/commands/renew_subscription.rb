@@ -17,6 +17,8 @@ class RenewSubscription
   def process_renewal!
     if delete_old_subscription!
       create_new_subscription!
+    else
+      errors.add(:subscription, 'Failed to delete subscription')
     end
   end
 
