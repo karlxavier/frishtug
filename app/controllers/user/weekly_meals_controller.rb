@@ -1,5 +1,5 @@
 class User::WeeklyMealsController < User::BaseController
-  before_action :user_can_order?, :check_order!, :check_schedule!, :set_new_order, only: :new
+  before_action :creatable?, :user_can_order?, :check_order!, :check_schedule!, :set_new_order, only: :new
   before_action :set_order_for_edit, :editable?, only: :edit
   before_action :set_orders_for_option_select, only: %i[new edit]
   before_action :user_has_schedule?, :set_date_range, :set_date, only: :index
@@ -114,6 +114,13 @@ class User::WeeklyMealsController < User::BaseController
 
   def is_blackout_date?
     BLACKOUT_DATES.include?(placed_on.strftime('%B %d'))
+  end
+
+  def creatable?
+    if is_today?
+      flash[:error] = 'Too late to order today.'
+      redirect_back fallback_location: user_weekly_meals_path and return
+    end
   end
 
   def editable?
