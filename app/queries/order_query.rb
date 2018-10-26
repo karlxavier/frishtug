@@ -8,7 +8,7 @@ class OrderQuery
 
   def active_orders
     @orders = Order.includes(user: :plan, menus_orders: :menu)
-    results = filtered_orders.where(status: %i[processing payment_failed pending_payment cancelled awaiting_shipment])
+    results = filtered_orders.where(status: %i[processing payment_failed pending_payment cancelled awaiting_shipment], is_rollover: true)
                              .placed_between?(@date_range)
                              .order(series_number: :asc)
 
