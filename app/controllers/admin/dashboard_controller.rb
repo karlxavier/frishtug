@@ -4,7 +4,7 @@ class Admin::DashboardController < Admin::BaseController
 
   def index
     @order_query = OrderQuery.new(range, locations, meal_ids.compact.flatten)
-    @active_orders = @order_query.active_orders.page(page).per(10)
+    @active_orders = @order_query.active_orders.page(page).per(20)
   end
 
   private
