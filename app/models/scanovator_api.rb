@@ -32,7 +32,6 @@ class ScanovatorApi
 
   class << self
     def new_order(order)
-      return unless address_allowed?(order)
       response = get("/new_order?#{new_order_query(order)}")
       return OpenStruct.new(JSON.parse(response.body)) unless response.code >= 400
       self.new('').errors.add(:base, "HTTP ERROR #{response.code}")
