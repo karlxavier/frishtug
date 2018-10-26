@@ -121,6 +121,11 @@ class User::WeeklyMealsController < User::BaseController
       flash[:error] = 'Too late to order today.'
       redirect_back fallback_location: user_weekly_meals_path and return
     end
+
+    if placed_on.to_date == Date.current.tomorrow
+      flash[:error] = 'Too late for tomorrow'
+      redirect_back fallback_location: user_weekly_meals_path and return
+    end
   end
 
   def editable?
