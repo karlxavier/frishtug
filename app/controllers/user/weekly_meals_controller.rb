@@ -122,7 +122,7 @@ class User::WeeklyMealsController < User::BaseController
       redirect_back fallback_location: user_weekly_meals_path and return
     end
 
-    if placed_on.to_date == Date.current.tomorrow
+    if is_past_noon?
       flash[:error] = 'Too late for tomorrow'
       redirect_back fallback_location: user_weekly_meals_path and return
     end
