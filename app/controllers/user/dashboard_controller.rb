@@ -1,5 +1,5 @@
 class User::DashboardController < User::BaseController
-  CURRENT_TIME = Time.current.freeze
+  CURRENT_TIME = (Time.current - 3.day).freeze
 
   def index
     @todays_order = current_user.orders.placed_between?(range)

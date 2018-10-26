@@ -64,8 +64,7 @@ class Order < ApplicationRecord
   scope :has_empty_orders, -> { left_outer_joins(:menus_orders).where('menus_orders.id IS NULL') }
   accepts_nested_attributes_for :menus_orders, allow_destroy: true
 
-  after_create    :set_series_number
-  after_save      :create_pending_credit, :set_sku
+  after_save      :create_pending_credit, :set_sku, :set_series_number
   before_save     :re_account_on_failed_payment
   after_touch     :create_refundable_credit
   before_destroy  :re_account_inventory, prepend: true
@@ -150,7 +149,7 @@ class Order < ApplicationRecord
   end
 
   def set_series_number
-    self[:series_number] = SeriesCreator.new(self).create
+    self[:series_number] = SeriesCreator.new(self).create if self.series_number.nil?
   end
 
   def create_refundable_credit
