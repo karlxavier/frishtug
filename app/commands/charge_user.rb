@@ -40,7 +40,11 @@ class ChargeUser
 
   def charge!
     calculate_payment
-    return order unless amount_valid?
+    unless amount_valid?
+      order.awaiting_shipment! unless user.plan.party_meeting? 
+      return order
+    end
+    
     stripe = StripeCharger.new(user, @amount_to_pay).run
     if stripe[:success]
       create_bill_history("Order Charge", stripe[:response].id)
