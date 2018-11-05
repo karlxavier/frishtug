@@ -6,9 +6,9 @@ class User::DuplicateMealsController < User::BaseController
     if @order_duplicator.run
       flash[:success] = "Order successfully duplicated"
       flash[:notice] = @order_duplicator.notices.join(', ') if @order_duplicator.notices.present?
-      path = edit_user_weekly_meals_path(date: date)
+      path = user_weekly_meals_path
       if @order.template?
-        path = edit_user_create_new_months_path(date: date)
+        path = user_create_new_months_path(date: date)
       end
       redirect_to path
     end

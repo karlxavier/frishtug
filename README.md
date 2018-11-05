@@ -2,14 +2,14 @@
 
 ### Required
 
-- git
-- Postgresql 9.6 or newer
-- [Redis](https://redis.io) (v4)
-- [memcached - a distributed memory object caching system](https://www.memcached.org/)
-- Ruby 2.4.1 ([GitHub - rbenv/rbenv: Groom your app�s Ruby environment](https://github.com/rbenv/rbenv) or [RVM: Ruby Version Manager - RVM Ruby Version Manager - Documentation](https://rvm.io))
-- Imagemagick
-- Yarn and Npm
-- Foreman for running the app (gem install foreman)
+-   git
+-   Postgresql 9.6 or newer
+-   [Redis](https://redis.io) (v4)
+-   [memcached - a distributed memory object caching system](https://www.memcached.org/)
+-   Ruby 2.4.1 ([GitHub - rbenv/rbenv: Groom your app�s Ruby environment](https://github.com/rbenv/rbenv) or [RVM: Ruby Version Manager - RVM Ruby Version Manager - Documentation](https://rvm.io))
+-   Imagemagick
+-   Yarn and Npm
+-   Foreman for running the app (gem install foreman)
 
 ### Clone the repo
 
