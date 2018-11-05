@@ -19,13 +19,23 @@ class ShoppingListQuery
   def format_result(orders, menu)
     {
       menu: menu,
-      order_ids: orders.pluck(:series_number),
+      order_ids: get_series_numbers(orders.ids, menu.id),
       quantity: get_quantity(orders.ids, menu.id),
     }
   end
 
   def range
     DateRange.new(date.beginning_of_day, date.end_of_day)
+  end
+
+  def get_series_numbers(order_ids, menu_id)
+    list = []
+    MenusOrder.where(order_id: order_ids, menu_id: menu_id).each do |m|
+      (0..m.quantity).each do |i|
+        list << Order.find_by_id(m.order_id).series_number
+      end
+    end
+    list
   end
 
   def get_quantity(order_ids, menu_id)
