@@ -1,4 +1,7 @@
 <h4>Choose From Available Plans Below.</h4>
+<div class="alert alert-info">
+  If your changing your plan in middle of your month, you will not get credit for the rest of the month.
+</div>
 <hr>
 <div class="card-deck">
   <%= render @plans, form_url: user_change_subscriptions_path %>
