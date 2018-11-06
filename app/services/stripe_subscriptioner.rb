@@ -101,6 +101,7 @@ class StripeSubscriptioner
   def subscribe_customer(customer_id)
     Stripe::Subscription.create(
       customer: customer_id,
+      billing: 'send_invoice',
       items: [
         {
           plan: user.plan.stripe_plan_id,
