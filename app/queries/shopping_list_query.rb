@@ -31,7 +31,11 @@ class ShoppingListQuery
   def get_series_numbers(order_ids, menu_id)
     list = []
     MenusOrder.where(order_id: order_ids, menu_id: menu_id).each do |m|
-      (0..m.quantity).each do |i|
+      if m.quantity == 1
+        list << Order.find_by_id(m.order_id).series_number
+        next
+      end
+      (1..m.quantity).each do |i|
         list << Order.find_by_id(m.order_id).series_number
       end
     end
