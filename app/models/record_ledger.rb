@@ -74,7 +74,10 @@ class RecordLedger
 
     shipping_record = user.shipping_charge_ledgers.create(order_id: order.id, status: :pending_payment) unless shipping_record.present?
 
-    return false if shipping_record.paid?
+    if shipping_record.paid?
+      order.awaiting_shipment!
+      return false 
+    end
     shipping_record.update_attributes(amount: shipping.price)
     order.pending_payment!
     true

@@ -42,6 +42,7 @@ class ChargeUser
     calculate_payment
     unless amount_valid?
       order.awaiting_shipment! unless user.plan.party_meeting? 
+      check_shipping_payment if user.plan.party_meeting?
       return order
     end
     
@@ -90,5 +91,14 @@ class ChargeUser
 
   def amount_valid?
     @amount_to_pay >= STRIPE_MINIMUM_AMOUNT
+  end
+
+  def check_shipping_payment
+    shipping_record = user.shipping_charge_ledgers.where(order_id: order.id, status: %i[pending_payment payment_failed paid]).first
+    if shipping_record.present? && shipping_record.paid?
+      order.awaiting_shipment!
+    else
+      order.pending_payment!
+    end
   end
 end
