@@ -45,6 +45,16 @@
     </div>
     <%= yield :footer_js %>
     <script type="text/javascript">
+      function pollScanovator(){
+        Rails.ajax({
+          url: '/user/scanovators.js?order_id=<%= @current_order&.id %>',
+          type: 'GET'
+        });
+      };
+
+      <% if @current_order.present? %>
+        setInterval(pollScanovator, 10000);
+      <% end %>
 
       if (sessionStorage.getItem('items') === null) {
         Rails.ajax({
