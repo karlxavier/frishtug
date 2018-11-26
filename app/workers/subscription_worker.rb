@@ -5,7 +5,6 @@ class SubscriptionWorker
     user = User.find(user_id)
     subscription = Stripe::Subscription.create(
       customer: user.stripe_customer_id,
-      billing: 'send_invoice',
       items: [
         {
           plan: user.plan.stripe_plan_id
