@@ -95,7 +95,7 @@ class StripeSubscriptioner
   end
 
   def description
-    "Frishtug customer ##{user.id}, #{user.full_name} <#{user.email}>"
+    "Frishtug customer ##{user.id}, #{user.full_name} <#{user.email}> "
   end
 
   def subscribe_customer(customer_id)
