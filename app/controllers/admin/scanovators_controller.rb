@@ -7,7 +7,7 @@ class Admin::ScanovatorsController < Admin::BaseController
     FetchOrdersStatus.new(params[:date]).run
     range = DateRange.new(@date.beginning_of_day, @date.end_of_day)
     order_query = OrderQuery.new(range, locations, meal_ids.compact.flatten)
-    @orders = order_query.active_orders.page(1).per(10 * params[:page].to_i)
+    @orders = order_query.active_orders.page(1).per(20 * params[:page].to_i)
   end
 
   def create

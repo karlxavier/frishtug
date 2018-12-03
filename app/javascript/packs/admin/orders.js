@@ -60,7 +60,9 @@ const vm = new Vue({
       })
     }
 
-    self.interval_id = setInterval(pollOrders, 10000);
+    const ONE_MINUTE = (60 * 1000)
+    const FIVE_MINUTES = ONE_MINUTE * 5
+    self.interval_id = setInterval(pollOrders, FIVE_MINUTES);
   },
   methods: {
     viewMore: function() {
@@ -70,7 +72,7 @@ const vm = new Vue({
       const meal_param = self.meal.length > 0 ? `&meal=${self.meal.join(',')}` : ""
       const location_param = self.location.length > 0 ? `&location=${self.location.join(',')}` : ""
       Rails.ajax({
-        url: `/admin/dashboard.json?date=${self.date}&page=${counter}${meal_param}${location_param}`,
+        url: `/admin/dashboard.json?date=${self.date}&page=${counter}&per=10${meal_param}${location_param}`,
         type: 'GET',
         success: function(response) {
           if (response.length > 0) {
