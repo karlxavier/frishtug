@@ -70,7 +70,7 @@ class CreateRefundForCanceledOrder
   end
 
   def start_worker
-    CanceledOrderWorker.perform_at(order.id)
+    CanceledOrderWorker.perform_async(order.id)
   end
 
   def cancel_pending_payments
