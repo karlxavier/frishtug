@@ -1,35 +1,33 @@
 <template>
-  <div class="row justify-content-center align-items-center review_order__container" id="review_order">
+  <div
+    class="row justify-content-center align-items-center review_order__container"
+    id="review_order"
+  >
     <div class="col-md-4">
       <div class="col-12">
-        <h3 class="text-uppercase text-center font-family-montserrat-medium font-size-24 mb-30px">
-          Review Order
-        </h3>
+        <h3
+          class="text-uppercase text-center font-family-montserrat-medium font-size-24 mb-30px"
+        >Review Order</h3>
         <span class="font-family-montserrat font-size-18">Order Summary</span>
         <div class="row review-step__margin-b25 review-step__margin-t30">
           <div class="col-5 font-family-lato-bold font-size-14">Chosen Plan</div>
           <div class="col-7">{{ plan_name }}</div>
         </div>
         <div class="row review-step__margin-b25">
-          <div class="col-5 font-family-lato-bold font-size-14" v-if="plan.interval === 'month'">5 meals per week</div>
+          <div
+            class="col-5 font-family-lato-bold font-size-14"
+            v-if="plan.interval === 'month'"
+          >5 meals per week</div>
           <div class="col-5 font-family-lato-bold font-size-14" v-else>Total meals price</div>
           <div class="col-7">{{ total_price | to_currency }}</div>
         </div>
         <div class="row review-step__margin-b25">
-          <div class="col-5 font-family-lato-bold font-size-14">
-            Additional Charges
-          </div>
-          <div class="col-7">
-            {{ additional_charges() | to_currency }}
-          </div>
+          <div class="col-5 font-family-lato-bold font-size-14">Additional Charges</div>
+          <div class="col-7">{{ additional_charges() | to_currency }}</div>
         </div>
         <div class="row review-step__margin-b25">
-          <div class="col-5 font-family-lato-bold font-size-14">
-            Tax
-          </div>
-          <div class="col-7">
-            {{ totalTax() | to_currency }}
-          </div>
+          <div class="col-5 font-family-lato-bold font-size-14">Tax</div>
+          <div class="col-7">{{ totalTax() | to_currency }}</div>
         </div>
         <div class="row review-step__margin-b25">
           <div class="col-5 font-family-lato-bold font-size-14">Shipping</div>
@@ -38,9 +36,25 @@
         <hr>
         <span class="font-family-montserrat font-size-18">Delivery Summary</span>
         <div class="row review-step__margin-b25 review-step__margin-t30">
-          <div class="col-5 font-family-lato-bold font-size-14" v-if="plan.interval === 'month'">First Delivery Date</div>
+          <div
+            class="col-5 font-family-lato-bold font-size-14"
+            v-if="plan.interval === 'month'"
+          >First Delivery Date</div>
           <div class="col-5 font-family-lato-bold font-size-14" v-else>Delivery Date</div>
           <div class="col-7">{{ first_delivery_date }}</div>
+        </div>
+        <div class="row review-step__margin-b25 review-step__margin-t30">
+          <div class="col-5 font-family-lato-bold font-size-14">Preferred Time</div>
+          <div class="col-7">
+            <div class="form-group">
+              <div class="input-group date" id="datetimepicker3">
+                <input type="text" class="form-control">
+                <span class="input-group-addon">
+                  <span class="glyphicon glyphicon-time"></span>
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
         <hr>
         <div class="row review-step__margin-b25 clearfix">
@@ -48,32 +62,33 @@
             <strong class="font-family-montserrat font-size-18">TOTAL</strong>
           </div>
           <div class="col-7">
-            <strong class="font-size-18 font-family-lato-bold" style="color: #9bc634;">
-              {{ total_price + shipping_fee + additional_charges() + totalTax() | to_currency }}
-            </strong>
+            <strong
+              class="font-size-18 font-family-lato-bold"
+              style="color: #9bc634;"
+            >{{ total_price + shipping_fee + additional_charges() + totalTax() | to_currency }}</strong>
           </div>
         </div>
         <hr>
         <div class="row review-step__margin-b25 clearfix">
           <div class="col">
             <strong class="font-size-14 font-family-lato-bold">
-              Note: <small>For all Tax and Additional charges, you will need to finalize the payment at the Pending Charges link.</small>
+              Note:
+              <small>For all Tax and Additional charges, you will need to finalize the payment at the Pending Charges link.</small>
             </strong>
           </div>
         </div>
       </div>
       <div class="col-12 text-center">
-        <a href="javascript:void(0)"
+        <a
+          href="javascript:void(0)"
           class="btn btn-brown text-uppercase complete-orders-btn"
           style="width: 203px; margin-top: 1.4rem;"
-          @click="generateToken">
-          Complete Sign Up
-        </a>
+          @click="generateToken"
+        >Complete Sign Up</a>
       </div>
     </div>
   </div>
 </template>
-
 <script>
 import toCurrency from "../packs/lib/to_currency";
 import moment from "moment";
@@ -109,11 +124,14 @@ export default {
       return this.charges.shipping_fee;
     },
     total_price: function() {
-      let total = 0
+      let total = 0;
       if (this.plan.interval === "month") {
-        total = this.plan.price
+        total = this.plan.price;
       } else {
-        total = this.charges.total_price > this.plan.minimum_charge ? this.charges.total_price : this.plan.minimum_charge
+        total =
+          this.charges.total_price > this.plan.minimum_charge
+            ? this.charges.total_price
+            : this.plan.minimum_charge;
       }
       return total;
     },
@@ -133,124 +151,140 @@ export default {
   },
   methods: {
     additional_charges: function() {
-      let additional = 0
-      const self = this
-      const items = self.$store.state.items
-      const orders = self.registration_form.orders
+      let additional = 0;
+      const self = this;
+      const items = self.$store.state.items;
+      const orders = self.registration_form.orders;
 
-      const getPrice = (item) => {
-        const found = items.filter(data => data.id === item.menu_id)
+      const getPrice = item => {
+        const found = items.filter(data => data.id === item.menu_id);
         if (found.length > 0) {
-          const price = Money.$cents(parseFloat(found[0].attributes.price))
+          const price = Money.$cents(parseFloat(found[0].attributes.price));
           return Money.$dollar(price * item.quantity);
         } else {
           return 0;
         }
-      }
+      };
 
-      const getAddOnPrice = (item) => {
+      const getAddOnPrice = item => {
         const add_ons = items.reduce((arr, item) => {
-          arr.push(...item.meta.add_ons)
-          return arr
-        }, [])
+          arr.push(...item.meta.add_ons);
+          return arr;
+        }, []);
 
-
-        const item_ids = add_ons.reduce( (arr, a) => {
+        const item_ids = add_ons.reduce((arr, a) => {
           if (item.add_ons.includes(a.id)) {
-            arr.push(a.menu_id)
+            arr.push(a.menu_id);
           }
-          return arr
-        }, [])
+          return arr;
+        }, []);
 
-        const uniq_item_ids = Array.from(new Set(item_ids))
-        const found = items.filter(data => uniq_item_ids.includes(Number(data.id)))
+        const uniq_item_ids = Array.from(new Set(item_ids));
+        const found = items.filter(data =>
+          uniq_item_ids.includes(Number(data.id))
+        );
         if (found.length > 0) {
           const price = found.reduce((sum, i) => {
-            return sum += Money.$cents(parseFloat(i.attributes.price))
-          }, 0)
+            return (sum += Money.$cents(parseFloat(i.attributes.price)));
+          }, 0);
           return Money.$dollar(price * item.quantity);
         } else {
           return 0;
         }
-      }
+      };
 
       orders.forEach(order => {
-        const total = Money.$dollar(order.menus_orders_attributes.reduce((sum, item) => {
-          return sum += Money.$cents(getPrice(item)) + Money.$cents(getAddOnPrice(item));
-        }, 0))
-        if (total > self.plan.limit && self.plan.interval === 'month') {
-          additional += Number((total - self.plan.limit).toFixed(2))
+        const total = Money.$dollar(
+          order.menus_orders_attributes.reduce((sum, item) => {
+            return (sum +=
+              Money.$cents(getPrice(item)) + Money.$cents(getAddOnPrice(item)));
+          }, 0)
+        );
+        if (total > self.plan.limit && self.plan.interval === "month") {
+          additional += Number((total - self.plan.limit).toFixed(2));
         }
-      })
-      return additional
+      });
+      return additional;
     },
     addOns: function() {
       return this.$store.state.items.reduce((arr, item) => {
-        arr.push(...item.meta.add_ons)
-        return arr
-      }, [])
+        arr.push(...item.meta.add_ons);
+        return arr;
+      }, []);
     },
     taxableAddOns: function() {
-      const self = this
-      const item_ids = self.addOns().reduce( (arr, i) => {
-        arr.push(i.menu_id)
-        return arr
-      }, [])
+      const self = this;
+      const item_ids = self.addOns().reduce((arr, i) => {
+        arr.push(i.menu_id);
+        return arr;
+      }, []);
 
       return self.$store.state.items.filter(item => {
         if (item_ids.includes(Number(item.id))) {
-          return item.attributes.tax === true
+          return item.attributes.tax === true;
         }
-      })
+      });
     },
     totalTax: function() {
-      const self = this
-      const taxable_items = self.$store.state.items.filter(item => {
-        return item.attributes.tax === true;
-      }).reduce( (obj, item) => {
-        obj[item.id] = item.attributes.price
-        return obj
-      }, {})
+      const self = this;
+      const taxable_items = self.$store.state.items
+        .filter(item => {
+          return item.attributes.tax === true;
+        })
+        .reduce((obj, item) => {
+          obj[item.id] = item.attributes.price;
+          return obj;
+        }, {});
 
       const calculate_tax = (price, quantity) => {
-        if (price == null) { return 0 }
-        const price_in_cents = Money.$cents(price)
-        const taxPercent = self.tax / 100.0
-        return Money.$dollar(Money.$tax(price_in_cents, taxPercent) * quantity)
+        if (price == null) {
+          return 0;
+        }
+        const price_in_cents = Money.$cents(price);
+        const taxPercent = self.tax / 100.0;
+        return Money.$dollar(Money.$tax(price_in_cents, taxPercent) * quantity);
       };
 
-      const calculateAddOnTax = (menus_order) => {
-        const tax = self.tax / 100.0
+      const calculateAddOnTax = menus_order => {
+        const tax = self.tax / 100.0;
         if (menus_order.add_ons.length > 0) {
-          const add_ons = self.addOns().filter( a => menus_order.add_ons.includes(a.id))
+          const add_ons = self
+            .addOns()
+            .filter(a => menus_order.add_ons.includes(a.id));
 
-          const ids = Array.from(new Set(add_ons.map(a => a.menu_id)))
+          const ids = Array.from(new Set(add_ons.map(a => a.menu_id)));
 
-          const total = self.taxableAddOns().reduce( (sum, i) => {
+          const total = self.taxableAddOns().reduce((sum, i) => {
             if (ids.includes(Number(i.id))) {
-              const price = Money.$cents(parseFloat(i.attributes.price))
-              sum += Money.$tax(price, tax) * menus_order.quantity
-              return sum
+              const price = Money.$cents(parseFloat(i.attributes.price));
+              sum += Money.$tax(price, tax) * menus_order.quantity;
+              return sum;
             } else {
-              return sum += 0
+              return (sum += 0);
             }
-          }, 0)
+          }, 0);
 
-          return Money.$dollar(total)
+          return Money.$dollar(total);
         } else {
-          return 0
+          return 0;
         }
-      }
+      };
 
       const total = self.registration_form.orders.reduce((total, order) => {
-        return total += order.menus_orders_attributes.reduce(
+        return (total += order.menus_orders_attributes.reduce(
           (sum, menu_order) => {
-            return sum += Money.$cents(calculate_tax(taxable_items[menu_order.menu_id], menu_order.quantity)) + Money.$cents(calculateAddOnTax(menu_order))
+            return (sum +=
+              Money.$cents(
+                calculate_tax(
+                  taxable_items[menu_order.menu_id],
+                  menu_order.quantity
+                )
+              ) + Money.$cents(calculateAddOnTax(menu_order)));
           },
           0
-        );
+        ));
       }, 0);
-      return Money.$dollar(total)
+      return Money.$dollar(total);
     },
     generateToken: function() {
       const self = this;
@@ -305,7 +339,7 @@ export default {
       }
     }
   }
-}
+};
 </script>
 
 <style>

@@ -2,33 +2,35 @@
   <div>
     <div class="row justify-content-center align-items-center mt-4">
       <div class="col-md-8 col-md-offset-2">
-        <h4 class="text-center text-uppercase">
-          Choose Delivery Day
-        </h4>
-        <p class="text-center" v-if="plan.interval !== 'month' ">
-          Choose when you want your <strong>single breakfast order</strong> to be delivered.
+        <h4 class="text-center text-uppercase">Choose Delivery Day</h4>
+        <p class="text-center" v-if="plan.interval !== 'month' ">Choose when you want your
+          <strong>single breakfast order</strong> to be delivered.
         </p>
-        <p class="text-center" v-else>
-          Choose your schedule or pick a date in the calendar.
-        </p>
+        <p class="text-center" v-else>Choose your schedule or pick a date in the calendar.</p>
       </div>
     </div>
 
     <div class="row justify-content-center my-4" v-if="plan.interval === 'month' ">
       <div class="col-md-8 col-md-offset-2 text-center">
-        <a href="javascript:void(0)" :class="`btn btn-brown-outline p-4 schedule-btns ${monday_to_friday_is_active}`"
-          @click="setSchedule(earliest_monday, 'monday_to_friday')">
-          Monday To Friday
-        </a>
-        <a href="javascript:void(0)" :class="`btn btn-brown-outline p-4 schedule-btns ${sunday_to_thursday_is_active}`"
-          @click="setSchedule(earliest_sunday, 'sunday_to_thursday')">
-          Sunday To Thursday
-        </a>
+        <a
+          href="javascript:void(0)"
+          :class="`btn btn-brown-outline p-4 schedule-btns ${monday_to_friday_is_active}`"
+          @click="setSchedule(earliest_monday, 'monday_to_friday')"
+        >Monday To Friday</a>
+        <a
+          href="javascript:void(0)"
+          :class="`btn btn-brown-outline p-4 schedule-btns ${sunday_to_thursday_is_active}`"
+          @click="setSchedule(earliest_sunday, 'sunday_to_thursday')"
+        >Sunday To Thursday</a>
       </div>
     </div>
 
     <div class="row justify-content-center mb-4">
-      <div class="col-md-4" v-for="(calendar, index) in calendars" v-bind:key="`${index}--calendar`">
+      <div
+        class="col-md-4"
+        v-for="(calendar, index) in calendars"
+        v-bind:key="`${index}--calendar`"
+      >
         <div class="calendar-errors"></div>
         <div class="calendar-container">
           <calendar
@@ -37,15 +39,19 @@
             v-bind:plan="plan"
             v-bind:registration_form="registration_form"
             @on-select-day="selectDay"
-            @on-calendar-change="changeCalendar">
-          </calendar>
+            @on-calendar-change="changeCalendar"
+          ></calendar>
         </div>
       </div>
     </div>
 
     <div class="row justify-content-center">
       <div class="col-md-4">
-        <a href="javascript:void(0)" class="btn btn-brown btn-block text-uppercase" @click="verifySchedule">Continue To Payment</a>
+        <a
+          href="javascript:void(0)"
+          class="btn btn-brown btn-block text-uppercase"
+          @click="verifySchedule"
+        >Continue To Payment</a>
       </div>
     </div>
   </div>
@@ -90,7 +96,8 @@ export default {
       }
     });
 
-    self.monday_to_friday_is_active = self.registration_form.schedule === 'monday_to_friday'
+    self.monday_to_friday_is_active =
+      self.registration_form.schedule === "monday_to_friday";
   },
   methods: {
     verifySchedule: function() {
@@ -107,7 +114,7 @@ export default {
           confirmButtonColor: "#582D11",
           confirmButtonClass: "btn btn-brown text-uppercase",
           buttonsStyling: false
-        })
+        });
         return;
       }
     },
