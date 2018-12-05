@@ -4,14 +4,29 @@
       <h3 class="text-uppercase text-center">Delivery Information</h3>
       <div class="row justify-content-center">
         <div class="col-10">
-          <div v-for="(address, index) in registration_form.addresses" v-bind:key="`address_${index}`">
+          <div
+            v-for="(address, index) in registration_form.addresses"
+            v-bind:key="`address_${index}`"
+          >
             <div class="form-group row" v-if="index === 0 && plan.for_type !== 'group'">
               <div class="col-3">
                 <strong>I am:</strong>
               </div>
               <div class="col">
-                <label v-for="location_at in location_ats" class="delivery-info-step__control_label mr-3" v-bind:key="location_at">
-                  <input type="radio" :name="location_at" :id="location_at" style="margin-right: 5px" v-model="registration_form.addresses[0].location_at" :value="location_at" v-on:click="changeAddress(location_at)">
+                <label
+                  v-for="location_at in location_ats"
+                  class="delivery-info-step__control_label mr-3"
+                  v-bind:key="location_at"
+                >
+                  <input
+                    type="radio"
+                    :name="location_at"
+                    :id="location_at"
+                    style="margin-right: 5px"
+                    v-model="registration_form.addresses[0].location_at"
+                    :value="location_at"
+                    v-on:click="changeAddress(location_at)"
+                  >
                   {{ location_at | format }}
                 </label>
               </div>
@@ -20,48 +35,66 @@
               <input type="hidden" v-model.lazy="address.location_at" name="location_at">
             </div>
             <div class="form-group" v-show="plan.for_type === 'group'">
-              <input type="text"
+              <input
+                type="text"
                 v-model.trim="registration_form.group_code"
                 placeholder="Group Code"
                 class="form-control"
-                v-on:blur="getAddress">
-              <small id="groupCodeHelpBlock" class="form-text text-muted">
-                If your the First one setting up your Group we will supply you with a group code at check out.
-              </small>
+                v-on:blur="getAddress"
+              >
+              <small
+                id="groupCodeHelpBlock"
+                class="form-text text-muted"
+              >If your the First one setting up your Group we will supply you with a group code at check out.</small>
             </div>
             <div class="form-group">
-              <label-edit v-bind:text="address.line1" v-bind:placeholder="address.line1" v-bind:address="address"></label-edit>
-              <input type="hidden"
+              <label-edit
+                v-bind:text="address.line1"
+                v-bind:placeholder="address.line1"
+                v-bind:address="address"
+              ></label-edit>
+              <input
+                type="hidden"
                 ref="address_line1"
                 v-model.trim="address.line1"
                 placeholder="Address Line 1"
                 class="form-control"
                 v-bind:class="{ 'is-invalid': $v.registration_form.addresses.$each[index].line1.$error}"
-                @input="$v.registration_form.addresses.$each[index].line1.$touch">
-              <div class="invalid-feedback">
-                Line1 is required
-              </div>
+                @input="$v.registration_form.addresses.$each[index].line1.$touch"
+              >
+              <div class="invalid-feedback">Line1 is required</div>
             </div>
             <div class="form-group">
-              <input type="text" v-model.trim="address.line2" placeholder="Address Line 2" class="form-control">
+              <input
+                type="text"
+                v-model.trim="address.line2"
+                placeholder="Address Line 2"
+                class="form-control"
+              >
             </div>
             <div class="form-group">
-              <input type="text" v-model="address.front_door" placeholder="Front Door Code (if applicable)" class="form-control">
+              <input
+                type="text"
+                v-model="address.front_door"
+                placeholder="Front Door Code (if applicable)"
+                class="form-control"
+              >
             </div>
             <div class="form-group row">
               <div class="col">
-                <input type="text"
+                <input
+                  type="text"
                   v-model.trim="address.city"
                   placeholder="City"
                   class="form-control"
                   v-bind:class="{ 'is-invalid': $v.registration_form.addresses.$each[index].city.$error}"
-                  @input="$v.registration_form.addresses.$each[index].city.$touch">
-                <div class="invalid-feedback">
-                  City is required
-                </div>
+                  @input="$v.registration_form.addresses.$each[index].city.$touch"
+                >
+                <div class="invalid-feedback">City is required</div>
               </div>
               <div class="col">
-                <input type="text"
+                <input
+                  type="text"
                   v-model="address.state"
                   placeholder="State"
                   class="form-control"
@@ -69,49 +102,49 @@
                   @input="$v.registration_form.addresses.$each[index].state.$touch"
                   v-mask="'AA'"
                   style="text-transform:uppercase"
-                  >
-                <div class="invalid-feedback">
-                  State is required
-                </div>
+                >
+                <div class="invalid-feedback">State is required</div>
               </div>
             </div>
             <div class="form-group row">
               <div class="col">
-                <input type="text"
+                <input
+                  type="text"
                   v-model.trim="address.zip_code"
                   placeholder="Zipcode"
                   class="form-control"
                   v-bind:class="{ 'is-invalid': $v.registration_form.addresses.$each[index].zip_code.$error}"
                   v-mask="'#####'"
-                  @input="$v.registration_form.addresses.$each[index].zip_code.$touch">
-                <div class="invalid-feedback">
-                  Zip code is required and must be a US valid zip.
-                </div>
+                  @input="$v.registration_form.addresses.$each[index].zip_code.$touch"
+                >
+                <div class="invalid-feedback">Zip code is required and must be a US valid zip.</div>
               </div>
               <div class="col" v-if="index === 0">
-                <input type="text"
+                <input
+                  type="text"
                   v-model.trim="registration_form.phone_number"
                   placeholder="Phone Number"
                   class="form-control"
                   v-bind:class="{ 'is-invalid': $v.registration_form.phone_number.$error}"
                   v-mask="'###-###-####'"
-                  @input="$v.registration_form.phone_number.$touch">
-                <div class="invalid-feedback">
-                  Phone Number is required
-                </div>
+                  @input="$v.registration_form.phone_number.$touch"
+                >
+                <div class="invalid-feedback">Phone Number is required</div>
               </div>
             </div>
           </div>
-          <a href="javascript:void(0)"
+          <a
+            href="javascript:void(0)"
             class="chocolate-font-color"
             @click="addAddress"
-            v-if="registration_form.addresses[0].location_at === 'multiple_workplaces'">
-            + Add Next Address
-          </a>
+            v-if="registration_form.addresses[0].location_at === 'multiple_workplaces'"
+          >+ Add Next Address</a>
           <div class="text-center">
-            <a href="javascript:void(0)"
+            <a
+              href="javascript:void(0)"
               class="btn btn-brown width-185 text-uppercase mt-3"
-              @click="validate">Next</a>
+              @click="validate"
+            >Next</a>
           </div>
         </div>
       </div>
@@ -121,8 +154,8 @@
 
 
 <script>
-import { required } from 'vuelidate/lib/validators';
-import LabelEdit from './label_edit';
+import { required } from "vuelidate/lib/validators";
+import LabelEdit from "./label_edit";
 export default {
   components: {
     LabelEdit
@@ -133,7 +166,7 @@ export default {
   },
   data: () => {
     return {
-      location_ats: ['at_home', 'at_work', 'multiple_workplaces'],
+      location_ats: ["at_home", "at_work", "multiple_workplaces"],
       invalids: 0,
       allowed_zip_codes: [],
       autocomplete_hidden: [true]
@@ -141,11 +174,11 @@ export default {
   },
   filters: {
     format: function(text) {
-      const str = text.split('_');
+      const str = text.split("_");
       for (var i = 0; i < str.length; i++) {
         str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
       }
-      return str.join(' ');
+      return str.join(" ");
     }
   },
   validations: {
@@ -175,8 +208,8 @@ export default {
     const fetchAllowedZip = () => {
       return new Promise(resolve => {
         Rails.ajax({
-          url: '/api/v1/allowed_zip_codes',
-          type: 'GET',
+          url: "/api/v1/allowed_zip_codes",
+          type: "GET",
           success: resolve
         });
       });
@@ -188,24 +221,24 @@ export default {
       );
     });
 
-    const node = document.querySelector('.group_code');
+    const node = document.querySelector(".group_code");
     if (node) {
-      self.registration_form.group_code = node.getAttribute('data');
+      self.registration_form.group_code = node.getAttribute("data");
       self.getAddress();
     }
 
-    if (this.plan.for_type === 'group') {
-      this.location_ats = ['at_work', 'at_home'];
+    if (this.plan.for_type === "group") {
+      this.location_ats = ["at_work", "at_home"];
     }
   },
   methods: {
     getAddress: function() {
       const self = this;
       const group_code = self.registration_form.group_code;
-      if (group_code.trim() !== '') {
+      if (group_code.trim() !== "") {
         Rails.ajax({
           url: `/api/v1/get_address?group_code=${group_code}`,
-          type: 'GET',
+          type: "GET",
           success: function(response) {
             const address = response.address;
             self.registration_form.addresses = [
@@ -224,7 +257,7 @@ export default {
       }
     },
     changeAddress: function(location_at) {
-      if (location_at !== 'multiple_workplaces') {
+      if (location_at !== "multiple_workplaces") {
         const newAddress = [];
         newAddress.push(this.registration_form.addresses[0]);
         this.registration_form.addresses = newAddress;
@@ -236,19 +269,19 @@ export default {
         return self.allowed_zip_codes.includes(address.zip_code);
       });
 
-      if (this.plan.for_type === 'party_meeting') {
+      if (this.plan.for_type === "party_meeting") {
         self.validateAddress();
         return;
       }
 
       if (!isValid) {
         swal({
-          type: 'error',
-          title: 'Oops...',
+          type: "error",
+          title: "Oops...",
           text: "We don't deliver to your zip code",
-          confirmButtonText: 'Continue',
-          confirmButtonColor: '#582D11',
-          confirmButtonClass: 'btn btn-brown text-uppercase',
+          confirmButtonText: "Continue",
+          confirmButtonColor: "#582D11",
+          confirmButtonClass: "btn btn-brown text-uppercase",
           buttonsStyling: false
         }).then(response => {
           self.validateAddress();
@@ -262,28 +295,28 @@ export default {
       const group_code = self.registration_form.group_code;
 
       if (group_code === null || group_code.length === 0) {
-        return self.$emit('next-tab');
+        return self.$emit("next-tab");
       }
 
       const responseHandler = response => {
         if (response.is_valid !== true) {
           swal({
-            type: 'error',
-            title: 'Group Code Invalid',
-            text: 'Group code is invalid!',
-            confirmButtonText: 'Continue',
-            confirmButtonColor: '#582D11',
-            confirmButtonClass: 'btn btn-brown text-uppercase',
+            type: "error",
+            title: "Group Code Invalid",
+            text: "Group code is invalid!",
+            confirmButtonText: "Continue",
+            confirmButtonColor: "#582D11",
+            confirmButtonClass: "btn btn-brown text-uppercase",
             buttonsStyling: false
           });
         } else {
-          return self.$emit('next-tab');
+          return self.$emit("next-tab");
         }
       };
 
       Rails.ajax({
         url: `/api/v1/check_codes?group_code=${group_code}`,
-        type: 'GET',
+        type: "GET",
         success: function(response) {
           responseHandler(response);
         }
@@ -298,7 +331,7 @@ export default {
         return new Promise((resolve, reject) => {
           Rails.ajax({
             url: `/api/v1/address?${address}`,
-            type: 'GET',
+            type: "GET",
             success: function(response) {
               resolve(response);
             }
@@ -321,7 +354,7 @@ export default {
         );
       });
 
-      validate_address(address_params.join('&')).then(response => {
+      validate_address(address_params.join("&")).then(response => {
         done(response);
       });
 
@@ -329,18 +362,18 @@ export default {
         if (response.valid === false) {
           const error_message = response.errors.reduce((list, error) => {
             return (list += `<li>${error}</li>`);
-          }, '');
+          }, "");
 
           swal({
-            type: 'error',
-            title: 'Address Not Valid!',
+            type: "error",
+            title: "Address Not Valid!",
             html: `<ul class="list-unstyled">${error_message}</ul>`,
-            confirmButtonText: 'My address is correct',
-            confirmButtonColor: '#582D11',
-            confirmButtonClass: 'btn btn-brown text-uppercase mr-2',
+            confirmButtonText: "My address is correct",
+            confirmButtonColor: "#582D11",
+            confirmButtonClass: "btn btn-brown text-uppercase mr-2",
             showCancelButton: true,
-            cancelButtonText: 'Cancel',
-            cancelButtonClass: 'btn btn-danger text-uppercase',
+            cancelButtonText: "Cancel",
+            cancelButtonClass: "btn btn-danger text-uppercase",
             buttonsStyling: false
           }).then(result => {
             if (result.value) {

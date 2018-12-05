@@ -3,7 +3,8 @@
     <div class="row justify-content-center align-items-center mt-4">
       <div class="col-md-8 col-md-offset-2">
         <h4 class="text-center text-uppercase">Choose Delivery Day</h4>
-        <p class="text-center" v-if="plan.interval !== 'month' ">Choose when you want your
+        <p class="text-center" v-if="plan.interval !== 'month' ">
+          Choose when you want your
           <strong>single breakfast order</strong> to be delivered.
         </p>
         <p class="text-center" v-else>Choose your schedule or pick a date in the calendar.</p>

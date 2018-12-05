@@ -10,6 +10,7 @@
     "coffeescript": "1.12.7",
     "dotenv": "^6.0.0",
     "dropzone": "^5.4.0",
+    "element-ui": "^2.4.11",
     "es6-promise": "^4.2.4",
     "moment": "^2.21.0",
     "resolve-url-loader": "^3.0.0",

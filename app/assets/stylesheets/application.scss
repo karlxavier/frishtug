@@ -5,6 +5,7 @@
 
 @import "bootstrap";
 @import "toastr";
+@import url("//unpkg.com/element-ui/lib/theme-chalk/index.css");
 @media print {
   #printarea {
     position: fixed;
@@ -21,12 +22,12 @@
 }
 
 .table th {
-  &>a {
+  & > a {
     text-decoration: none;
     color: var(--secondary);
   }
   & .asc:after {
-    content: '';
+    content: "";
     display: inline-block;
     width: 0;
     height: 0;
@@ -37,7 +38,7 @@
     margin-left: 3px;
   }
   & .desc:after {
-    content: '';
+    content: "";
     display: inline-block;
     width: 0;
     height: 0;

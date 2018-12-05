@@ -43,15 +43,21 @@
           <div class="col-5 font-family-lato-bold font-size-14" v-else>Delivery Date</div>
           <div class="col-7">{{ first_delivery_date }}</div>
         </div>
-        <div class="row review-step__margin-b25 review-step__margin-t30">
+        <div
+          class="row review-step__margin-b25 review-step__margin-t30"
+          v-if="plan.name === 'Option 4' "
+        >
           <div class="col-5 font-family-lato-bold font-size-14">Preferred Time</div>
-          <div class="col-7">
+          <div class="col-5">
             <div class="form-group">
               <div class="input-group date" id="datetimepicker3">
-                <input type="text" class="form-control">
-                <span class="input-group-addon">
-                  <span class="glyphicon glyphicon-time"></span>
-                </span>
+                <TimePicker
+                  v-model="value2"
+                  :picker-options="{
+                    selectableRange: '07:00:00 - 20:30:00'
+                  }"
+                  placeholder="Delivery time"
+                ></TimePicker>
               </div>
             </div>
           </div>
@@ -93,10 +99,15 @@
 import toCurrency from "../packs/lib/to_currency";
 import moment from "moment";
 import Money from "../packs/lib/money";
+import { TimePicker } from "element-ui";
+import lang from "element-ui/lib/locale/lang/en";
+import locale from "element-ui/lib/locale";
+locale.use(lang);
 export default {
   data: () => {
     return {
-      tax: 6.3
+      tax: 6.3,
+      value2: new Date(2018, 9, 10, 18, 40)
     };
   },
   props: {
@@ -105,6 +116,9 @@ export default {
     plan: { type: Object, required: true },
     charges: { type: Object, required: true },
     date: { type: Object, required: true }
+  },
+  components: {
+    TimePicker
   },
   filters: {
     to_currency: toCurrency,
