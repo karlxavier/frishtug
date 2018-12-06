@@ -26,6 +26,18 @@
       </div>
     </div>
 
+    <div class="row justify-content-center my-4" v-if="plan.name === 'Option 4' ">
+      <div class="col-8 font-family-lato-bold font-size-14">Preferred Delivery Time:
+        <TimePicker
+          v-model="deliveryTime"
+          :picker-options="{
+            selectableRange: '07:00:00 - 20:30:00'
+          }"
+          @change="setTime"
+          placeholder="Delivery time"
+        ></TimePicker>
+      </div>
+    </div>
     <div class="row justify-content-center mb-4">
       <div
         class="col-md-4"
@@ -60,9 +72,15 @@
 
 <script>
 import Calendar from "./calendar";
+import { TimePicker } from "element-ui";
+import lang from "element-ui/lib/locale/lang/en";
+import locale from "element-ui/lib/locale";
+locale.use(lang);
+
 export default {
   components: {
-    Calendar
+    Calendar,
+    TimePicker
   },
   props: {
     registration_form: { type: Object, required: true },
@@ -75,7 +93,8 @@ export default {
       earliest_monday: null,
       earliest_sunday: null,
       monday_to_friday_is_active: null,
-      sunday_to_thursday_is_active: null
+      sunday_to_thursday_is_active: null,
+      deliveryTime: new Date(2018, 9, 10, 18, 40)
     };
   },
   mounted: function() {
@@ -105,6 +124,9 @@ export default {
       const self = this;
       const message = self.plan.interval === "month" ? "schedule" : "date";
       if (self.$store.state.selected_dates.length > 0) {
+        if (self.plan.name === "Option 4") {
+          self.setTime(self.deliveryTime);
+        }
         self.$emit("next-tab");
       } else {
         swal({
@@ -128,6 +150,12 @@ export default {
           self.calendars = parsed;
         }
       });
+    },
+    setTime: function(value) {
+      const self = this;
+      // self.registration_form.orders.push({
+      //   delivery_time: value
+      // });
     },
     selectDay: function(date) {
       const self = this;
