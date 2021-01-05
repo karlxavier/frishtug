@@ -4,7 +4,7 @@
   "dependencies": {
     "@rails/webpacker": "^3.4.3",
     "animate.css": "^3.6.1",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "babel-helper-vue-jsx-merge-props": "^2.0.3",
     "big.js": "^5.0.3",
     "coffeescript": "1.12.7",
